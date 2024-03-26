@@ -1,4 +1,8 @@
-import { GetStaticProps, NextPage } from 'next'
+import type { ReactElement } from 'react'
+import Layout from '../components/layout'
+import NestedLayout from '../components/nested-layout'
+import type { NextPageWithLayout } from './_app'
+import { GetStaticProps } from 'next'
 import { parseMarkdownFile, FrontMatter } from '../utils/parseMarkdown'
 import fs from 'fs'
 import path from 'path'
@@ -14,8 +18,7 @@ interface HomeProps {
     projects: ProjectData[]
 }
 
-const Home: NextPage<HomeProps> = ({ projects }) => {
-
+const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
     const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null)
 
     return (
@@ -45,6 +48,13 @@ const Home: NextPage<HomeProps> = ({ projects }) => {
     )
 }
 
+Home.getLayout = function getLayout(page: ReactElement) {
+    return (
+        <Layout>
+            <NestedLayout>{page}</NestedLayout>
+        </Layout>
+    )
+}
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     const files = fs.readdirSync(path.join('content'))
 
