@@ -2,22 +2,11 @@ import { GetStaticProps, NextPage } from 'next'
 import { parseMarkdownFile, FrontMatter } from '../utils/parseMarkdown'
 import fs from 'fs'
 import path from 'path'
-import Link from 'next/link'
 import { useState } from 'react'
 
 interface ProjectData {
     slug: string
-    frontMatter: {
-        index: number
-        year: number
-        title: string
-        subtitle: string
-        description: string
-        details: string
-        links: string[]
-        images: string[]
-        tags: string[]
-    }
+    frontMatter: FrontMatter
     content: string
 }
 

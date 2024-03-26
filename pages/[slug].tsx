@@ -4,17 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 interface ProjectProps {
-    frontMatter: {
-        index: number
-        year: number
-        title: string
-        subtitle: string
-        description: string
-        details: string
-        links: string[]
-        images: string[]
-        tags: string[]
-    }
+    frontMatter: FrontMatter
     content: string
 }
 
