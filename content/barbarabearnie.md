@@ -1,0 +1,14 @@
+---
+index: 20
+year: 2023
+title: "barbarabearnie.com"
+subtitle: "Portfolio design and development"
+description: "Extracting a porfolio from a legacy Flash website"
+details: "..."
+links: [{url: "barbarabearnie.com", label: "Barbara Bearnie portfolio"}]
+images: []
+tags: ["front-end", "javascript"]
+---
+I was approached to redesign Barbara Beirne&apos;s photography showcase. She was a New York photographer prolific during the 1980s. Most of her archives were encapsulated in a legacy Flash website. The image assets had to be extracted from the binary .swf files (this process is called “decompiling”). 
+
+Future compatibility was a concern, so we decided to create a full-screen image carousel in Vanilla JavaScript.
