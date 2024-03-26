@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import matter from 'gray-matter'
+import { parseMarkdownFile, FrontMatter } from '../utils/parseMarkdown'
 import fs from 'fs'
 import path from 'path'
 
@@ -46,20 +46,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async ({ params }) => {
     const slug = params?.slug as string;
-    const markdownWithMeta = fs.readFileSync(path.join('content', slug + '.md'), 'utf-8');
-    const { data, content } = matter(markdownWithMeta);
-
-    const frontMatter: ProjectProps['frontMatter'] = {
-        index: data.index,
-        year: data.year,
-        title: data.title,
-        subtitle: data.subtitle,
-        description: data.description,
-        details: data.details,
-        links: data.links,
-        images: data.images,
-        tags: data.tags,
-    }
+    const filePath = path.join('content', slug + '.md')
+    const { frontMatter, content } = parseMarkdownFile(filePath)
 
     return {
         props: {
