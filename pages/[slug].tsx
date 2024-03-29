@@ -1,5 +1,6 @@
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import { parseMarkdownFile, FrontMatter } from '../utils/parseMarkdown'
+import { parseMarkdownFile } from '../utils/parseMarkdown'
+import { FrontMatter } from '../types'
 import fs from 'fs'
 import path from 'path'
 
