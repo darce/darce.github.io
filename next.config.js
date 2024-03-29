@@ -1,19 +1,8 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production'
 const nextConfig = {
+    basePath: '/darce.github.io',
     reactStrictMode: true,
-    output: 'export',
-    distDir: 'docs',
-    trailingSlash: true,
-    assetPrefix: isProd ? '/darce.github.io/' : '',
-    env: {
-        isProd: isProd.toString(),
-    },
-    exportPathMap: async (defaultPathMap, { dev, dir, outDir, distDir, buildId }) => {
-        return {
-            '/': { page: '/' },
-        };
-    }
+    output: 'export'
 }
 
 module.exports = nextConfig
