@@ -2,7 +2,7 @@ name: publish-to-github-pages
 on:
   push:
     branches:
-      master
+      - main
 
 permissions:
   contents: read
@@ -18,24 +18,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      name: Setup Node.js, cache dependencies, install dependencies
-      uses: ./.github/workflows/setup-node
+      - name: Setup Node.js, cache dependencies, install dependencies
+        uses: ./.github/workflows/setup-node
 
-      name: Setup pages
-      uses: actions/configure-pages@v4
-      with:
-        static_site_generator: next
+      - name: Setup pages
+        uses: actions/configure-pages@v4
+        with:
+          static_site_generator: next
       
-      name: Build with Next.js
-      run: npx next build
+      - name: Build with Next.js
+        run: npx next build
 
-      name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./out
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
   
   deploy:
     environment:
@@ -46,6 +46,6 @@ jobs:
     needs: build
 
     steps:
-      name: Publish to Github Pages
-      id: deployment
-      uses: actions/depoy-pages@v4
+      - name: Publish to Github Pages
+        id: deployment
+        uses: actions/depoy-pages@v4
