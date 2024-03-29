@@ -12,4 +12,6 @@ links: [
 images: []
 tags: ["front-end", "wordpress", "custom-theme"]
 ---
-I worked closely with marketing and design teams on various projects for apple.com. This collaboration involved transforming static designs into responsive, pixel-perfect code, ensuring high-quality online presentations. A notable achievement was prototyping and developing the Marketing Department's first direct mail, which utilized CSS3 animations to enhance user engagement and visual appeal. Additionally, I authored automation tools for direct mail campaigns. These tools were built using a combination of Node.js, bash script, and Gulp, streamlining the process and improving the efficiency of our marketing efforts. My contributions in these areas were key to enhancing the digital presence and marketing initiatives of the company.
+Test update. I worked closely with marketing and design teams on various projects for apple.com. This collaboration involved transforming static designs into responsive, pixel-perfect code, ensuring high-quality online presentations. A notable achievement was prototyping and developing the Marketing Department's first direct mail, which utilized CSS3 animations to enhance user engagement and visual appeal. 
+
+Additionally, I authored automation tools for direct mail campaigns. These tools were built using a combination of Node.js, bash script, and Gulp, streamlining the process and improving the efficiency of our marketing efforts. My contributions in these areas were key to enhancing the digital presence and marketing initiatives of the company.
