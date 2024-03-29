@@ -48,4 +48,4 @@ jobs:
     steps:
       - name: Publish to Github Pages
         id: deployment
-        uses: actions/depoy-pages@v4
+        uses: actions/deploy-pages@v4
