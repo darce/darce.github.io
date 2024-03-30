@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "next dev",
+        "dev": "NODE_ENV=development next dev",
         "build": "NODE_ENV=production next build",
         "start": "next start",
         "deploy": "npm run build && touch docs/.nojekyll && git add docs/ && git commit -m 'Deploy' && git push"

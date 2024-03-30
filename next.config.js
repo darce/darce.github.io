@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
-    basePath: '/darce.github.io',
+    basePath: isProd ? '/darce.github.io' : '',
     reactStrictMode: true,
     output: 'export'
 }
