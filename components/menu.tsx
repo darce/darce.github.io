@@ -8,16 +8,14 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ projects, onSelectProject }) => {
     return (
-        <ul>
+        <ol>
             {projects.map((project) => (
-                <li key={project.slug}>
+                <li key={project.slug} onClick={() => onSelectProject(project)}>
                     <h2>{project.frontMatter.title}</h2>
                     <p>{project.frontMatter.subtitle}</p>
-                    <p>{project.frontMatter.description}</p>
-                    <button onClick={() => onSelectProject(project)}>View Details</button>
                 </li>
             ))}
-        </ul>
+        </ol>
     )
 }
 
