@@ -10,6 +10,7 @@ import { GetStaticProps } from 'next'
 import { parseMarkdownFile } from '../utils/parseMarkdown'
 import { ProjectData } from '../types'
 
+import Header from '../components/header'
 import Menu from '../components/menu'
 import ProjectDetails from '../components/projectDetails'
 
@@ -27,13 +28,21 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
     const handleCloseProject = () => {
         setSelectedProject(null)
     }
+
+    const masthead = {
+        title: 'Daniel Arcé',
+        subtitle: 'Front End Development & Interface Implementation'
+    }
+
     return (
-        <>
-            <h1>Daniel Arc&eacute;</h1>
-            <h2>Front End Development & Interface Implementation</h2>
-            <Menu projects={projects} onSelectProject={handleSelectedProject} />
-            {selectedProject && <ProjectDetails project={selectedProject} onClose={handleCloseProject} />}
-        </>
+        <div className="flex flex-col h-screen">
+            <Header className="h-1/3" masthead={masthead} />
+            <div className="flex flex-grow">
+                <Menu projects={projects} onSelectProject={handleSelectedProject} className="w-1/3 h-2/3" />
+                {selectedProject && <ProjectDetails project={selectedProject} onClose={handleCloseProject} className="w-2/3 h-2/3" />}
+            </div>
+
+        </div>
     )
 }
 
@@ -44,6 +53,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
         </Layout>
     )
 }
+
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     const files = fs.readdirSync(path.join('content'))
 
