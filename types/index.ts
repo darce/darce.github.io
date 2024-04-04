@@ -5,7 +5,11 @@ export interface FrontMatter {
     subtitle: string
     description: string
     details: string
-    links: string[]
+    links:
+    {
+        url: string,
+        label: string
+    }[]
     images: string[]
     tags: string[]
 }
