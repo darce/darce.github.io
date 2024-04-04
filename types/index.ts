@@ -13,5 +13,5 @@ export interface FrontMatter {
 export interface ProjectData {
     slug: string
     frontMatter: FrontMatter
-    content: string
+    mdxSource: any
 }
