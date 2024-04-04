@@ -4,11 +4,12 @@ import { ProjectData } from '../types'
 interface MenuProps {
     projects: ProjectData[]
     onSelectProject: (project: ProjectData) => void
+    className?: string
 }
 
-const Menu: React.FC<MenuProps> = ({ projects, onSelectProject }) => {
+const Menu: React.FC<MenuProps> = ({ projects, onSelectProject, className }) => {
     return (
-        <ol>
+        <ol className={className}>
             {projects.map((project) => (
                 <li key={project.slug} onClick={() => onSelectProject(project)}>
                     <h2>{project.frontMatter.title}</h2>

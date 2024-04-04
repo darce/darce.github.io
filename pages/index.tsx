@@ -35,14 +35,16 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
     }
 
     return (
-        <div className="flex flex-col h-screen">
-            <Header className="h-1/3" masthead={masthead} />
-            <div className="flex flex-grow">
-                <Menu projects={projects} onSelectProject={handleSelectedProject} className="w-1/3 h-2/3" />
-                {selectedProject && <ProjectDetails project={selectedProject} onClose={handleCloseProject} className="w-2/3 h-2/3" />}
+        <>
+            <div className="flex flex-col h-screen">
+                <Header className="h-1/3" masthead={masthead} />
+                <div className="flex flex-grow">
+                    <Menu className="w-1/3 h-2/3" projects={projects} onSelectProject={handleSelectedProject} />
+                    {selectedProject &&
+                        <ProjectDetails className="w-2/3 h-2/3" project={selectedProject} onClose={handleCloseProject} />}
+                </div>
             </div>
-
-        </div>
+        </>
     )
 }
 
@@ -57,17 +59,18 @@ Home.getLayout = function getLayout(page: ReactElement) {
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     const files = fs.readdirSync(path.join('content'))
 
-    const projects = files.map((filename) => {
-        const slug = filename.replace('.md', '')
+    /** Promise.all to wait for all async map calls */
+    const projects = await Promise.all(files.map(async (filename) => {
+        const slug = filename.replace('.mdx', '')
         const filePath = path.join('content', filename)
-        const { frontMatter, content } = parseMarkdownFile(filePath)
+        const { frontMatter, mdxSource } = await parseMarkdownFile(filePath)
 
         return {
             slug,
             frontMatter,
-            content
+            mdxSource
         }
-    })
+    }))
 
     return {
         props: {
