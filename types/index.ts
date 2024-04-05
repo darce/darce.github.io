@@ -1,3 +1,6 @@
+
+import { MDXRemoteSerializeResult } from 'next-mdx-remote'
+
 export interface FrontMatter {
     index: number
     year: number
@@ -17,5 +20,5 @@ export interface FrontMatter {
 export interface ProjectData {
     slug: string
     frontMatter: FrontMatter
-    mdxSource: any
+    mdxSource: MDXRemoteSerializeResult
 }

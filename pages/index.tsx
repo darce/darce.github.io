@@ -1,14 +1,11 @@
 import type { ReactElement } from 'react'
-import fs from 'fs'
-import path from 'path'
-import { useState } from 'react'
 
 import Layout from '../components/layout'
 import NestedLayout from '../components/nested-layout'
 import type { NextPageWithLayout } from './_app'
-import { GetStaticProps } from 'next'
-import { parseMarkdownFile } from '../utils/parseMarkdown'
+import { getStaticProps } from '../utils/getMdxContent'
 import { ProjectData } from '../types'
+import { useSelectedProject } from '../hooks/useSelectedProject'
 
 import Header from '../components/header'
 import Menu from '../components/menu'
@@ -19,15 +16,7 @@ interface HomeProps {
 }
 
 const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
-    const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null)
-
-    const handleSelectedProject = (project: ProjectData) => {
-        setSelectedProject(project)
-    }
-
-    const handleCloseProject = () => {
-        setSelectedProject(null)
-    }
+    const { selectedProject, handleSelectedProject, handleCloseProject } = useSelectedProject()
 
     const masthead = {
         title: 'Daniel Arcé',
@@ -36,19 +25,15 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
 
     return (
         <>
-            <div className="flex flex-col h-screen">
-                <Header className="h-1/3" masthead={masthead} />
-                <div className="flex flex-grow">
-                    <Menu className="w-1/3 h-2/3" projects={projects} onSelectProject={handleSelectedProject} />
-                    {selectedProject &&
-                        <ProjectDetails className="w-2/3 h-2/3" project={selectedProject} onClose={handleCloseProject} />}
-                </div>
-            </div>
+            <Header className="header" masthead={masthead} />
+            <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
+            {selectedProject &&
+                <ProjectDetails className="w-2/3 h-2/3" project={selectedProject} onClose={handleCloseProject} />}
         </>
     )
 }
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Home.getLayout = (page: ReactElement) => {
     return (
         <Layout>
             <NestedLayout>{page}</NestedLayout>
@@ -56,26 +41,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
     )
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-    const files = fs.readdirSync(path.join('content'))
+/** Call getStaticProps on build */
+export { getStaticProps }
 
-    /** Promise.all to wait for all async map calls */
-    const projects = await Promise.all(files.map(async (filename) => {
-        const slug = filename.replace('.mdx', '')
-        const filePath = path.join('content', filename)
-        const { frontMatter, mdxSource } = await parseMarkdownFile(filePath)
-
-        return {
-            slug,
-            frontMatter,
-            mdxSource
-        }
-    }))
-
-    return {
-        props: {
-            projects,
-        }
-    }
-}
 export default Home
