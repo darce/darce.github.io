@@ -5,7 +5,7 @@ interface NestedLayoutProps {
 }
 
 const NestedLayout: React.FC<NestedLayoutProps> = ({ children }) => {
-    return <div>{children}</div>
+    return <>{children}</>
 }
 
 export default NestedLayout

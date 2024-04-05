@@ -10,7 +10,7 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
     return (
-        <article className={className} >
+        <article className="details">
             <h3>{project.frontMatter.title}</h3>
             <div><a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a></div>
             <p>{project.frontMatter.details}</p>

@@ -1,0 +1,55 @@
+@font-face {
+    font-family: 'GeistMonoVariableVF';
+    src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: GeistMonoVariableVF, Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* For WebKit browsers */
+    -moz-osx-font-smoothing: grayscale;
+    /* For Firefox on Mac OS */
+    text-rendering: optimizeLegibility;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+
+    grid-template-areas:
+        "header header header"
+        "menu details details"
+        "menu details details";
+}
+
+.header {
+    display: grid;
+    grid-area: header;
+
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    grid-template-areas:
+        "title decoration decoration"
+        "subtitle decoration decoration";
+
+    .title {
+        font-variation-settings: 'wght' 900;
+    }
+
+    .subtitle {
+        grid-area: subtitle;
+    }
+}
+
+.menu {
+    grid-area: menu;
+}
+
+.details {
+    grid-area: details;
+}
