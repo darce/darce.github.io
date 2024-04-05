@@ -10,9 +10,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
     return (
-        <header className={`container mx-auto px-4 ${className}`}>
-            <h1 className='text-2xl font-bold'>{masthead.title}</h1>
-            <h2 className='mt-2'>{masthead.subtitle}</h2>
+        <header className="header">
+            <h1 className="title">{masthead.title}</h1>
+            <h2 className="subtitle">{masthead.subtitle}</h2>
         </header>
     )
 }
