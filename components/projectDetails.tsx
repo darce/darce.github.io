@@ -12,8 +12,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
     return (
         <article className="details">
             <h3>{project.frontMatter.title}</h3>
-            <div><a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a></div>
+            {project.frontMatter.links && (
+                <div>
+                    <a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
+                </div>
+            )}
+
             <p>{project.frontMatter.details}</p>
+
+            {project.frontMatter.images && project.frontMatter.images.map((image, index) => {
+                return (
+                    <div key={index} className="image" >
+                        <img src={`/images/${image.src}`} alt={image.alt} />
+                    </div>
+                )
+            })}
+
             <MDXRemote {...project.mdxSource} />
             <button onClick={onClose}>Close</button>
 

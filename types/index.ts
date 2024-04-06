@@ -8,13 +8,16 @@ export interface FrontMatter {
     subtitle: string
     description: string
     details: string
-    links:
+    links?:
     {
         url: string,
         label: string
     }[]
-    images: string[]
-    tags: string[]
+    images?: {
+        src: string,
+        alt: string
+    }[]
+    tags?: string[]
 }
 
 export interface ProjectData {
