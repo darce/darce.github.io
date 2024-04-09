@@ -18,7 +18,7 @@ body {
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 300px 1fr 1fr;
 
     grid-template-areas:
         "header header header"
@@ -39,15 +39,52 @@ body {
 
     .title {
         font-variation-settings: 'wght' 900;
+        font-size: 40pt;
     }
 
     .subtitle {
         grid-area: subtitle;
+        margin: 0;
     }
 }
 
 .menu {
     grid-area: menu;
+    margin: 0;
+    list-style: none;
+
+    .title {
+        padding: 5px 0;
+    }
+
+
+    li {
+        counter-increment: custom;
+        padding: 0 0 0 20px;
+        border-bottom: 1px solid black;
+        position: relative;
+    }
+
+    & ::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0cqh;
+        height: 5px;
+        background-color: black;
+        transition: width 0.2s ease-out;
+    }
+
+    & :hover::before {
+        width: 100%
+    }
+
+    li::marker {
+        content: counter(custom);
+        font-variation-settings: 'wght' 900;
+        font-size: 17pt;
+    }
 }
 
 .details {
