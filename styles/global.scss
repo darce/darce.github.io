@@ -57,12 +57,12 @@ body {
         padding: 5px 0;
     }
 
-
     li {
         counter-increment: custom;
         padding: 0 0 0 20px;
         border-bottom: 1px solid black;
         position: relative;
+        cursor: pointer;
     }
 
     & ::before {
@@ -70,8 +70,8 @@ body {
         position: absolute;
         bottom: 0;
         left: 0;
-        width: 0cqh;
-        height: 5px;
+        width: 0;
+        height: 3px;
         background-color: black;
         transition: width 0.2s ease-out;
     }
@@ -82,11 +82,27 @@ body {
 
     li::marker {
         content: counter(custom);
-        font-variation-settings: 'wght' 900;
-        font-size: 17pt;
+        font-variation-settings: 'wght' 100;
+        font-size: 12pt;
     }
 }
 
 .details {
     grid-area: details;
+}
+
+.cube {
+    grid-area: decoration;
+}
+
+.vertex {
+    display: inline-block;
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+    image-rendering: pixelated;
+    font-size: 10px;
 }
