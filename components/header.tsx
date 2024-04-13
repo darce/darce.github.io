@@ -1,4 +1,5 @@
 import React from 'react'
+import Cube from './cube'
 
 interface HeaderProps {
     masthead: {
@@ -13,6 +14,7 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
         <header className="header">
             <h1 className="title">{masthead.title}</h1>
             <h2 className="subtitle">{masthead.subtitle}</h2>
+            <Cube />
         </header>
     )
 }
