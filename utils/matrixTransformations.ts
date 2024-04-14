@@ -10,6 +10,17 @@ const transformPointsWithMatrix = (vertexArray: Vertex[], rotationMatrix: number
     ))
 }
 
+export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
+    /** First rotate and scale, then project */
+    let rotatedPoints = rotationX(vertexArray, angleX)
+    rotatedPoints = rotationY(rotatedPoints, angleY)
+    rotatedPoints = rotationZ(rotatedPoints, angleZ)
+    const scaledPoints = scaleXYZ(rotatedPoints, scale)
+    const projectedPoints = projectPoints(scaledPoints, distance)
+
+    return projectedPoints
+}
+
 const matrixMultiplyVertex = (projectionMatrix: number[][], vertex: Vertex): Vertex => {
     const vertexMatrix: number[][] = vertexToMatrix(vertex)
     const projectionRows: number = projectionMatrix.length
@@ -56,7 +67,7 @@ const matrixToVertex = (matrix: number[][]): Vertex => {
     }
     return vertex
 }
-export const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
+const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
     const rotationMatrix = [
         [1, 0, 0],
         [0, Math.cos(angle), -Math.sin(angle)],
@@ -65,7 +76,7 @@ export const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
     return transformPointsWithMatrix(vertexArray, rotationMatrix)
 }
 
-export const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
     const rotationMatrix: number[][] = [
         [Math.cos(angle), 0, -Math.sin(angle)],
         [0, 1, 0],
@@ -74,7 +85,7 @@ export const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
     return transformPointsWithMatrix(vertexArray, rotationMatrix)
 }
 
-export const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
+const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
     const rotationMatrix: number[][] = [
         [Math.cos(angle), -Math.sin(angle), 0],
         [Math.sin(angle), Math.cos(angle), 0],
@@ -83,7 +94,7 @@ export const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
     return transformPointsWithMatrix(vertexArray, rotationMatrix)
 }
 
-export const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
+const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
     const scaleMatrix: number[][] = [
         [scale, 0, 0],
         [0, scale, 0],
@@ -92,7 +103,7 @@ export const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
     return transformPointsWithMatrix(vertexArray, scaleMatrix)
 }
 
-export const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
     const result: Vertex[] = []
     vertexArray.forEach(vertex => {
         const f = 1 / (distance - vertex.z)
