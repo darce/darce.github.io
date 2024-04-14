@@ -24,50 +24,50 @@ const Cube: React.FC = () => {
         { x: 0.5, y: 0.5, z: 0.5 },
         { x: -0.5, y: 0.5, z: 0.5 }
     ])
-    const angleRef = useRef<number>(0)
+    const angleXRef = useRef<number>(0)
+    const angleYRef = useRef<number>(0)
+    const angleZRef = useRef<number>(0)
     const centerRef = useRef<Point>({ x: 0, y: 0 })
     const cubeRef = useRef<HTMLDivElement>(null)
-    const animationRef = useRef<number>(0)
 
     useEffect(() => {
         if (cubeRef.current) {
-            cubeRef.current?.addEventListener('click', handleClickVertex, false)
+            cubeRef.current.addEventListener('click', handleClickVertex, false)
+            cubeRef.current.addEventListener('mousemove', handleMouseMove, false)
             const cubeRect = cubeRef.current.getBoundingClientRect()
-            const calculatedCenter: Point = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
-            centerRef.current = calculatedCenter
-            loop()
+            centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
         }
 
         return () => {
-            if (animationRef.current) {
-                window.cancelAnimationFrame(animationRef.current)
+            if (cubeRef.current) {
+                cubeRef.current.removeEventListener('click', handleClickVertex)
+                cubeRef.current.removeEventListener('mousemove', handleMouseMove)
             }
         }
     }, [])
 
-    const transformPoints = (vertexArray: Vertex[], angle: number, scale: number, distance: number) => {
-        /** First rotate and scale, then project */
-        const rotatedPointsX = MatrixTransforms.rotationX(vertexArray, angle)
-        const rotatedPointsY = MatrixTransforms.rotationY(rotatedPointsX, angle)
-        const rotatedPointsZ = MatrixTransforms.rotationZ(rotatedPointsY, angle)
-        const scaledPoints = MatrixTransforms.scaleXYZ(rotatedPointsZ, scale)
-        const projectedPoints = MatrixTransforms.projectPoints(scaledPoints, distance)
-
-        return projectedPoints
-    }
-
-    const loop = useCallback(() => {
-        const newAngle = angleRef.current + 0.01
-        const transformedVertexArray = transformPoints(verticesRef.current, newAngle, 500, 10)
-        setVertices(transformedVertexArray)
-        angleRef.current = newAngle
-        animationRef.current = window.requestAnimationFrame(loop)
+    const updateVertices = useCallback(() => {
+        const transformedVertices = MatrixTransforms.transformPoints(verticesRef.current, angleXRef.current, angleYRef.current, angleZRef.current, 500, 10)
+        setVertices(transformedVertices)
     }, [])
 
     const handleClickVertex = (event: MouseEvent) => {
         const target = event.target as HTMLElement
         const vertexId = target.getAttribute('data-vertex-id')
         console.log('clicked vertex id: ', vertexId)
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+        const proportionX = event.clientX / window.innerWidth
+        const proportionY = event.clientY / window.innerHeight
+
+        /** Map proportions to full circle roations (2π radians) */
+        const fullRotaionRadians = Math.PI * 2
+        /** Full rotation from top to bottom */
+        angleXRef.current = proportionY * fullRotaionRadians
+        /** Full rotation from left to right */
+        angleYRef.current = proportionX * fullRotaionRadians
+        updateVertices()
     }
 
     return (
