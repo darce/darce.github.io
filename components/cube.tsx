@@ -33,9 +33,10 @@ const Cube: React.FC = () => {
     useEffect(() => {
         if (cubeRef.current) {
             cubeRef.current.addEventListener('click', handleClickVertex, false)
-            cubeRef.current.addEventListener('mousemove', handleMouseMove, false)
             const cubeRect = cubeRef.current.getBoundingClientRect()
             centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
+            window.addEventListener('mousemove', handleMouseMove, false)
+
         }
 
         return () => {
