@@ -7,9 +7,9 @@ import { getStaticProps } from '../utils/getMdxContent'
 import { ProjectData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
 
-import Header from '../components/header'
-import Menu from '../components/menu'
-import ProjectDetails from '../components/projectDetails'
+import Header from '../components/Header/header'
+import Menu from '../components/Menu/Menu'
+import ProjectDetails from '../components/ProjectDetails/projectDetails'
 
 interface HomeProps {
     projects: ProjectData[]

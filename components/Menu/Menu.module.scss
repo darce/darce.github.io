@@ -1,0 +1,56 @@
+.menu {
+    grid-area: menu;
+    margin: 0;
+    list-style: none;
+
+    .title {
+        padding: 5px 0;
+    }
+
+    li {
+        counter-increment: custom;
+        padding: 0 0 0 20px;
+        border-bottom: 1px solid black;
+        position: relative;
+        perspective: 50em;
+        cursor: pointer;
+
+        .imgWrapper {
+            display: none;
+        }
+
+        &:hover {
+            .imgWrapper {
+                display: block;
+                // position: absolute;
+                // top: 0;
+                // right: 0%;
+            }
+        }
+
+        .imgContent {
+            height: 100px;
+        }
+
+        &::marker {
+            content: counter(custom);
+            font-variation-settings: 'wght' 100;
+            font-size: 12pt;
+        }
+    }
+
+    & ::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background-color: black;
+        transition: width 0.2s ease-out;
+    }
+
+    & :hover:not(.imgWrapper)::before {
+        width: 100%
+    }
+}

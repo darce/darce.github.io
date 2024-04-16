@@ -1,5 +1,5 @@
 import React from 'react'
-import Cube from './cube'
+import Cube from '../Cube/cube'
 
 interface HeaderProps {
     masthead: {

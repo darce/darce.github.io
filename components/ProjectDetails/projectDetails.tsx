@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProjectData } from '../types'
+import { ProjectData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
 
 interface ProjectDetailsProps {

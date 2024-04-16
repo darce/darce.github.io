@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
-import * as MatrixTransforms from '../utils/matrixTransformations'
+import * as MatrixTransforms from '../../utils/matrixTransformations'
 
 interface Vertex {
     x: number
@@ -73,7 +73,7 @@ const Cube: React.FC = () => {
 
     return (
         <>
-            <div className="info">cube</div>
+            <div className="info"></div>
             <div className="cube" ref={cubeRef}>
                 {vertices.map((vertexDiv, index) => (
                     <div
