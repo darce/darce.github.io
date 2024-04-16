@@ -48,45 +48,6 @@ body {
     }
 }
 
-.menu {
-    grid-area: menu;
-    margin: 0;
-    list-style: none;
-
-    .title {
-        padding: 5px 0;
-    }
-
-    li {
-        counter-increment: custom;
-        padding: 0 0 0 20px;
-        border-bottom: 1px solid black;
-        position: relative;
-        cursor: pointer;
-    }
-
-    & ::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 3px;
-        background-color: black;
-        transition: width 0.2s ease-out;
-    }
-
-    & :hover::before {
-        width: 100%
-    }
-
-    li::marker {
-        content: counter(custom);
-        font-variation-settings: 'wght' 100;
-        font-size: 12pt;
-    }
-}
-
 .details {
     grid-area: details;
 }

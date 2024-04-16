@@ -1,0 +1,42 @@
+.imgWrapper {
+    // --base: #08b56a;
+    // --bg-blend: multiply;
+    // --blur: 0px;
+    // --fg-blend: lighten;
+    // --foreground: #660a40;
+    // --opacity: 1;
+
+    // background-color: var(--base);
+    // display: flex;
+    // flex: 1 1 100%;
+    // height: 100%;
+    // overflow: hidden;
+    // padding: var(--spacing);
+    // position: relative;
+
+    // .imgContent {
+    //     filter: grayscale(100%) contrast(1) blur(var(--blur));
+    //     flex: 1 0 100%;
+    //     height: 100%;
+    //     max-width: 100%;
+    //     mix-blend-mode: var(--bg-blend);
+    //     object-fit: cover;
+    //     opacity: var(--opacity);
+    //     position: relative;
+    //     width: 100%;
+    // }
+
+    // &:before {
+    //     background-color: var(--foreground);
+    //     bottom: 0;
+    //     content: '';
+    //     height: 100%;
+    //     left: 0;
+    //     mix-blend-mode: var(--fg-blend);
+    //     position: absolute;
+    //     right: 0;
+    //     top: 0;
+    //     width: 100%;
+    //     z-index: 1;
+    // }
+}
