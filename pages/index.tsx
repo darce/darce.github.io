@@ -1,15 +1,14 @@
 import type { ReactElement } from 'react'
 
-import Layout from '../components/layout'
-import NestedLayout from '../components/nested-layout'
+import Layout from '../components/Layout'
 import type { NextPageWithLayout } from './_app'
 import { getStaticProps } from '../utils/getMdxContent'
 import { ProjectData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
 
-import Header from '../components/Header/header'
+import Header from '../components/Header/Header'
 import Menu from '../components/Menu/Menu'
-import ProjectDetails from '../components/ProjectDetails/projectDetails'
+import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
 
 interface HomeProps {
     projects: ProjectData[]
@@ -25,8 +24,8 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
 
     return (
         <>
-            <Header masthead={masthead} />
-            <Menu projects={projects} onSelectProject={handleSelectedProject} />
+            <Header className="header" masthead={masthead} />
+            <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
             {selectedProject &&
                 <ProjectDetails project={selectedProject} onClose={handleCloseProject} />}
         </>
@@ -36,7 +35,7 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
 Home.getLayout = (page: ReactElement) => {
     return (
         <Layout>
-            <NestedLayout>{page}</NestedLayout>
+            {page}
         </Layout>
     )
 }
