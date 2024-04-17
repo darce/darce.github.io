@@ -15,55 +15,27 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-.container {
+.layout {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 300px 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 
     grid-template-areas:
         "header header header"
         "menu details details"
         "menu details details";
-}
+    min-height: 100vh;
 
-.header {
-    display: grid;
-    grid-area: header;
+    .header {
+        display: grid;
+        grid-area: header;
 
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
-
-    grid-template-areas:
-        "title decoration decoration"
-        "subtitle decoration decoration";
-
-    .title {
-        font-variation-settings: 'wght' 900;
-        font-size: 40pt;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas: "title . decoration" "subtitle . decoration";
     }
 
-    .subtitle {
-        grid-area: subtitle;
-        margin: 0;
+    .menu {
+        grid-area: menu;
     }
-}
-
-.details {
-    grid-area: details;
-}
-
-.cube {
-    grid-area: decoration;
-}
-
-.vertex {
-    display: inline-block;
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background-color: red;
-    cursor: pointer;
-    transition: transform 0.1s ease-out;
-    image-rendering: pixelated;
-    font-size: 10px;
 }
