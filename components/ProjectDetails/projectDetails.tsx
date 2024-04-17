@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { ProjectData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import styles from './ProjectDetails.module.scss'
+import animations from '../../styles/animations.module.scss'
 
 interface ProjectDetailsProps {
     project: ProjectData
@@ -11,7 +12,7 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
     return (
-        <article className={styles.details}>
+        <article className={`${styles.details} ${animations.fadeIn}`}>
             <h3>{project.frontMatter.title}</h3>
             {project.frontMatter.links && (
                 <div>
