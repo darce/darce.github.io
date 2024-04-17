@@ -16,6 +16,7 @@ body {
 }
 
 .layout {
+    /** Top level grids */
     display: grid;
     grid-template-rows: 300px 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
@@ -26,6 +27,7 @@ body {
         "menu details details";
     min-height: 100vh;
 
+    /** Subgrids */
     .header {
         display: grid;
         grid-area: header;
@@ -33,9 +35,5 @@ body {
         grid-template-rows: repeat(2, 1fr);
         grid-template-columns: repeat(3, 1fr);
         grid-template-areas: "title . decoration" "subtitle . decoration";
-    }
-
-    .menu {
-        grid-area: menu;
     }
 }
