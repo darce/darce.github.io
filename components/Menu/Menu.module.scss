@@ -1,5 +1,4 @@
 .menu {
-    grid-area: menu;
     margin: 0;
     list-style: none;
 
@@ -19,17 +18,15 @@
             display: none;
         }
 
-        &:hover {
-            .imgWrapper {
-                display: block;
-                // position: absolute;
-                // top: 0;
-                // right: 0%;
-            }
-        }
+        &:hover>.imgWrapper {
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
 
-        .imgContent {
-            height: 100px;
+            img {
+                height: 100px;
+            }
         }
 
         &::marker {

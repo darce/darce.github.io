@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProjectData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
+import styles from './ProjectDetails.module.scss'
 
 interface ProjectDetailsProps {
     project: ProjectData
@@ -10,7 +11,7 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
     return (
-        <article className="details">
+        <article className={styles.details}>
             <h3>{project.frontMatter.title}</h3>
             {project.frontMatter.links && (
                 <div>
@@ -22,7 +23,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
 
             {project.frontMatter.images && project.frontMatter.images.map((image, index) => {
                 return (
-                    <div key={index} className="image" >
+                    <div key={index} className={styles.imgWrapper} >
                         <img src={`/images/${image.src}`} alt={image.alt} />
                     </div>
                 )

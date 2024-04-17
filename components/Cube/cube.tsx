@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as MatrixTransforms from '../../utils/matrixTransformations'
+import styles from './Cube.module.scss'
 
 interface Vertex {
     x: number
@@ -12,7 +13,11 @@ interface Point {
     y: number
 }
 
-const Cube: React.FC = () => {
+interface CubeProps {
+    className?: string
+}
+
+const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
     const verticesRef = useRef<Vertex[]>([
         { x: -0.5, y: -0.5, z: -0.5 },
@@ -72,24 +77,23 @@ const Cube: React.FC = () => {
     }
 
     return (
-        <>
+        <div className={`${styles.cube} ${className || ''}`} ref={cubeRef}>
             <div className="info"></div>
-            <div className="cube" ref={cubeRef}>
-                {vertices.map((vertexDiv, index) => (
-                    <div
-                        key={index}
-                        className="vertex"
-                        style={{
-                            transform:
-                                `translate3d(${vertexDiv.x + centerRef.current.x}px, 
+            {vertices.map((vertexDiv, index) => (
+                <div
+                    key={index}
+                    className={styles.vertex}
+                    style={{
+                        transform:
+                            `translate3d(${vertexDiv.x + centerRef.current.x}px, 
                                 ${vertexDiv.y + centerRef.current.y}px,
                                 ${vertexDiv.z}px)`
-                        }}
-                        data-vertex-id={index}
-                    ></div>
-                ))}
-            </div>
-        </>
+                    }}
+                    data-vertex-id={index}
+                ></div>
+            ))}
+        </div>
+
     )
 }
 
