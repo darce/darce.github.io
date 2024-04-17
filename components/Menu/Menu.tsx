@@ -19,17 +19,16 @@ const Menu: React.FC<MenuProps> = ({ projects, onSelectProject, className }) => 
         setRect((e.target as HTMLElement).getBoundingClientRect())
     }
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (rect) {
-            setPosition({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            })
-        }
-
+        // if (rect) {
+        //     setPosition({
+        //         x: e.clientX - rect.left,
+        //         y: e.clientY - rect.top
+        //     })
+        // }
     }
 
     return (
-        <ol className={styles.menu}>
+        <ol className={`${styles.menu} ${className || ''}`}>
             {projects.map((project, index) => (
                 <li key={project.slug + index}
                     onClick={() => onSelectProject(project)}
@@ -38,9 +37,8 @@ const Menu: React.FC<MenuProps> = ({ projects, onSelectProject, className }) => 
                     <h2 className={styles.title}>{project.frontMatter.title}</h2>
                     <p className={styles.subtitle}>{project.frontMatter.subtitle}</p>
                     {project.frontMatter.images?.length && (
-                        <div className={`${styles.imgWrapper} ${duotone.imgWrapper}`}
-                            style={{ position: 'absolute', left: position.x, top: position.y, transform: 'translate(-50%, -50%)' }}>
-                            <img className={`${styles.imgContent} ${duotone.imgContent}`}
+                        <div className={styles.imgWrapper}>
+                            <img
                                 src={`images/${project.frontMatter.images[0].src}`}
                                 alt={project.frontMatter.images[0].alt}
                             />

@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 
 interface LayoutProps {
     children: React.ReactNode
@@ -7,7 +6,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
-        <main className="container">
+        <main className="layout">
             {children}
         </main>
     )
