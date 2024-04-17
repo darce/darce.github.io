@@ -21,10 +21,12 @@ export const getStaticProps: GetStaticProps<ContentProps> = async () => {
             return {
                 slug,
                 frontMatter,
-                mdxSource
+                mdxSource,
+                index: frontMatter.index
             }
         }))
 
+    projects.sort((a, b) => a.index - b.index)
     return {
         props: {
             projects
