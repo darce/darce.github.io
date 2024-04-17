@@ -1,0 +1,16 @@
+.header {
+    .title {
+        grid-area: title;
+        font-variation-settings: 'wght' 900;
+        font-size: 40pt;
+    }
+
+    .subtitle {
+        grid-area: subtitle;
+        margin: 0;
+    }
+
+    .decoration {
+        grid-area: decoration;
+    }
+}

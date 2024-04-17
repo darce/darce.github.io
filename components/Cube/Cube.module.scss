@@ -1,0 +1,15 @@
+.cube {
+    height: 100%;
+}
+
+.vertex {
+    display: inline-block;
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+    image-rendering: pixelated;
+    font-size: 10px;
+}
