@@ -1,0 +1,11 @@
+.details {
+    grid-area: details;
+
+    .imgWrapper {
+        width: 50%;
+
+        >img {
+            width: 100%
+        }
+    }
+}
