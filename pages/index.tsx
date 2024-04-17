@@ -27,7 +27,7 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
             <Header className="header" masthead={masthead} />
             <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
             {selectedProject &&
-                <ProjectDetails project={selectedProject} onClose={handleCloseProject} />}
+                <ProjectDetails key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
         </>
     )
 }
