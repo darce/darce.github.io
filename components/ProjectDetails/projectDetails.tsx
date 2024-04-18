@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ProjectData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
+import TransitionOverlay from '../TransitionOverlay/TransitionOverlay'
 import styles from './ProjectDetails.module.scss'
 import animations from '../../styles/animations.module.scss'
 
@@ -11,8 +12,12 @@ interface ProjectDetailsProps {
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
+    const [showOverlay, setShowOverlay] = useState(true)
+
     return (
-        <article className={`${styles.details} ${animations.fadeIn}`}>
+        // <article className={`${styles.details} ${animations.fadeIn}`}>
+        <article className={styles.projectDetails}>
+            {showOverlay && <TransitionOverlay />}
             <h3>{project.frontMatter.title}</h3>
             {project.frontMatter.links && (
                 <div>

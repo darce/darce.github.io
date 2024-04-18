@@ -1,3 +1,4 @@
+/** Vanilla fade in with up travel */
 .fadeIn {
     animation: fadeInAnimation 0.5s ease-out forwards;
 }
@@ -11,5 +12,85 @@
     to {
         opacity: 1;
         transform: translateY(0)
+    }
+}
+
+/** Squares in a grid march */
+.gridWrapper {
+    --gridSize: 9;
+    --gridIndex: calc(var(--gridSize) - 1);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.gridSquare {
+    position: absolute;
+    width: calc(100%/var(--gridSize));
+    height: calc(100%/var(--gridSize));
+    background-color: lightgray;
+    animation: fadeOutSquare 0.5s ease-out forwards;
+}
+
+@keyframes fadeOutSquare {
+    to {
+        opacity: 0;
+    }
+}
+
+@function pi() {
+    @return 3.14159265359;
+}
+
+@for $i from 0 through 8 {
+    @for $j from 0 through 8 {
+        .square-#{9 - $i}-#{$j + 1} {
+            left: #{$j * 100 / 9}+'%';
+            top: #{(8-$i) * 100 / 9}+'%';
+            animation-delay: #{($i * 1 + $j) * 0.05}s;
+        }
+    }
+}
+
+/** Vertical slats */
+$slatCount: 20;
+$slatCountForLoop: $slatCount - 1;
+$totalDuration: 1s;
+
+.slatsContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.slatElement {
+    position: absolute;
+    width: calc(100% / $slatCount);
+    height: 100%;
+    background-color: lightgray;
+    animation: slideUp $totalDuration ease-in-out forwards;
+}
+
+@keyframes slideUp {
+    from {
+        height: 100%
+    }
+
+    to {
+        height: 0;
+    }
+}
+
+@for $i from 0 through $slatCountForLoop {
+    $easeFactor: pow($i / $slatCount, 2); // Exponential ease-in effect
+    $animationDelay: $easeFactor * $totalDuration;
+
+    .slat-#{$i} {
+        left: #{$i * 100 / $slatCount}+'%';
+        animation-delay: $animationDelay;
     }
 }
