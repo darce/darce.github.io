@@ -2,7 +2,7 @@ import React from 'react'
 import styles from '../../styles/animations.module.scss'
 
 const TransitionOverlay = () => {
-    const slatsCount: number = 20
+    const slatsCount: number = 30
     const slatsArray: null[] = Array(slatsCount).fill(null)
 
     return (
