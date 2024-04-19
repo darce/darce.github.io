@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
-import * as MatrixTransforms from '../../utils/matrixTransformations'
+import * as MatrixTransforms from '../../lib/matrixTransformations'
 import styles from './Cube.module.scss'
 
 interface Vertex {
@@ -47,7 +47,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
         return () => {
             if (cubeRef.current) {
                 cubeRef.current.removeEventListener('click', handleClickVertex)
-                cubeRef.current.removeEventListener('mousemove', handleMouseMove)
+                window.removeEventListener('mousemove', handleMouseMove)
             }
         }
     }, [])
