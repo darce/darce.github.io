@@ -19,7 +19,7 @@ body {
 .layout {
     /** Top level grids */
     display: grid;
-    grid-template-rows: 300px 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
 
     grid-template-areas:
