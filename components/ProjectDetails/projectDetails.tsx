@@ -15,12 +15,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
     const [showOverlay, setShowOverlay] = useState(true)
 
     return (
-        // <article className={`${styles.details} ${animations.fadeIn}`}>
-        <article className={styles.projectDetails}>
+        <article className={`${styles.projectDetails} ${className || ''} `}>
             {showOverlay && <TransitionOverlay />}
             <h3>{project.frontMatter.title}</h3>
             {project.frontMatter.links && (
-                <div>
+                <div className={styles.links}>
                     <a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
                 </div>
             )}
@@ -34,9 +33,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
                     </div>
                 )
             })}
+            <div className={styles.source}>
+                <MDXRemote {...project.mdxSource} />
+                <button onClick={onClose}>Close</button>
 
-            <MDXRemote {...project.mdxSource} />
-            <button onClick={onClose}>Close</button>
+            </div>
 
         </article >
     )
