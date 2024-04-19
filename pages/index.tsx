@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import Layout from '../components/Layout'
 import type { NextPageWithLayout } from './_app'
-import { getStaticProps } from '../utils/getMdxContent'
+import { getStaticProps } from '../lib/getMdxContent'
 import { ProjectData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
 

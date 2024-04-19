@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import { parseMarkdownFile } from '../utils/parseMarkdown'
+import { parseMarkdownFile } from '../lib/parseMarkdown'
 import { FrontMatter } from '../types'
 import { MDXRemote } from 'next-mdx-remote';
 
