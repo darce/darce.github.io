@@ -37,4 +37,15 @@ body {
         grid-template-columns: repeat(3, 1fr);
         grid-template-areas: "title . decoration" "subtitle . decoration";
     }
+
+    .projectDetails {
+        display: grid;
+        grid-area: details;
+
+        grid-template-rows: repeat(2, 300px, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas:
+            "meta meta meta"
+            "left center right";
+    }
 }

@@ -1,10 +1,26 @@
 .projectDetails {
     grid-area: details;
-
     position: relative;
 
+    article {}
+
+    h3 {
+        grid-area: meta;
+    }
+
+    .details {}
+
+    .links {
+        grid-area: meta
+    }
+
+    .source {
+        grid-area: center;
+    }
+
     .imgWrapper {
-        width: 50%;
+        grid-area: left;
+        width: 100%;
 
         >img {
             width: 100%
