@@ -13,7 +13,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
     const [GRAD, setGRAD] = useState(0)
-    const [slant, setSlant] = useState(0)
+    const [wght, setWght] = useState(0)
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove, false)
@@ -25,21 +25,27 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
 
     const handleMouseMove = (event: MouseEvent) => {
         const windowWidth = window.innerWidth
+        const windowHeight = window.innerHeight
         const mouseX = event.clientX
-        const GRADRange = mapRange(mouseX, 0, windowWidth, -200, 150)
-        const slantRange = mapRange(mouseX, 0, windowWidth, -10, 0)
+        const mouseY = event.clientY
+        const GRADRange = mapRange(mouseY, 0, windowHeight, 150, -200)
+        const wghtRange = mapRange(mouseY, 0, windowWidth, 900, 300)
         setGRAD(GRADRange)
-        setSlant(slantRange)
+        setWght(wghtRange)
     }
 
     return (
         <header className={`${styles.header} ${className || ''}`}>
             <h1 className={styles.title}
                 style={{
-                    fontVariationSettings: `"GRAD" ${GRAD}, "slnt" ${slant}`
+                    fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght / 2}`
                 }}>
                 {masthead.title}</h1>
-            <h2 className={styles.subtitle}>{masthead.subtitle}</h2>
+            <h2 className={styles.subtitle}
+                style={{
+                    fontVariationSettings: `"wght" ${wght}`
+                }}
+            >{masthead.subtitle}</h2>
             <div className={styles.decoration}>
                 <Cube />
             </div>

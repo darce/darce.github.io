@@ -2,14 +2,13 @@
     .title {
         grid-area: title;
         font-family: 'Roboto Flex', Arial, Helvetica, sans-serif;
-        font-variation-settings: 'GRAD' 12;
-        font-size: 50pt;
+        font-size: 60pt;
+        text-transform: uppercase;
     }
 
     .subtitle {
         grid-area: subtitle;
         font-size: 22pt;
-        margin: 0;
     }
 
     .decoration {
