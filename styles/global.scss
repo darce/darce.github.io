@@ -1,3 +1,5 @@
+@import 'palettes.scss';
+
 @font-face {
     font-family: 'GeistMonoVariableVF';
     src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2');
@@ -14,14 +16,18 @@
     font-display: swap;
 }
 
-body {
+.base {
     font-family: GeistMonoVariableVF, Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     /* For WebKit browsers */
     -moz-osx-font-smoothing: grayscale;
     /* For Firefox on Mac OS */
     text-rendering: optimizeLegibility;
-    background-color: lightgray;
+
+    @include themeGlobal($themes) {
+        color: t('text');
+        background-color: t('backgroundColor');
+    }
 }
 
 .layout {

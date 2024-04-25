@@ -1,5 +1,11 @@
+@import '/styles/palettes.scss';
+
 .cube {
     height: 100%;
+
+    @include themeComponent($themes) {
+        background-color: t('highlight');
+    }
 }
 
 .vertex {
@@ -7,9 +13,12 @@
     position: absolute;
     width: 5px;
     height: 5px;
-    background-color: red;
     cursor: pointer;
     transition: transform 0.1s ease-out;
     image-rendering: pixelated;
     font-size: 10px;
+
+    @include themeComponent($themes) {
+        background-color: t('border');
+    }
 }
