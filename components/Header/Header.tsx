@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
         const mouseX = event.clientX
         const mouseY = event.clientY
         const GRADRange = mapRange(mouseY, 0, windowHeight, 150, -200)
-        const wghtRange = mapRange(mouseY, 0, windowWidth, 900, 300)
+        const wghtRange = mapRange(mouseY, 0, windowWidth, 600, 300)
         setGRAD(GRADRange)
         setWght(wghtRange)
     }
@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
         <header className={`${styles.header} ${className || ''}`}>
             <h1 className={styles.title}
                 style={{
-                    fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght / 2}`
+                    fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght}`
                 }}>
                 {masthead.title}</h1>
             <h2 className={styles.subtitle}

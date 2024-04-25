@@ -1,0 +1,66 @@
+$charcoal-black: #333;
+$alabaster-white: #fafafa;
+$coral-red: #ff4057;
+$sky-blue: #87ceeb;
+$antiflash-white: #ebebebff;
+$polynesian-blue: #004e98ff;
+$azure-blue: #007fff;
+$dusk-grey: #4A5459;
+
+$themes: (
+    default: (backgroundColor:$alabaster-white,
+        text:$charcoal-black,
+        link:$polynesian-blue,
+        hover:$azure-blue,
+        border:$coral-red,
+        highlight: $sky-blue,
+    ),
+    dark: (backgroundColor:$dusk-grey,
+        text:$antiflash-white,
+        link:$polynesian-blue,
+        hover:$azure-blue,
+        border:$coral-red,
+        highlight: $sky-blue,
+    ),
+);
+
+@mixin themeGlobal($themes: $themes) {
+    @each $theme, $map in $themes {
+        .theme--#{$theme} & {
+            $theme-map: (
+                ) !global;
+
+            @each $key, $submap in $map {
+                $value: map-get(map-get($themes, $theme), '#{$key}'
+                );
+            $theme-map: map-merge($theme-map, ($key: $value)) !global;
+        }
+
+        @content;
+        $theme-map: null !global;
+    }
+}
+}
+
+
+@mixin themeComponent($themes: $themes) {
+    @each $theme, $map in $themes {
+        :global(.theme--#{$theme}) & {
+            $theme-map: (
+                ) !global;
+
+            @each $key, $submap in $map {
+                $value: map-get(map-get($themes, $theme), '#{$key}'
+                );
+            $theme-map: map-merge($theme-map, ($key: $value)) !global;
+        }
+
+        @content;
+        $theme-map: null !global;
+    }
+}
+}
+
+@function t($key) {
+    @return map-get($theme-map, $key);
+}
