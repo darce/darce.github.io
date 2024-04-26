@@ -31,19 +31,9 @@ const Menu: React.FC<MenuProps> = ({ projects, onSelectProject, className }) => 
         <ol className={`${styles.menu} ${className || ''}`}>
             {projects.map((project, index) => (
                 <li key={project.slug + index}
-                    onClick={() => onSelectProject(project)}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseMove={handleMouseMove}>
+                    onClick={() => onSelectProject(project)}>
                     <h2 className={styles.title}>{project.frontMatter.title}</h2>
                     <p className={styles.subtitle}>{project.frontMatter.subtitle}</p>
-                    {project.frontMatter.images?.length && (
-                        <div className={styles.imgWrapper}>
-                            <img
-                                src={`images/${project.frontMatter.images[0].src}`}
-                                alt={project.frontMatter.images[0].alt}
-                            />
-                        </div>
-                    )}
                 </li>
             ))
             }
