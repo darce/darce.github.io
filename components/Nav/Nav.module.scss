@@ -1,0 +1,16 @@
+.nav {
+    background: red;
+
+    display: flex;
+    font-size: 1.2rem;
+
+    ul {
+        list-style: none;
+    }
+
+    li {
+        float: left;
+        text-transform: capitalize;
+        padding: 0 20px 0 20px;
+    }
+}
