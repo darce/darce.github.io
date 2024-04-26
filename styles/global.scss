@@ -33,14 +33,12 @@
 .layout {
     /** Top level grids */
     display: grid;
-    grid-template-rows: auto 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
 
     grid-template-areas:
         "header header header"
-        "menu details details"
+        "nav nav nav"
         "menu details details";
-    min-height: 100vh;
 
     /** Responsive layouts */
     @media (max-width: 1023px) {
@@ -48,7 +46,6 @@
         grid-template-columns: 1fr 2fr;
         grid-template-areas:
             "header header"
-            "menu details"
             "menu details"
     }
 
@@ -66,9 +63,15 @@
         display: grid;
         grid-area: header;
 
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 200px);
         grid-template-columns: repeat(3, 1fr);
-        grid-template-areas: "title . decoration" "subtitle . decoration";
+        grid-template-areas:
+            "title . decoration"
+            "subtitle . decoration";
+    }
+
+    .nav {
+        grid-area: nav;
     }
 
     .projectDetails {
