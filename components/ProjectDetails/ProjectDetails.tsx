@@ -3,7 +3,6 @@ import { ProjectData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import TransitionOverlay from '../TransitionOverlay/TransitionOverlay'
 import styles from './ProjectDetails.module.scss'
-import animations from '../../styles/animations.module.scss'
 
 interface ProjectDetailsProps {
     project: ProjectData
