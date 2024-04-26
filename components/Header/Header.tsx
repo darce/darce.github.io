@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import Cube from '../Cube/Cube'
 import { mapRange } from '../../lib/utils'
+import Cube from '../Cube/Cube'
 import styles from './Header.module.scss'
 
 interface HeaderProps {
@@ -42,9 +42,7 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
                 }}>
                 {masthead.title}</h1>
             <h2 className={styles.subtitle}
-                style={{
-                    fontVariationSettings: `"wght" ${wght}`
-                }}
+
             >{masthead.subtitle}</h2>
             <div className={styles.decoration}>
                 <Cube />
