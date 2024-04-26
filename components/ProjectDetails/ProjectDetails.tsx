@@ -14,9 +14,13 @@ interface ProjectDetailsProps {
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
     const [showOverlay, setShowOverlay] = useState(true)
 
+    const handleAnimationEnd = () => {
+        setShowOverlay(false)
+    }
+
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
-            {showOverlay && <TransitionOverlay />}
+            {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
             <h3>{project.frontMatter.title}</h3>
             {project.frontMatter.links && (
                 <div className={styles.links}>
