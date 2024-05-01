@@ -1,29 +1,32 @@
 .projectDetails {
-    grid-area: details;
     position: relative;
 
-    article {}
+    h3 {}
 
-    h3 {
-        grid-area: meta;
+    .metadata {}
+
+    .post {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+        grid-template-areas:
+            "left center right";
+
+        .imgWrapper {
+            margin: 0;
+
+            img {
+                width: 100%;
+                object-fit: cover;
+            }
+        }
     }
 
-    .details {}
-
-    .links {
-        grid-area: meta
-    }
+    .links {}
 
     .source {
         grid-area: center;
     }
 
-    .imgWrapper {
-        grid-area: left;
-        width: 100%;
 
-        >img {
-            width: 100%
-        }
-    }
 }

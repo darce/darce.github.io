@@ -44,6 +44,7 @@
         grid-area: content;
 
         grid-template-columns: [left] 35% [menu-end] auto [content-end];
+        grid-gap: 20px;
         grid-template-areas:
             "menu details";
 
@@ -52,14 +53,9 @@
         }
 
         .projectDetails {
-            display: grid;
+            display: flex;
             grid-area: details;
-
-            grid-template-rows: auto auto;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-areas:
-                "meta meta meta"
-                "left center right";
+            flex-direction: column;
         }
     }
 }
