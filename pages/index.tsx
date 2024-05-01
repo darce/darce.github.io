@@ -6,36 +6,26 @@ import { getStaticProps } from '../lib/getMdxContent'
 import { ProjectData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
 
-import Header from '../components/Header/Header'
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
 
-interface HomeProps {
+interface WorkProps {
     projects: ProjectData[]
 }
 
-const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
+const Work: NextPageWithLayout<WorkProps> = ({ projects }) => {
     const { selectedProject, handleSelectedProject, handleCloseProject } = useSelectedProject()
 
-    const masthead = {
-        title: 'Daniel Arcé',
-        subtitle: 'Front End Development & Interface Implementation'
-    }
-
     return (
-        <>
-            <Header className="header" masthead={masthead} />
-            <main className="content">
-                <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
-                {selectedProject &&
-                    <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
-
-            </main>
-        </>
+        <main className="content">
+            <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
+            {selectedProject &&
+                <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
+        </main>
     )
 }
 
-Home.getLayout = (page: ReactElement) => {
+Work.getLayout = (page: ReactElement) => {
     return (
         <Layout>
             {page}
@@ -46,4 +36,4 @@ Home.getLayout = (page: ReactElement) => {
 /** Call getStaticProps on build */
 export { getStaticProps }
 
-export default Home
+export default Work
