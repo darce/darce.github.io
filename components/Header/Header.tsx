@@ -5,16 +5,17 @@ import Nav from '../Nav/Nav'
 import styles from './Header.module.scss'
 
 interface HeaderProps {
-    masthead: {
-        title: string,
-        subtitle: string
-    }
     className?: string
 }
 
-const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
+const Header: React.FC<HeaderProps> = ({ className }) => {
     const [GRAD, setGRAD] = useState(0)
     const [wght, setWght] = useState(0)
+
+    const masthead = {
+        title: 'Daniel Arcé',
+        subtitle: 'Front End Development & Interface Implementation'
+    }
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove, false)
