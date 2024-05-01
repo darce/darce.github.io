@@ -1,5 +1,6 @@
+@import '../../styles/palettes.scss';
+
 .menu {
-    grid-area: menu;
     margin: 0;
     list-style: none;
 
@@ -14,6 +15,11 @@
         position: relative;
         perspective: 50em;
         cursor: pointer;
+
+        @include themeComponent($themes) {
+            color: t('link');
+            background-color: t('backgroundColor');
+        }
 
         .imgWrapper {
             display: none;
