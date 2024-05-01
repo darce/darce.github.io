@@ -39,9 +39,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
             <div className={styles.source}>
                 <MDXRemote {...project.mdxSource} />
                 <button onClick={onClose}>Close</button>
-
             </div>
-
         </article >
     )
 }
