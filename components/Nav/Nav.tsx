@@ -17,7 +17,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
     return (
         <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
-                {sections.map((section, index) => (
+                {sections.map((section) => (
                     <li key={section} onClick={() => {
                         router.push(`/${section}`)
                     }}>
