@@ -21,25 +21,28 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, class
         <article className={`${styles.projectDetails} ${className || ''} `}>
             {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
             <h3>{project.frontMatter.title}</h3>
-            {project.frontMatter.links && (
-                <div className={styles.links}>
-                    <a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
-                </div>
-            )}
-
-            <p>{project.frontMatter.details}</p>
-
-            {project.frontMatter.images && project.frontMatter.images.map((image, index) => {
-                return (
-                    <div key={index} className={styles.imgWrapper} >
-                        <img src={`/images/${image.src}`} alt={image.alt} />
+            <aside>
+                {project.frontMatter.links && (
+                    <div className={styles.links}>
+                        <a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
                     </div>
-                )
-            })}
-            <div className={styles.source}>
+                )}
+
+                <p>{project.frontMatter.details}</p>
+
+                {project.frontMatter.images && project.frontMatter.images.map((image, index) => {
+                    return (
+                        <div key={index} className={styles.imgWrapper} >
+                            <img src={`/images/${image.src}`} alt={image.alt} />
+                        </div>
+                    )
+                })}
+            </aside>
+
+            <section className={styles.source}>
                 <MDXRemote {...project.mdxSource} />
                 <button onClick={onClose}>Close</button>
-            </div>
+            </section>
         </article >
     )
 }
