@@ -24,9 +24,12 @@ $themes: (
     ),
 );
 
+/** Compiles selector to: 
+    .base.theme--default in global.scss
+*/
 @mixin themeGlobal($themes: $themes) {
     @each $theme, $map in $themes {
-        .theme--#{$theme} & {
+        &.theme--#{$theme} {
             $theme-map: (
                 ) !global;
 
