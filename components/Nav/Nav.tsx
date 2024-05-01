@@ -15,7 +15,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
 
     }
     return (
-        <nav className={`${styles.nav} ${className || ''}`}>
+        <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
                 {sections.map((section, index) => (
                     <li key={section} onClick={() => {

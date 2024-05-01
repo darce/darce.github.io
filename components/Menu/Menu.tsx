@@ -28,7 +28,7 @@ const Menu: React.FC<MenuProps> = ({ projects, onSelectProject, className }) => 
     }
 
     return (
-        <ol className={`${styles.menu} ${className || ''}`}>
+        <ol className={`${styles.menu} ${className || ''}`} aria-label='work'>
             {projects.map((project, index) => (
                 <li key={project.slug + index}
                     onClick={() => onSelectProject(project)}>
