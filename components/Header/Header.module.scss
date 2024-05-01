@@ -1,17 +1,21 @@
 .header {
-    .title {
-        grid-area: title;
-        font-family: 'Roboto Flex', Arial, Helvetica, sans-serif;
-        font-size: 4rem;
-        text-transform: uppercase;
-    }
+    .masthead {
+        width: 30%;
 
-    .subtitle {
-        grid-area: subtitle;
-        font-size: 1.8rem;
+        .title {
+            font-family: 'Roboto Flex', Arial, Helvetica, sans-serif;
+            font-size: 4rem;
+            text-transform: uppercase;
+            margin: 20px 0;
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
     }
 
     .decoration {
-        grid-area: decoration;
+        width: 30%;
     }
 }

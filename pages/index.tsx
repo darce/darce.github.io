@@ -7,7 +7,6 @@ import { ProjectData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
 
 import Header from '../components/Header/Header'
-import Nav from '../components/Nav/Nav'
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
 
@@ -26,10 +25,12 @@ const Home: NextPageWithLayout<HomeProps> = ({ projects }) => {
     return (
         <>
             <Header className="header" masthead={masthead} />
-            <Nav className='nav' />
-            <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
-            {selectedProject &&
-                <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
+            <main className="content">
+                <Menu className="menu" projects={projects} onSelectProject={handleSelectedProject} />
+                {selectedProject &&
+                    <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
+
+            </main>
         </>
     )
 }
