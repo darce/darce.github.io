@@ -1,4 +1,5 @@
 @import 'palettes.scss';
+@import 'layout.scss';
 
 @font-face {
     font-family: 'GeistMonoVariableVF';
@@ -16,6 +17,10 @@
     font-display: swap;
 }
 
+html {
+    font-size: 100%;
+}
+
 .base {
     font-family: GeistMonoVariableVF, Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -27,61 +32,5 @@
     @include themeGlobal($themes) {
         color: t('text');
         background-color: t('backgroundColor');
-    }
-}
-
-.layout {
-    /** Top level grids */
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-
-    grid-template-areas:
-        "header header header"
-        "nav nav nav"
-        "menu details details";
-
-    /** Responsive layouts */
-    @media (max-width: 1023px) {
-        /** Tablet */
-        grid-template-columns: 1fr 2fr;
-        grid-template-areas:
-            "header header"
-            "menu details"
-    }
-
-    @media(max-width: 767px) {
-        /** Mobile */
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "header"
-            "menu"
-            "details";
-    }
-
-    /** Subgrids */
-    .header {
-        display: grid;
-        grid-area: header;
-
-        grid-template-rows: repeat(2, 200px);
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-areas:
-            "title . decoration"
-            "subtitle . decoration";
-    }
-
-    .nav {
-        grid-area: nav;
-    }
-
-    .projectDetails {
-        display: grid;
-        grid-area: details;
-
-        grid-template-rows: repeat(2, 300px, 1fr);
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-areas:
-            "meta meta meta"
-            "left center right";
     }
 }
