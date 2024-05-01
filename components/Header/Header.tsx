@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { mapRange } from '../../lib/utils'
 import Cube from '../Cube/Cube'
+import Nav from '../Nav/Nav'
 import styles from './Header.module.scss'
 
 interface HeaderProps {
@@ -36,17 +37,22 @@ const Header: React.FC<HeaderProps> = ({ masthead, className }) => {
 
     return (
         <header className={`${styles.header} ${className || ''}`}>
-            <h1 className={styles.title}
-                style={{
-                    fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght}`
-                }}>
-                {masthead.title}</h1>
-            <h2 className={styles.subtitle}
+            <section className="marquee">
+                <div className={styles.masthead}>
+                    <h1 className={styles.title}
+                        style={{
+                            fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght}`
+                        }}>
+                        {masthead.title}</h1>
+                    <h2 className={styles.subtitle}
+                    >{masthead.subtitle}</h2>
+                </div>
 
-            >{masthead.subtitle}</h2>
-            <div className={styles.decoration}>
-                <Cube />
-            </div>
+                <section className={styles.decoration}>
+                    <Cube />
+                </section>
+            </section>
+            <Nav className="nav" />
         </header>
     )
 }
