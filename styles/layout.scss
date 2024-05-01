@@ -1,0 +1,65 @@
+.layout {
+    /** Top level grids */
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-template-areas:
+        "header"
+        "content";
+
+    /** Responsive layouts */
+    @media (max-width: 1023px) {
+        /** Tablet */
+        grid-template-rows: repeat(2, auto);
+        grid-template-areas:
+            "header"
+            "content"
+    }
+
+    @media(max-width: 767px) {
+        /** Mobile */
+        grid-template-rows: repeat(2, auto);
+        grid-template-areas:
+            "header"
+            "content";
+    }
+
+    /** Subgrids */
+    .header {
+        display: flex;
+        flex-direction: column;
+
+        .marquee {
+            display: flex;
+            justify-content: space-between;
+            width: 100%
+        }
+
+        .nav {
+            width: 100%
+        }
+    }
+
+    .content {
+        display: grid;
+        grid-area: content;
+
+        grid-template-columns: [left] 35% [menu-end] auto [content-end];
+        grid-template-areas:
+            "menu details";
+
+        .menu {
+            grid-area: menu;
+        }
+
+        .projectDetails {
+            display: grid;
+            grid-area: details;
+
+            grid-template-rows: auto auto;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-areas:
+                "meta meta meta"
+                "left center right";
+        }
+    }
+}
