@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { ProjectData } from '../types'
+import { MarkdownData } from '../types'
 
 export const useSelectedProject = () => {
-    const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null)
+    const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
 
-    const handleSelectedProject = (project: ProjectData) => {
+    const handleSelectedProject = (project: MarkdownData) => {
         setSelectedProject(project)
     }
 
