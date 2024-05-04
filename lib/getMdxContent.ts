@@ -1,21 +1,22 @@
-import fs from 'fs'
 import path from 'path'
 import { GetStaticProps } from "next"
-import { parseMarkdownFile } from "./parseMarkdown"
-import { ProjectData } from '../types'
+import { getMDXFiles, parseMarkdownFile } from "./markdownUtils"
+import { MarkdownData } from '../types'
 
 interface ContentProps {
-    projects: ProjectData[]
+    parsedMDX: MarkdownData[]
 }
 
-export const getStaticProps: GetStaticProps<ContentProps> = async () => {
-    const mdxFiles = fs.readdirSync(path.join('content'))
+export const getStaticProps: GetStaticProps<ContentProps> = async (context) => {
+    const subDir = context.params?.subDir as string || ''
+    const contentDir = path.join('content', subDir)
+    const mdxFiles = getMDXFiles(contentDir)
 
-    const projects = await Promise.all(
-        mdxFiles.map(async (curFileName) => {
-            const slug = curFileName.replace('.mdx', '')
-            const curFilePath = path.join('content', curFileName)
-            const { frontMatter, mdxSource } = await parseMarkdownFile(curFilePath)
+    const parsedMDX = await Promise.all(
+        mdxFiles.map(async (filePath) => {
+            const fileName = path.basename(filePath)
+            const slug = fileName.replace('.mdx', '')
+            const { frontMatter, mdxSource } = await parseMarkdownFile(filePath)
 
             /** Return object for each mdx file */
             return {
@@ -26,10 +27,11 @@ export const getStaticProps: GetStaticProps<ContentProps> = async () => {
             }
         }))
 
-    projects.sort((a, b) => a.index - b.index)
+    parsedMDX.sort((a, b) => a.index - b.index)
+
     return {
         props: {
-            projects
+            parsedMDX
         }
     }
 }
