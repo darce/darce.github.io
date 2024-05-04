@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { ProjectData } from '../../types'
+import { MarkdownData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import TransitionOverlay from '../TransitionOverlay/TransitionOverlay'
 import styles from './ProjectDetails.module.scss'
 
 interface ProjectDetailsProps {
-    project: ProjectData
+    project: MarkdownData
     onClose: () => void
     className?: string
 }
