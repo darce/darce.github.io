@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react'
-import { ProjectData } from '../../types'
+import { MarkdownData } from '../../types'
 import styles from './Menu.module.scss'
 import duotone from './Duotone.module.scss'
 
 
 interface MenuProps {
-    projects: ProjectData[]
-    onSelectProject: (project: ProjectData) => void
+    projects: MarkdownData[]
+    onSelectProject: (project: MarkdownData) => void
     className?: string
 }
 
