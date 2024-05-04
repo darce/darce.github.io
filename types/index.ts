@@ -20,7 +20,7 @@ export interface FrontMatter {
     tags?: string[]
 }
 
-export interface ProjectData {
+export interface MarkdownData {
     slug: string
     frontMatter: FrontMatter
     mdxSource: MDXRemoteSerializeResult
