@@ -10,15 +10,6 @@ const nextConfig = {
     basePath: isProd ? '/darce.github.io' : '',
     reactStrictMode: false,
     output: 'export',
-    /** Add custom rewrites */
-    async rewrites() {
-        return [
-            {
-                source: '/work',
-                destination: '/',
-            }
-        ]
-    }
 }
 
 module.exports = withMDX(nextConfig)
