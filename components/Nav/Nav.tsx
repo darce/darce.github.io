@@ -6,22 +6,26 @@ interface NavProps {
     className?: string
 }
 
+interface NavItems {
+    loc: string
+    label: string
+}
+
 const Nav: React.FC<NavProps> = ({ className }) => {
     const router = useRouter()
     const [curSection, setCurSection] = useState('0')
-    const sections: string[] = ['work', 'resume', 'research']
+    const sections: NavItems[] = [{ loc: '/', label: 'work' }, { loc: 'resume', label: 'resume' }, { loc: 'research', label: 'research' }]
 
     const handleClick = () => {
-
     }
     return (
         <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
                 {sections.map((section) => (
-                    <li key={section} onClick={() => {
-                        router.push(`/${section}`)
+                    <li key={section.label} onClick={() => {
+                        router.push(`/${section.loc}`)
                     }}>
-                        {section}
+                        {section.label}
                     </li>
                 )
                 )}
