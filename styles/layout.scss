@@ -1,3 +1,5 @@
+@import 'vars.scss';
+
 .layout {
     /** Top level grids */
     display: grid;
@@ -44,7 +46,7 @@
         grid-area: content;
 
         grid-template-columns: [left] 35% [menu-end] auto [content-end];
-        grid-gap: 20px;
+        grid-gap: $s-large;
         grid-template-areas:
             "menu details";
 
