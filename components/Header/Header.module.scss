@@ -1,17 +1,28 @@
+@import '../../styles/vars.scss';
+
 .header {
     .masthead {
         width: 30%;
+        padding: 0 0 0 $s-x-large;
 
         .title {
             font-family: 'Roboto Flex', Arial, Helvetica, sans-serif;
             font-size: 4rem;
             text-transform: uppercase;
-            margin: 20px 0;
+            margin: $s-large 0 0 0;
+
+            @include themeComponent($themes) {
+                color: t('header');
+            }
         }
 
         .subtitle {
             font-size: 1.8rem;
             font-weight: 300;
+
+            @include themeComponent($themes) {
+                color: t('subheader');
+            }
         }
     }
 
