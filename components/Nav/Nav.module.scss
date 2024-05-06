@@ -1,5 +1,9 @@
+@import '../../styles/palettes.scss';
+
 .nav {
-    background: red;
+    @include themeComponent($themes) {
+        background-color: t('backgroundColor');
+    }
 
     display: flex;
     font-size: 1.2rem;
@@ -12,5 +16,6 @@
         float: left;
         text-transform: capitalize;
         padding: 0 20px 0 20px;
+        cursor: pointer;
     }
 }

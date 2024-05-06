@@ -7,7 +7,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
-        <div className="base theme--default layout">
+        <div className="base__typography base__palette theme--default layout">
             <Header className="header" />
             {children}
         </div>

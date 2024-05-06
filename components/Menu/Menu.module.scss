@@ -17,7 +17,7 @@
         cursor: pointer;
 
         @include themeComponent($themes) {
-            color: t('link');
+            color: t('text');
             background-color: t('backgroundColor');
         }
 
