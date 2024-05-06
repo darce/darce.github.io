@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'GeistMonoVariableVF';
+    src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto Flex';
+    src: url('/fonts/RobotoFlex[GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght].woff2') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+.base__typography {
+    font-family: GeistMonoVariableVF, Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* For WebKit browsers */
+    -moz-osx-font-smoothing: grayscale;
+    /* For Firefox on Mac OS */
+    text-rendering: optimizeLegibility;
+}

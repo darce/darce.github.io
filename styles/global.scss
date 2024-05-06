@@ -1,36 +1,12 @@
+@import 'modern-normalize';
 @import 'palettes.scss';
 @import 'layout.scss';
+@import 'typography.scss';
 
-@font-face {
-    font-family: 'GeistMonoVariableVF';
-    src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2');
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
+body {
+    background-color: $alabaster-white;
 }
 
-@font-face {
-    font-family: 'Roboto Flex';
-    src: url('/fonts/RobotoFlex[GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght].woff2') format('woff2-variations');
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-html {
-    font-size: 100%;
-}
-
-.base {
-    font-family: GeistMonoVariableVF, Arial, Helvetica, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    /* For WebKit browsers */
-    -moz-osx-font-smoothing: grayscale;
-    /* For Firefox on Mac OS */
-    text-rendering: optimizeLegibility;
-
-    @include themeGlobal($themes) {
-        color: t('text');
-        background-color: t('backgroundColor');
-    }
+.base__palette {
+    @include themeGlobal($themes) {}
 }
