@@ -13,18 +13,25 @@ interface NavItems {
 
 const Nav: React.FC<NavProps> = ({ className }) => {
     const router = useRouter()
-    const [curSection, setCurSection] = useState('0')
-    const sections: NavItems[] = [{ loc: '/', label: 'work' }, { loc: 'resume', label: 'resume' }, { loc: 'research', label: 'research' }]
+    const [curSection, setCurSection] = useState('/')
+    const sections: NavItems[] = [
+        { loc: '/', label: 'work' },
+        { loc: 'resume', label: 'resume' },
+        { loc: 'research', label: 'research' }
+    ]
 
-    const handleClick = () => {
+    const handleClick = (section: NavItems) => {
+        setCurSection(section.loc)
+        router.push(`${section.loc}`)
     }
+
     return (
         <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
                 {sections.map((section) => (
-                    <li key={section.label} onClick={() => {
-                        router.push(`/${section.loc}`)
-                    }}>
+                    <li key={section.label}
+                        className={curSection === section.loc ? styles.selected : ''}
+                        onClick={() => handleClick(section)}>
                         {section.label}
                     </li>
                 )

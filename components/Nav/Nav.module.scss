@@ -2,19 +2,31 @@
 
 .nav {
     @include themeComponent($themes) {
-        background-color: t('backgroundColor');
+        background-color: t('activeText');
     }
 
     display: flex;
-    font-size: 2.2rem;
+    font-size: 2.6rem;
+    font-variation-settings: 'wght' 200;
+
 
     ul {
         list-style: none;
+        padding: 0;
+        margin: $s-small $s-large;
     }
 
     li {
         float: left;
         text-transform: capitalize;
         padding: 0 $s-large 0 $s-large;
+        cursor: pointer;
+
+        &.selected {
+            @include themeComponent($themes) {
+                background-color: t('activeBg');
+                color: t('activeText');
+            }
+        }
     }
 }
