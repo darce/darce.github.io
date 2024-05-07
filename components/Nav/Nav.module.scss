@@ -1,4 +1,4 @@
-@import '../../styles/palettes.scss';
+@import '../../styles/vars.scss';
 
 .nav {
     @include themeComponent($themes) {
@@ -6,7 +6,7 @@
     }
 
     display: flex;
-    font-size: 1.2rem;
+    font-size: 2.2rem;
 
     ul {
         list-style: none;
@@ -15,7 +15,6 @@
     li {
         float: left;
         text-transform: capitalize;
-        padding: 0 20px 0 20px;
-        cursor: pointer;
+        padding: 0 $s-large 0 $s-large;
     }
 }
