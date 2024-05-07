@@ -1,3 +1,5 @@
+@import '../../styles/vars.scss';
+
 .projectDetails {
     position: relative;
 
@@ -8,7 +10,7 @@
     .post {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
+        grid-gap: $s-large;
         grid-template-areas:
             "left center right";
 
