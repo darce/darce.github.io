@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
-
-import Layout from '../components/Layout'
 import type { NextPageWithLayout } from './_app'
+import Layout from '../components/Layout'
 import { getStaticProps as getMdxContentStaticProps } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
 import { useSelectedProject } from '../hooks/useSelectedProject'
