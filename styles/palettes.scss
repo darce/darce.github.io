@@ -5,18 +5,19 @@ $sky-blue: #87ceeb;
 $antiflash-white: #ebebebff;
 $polynesian-blue: #004e98ff;
 $azure-blue: #007fff;
+$electric-ultramarine: #3c00f7;
 $midnight-blue: #011f4b;
 $dusk-grey: #4A5459;
 
 $themes: (
     default: (backgroundColor:$alabaster-white,
-        header:$midnight-blue,
+        header:$charcoal-black,
         subheader: $polynesian-blue,
         activeBg: $coral-red,
         activeText: $antiflash-white,
 
         text:$charcoal-black,
-        link:$azure-blue,
+        link:$electric-ultramarine,
         hover:$sky-blue,
         border:$coral-red,
         highlight: $polynesian-blue,
