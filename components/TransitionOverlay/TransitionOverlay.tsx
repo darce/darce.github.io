@@ -1,11 +1,11 @@
 import React from 'react'
-import styles from '../../styles/animations.module.scss'
+import styles from './TransitionOverlay.module.scss'
 
 interface TransitionOverlayProps {
     onAnimationEnd: (event: React.AnimationEvent<HTMLDivElement>) => void
 }
 const TransitionOverlay: React.FC<TransitionOverlayProps> = ({ onAnimationEnd }) => {
-    const slatsCount: number = 30
+    const slatsCount: number = 16
     const slatsArray: null[] = Array(slatsCount).fill(null)
 
     return (

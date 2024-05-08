@@ -1,0 +1,47 @@
+@import '../../styles/vars.scss';
+
+@mixin generateSlats($slatCount: 0) {
+    $totalDuration: 1s;
+
+    .slatsContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .slatElement {
+        position: absolute;
+        width: calc(100% / $slatCount);
+        height: 100%;
+        animation: slideUp $totalDuration ease-in-out forwards;
+
+        @include themeComponent($themes) {
+            background-color: t('backgroundColor')
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            height: 100%
+        }
+
+        to {
+            height: 0;
+        }
+    }
+
+    @for $i from 0 through $slatCount - 1 {
+        $easeFactor: pow($i / $slatCount, 2); // Exponential ease-in effect
+        $animationDelay: $easeFactor * $totalDuration;
+
+        .slat-#{$i} {
+            left: #{$i * 100 / $slatCount}+'%';
+            animation-delay: $animationDelay;
+        }
+    }
+}
+
+@include generateSlats(16)
