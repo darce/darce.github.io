@@ -21,16 +21,6 @@
             border-bottom-color: t('link');
         }
 
-        .imgWrapper {
-            display: none;
-        }
-
-        &:hover>.imgWrapper {
-            img {
-                height: 100px;
-            }
-        }
-
         &::marker {
             content: counter(custom);
             font-variation-settings: 'wght' 300;
@@ -57,7 +47,8 @@
         }
     }
 
-    & :hover:not(.imgWrapper)::before {
+    & :hover::before,
+    & .selected::before {
         width: 100%
     }
 }
