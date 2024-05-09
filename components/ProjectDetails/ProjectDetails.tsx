@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { MarkdownData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import TransitionOverlay from '../TransitionOverlay/TransitionOverlay'
@@ -6,11 +6,10 @@ import styles from './ProjectDetails.module.scss'
 
 interface ProjectDetailsProps {
     project: MarkdownData
-    onClose: () => void
     className?: string
 }
 
-const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onClose, className }) => {
+const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) => {
     const [showOverlay, setShowOverlay] = useState(true)
 
     const handleAnimationEnd = () => {

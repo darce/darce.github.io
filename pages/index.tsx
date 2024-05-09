@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { getStaticProps as getMdxContentStaticProps } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
-import { useSelectedProject } from '../hooks/useSelectedProject'
 
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
@@ -13,21 +13,40 @@ interface WorkProps {
 }
 
 const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
-    const { selectedProject, handleSelectedProject, handleCloseProject } = useSelectedProject()
+    const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
+    const handleSelectedProject = (parsedMDX: MarkdownData) => {
+        setSelectedProject(parsedMDX)
+    }
+
+    /** TODO: stop interval on menu click */
+    useEffect(() => {
+        let curSelection: number = 0;
+        const updateProject = () => {
+            setSelectedProject(parsedMDX[curSelection])
+            curSelection = (curSelection + 1) % parsedMDX.length
+        }
+
+        updateProject()
+        const interval = setInterval(() => {
+            updateProject()
+        }, 5000)
+
+        return () => clearInterval(interval)
+    }, [])
 
     if (!parsedMDX || parsedMDX.length === 0) {
         return (
             <>
-                no parsedMDX found
+                <p>No markdown content found</p>
             </>
         )
     }
 
     return (
         <main className="content">
-            <Menu className="menu" projects={parsedMDX} onSelectProject={handleSelectedProject} />
+            <Menu className="menu" projects={parsedMDX} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
             {selectedProject &&
-                <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} onClose={handleCloseProject} />}
+                <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} />}
         </main>
     )
 }
