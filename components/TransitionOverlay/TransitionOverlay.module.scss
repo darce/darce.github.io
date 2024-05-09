@@ -15,6 +15,7 @@
     .slatElement {
         position: absolute;
         width: calc(100% / $slatCount);
+        bottom: 0;
         height: 100%;
         animation: slideUp $totalDuration ease-in-out forwards;
 
