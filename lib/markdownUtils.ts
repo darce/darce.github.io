@@ -26,7 +26,7 @@ export const getMDXFiles = (contentDir: string): string[] => {
 
 /** Parse markdown file
  * @param filePath
- * @returns front matter & mds source objects
+ * @returns front matter & mdx source objects
  */
 export const parseMarkdownFile = async (filePath: string): Promise<{ frontMatter: FrontMatter; mdxSource: MDXRemoteSerializeResult }> => {
     const markdownWithMeta = fs.readFileSync(filePath, 'utf-8')
