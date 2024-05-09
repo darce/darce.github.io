@@ -14,16 +14,20 @@ interface WorkProps {
 
 const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
+    const [isAutoAdvance, setIsAutoAdvance] = useState(true)
     const handleSelectedProject = (parsedMDX: MarkdownData) => {
         setSelectedProject(parsedMDX)
+        setIsAutoAdvance(false)
     }
 
     /** TODO: stop interval on menu click */
     useEffect(() => {
         let curSelection: number = 0;
         const updateProject = () => {
-            setSelectedProject(parsedMDX[curSelection])
-            curSelection = (curSelection + 1) % parsedMDX.length
+            if (isAutoAdvance) {
+                setSelectedProject(parsedMDX[curSelection])
+                curSelection = (curSelection + 1) % parsedMDX.length
+            }
         }
 
         updateProject()
@@ -32,7 +36,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
         }, 5000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [isAutoAdvance, parsedMDX])
 
     if (!parsedMDX || parsedMDX.length === 0) {
         return (
