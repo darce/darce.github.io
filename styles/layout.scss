@@ -1,40 +1,24 @@
 @import 'vars.scss';
 
 .layout {
-    /** Top level grids */
-    display: flex;
-    flex-direction: column;
-    // grid-template-rows: repeat(2, auto);
-    // grid-template-areas:
-    //     "header"
-    //     "content";
+    display: block;
 
-    // /** Responsive layouts */
-    // @media (max-width: 1023px) {
-    //     /** Tablet */
-    //     grid-template-rows: repeat(2, auto);
-    //     grid-template-areas:
-    //         "header"
-    //         "content"
-    // }
-
-    // @media(max-width: 767px) {
-    //     /** Mobile */
-    //     grid-template-rows: repeat(2, auto);
-    //     grid-template-areas:
-    //         "header"
-    //         "content";
-    // }
-
-    /** Subgrids */
     .header {
         display: flex;
         flex-direction: column;
 
+        @media (max-width: $mobileMax) {
+            display: block;
+        }
+
         .marquee {
             display: flex;
             justify-content: space-between;
-            width: 100%
+            width: 100%;
+
+            @media (max-width: $mobileMax) {
+                display: block;
+            }
         }
 
         .nav {
