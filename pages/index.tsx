@@ -15,12 +15,29 @@ interface WorkProps {
 const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
     const [isAutoAdvance, setIsAutoAdvance] = useState(true)
+
     const handleSelectedProject = (parsedMDX: MarkdownData) => {
         setSelectedProject(parsedMDX)
         setIsAutoAdvance(false)
     }
 
-    /** TODO: stop interval on menu click */
+    useEffect(() => {
+        /** Observe changes in the body element */
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const isMobile = document.body.classList.contains('mobile-view')
+                    setIsAutoAdvance(!isMobile)
+                }
+            })
+        })
+
+        observer.observe(document.body, { attributes: true })
+        return () => {
+            observer.disconnect()
+        }
+    })
+
     useEffect(() => {
         let curSelection: number = 0;
         const updateProject = () => {
