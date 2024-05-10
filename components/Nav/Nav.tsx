@@ -15,6 +15,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
     const router = useRouter()
     const navRef = useRef<HTMLElement>(null)
     const [sliderStyle, setSliderStyle] = useState({})
+
     const sections: NavItem[] = [
         { loc: '/', label: 'work' },
         { loc: 'resume', label: 'resume' },
@@ -23,8 +24,9 @@ const Nav: React.FC<NavProps> = ({ className }) => {
 
     const updateSliderStyle = () => {
         if (navRef.current) {
-            /** cast element as HTMLElement */
+            /** Handle slash in pathname & root route */
             const dataPathToken = router.pathname === '/' ? '/' : router.pathname.slice(1)
+            /** cast element as HTMLElement */
             const activeElement = navRef.current.querySelector(`[data-path="${dataPathToken}"]`) as HTMLElement
             const newStyle = activeElement ?
                 {
@@ -36,7 +38,6 @@ const Nav: React.FC<NavProps> = ({ className }) => {
     }
 
     const handleClick = (section: NavItem) => {
-        console.log(section)
         router.push(section.loc)
     }
 
@@ -58,7 +59,6 @@ const Nav: React.FC<NavProps> = ({ className }) => {
                 {sections.map((section) => (
                     <li key={section.label}
                         data-path={section.loc}
-                        // className={router.pathname === section.loc ? styles.selected : ''}
                         onClick={() => handleClick(section)}>
                         {section.label}
                     </li>
