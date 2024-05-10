@@ -1,0 +1,8 @@
+$mobileMax: 768px;
+$tabletMax: 1024px;
+
+/** Export for component styles module import */
+:export {
+    mobileMax: #{$mobileMax};
+    tabletMax: #{$tabletMax};
+}
