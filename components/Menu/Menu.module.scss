@@ -4,6 +4,46 @@
     margin: 0;
     list-style: none;
 
+    #menuCheckbox {
+        appearance: none;
+        position: absolute;
+        opacity: 0;
+    }
+
+    .navMobile {
+        display: block;
+
+        @media(max-width: $mobileMax) {
+            position: absolute;
+            left: -100%;
+            width: 90%;
+            transition: left 0.5s ease;
+            z-index: 10;
+            box-shadow: $s-medium $s-medium rgba(0, 0, 0, 0.5);
+            border: 1px solid black;
+
+            @include themeComponent($themes) {
+                background-color: t('background');
+            }
+        }
+    }
+
+    /** toggle mobile nav*/
+    #menuCheckbox:checked~.navMobile {
+        left: 0;
+    }
+
+    .labelMenuToggle {
+        display: none;
+
+        @media (max-width: $mobileMax) {
+            cursor: pointer;
+            display: inline-block;
+            font-size: 2rem;
+            padding: 0 $s-large;
+        }
+    }
+
     .title {
         padding: $s-small 0;
     }
