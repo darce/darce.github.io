@@ -39,4 +39,12 @@
         transition: left 0.1s ease-in-out, width 0.3s ease-in-out;
         mix-blend-mode: difference;
     }
+
+    @media(max-width: $mobileMax) {
+        font-size: 1rem;
+        position: absolute;
+        top: 0;
+        padding: $s-medium 0;
+        z-index: -1;
+    }
 }
