@@ -35,14 +35,22 @@
         grid-template-areas:
             "menu details";
 
+        @media(max-width: $mobileMax) {
+            display: block;
+        }
+
         .menu {
             grid-area: menu;
         }
 
         .projectDetails {
-            display: flex;
             grid-area: details;
+            display: flex;
             flex-direction: column;
+
+            @media(max-width: $mobileMax) {
+                width: 100%;
+            }
         }
     }
 }
