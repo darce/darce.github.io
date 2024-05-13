@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
     const masthead = {
         title: 'Daniel Arcé',
-        subtitle: 'Front End Development & Interface Implementation'
+        subtitle: 'Senior Front-End Developer & Accessibility Advocate'
     }
 
     useEffect(() => {
