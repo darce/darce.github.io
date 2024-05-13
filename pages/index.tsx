@@ -9,26 +9,34 @@ import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
 
 interface WorkProps {
-    parsedMDX: MarkdownData[]
+    parsedMDXArray: MarkdownData[]
 }
 
-const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
+const Work: NextPageWithLayout<WorkProps> = ({ parsedMDXArray }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
-    const [isAutoAdvance, setIsAutoAdvance] = useState(true)
+    const [isMobile, setIsMobile] = useState<boolean | null>(null)
+    const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
 
-    const handleSelectedProject = (parsedMDX: MarkdownData) => {
-        setSelectedProject(parsedMDX)
+    const handleSelectedProject = (selectedProject: MarkdownData) => {
+        setSelectedProject(selectedProject)
         setIsAutoAdvance(false)
     }
 
     useEffect(() => {
         /** Observe changes in the body element */
+        /** Autoadvance projects on desktop only */
+        const updateMobileView = () => {
+            const isCurrentlyMobile = document.body.classList.contains('mobile-view')
+            setIsMobile(isCurrentlyMobile)
+            setIsAutoAdvance(!isCurrentlyMobile)
+            setSelectedProject(null)
+        }
+
+        updateMobileView()
+
         const observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    const isMobile = document.body.classList.contains('mobile-view')
-                    setIsAutoAdvance(!isMobile)
-                }
+                updateMobileView()
             })
         })
 
@@ -36,26 +44,28 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
         return () => {
             observer.disconnect()
         }
-    })
+    }, [])
 
     useEffect(() => {
+        if (isMobile || !isAutoAdvance) return
+        /** Autoadvance projects */
         let curSelection: number = 0;
+        let timeout: ReturnType<typeof setTimeout>
+
         const updateProject = () => {
-            if (isAutoAdvance) {
-                setSelectedProject(parsedMDX[curSelection])
-                curSelection = (curSelection + 1) % parsedMDX.length
-            }
+            setSelectedProject(parsedMDXArray[curSelection])
+            curSelection = (curSelection + 1) % parsedMDXArray.length
         }
 
         updateProject()
-        const interval = setInterval(() => {
+        timeout = setInterval(() => {
             updateProject()
         }, 5000)
 
-        return () => clearInterval(interval)
-    }, [isAutoAdvance, parsedMDX])
+        return () => clearInterval(timeout)
+    }, [isAutoAdvance, isMobile, parsedMDXArray])
 
-    if (!parsedMDX || parsedMDX.length === 0) {
+    if (!parsedMDXArray || parsedMDXArray.length === 0) {
         return (
             <>
                 <p>No markdown content found</p>
@@ -65,9 +75,10 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDX }) => {
 
     return (
         <main className="content">
-            <Menu className="menu" projects={parsedMDX} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
-            {selectedProject &&
-                <ProjectDetails className="projectDetails" key={selectedProject.frontMatter.index} project={selectedProject} />}
+            <Menu className="menu" projects={parsedMDXArray} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
+            {selectedProject && (
+                <ProjectDetails className="projectDetails" key={selectedProject?.frontMatter.index} project={selectedProject} />
+            )}
         </main>
     )
 }
