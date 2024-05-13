@@ -4,7 +4,7 @@ import { getMDXFiles, parseMarkdownFile } from './markdownUtils'
 import { MarkdownData } from '../types'
 
 interface ContentProps {
-    parsedMDX: MarkdownData[]
+    parsedMDXArray: MarkdownData[]
 }
 
 export const getStaticProps: GetStaticProps<ContentProps> = async (context) => {
@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps<ContentProps> = async (context) => {
     const contentDir = path.join('content', subDir)
     const mdxFiles = getMDXFiles(contentDir)
 
-    const parsedMDX = await Promise.all(
+    const parsedMDXArray = await Promise.all(
         mdxFiles.map(async (filePath) => {
             const fileName = path.basename(filePath)
             const slug = fileName.replace('.mdx', '')
@@ -28,8 +28,8 @@ export const getStaticProps: GetStaticProps<ContentProps> = async (context) => {
         }))
 
     /** Only sort if index is present in all members of the array */
-    if (parsedMDX.every(mdx => mdx.index !== null)) {
-        parsedMDX.sort((a, b) => {
+    if (parsedMDXArray.every(mdx => mdx.index !== null)) {
+        parsedMDXArray.sort((a, b) => {
             return (a.index as number) - (b.index as number)
         }
         )
@@ -37,7 +37,7 @@ export const getStaticProps: GetStaticProps<ContentProps> = async (context) => {
 
     return {
         props: {
-            parsedMDX
+            parsedMDXArray
         }
     }
 }
