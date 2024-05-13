@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { MarkdownData } from '../../types'
 import styles from './Menu.module.scss'
 
@@ -12,12 +12,19 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ projects, selectedProject, onSelectProject, className }) => {
     const checkboxRef = useRef<HTMLInputElement>(null)
 
+    useEffect(() => {
+        if (checkboxRef.current) {
+            checkboxRef.current.checked = true
+        }
+    }, [])
+
     const handleClick = (project: MarkdownData) => {
         onSelectProject(project)
         if (checkboxRef.current) {
             checkboxRef.current.checked = false
         }
     }
+
     return (
         <nav className={`${styles.menu} ${className || ''}`} aria-label='work'>
             <input type="checkbox" id={styles.menuCheckbox} ref={checkboxRef} />
