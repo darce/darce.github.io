@@ -16,6 +16,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
         setShowOverlay(false)
     }
 
+    if (!project) {
+        return null
+    }
+
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
             {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
