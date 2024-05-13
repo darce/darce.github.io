@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
@@ -15,7 +15,8 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-    useEffect(() => {
+    useLayoutEffect(() => {
+        /** Throttled event handler */
         const handleResize = throttle(() => {
             /** Cast css variable */
             const mobileMax: number = styles.mobileMax.replace('px', '') as unknown as number
