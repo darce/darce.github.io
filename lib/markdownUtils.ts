@@ -10,7 +10,7 @@ import { FrontMatter } from '../types'
  * @param subDir subdirectory inside 'content'
  * @returns array of .mdx files
  */
-export const getMDXFiles = (contentDir: string): string[] => {
+export const getMdxFiles = (contentDir: string): string[] => {
     try {
         const curFiles = fs.readdirSync(contentDir)
         const mdxFiles = curFiles
