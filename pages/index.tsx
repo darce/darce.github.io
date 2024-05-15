@@ -1,18 +1,16 @@
-import type { ReactElement } from 'react'
+import { useState, useEffect, useContext, ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
-import { useState, useEffect } from 'react'
-import Layout from '../components/Layout'
-import { getStaticProps as getMdxContentStaticProps } from '../lib/getMdxContent'
+import { getMdxContent } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
-
+import Layout from '../components/Layout'
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
 
 interface WorkProps {
-    parsedMDXArray: MarkdownData[]
+    projectsData: MarkdownData[],
 }
 
-const Work: NextPageWithLayout<WorkProps> = ({ parsedMDXArray }) => {
+const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
     const [isMobile, setIsMobile] = useState<boolean | null>(null)
     const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
@@ -53,8 +51,8 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDXArray }) => {
         let timeout: ReturnType<typeof setTimeout>
 
         const updateProject = () => {
-            setSelectedProject(parsedMDXArray[curSelection])
-            curSelection = (curSelection + 1) % parsedMDXArray.length
+            setSelectedProject(projectsData[curSelection])
+            curSelection = (curSelection + 1) % projectsData.length
         }
 
         updateProject()
@@ -63,9 +61,9 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDXArray }) => {
         }, 5000)
 
         return () => clearInterval(timeout)
-    }, [isAutoAdvance, isMobile, parsedMDXArray])
+    }, [isAutoAdvance, isMobile, projectsData])
 
-    if (!parsedMDXArray || parsedMDXArray.length === 0) {
+    if (!projectsData || projectsData.length === 0) {
         return (
             <>
                 <p>No markdown content found</p>
@@ -73,13 +71,14 @@ const Work: NextPageWithLayout<WorkProps> = ({ parsedMDXArray }) => {
         )
     }
 
-    return (
+    return (<>
         <main className="content">
-            <Menu className="menu" projects={parsedMDXArray} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
+            <Menu className="menu" projects={projectsData} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
             {selectedProject && (
                 <ProjectDetails className="projectDetails" key={selectedProject?.frontMatter.index} project={selectedProject} />
             )}
         </main>
+    </>
     )
 }
 
@@ -93,8 +92,15 @@ Work.getLayout = (page: ReactElement) => {
 
 /** Call getStaticProps on build */
 export const getStaticProps = async () => {
-    const context = { params: { subDir: 'projects' } }
-    return getMdxContentStaticProps(context)
+    const projectsProps = await getMdxContent({ subDir: 'projects' })
+    const headerProps = await getMdxContent({ subDir: 'header' })
+
+    return {
+        props: {
+            projectsData: projectsProps.parsedMdxArray,
+            headerData: headerProps.parsedMdxArray,
+        }
+    }
 }
 
 export default Work
