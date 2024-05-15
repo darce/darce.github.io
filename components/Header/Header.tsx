@@ -3,19 +3,18 @@ import { mapRange } from '../../lib/utils'
 import Cube from '../Cube/Cube'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.scss'
+import { MarkdownData } from '../../types'
 
 interface HeaderProps {
+    headerData: MarkdownData[]
     className?: string
 }
 
-const Header: React.FC<HeaderProps> = ({ className }) => {
+const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
     const [GRAD, setGRAD] = useState(0)
     const [wght, setWght] = useState(0)
 
-    const masthead = {
-        title: 'Daniel Arcé',
-        subtitle: 'Senior Front-End Developer & Accessibility Advocate'
-    }
+    const masthead = headerData[0].frontMatter
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove, false)
