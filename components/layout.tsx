@@ -1,14 +1,16 @@
-import React from 'react'
-import Header from '../components/Header/Header'
+import React, { useContext } from 'react'
+import Header from './Header/Header'
+import { useHeaderData } from '../contexts/HeaderContext'
 
 interface LayoutProps {
-    children: React.ReactNode
+    children: React.ReactNode,
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+    const { headerData } = useHeaderData()
     return (
         <div className="base__typography base__palette theme--default layout">
-            <Header className="header" />
+            <Header className="header" headerData={headerData} />
             {children}
         </div>
     )
