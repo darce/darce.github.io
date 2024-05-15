@@ -1,7 +1,8 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+import { HeaderDataProvider } from '../contexts/HeaderContext'
 import { throttle } from '../lib/utils'
 import '../styles/global.scss'
 import styles from '../styles/breakpoints.module.scss'
@@ -15,7 +16,7 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-    useLayoutEffect(() => {
+    useEffect(() => {
         /** Throttled event handler */
         const handleResize = throttle(() => {
             /** Cast css variable */
@@ -32,7 +33,13 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     }, [])
 
     const getLayout = Component.getLayout ?? ((page) => page)
-    return getLayout(<Component {...pageProps} />)
+
+    /** Wrap getLayout with HeaderDataProvider */
+    return (
+        <HeaderDataProvider initialData={pageProps.headerData}>
+            {getLayout(<Component {...pageProps} />)}
+        </HeaderDataProvider>
+    )
 }
 
 export default PortfolioApp
