@@ -1,5 +1,4 @@
 import path from 'path'
-// import { GetStaticProps } from 'next'
 import { getMdxFiles, parseMarkdownFile } from './markdownUtils'
 import { MarkdownData } from '../types'
 
