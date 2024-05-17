@@ -70,20 +70,20 @@
                 color: t('highlight')
             }
         }
-    }
 
-    /** bottom border animation */
-    & ::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: $s;
-        transition: width 0.2s ease-out;
+        /** bottom border animation */
+        & ::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: $s;
+            transition: width 0.2s ease-out;
 
-        @include themeComponent($themes) {
-            background: t('link');
+            @include themeComponent($themes) {
+                background: t('link');
+            }
         }
     }
 
