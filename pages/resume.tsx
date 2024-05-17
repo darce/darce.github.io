@@ -1,21 +1,110 @@
+import React from 'react'
 import type { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
+import { MarkdownData } from '../types'
+import { getMdxContent } from '../lib/getMdxContent'
 import Layout from '../components/Layout'
 
-const Resume: NextPageWithLayout = () => {
+interface ResumeSection {
+    [key: string]: string[] | ResumeSection
+}
+
+interface ResumeItem {
+    position?: string,
+    company?: string,
+    'date-start'?: string,
+    'date-end'?: string,
+    description?: string[],
+    [key: string]: any
+}
+
+interface ResumePageProps {
+    resumeData: { frontMatter: ResumeSection }[]
+}
+
+const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
+    const resumeContent = resumeData[0]?.frontMatter
+
+    const renderResumeValue = (value: string | string[] | ResumeItem | ResumeItem[]): React.ReactNode => {
+        if (Array.isArray(value)) {
+            return (
+                <dl>
+                    {value.map((item: string | ResumeItem, index) => (
+                        <React.Fragment key={index}>
+                            {typeof item === 'string' ? (
+                                <dt>{item}</dt>
+                            ) : (
+                                renderResumeItem(item)
+                            )}
+                        </React.Fragment>
+                    ))}
+                </dl>
+            )
+        }
+
+        if (typeof value === 'string') {
+            return <dt>{value}</dt>
+        }
+
+        return renderResumeSection(value)
+    }
+
+    const renderResumeItem = (item: ResumeItem): React.ReactNode => {
+        return (
+            <> {
+                item.position ? (
+                    <>
+
+                        <dt>{item.position}</dt>
+                        <dd>
+                            <p>{item.company}</p>
+                            <p>{item['date-start']} - {item['date-end']}</p>
+                            {item.description && renderDescription(item.description)}
+                        </dd>
+                    </>
+                ) : (
+                    <>
+                        <dt>{item.school}</dt>
+                        <dd>
+                            <p>{item.title}</p>
+                            <p>{item.details}</p>
+                        </dd>
+                    </>
+                )
+            }
+            </>
+        )
+    }
+    const renderDescription = (descriptions: string[]): React.ReactNode => (
+        <ul>
+            {descriptions.map((description, index) => (
+                <li key={index}>{description}</li>
+            ))}
+        </ul>
+    )
+
+    const renderResumeSection = (section: ResumeSection): React.ReactNode => {
+        return (
+            <div>
+                {Object.entries(section)
+                    .map(([key, value]) => (
+                        <React.Fragment key={key}>
+                            <h3>{key}</h3>
+                            {renderResumeValue(value)}
+                        </React.Fragment>
+                    ))}
+            </div>
+        )
+    }
 
     return (
         <main className="content">
-            company
-            position
-            date-start
-            date-end
-            description
+            {resumeContent && renderResumeSection(resumeContent)}
         </main>
     )
 }
 
-Resume.getLayout = (page: ReactElement) => {
+ResumePage.getLayout = (page: ReactElement) => {
     return (
         <Layout>
             {page}
@@ -23,4 +112,16 @@ Resume.getLayout = (page: ReactElement) => {
     )
 }
 
-export default Resume
+/** Call getStaticProps on build */
+export const getStaticProps = async () => {
+    const resumeProps = await getMdxContent({ subDir: 'resume' })
+    const headerProps = await getMdxContent({ subDir: 'header' })
+
+    return {
+        props: {
+            resumeData: resumeProps.parsedMdxArray,
+            headerData: headerProps.parsedMdxArray,
+        }
+    }
+}
+export default ResumePage
