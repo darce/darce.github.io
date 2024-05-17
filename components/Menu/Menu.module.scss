@@ -13,7 +13,7 @@
     .navMobile {
         display: block;
 
-        @media(max-width: $mobileMax) {
+        @media(max-width: $tabletMax) {
             position: absolute;
             left: -100%;
             width: 90%;
@@ -36,7 +36,7 @@
     .labelMenuToggle {
         display: none;
 
-        @media (max-width: $mobileMax) {
+        @media (max-width: $tabletMax) {
             cursor: pointer;
             display: inline-block;
             font-size: 2rem;

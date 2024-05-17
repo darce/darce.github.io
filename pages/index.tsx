@@ -13,6 +13,9 @@ interface WorkProps {
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
     const [isMobile, setIsMobile] = useState<boolean | null>(null)
+    const [isTablet, setIsTablet] = useState<boolean | null>(null)
+    const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
+
     const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
 
     const handleSelectedProject = (selectedProject: MarkdownData) => {
@@ -23,18 +26,23 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     useEffect(() => {
         /** Observe changes in the body element */
         /** Autoadvance projects on desktop only */
-        const updateMobileView = () => {
+        const updateResponsiveView = () => {
             const isCurrentlyMobile = document.body.classList.contains('mobile-view')
+            const isCurrentlyTablet = document.body.classList.contains('mobile-view')
+            const isCurrentlyDesktop = !isCurrentlyMobile && !isCurrentlyTablet
+
             setIsMobile(isCurrentlyMobile)
-            setIsAutoAdvance(!isCurrentlyMobile)
+            setIsTablet(isCurrentlyTablet)
+            setIsDesktop(isCurrentlyDesktop)
+            setIsAutoAdvance(isCurrentlyDesktop)
             setSelectedProject(null)
         }
 
-        updateMobileView()
+        updateResponsiveView()
 
         const observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
-                updateMobileView()
+                updateResponsiveView()
             })
         })
 
@@ -45,7 +53,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     }, [])
 
     useEffect(() => {
-        if (isMobile || !isAutoAdvance) return
+        if (!isDesktop || !isAutoAdvance) return
         /** Autoadvance projects */
         let curSelection: number = 0;
         let timeout: ReturnType<typeof setTimeout>
@@ -61,7 +69,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         }, 5000)
 
         return () => clearInterval(timeout)
-    }, [isAutoAdvance, isMobile, projectsData])
+    }, [isAutoAdvance, isDesktop, projectsData])
 
     if (!projectsData || projectsData.length === 0) {
         return (
@@ -90,7 +98,7 @@ Work.getLayout = (page: ReactElement) => {
     )
 }
 
-/** Call getStaticProps on build */
+/** Call getStaticProps on build to get data from mdx files*/
 export const getStaticProps = async () => {
     const projectsProps = await getMdxContent({ subDir: 'projects' })
     const headerProps = await getMdxContent({ subDir: 'header' })
