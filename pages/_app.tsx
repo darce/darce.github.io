@@ -20,9 +20,15 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
         /** Throttled event handler */
         const handleResize = throttle(() => {
             /** Cast css variable */
-            const mobileMax: number = styles.mobileMax.replace('px', '') as unknown as number
-            document.body.classList.toggle('mobile-view', window.innerWidth <= mobileMax)
-        }, 200)
+            const mobileMax: number = parseInt(styles.mobileMax, 10)
+            const tabletMax: number = parseInt(styles.tabletMax, 10)
+            const isMobile = window.innerWidth <= mobileMax
+            const isTablet = window.innerWidth > mobileMax
+                && window.innerWidth <= tabletMax
+            document.body.classList.toggle('mobile-view', isMobile)
+            document.body.classList.toggle('tablet-view', isTablet)
+
+        }, 100)
 
         handleResize()
         window.addEventListener('resize', handleResize)

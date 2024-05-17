@@ -7,7 +7,7 @@
         display: flex;
         flex-direction: column;
 
-        @media (max-width: $mobileMax) {
+        @media (max-width: $tabletMax) {
             display: block;
         }
 
@@ -16,7 +16,7 @@
             justify-content: space-between;
             width: 100%;
 
-            @media (max-width: $mobileMax) {
+            @media (max-width: $tabletMax) {
                 display: block;
             }
         }
@@ -30,12 +30,12 @@
         display: grid;
         grid-area: content;
 
-        grid-template-columns: [left] 35% [menu-end] auto [content-end];
+        grid-template-columns: [left] minmax(450px, 35%) [menu-end] auto [content-end];
         grid-gap: $s-large;
         grid-template-areas:
             "menu details";
 
-        @media(max-width: $mobileMax) {
+        @media(max-width: $tabletMax) {
             display: block;
         }
 
@@ -48,7 +48,7 @@
             display: flex;
             flex-direction: column;
 
-            @media(max-width: $mobileMax) {
+            @media(max-width: $tabletMax) {
                 width: 100%;
             }
         }

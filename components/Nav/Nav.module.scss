@@ -40,7 +40,7 @@
         mix-blend-mode: difference;
     }
 
-    @media(max-width: $mobileMax) {
+    @media(max-width: $tabletMax) {
         font-size: 1rem;
         position: absolute;
         top: 0;

@@ -7,7 +7,7 @@
         position: relative;
         z-index: 10;
 
-        @media(max-width: $mobileMax) {
+        @media(max-width: $tabletMax) {
             width: 100%;
             margin-top: $s-x-large;
         }
@@ -22,7 +22,7 @@
                 color: t('header');
             }
 
-            @media(max-width: $mobileMax) {
+            @media(max-width: $tabletMax) {
                 width: 50%;
                 display: inline-block;
                 font-size: 1.2rem;
@@ -37,7 +37,7 @@
                 color: t('subheader');
             }
 
-            @media(max-width: $mobileMax) {
+            @media(max-width: $tabletMax) {
                 width: 50%;
                 float: right;
                 display: inline-block;
@@ -50,7 +50,7 @@
         width: 50%;
         position: relative;
 
-        @media(max-width: $mobileMax) {
+        @media(max-width: $tabletMax) {
             width: 100%;
             position: absolute;
             top: 0;
