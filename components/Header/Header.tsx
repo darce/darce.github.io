@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { mapRange } from '../../lib/utils'
+import { MarkdownData } from '../../types'
 import Cube from '../Cube/Cube'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.scss'
-import { MarkdownData } from '../../types'
 
 interface HeaderProps {
     headerData: MarkdownData[]
