@@ -28,8 +28,6 @@
 
     .content {
         display: grid;
-        grid-area: content;
-
         grid-template-columns: [left] minmax(450px, 35%) [menu-end] auto [content-end];
         grid-gap: $s-large;
         grid-template-areas:
