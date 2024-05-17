@@ -9,24 +9,24 @@
 
     .post {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: [post-start] auto [thumbnail] auto [post-end];
         grid-gap: $s-large;
-        grid-template-areas:
-            "left center right";
+        grid-template-areas: "left right gutter";
 
         .imgWrapper {
+            grid-area: right;
             margin: 0;
+        }
 
-            img {
-                width: 100%;
-                object-fit: cover;
-            }
+        img {
+            width: 100%;
+            object-fit: cover;
         }
     }
 
     .links {}
 
     .source {
-        grid-area: center;
+        grid-area: left;
     }
 }
