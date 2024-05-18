@@ -1,4 +1,5 @@
 @import '../../styles/vars.scss';
+@import '../../styles/mixins.scss';
 
 .nav {
     @include themeComponent($themes) {
@@ -28,6 +29,8 @@
                 color: t('activeText');
             }
         }
+
+        @include isFocused;
     }
 
     .slider {
