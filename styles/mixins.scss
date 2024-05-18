@@ -1,0 +1,12 @@
+@import 'spacing.scss';
+@import 'palettes.scss';
+
+@mixin isFocused() {
+    &:focus {
+        outline-style: solid;
+
+        @include themeComponent($themes) {
+            outline-color: t('activeBg');
+        }
+    }
+}
