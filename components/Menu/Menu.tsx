@@ -18,17 +18,47 @@ const Menu: React.FC<MenuProps> = ({ projects, selectedProject, onSelectProject,
         }
     }, [])
 
-    const handleClick = (project: MarkdownData) => {
+    /** NavigationAction is passed to both handleClick & handleKeyDown */
+    const navigationAction = (project: MarkdownData, toggleCheckbox: boolean = true) => {
         onSelectProject(project)
-        if (checkboxRef.current) {
+        if (checkboxRef.current && toggleCheckbox) {
             checkboxRef.current.checked = false
+        }
+    }
+
+    const handleClick = (project: MarkdownData) => {
+        navigationAction(project)
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>, project: MarkdownData) => {
+        if (event.key === 'Enter') {
+            navigationAction(project)
+        }
+    }
+
+    const handleCheckboxKeyDown = (event: React.KeyboardEvent<HTMLLabelElement>) => {
+        console.log(event)
+        if (event.key === 'Enter' && checkboxRef.current) {
+            checkboxRef.current.checked = !checkboxRef.current.checked
         }
     }
 
     return (
         <nav className={`${styles.menu} ${className || ''}`} aria-label='work'>
-            <input type="checkbox" id={styles.menuCheckbox} ref={checkboxRef} />
-            <label htmlFor={styles.menuCheckbox} className={styles.labelMenuToggle}>
+            <input
+                type="checkbox"
+                id={styles.menuCheckbox}
+                ref={checkboxRef}
+                tabIndex={0}
+            />
+            <label
+                htmlFor={styles.menuCheckbox}
+                className={styles.labelMenuToggle}
+                tabIndex={0}
+                aria-label="toggle menu"
+                /** event handler on label for a11y */
+                onKeyDown={handleCheckboxKeyDown}
+            >
                 <div>
                     {'\u2630'}
                 </div>
@@ -36,8 +66,12 @@ const Menu: React.FC<MenuProps> = ({ projects, selectedProject, onSelectProject,
             <ol className={styles.navMobile}>
                 {projects.map((project, index) => (
                     <li key={project.slug + index}
+                        role="button"
+                        aria-label={project.frontMatter.title}
+                        tabIndex={0}
                         className={project === selectedProject ? styles.selected : ''}
-                        onClick={() => handleClick(project)}>
+                        onClick={() => handleClick(project)}
+                        onKeyDown={(event) => handleKeyDown(event, project)}>
                         <h2 className={styles.title}>{project.frontMatter.title}</h2>
                         <p className={styles.subtitle}>{project.frontMatter.subtitle}</p>
                     </li>

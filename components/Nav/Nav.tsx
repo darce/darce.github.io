@@ -37,8 +37,19 @@ const Nav: React.FC<NavProps> = ({ className }) => {
         }
     }
 
-    const handleClick = (section: NavItem) => {
+    /** NavigationAction is passed to both handleClick & handleKeyDown */
+    const navigationAction = (section: NavItem) => {
         router.push(section.loc)
+    }
+
+    const handleClick = (section: NavItem) => {
+        navigationAction(section)
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>, section: NavItem) => {
+        if (event.key === 'Enter') {
+            navigationAction(section)
+        }
     }
 
     useEffect(() => {
@@ -58,8 +69,13 @@ const Nav: React.FC<NavProps> = ({ className }) => {
             <ul>
                 {sections.map((section) => (
                     <li key={section.label}
+                        role="button"
+                        aria-label={section.label}
                         data-path={section.loc}
-                        onClick={() => handleClick(section)}>
+                        tabIndex={0}
+                        onClick={() => handleClick(section)}
+                        onKeyDown={(event) => handleKeyDown(event, section)}
+                    >
                         {section.label}
                     </li>
                 )
