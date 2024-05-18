@@ -38,6 +38,28 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
         }
     }, [])
 
+    useEffect(() => {
+        const handleKeyDownOnce = (event: KeyboardEvent) => {
+            if (event.key === 'Tab') {
+                document.body.classList.add('is-tab')
+            }
+            window.removeEventListener('keydown', handleKeyDownOnce)
+            window.addEventListener('mousedown', handleMouseDownOnce)
+        }
+
+        const handleMouseDownOnce = (event: MouseEvent) => {
+            document.body.classList.remove('is-tab')
+            window.removeEventListener('mousedown', handleMouseDownOnce)
+            window.addEventListener('keydown', handleKeyDownOnce)
+        }
+
+        window.addEventListener('keydown', handleKeyDownOnce)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDownOnce)
+            window.removeEventListener('mousedown', handleMouseDownOnce)
+        }
+    }, [])
+
     const getLayout = Component.getLayout ?? ((page) => page)
 
     /** Wrap getLayout with HeaderDataProvider */

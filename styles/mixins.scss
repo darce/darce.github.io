@@ -1,12 +1,13 @@
-@import 'spacing.scss';
-@import 'palettes.scss';
+    @import 'spacing.scss';
+    @import 'palettes.scss';
 
-@mixin isFocused() {
-    &:focus {
-        outline-style: solid;
+    @mixin isFocused($outline-color) {
 
-        @include themeComponent($themes) {
-            outline-color: t('activeBg');
+        /** global prevents appending selector to component name when importing */
+        :global(body.is-tab) & {
+            &:focus {
+                outline-style: solid;
+                outline-color: $outline-color
+            }
         }
     }
-}
