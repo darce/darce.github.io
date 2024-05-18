@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as MatrixTransforms from '../../lib/matrixTransformations'
 import styles from './Cube.module.scss'
+import { throttle } from '../../lib/utils'
 
 interface Vertex {
     x: number
@@ -19,6 +20,8 @@ interface CubeProps {
 
 const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
+
+    /** Use refs for transient state */
     const verticesRef = useRef<Vertex[]>([
         { x: -0.5, y: -0.5, z: -0.5 },
         { x: 0.5, y: -0.5, z: -0.5 },
@@ -35,46 +38,40 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
     const centerRef = useRef<Point>({ x: 0, y: 0 })
     const cubeRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        if (cubeRef.current) {
-            cubeRef.current.addEventListener('click', handleClickVertex, false)
-            const cubeRect = cubeRef.current.getBoundingClientRect()
-            centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
-            window.addEventListener('mousemove', handleMouseMove, false)
-
-        }
-
-        return () => {
-            if (cubeRef.current) {
-                cubeRef.current.removeEventListener('click', handleClickVertex)
-                window.removeEventListener('mousemove', handleMouseMove)
-            }
-        }
-    }, [])
-
+    /** useCallback to memoize function */
     const updateVertices = useCallback(() => {
         const transformedVertices = MatrixTransforms.transformPoints(verticesRef.current, angleXRef.current, angleYRef.current, angleZRef.current, 500, 10)
         setVertices(transformedVertices)
     }, [])
 
-    const handleClickVertex = (event: MouseEvent) => {
-        const target = event.target as HTMLElement
-        const vertexId = target.getAttribute('data-vertex-id')
-        console.log('clicked vertex id: ', vertexId)
-    }
+    const handleMouseMove = useCallback(
+        throttle((event: MouseEvent) => {
+            const proportionX = event.clientX / window.innerWidth
+            const proportionY = event.clientY / window.innerHeight
 
-    const handleMouseMove = (event: MouseEvent) => {
-        const proportionX = event.clientX / window.innerWidth
-        const proportionY = event.clientY / window.innerHeight
+            /** Map proportions to full circle roations (2π radians) */
+            const fullRotaionRadians = Math.PI * 2
+            /** Full rotation from top to bottom */
+            angleXRef.current = proportionY * fullRotaionRadians
+            /** Full rotation from left to right */
+            angleYRef.current = proportionX * fullRotaionRadians
 
-        /** Map proportions to full circle roations (2π radians) */
-        const fullRotaionRadians = Math.PI * 2
-        /** Full rotation from top to bottom */
-        angleXRef.current = proportionY * fullRotaionRadians
-        /** Full rotation from left to right */
-        angleYRef.current = proportionX * fullRotaionRadians
-        updateVertices()
-    }
+            /** Optimize animation using requestAnimationFrame */
+            requestAnimationFrame(updateVertices)
+        }, 16), []
+    )
+
+    useEffect(() => {
+        if (cubeRef.current) {
+            const cubeRect = cubeRef.current.getBoundingClientRect()
+            centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
+            window.addEventListener('mousemove', handleMouseMove, false)
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove)
+        }
+    }, [])
 
     return (
         <div className={`${styles.cube} ${className || ''}`} ref={cubeRef}>
