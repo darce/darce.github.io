@@ -3,15 +3,20 @@
 .projectDetails {
     position: relative;
 
-    h3 {}
+    >h2 {
+        font-size: 2rem;
+    }
 
     .metadata {}
+
+    .links {}
 
     .post {
         display: grid;
         grid-template-columns: [post-start] auto [thumbnail] auto [post-end];
         grid-gap: $s-large;
         grid-template-areas: "left right gutter";
+
 
         .imgWrapper {
             grid-area: right;
@@ -24,7 +29,7 @@
         }
     }
 
-    .links {}
+
 
     .source {
         grid-area: left;

@@ -40,8 +40,8 @@
         @media (max-width: $tabletMax) {
             cursor: pointer;
             display: inline-block;
-            font-size: 2rem;
-            padding: 0 $s-large;
+            font-size: 3rem;
+            padding: 0 18px;
         }
     }
 
@@ -55,6 +55,11 @@
         border-bottom: $s solid;
         position: relative;
         cursor: pointer;
+
+        h3 {
+            margin: 0;
+            padding: 0;
+        }
 
         /** define outline color before passing to isFocused() */
         @include themeComponent($themes) {
