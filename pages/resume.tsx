@@ -1,9 +1,9 @@
 import React from 'react'
 import type { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
-import { MarkdownData } from '../types'
 import { getMdxContent } from '../lib/getMdxContent'
 import Layout from '../components/Layout'
+import styles from '../styles/resumePage.module.scss'
 
 interface ResumeSection {
     [key: string]: string[] | ResumeSection
@@ -85,7 +85,7 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
 
     const renderResumeSection = (section: ResumeSection): React.ReactNode => {
         return (
-            <div>
+            <div className={styles.section}>
                 {Object.entries(section)
                     .map(([key, value]) => (
                         <React.Fragment key={key}>
@@ -98,7 +98,10 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
     }
 
     return (
-        <main className="content">
+        <main className={`content ${styles.resume}`}>
+            <aside>
+                <a href="/daniel_arce_resume_2024.pdf">Download PDF</a>
+            </aside>
             {resumeContent && renderResumeSection(resumeContent)}
         </main>
     )

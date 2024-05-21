@@ -16,7 +16,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
 
     return (
         <main className={`content ${styles.about}`}>
-            <aside>
+            <aside className={styles.aside}>
                 {headShotObj &&
                     (
                         <figure className={styles.headshot}>
@@ -26,7 +26,9 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
                 }
 
             </aside>
-            <MDXRemote {...aboutContent.mdxSource} />
+            <article className={styles.source}>
+                <MDXRemote {...aboutContent.mdxSource} />
+            </article>
         </main>
     )
 }
