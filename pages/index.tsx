@@ -60,7 +60,8 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
 
         const updateProject = () => {
             setSelectedProject(projectsData[curSelection])
-            curSelection = (curSelection + 1) % projectsData.length
+            /** Deactivate auto advance. It's jarring if the user is already reading. */
+            // curSelection = (curSelection + 1) % projectsData.length
         }
 
         updateProject()
