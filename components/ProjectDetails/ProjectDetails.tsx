@@ -23,7 +23,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
             {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
-            <h3>{project.frontMatter.title}</h3>
+            <h2>{project.frontMatter.title}</h2>
             <aside className={styles.metadata}>
                 {project.frontMatter.links && (
                     <div className={styles.links}>
