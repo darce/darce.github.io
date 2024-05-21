@@ -72,7 +72,7 @@ const Menu: React.FC<MenuProps> = ({ projects, selectedProject, onSelectProject,
                         className={project === selectedProject ? styles.selected : ''}
                         onClick={() => handleClick(project)}
                         onKeyDown={(event) => handleKeyDown(event, project)}>
-                        <h2 className={styles.title}>{project.frontMatter.title}</h2>
+                        <h3 className={styles.title}>{project.frontMatter.title}</h3>
                         <p className={styles.subtitle}>{project.frontMatter.subtitle}</p>
                     </li>
                 ))
