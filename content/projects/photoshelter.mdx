@@ -4,8 +4,7 @@ year: 2021
 title: 'Photoshelter.com: Prototyping & Accessibility'
 subtitle: Enterprise SaaS Development
 description: Front-end development, Interface implementation
-details: Photoshelter is a cloud-based Digital Asset Management tool for creative teams, hosting over 1 billion files for 80,000 professionals. 
-Accessibility had fallen by the wayside, and it became critical to modernize the codebase to comply with WCAG standards.
+details: Photoshelter is a cloud-based Digital Asset Management tool for creative teams, hosting over 1 billion files for 80,000 professionals. As the product grew, Accessibility fell by the wayside, and it became critical to modernize the codebase to comply with WCAG standards.
 links:
 - url: http://www.photoshelter.com
   label: Photoshelter.com
@@ -28,17 +27,31 @@ My role was central in prototyping these new features using technologies includi
 
 *Key Achievements:*
 - **Workflow Automation Interface**: 
-The Workflow Automation Interface I prototyped at the R&D department accelerated the development of this feature by the production team. 
 This was one of the features our customers requested the most. 
-The prototype I built laid the groundwork for the production team to implement this feature, reducing production time by 30% compared to building the feature in the production environment.
+The Workflow Automation Interface I prototyped at the R&D department accelerated the development of this feature by the production team, 
+laying the groundwork for the implementation of this feature.
+This prototype reduced production time by 30% compared to building the feature in the production environment as it identifed roadblocks to integrating it with the rest of the application.
 
 - **Image Blur Comparison Tool**: Built with the client-side implementation of OpenCV. Although this prototype ultimately did not make it into production, it served as an example of client-side image manipulation tools that do not require backend development time or server-side resources beyond static files.
 
 ## Production Team Initiatives
-The main objective was to align our codebase with contemporary Accessibility standards, significantly reducing the Tech Debt from our legacy codebase.
+In addition to new feature development, there was a need to align our codebase with contemporary Accessibility standards. 
+Most Photoshelter customers are institutional clients (either universities or professional sports teams,) and there was a concrete risk of running up against the [American with Dsiabilities Act (ADA.)](https://www.ada.gov/law-and-regs/ada/)
 
 *Key Achievements:*
-- **Create a roadmap to achieve Accessibility**: 
-- **Accessibility Compliance**: Implemented a Javascript library keyboard navigation within our main B2B product, significantly reducing our Accessibility Tech Debt and ensuring compliance with WCAG 2.1 standards.
+- **Roadmap to achieve Accessibility**: 
+An initial code audit surfaced Accessibility violations that could be classified into two main camps: "Low-hanging fruit" such as missing ARIA attributes and labels for forms and buttons, and more involved ommissions such Mouse-only navigation for all menus globally.
 
-## Broader Company Initiative
+- **Implementing Keyboard Navigation**: 
+Using the keyboard to access features within the product is not only necessary for users with low mobility, it also improves the productivity of abled users who prefer keyboard shortcuts.
+Implementing keyboard navigation significantly reduced our Accessibility tech debt, moving the company closer to meeting WCAG standards.
+
+Using accessibility tools such as the [Deque's axe DevTools Library](https://www.deque.com/axe/devtools/), we conducted thorough audits of our codebase. 
+These tools helped identify various issues including non-compliant ARIA roles, missing labels, and problematic focus management.
+
+Adding a layer of keyboard navigation presented unique challenges, especially due to the use of the Shadow DOM with Polymer and Web Components. 
+Shadow DOM's encapsulation can obscure elements from standard JavaScript event listeners, making it difficult to ensure consistent focus management and keyboard accessibility. 
+Overcoming this required a detailed understanding of both the accessibility requirements and the internals of the Shadow DOM. 
+A custom solution was developed to bridge these gaps, allowing keyboard events to propagate correctly and ensuring all interactive elements were accessible via keyboard navigation.
+
+These efforts significantly reduced our accessibility tech debt and ensured compliance with WCAG 2.1 standards.
