@@ -11,6 +11,8 @@ $dusk-grey: #4A5459;
 
 $themes: (
     default: (backgroundColor:$alabaster-white,
+        specular: white,
+        castShadow: black,
         background: $alabaster-white,
         header:$charcoal-black,
         subheader: $polynesian-blue,
