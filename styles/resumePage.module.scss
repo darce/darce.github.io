@@ -1,0 +1,34 @@
+@import '../styles/vars.scss';
+
+.resume {
+    aside {
+        grid-area: details;
+        padding-top: $s-large;
+    }
+
+    h3 {
+        text-transform: uppercase;
+    }
+
+    dt {
+        font-weight: 600;
+    }
+
+    dd {
+        font-weight: 200;
+    }
+
+    .section {
+        padding-top: $s-x-large;
+        grid-area: details;
+    }
+
+    .source {
+        width: 50%;
+        padding-top: $s-x-large;
+
+        @media (max-width: $tabletMax) {
+            width: 100%;
+        }
+    }
+}

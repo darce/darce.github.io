@@ -1,9 +1,22 @@
 @import '../styles/vars.scss';
 
 .about {
+    .aside {
+        text-align: center;
+    }
+
     .headshot {
         img {
             border-radius: 50%;
+        }
+    }
+
+    .source {
+        width: 50%;
+        padding-top: $s-x-large;
+
+        @media (max-width: $tabletMax) {
+            width: 100%;
         }
     }
 }
