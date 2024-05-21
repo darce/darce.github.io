@@ -9,7 +9,7 @@
 
         @media(max-width: $tabletMax) {
             width: 100%;
-            margin-top: $s-x-large;
+            padding: $s-x-large 0 0 $s-large;
         }
 
         .title {
