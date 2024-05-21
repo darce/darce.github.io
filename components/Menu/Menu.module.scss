@@ -77,7 +77,7 @@
         }
 
         /** bottom border animation */
-        & ::before {
+        &::before {
             content: '';
             position: absolute;
             bottom: 0;
