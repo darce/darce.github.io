@@ -4,7 +4,7 @@ year: 2023
 title: Barbara Beirne Portfolio
 subtitle: Portfolio Design and Development
 description: 
-details: Extracting content from a legacy Flash website
+details: Redesign and develop a new site with assets rescued from a legacy Flash website.
 links:
 - url: http://barbarabeirne.com/
   label: Launch Project
@@ -15,9 +15,27 @@ tags:
 - Front-end
 - Javascript
 ---
-I was approached to redesign Barbara Beirne&apos;s photography showcase. 
-She was a New York photographer prolific during the 1980s. Most of her archives were encapsulated in a legacy Flash website. 
-The image assets had to be extracted from the binary .swf files (this process is called “decompiling”). 
+Barbara Beirne was a prolific New York photographer during the 1980s. Most of her archives were encapsulated in a Flash website, and neither the source files nor the original developer were available.
+I was approached to retrieve the images from the defunct Flash website and use those images to revamp Barbara Beirne's photography showcase.
 
-Future compatibility was a concern, so we decided to create a full-screen image carousel in Vanilla JavaScript.
+The process of reverse engineering a binary .SWF file is called “decompiling,” and there are several tools available, both free and paid. 
+I discovered that there is an active "Flash Decompiler Scene," and I used [FFDec](https://blog.free-decompiler.com/) for the job. 
+Although FFDec is cumbersome to install, the software successfully extracted the images from the .SWF provided. ![Black and white image image of three Cambodian teens standing in front of high school lockers](images/barbara-beirne-extracted-image.png)*Image extracted by FFDec from a .SWF file*
+
+Since future compatibility was a concern, features such as the full-screen image carousel were built using Vanilla JavaScript. Keyboard navigation was also implemented for both accessibility and ease of use.
+
+Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
 ![A group of children are climbing on a large pile of debris, one of them is waving the Ulster Banner. Image by Barbara Beirne](images/barbara-beirne-custom-carousel-belfast-8.jpg)
+
+**Some kind words from the client after project delivery:**
+
+> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional. 
+Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life. 
+The site is responsive and works seamlessly on all platforms and browsers. 
+Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate. 
+I had no references to go by when we hired Daniel and couldn't be more pleased with his work."
+>> *Alison Cornyn*
+
+>> *Artist + Co-Founder and Creative Director Picture Projects*
+
+>> *June 13, 2023*
