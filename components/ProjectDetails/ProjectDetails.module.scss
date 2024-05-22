@@ -15,6 +15,12 @@
 
     .links {}
 
+    >aside {
+        padding: 0 $s-x-large;
+        font-weight: 200;
+        font-style: italic;
+    }
+
     .post {
         display: grid;
         grid-template-columns: [post-start] auto [thumbnail] auto [post-end];
@@ -33,11 +39,22 @@
         img {
             width: 100%;
             object-fit: cover;
+            padding-top: $s-large;
+        }
+
+        figcaption {
+            font-weight: 200;
+            font-style: italic;
         }
     }
 
     .source {
         grid-area: left;
+
+        blockquote {
+            margin: 0;
+            padding: 0 0 0 $s-large;
+        }
 
         @media (max-width: $tabletMax) {
             display: block;
