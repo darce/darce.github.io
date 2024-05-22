@@ -5,6 +5,10 @@
 
     >h2 {
         font-size: 2rem;
+
+        @media (max-width: $tabletMax) {
+            font-size: 1.2rem;
+        }
     }
 
     .metadata {}
@@ -32,9 +36,15 @@
         }
     }
 
-
-
     .source {
         grid-area: left;
+
+        @media (max-width: $tabletMax) {
+            display: block;
+
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
     }
 }

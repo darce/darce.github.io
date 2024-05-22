@@ -41,6 +41,7 @@
             cursor: pointer;
             display: inline-block;
             font-size: 3rem;
+            margin-left: calc(-1 * $s-small);
         }
     }
 
