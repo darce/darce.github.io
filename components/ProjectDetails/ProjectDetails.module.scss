@@ -17,6 +17,9 @@
         grid-gap: $s-large;
         grid-template-areas: "left right gutter";
 
+        @media (max-width: $tabletMax) {
+            display: block;
+        }
 
         .imgWrapper {
             grid-area: right;
