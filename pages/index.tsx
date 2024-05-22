@@ -67,7 +67,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         updateProject()
         timeout = setInterval(() => {
             updateProject()
-        }, 5000)
+        }, 0)
 
         return () => clearInterval(timeout)
     }, [isAutoAdvance, isDesktop, projectsData])
