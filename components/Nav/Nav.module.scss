@@ -10,12 +10,24 @@
     font-size: 2.6rem;
     font-variation-settings: 'wght' 200;
 
+    @media(max-width: $tabletMax) {
+        font-size: 0.7rem;
+        position: absolute;
+        top: 0;
+        padding: $s-medium 0;
+        z-index: -1;
+    }
+
 
     ul {
         list-style: none;
         padding: 0;
         margin: $s-small $s-large;
         position: relative;
+
+        @media (max-width:$tabletMax) {
+            margin: 0;
+        }
     }
 
     li {
@@ -52,13 +64,5 @@
         mix-blend-mode: difference;
         /** Fix Safari mix-blend-mode render issue: */
         transform: translate3d(0, 0, 0);
-    }
-
-    @media(max-width: $tabletMax) {
-        font-size: 1rem;
-        position: absolute;
-        top: 0;
-        padding: $s-medium 0;
-        z-index: -1;
     }
 }

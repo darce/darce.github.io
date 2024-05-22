@@ -8,7 +8,7 @@
         flex-direction: column;
 
         @media (max-width: $tabletMax) {
-            display: block;
+            padding: 0;
         }
 
         .marquee {
@@ -19,7 +19,7 @@
 
             @media (max-width: $tabletMax) {
                 display: block;
-                padding: $s-small 0;
+                padding: 0 $s-large;
             }
         }
 

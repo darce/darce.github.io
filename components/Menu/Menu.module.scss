@@ -41,7 +41,6 @@
             cursor: pointer;
             display: inline-block;
             font-size: 3rem;
-            padding: 0 18px;
         }
     }
 
@@ -59,6 +58,16 @@
         h3 {
             margin: 0;
             padding: 0;
+
+            @media (max-width: $tabletMax) {
+                font-size: 1rem;
+            }
+        }
+
+        p {
+            @media (max-width: $tabletMax) {
+                font-size: 0.7rem;
+            }
         }
 
         /** define outline color before passing to isFocused() */
