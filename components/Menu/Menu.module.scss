@@ -88,6 +88,10 @@
             @include themeComponent($themes) {
                 color: t('highlight')
             }
+
+            @media (max-width: $tabletMax) {
+                font-size: 1rem;
+            }
         }
 
         /** bottom border animation */
