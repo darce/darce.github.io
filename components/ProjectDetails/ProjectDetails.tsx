@@ -27,7 +27,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
             <aside className={styles.metadata}>
                 {project.frontMatter.links && (
                     <div className={styles.links}>
-                        <a href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
+                        <a target="_blank" href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
                     </div>
                 )}
                 <p>{project.frontMatter.details}</p>
