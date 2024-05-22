@@ -9,7 +9,8 @@
 
         @media(max-width: $tabletMax) {
             width: 100%;
-            padding: $s-x-large 0 0 $s-large;
+            padding: 0;
+            margin-top: $s-x-large;
         }
 
         .title {
@@ -25,7 +26,8 @@
             @media(max-width: $tabletMax) {
                 width: 50%;
                 display: inline-block;
-                font-size: 1.2rem;
+                font-size: 1rem;
+                margin: 0;
             }
         }
 
@@ -41,7 +43,9 @@
                 width: 50%;
                 float: right;
                 display: inline-block;
-                font-size: 1rem;
+                font-size: 0.7rem;
+                margin: 0;
+                line-height: 1rem;
             }
         }
     }
