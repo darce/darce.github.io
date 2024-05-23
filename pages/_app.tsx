@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+import Head from "next/head";
+
 import { HeaderDataProvider } from '../contexts/HeaderContext'
 import { throttle } from '../lib/utils'
 import '../styles/global.scss'
@@ -66,6 +68,27 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     /** Wrap getLayout with HeaderDataProvider */
     return (
         <HeaderDataProvider initialData={pageProps.headerData}>
+            <Head>
+                <link
+                    rel="icon"
+                    href="/favicon.ico"
+                    sizes="16x16"
+                />
+                <link
+                    rel="icon"
+                    href="/favicon-32x32.png"
+                    sizes="32x32"
+                />
+                <link
+                    rel="icon"
+                    href="/favicon-96x96.png"
+                    sizes="96x96"
+                />
+                <link
+                    rel="apple-touch-icon"
+                    href="/apple-icon-180x180.png"
+                />
+            </Head>
             {getLayout(<Component {...pageProps} />)}
         </HeaderDataProvider>
     )
