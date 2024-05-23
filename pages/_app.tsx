@@ -38,6 +38,7 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
         }
     }, [])
 
+    /** Style tab focus */
     useEffect(() => {
         const handleKeyDownOnce = (event: KeyboardEvent) => {
             if (event.key === 'Tab') {
