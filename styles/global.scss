@@ -5,6 +5,10 @@
 
 body {
     background-color: $alabaster-white;
+
+    &.mobile-view {
+        overflow-x: hidden;
+    }
 }
 
 .base__palette {
