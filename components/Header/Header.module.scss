@@ -55,7 +55,7 @@
         position: relative;
 
         @media(max-width: $tabletMax) {
-            width: 100%;
+            width: auto;
             position: absolute;
             top: $s-x-large;
             left: 30%;
