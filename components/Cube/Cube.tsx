@@ -20,6 +20,8 @@ interface CubeProps {
 
 const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
+    const FULL_ROTATION_RADIANS = Math.PI * 2
+    const THROTTLE_DELAY_MS = 32
 
     /** Use refs for transient state */
     const verticesRef = useRef<Vertex[]>([
@@ -46,32 +48,52 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
     const handleMouseMove = useCallback(
         throttle((event: MouseEvent) => {
+            if (document.body.classList.contains('mobile-view')) return
+
             const proportionX = event.clientX / window.innerWidth
             const proportionY = event.clientY / window.innerHeight
 
-            /** Map proportions to full circle roations (2π radians) */
-            const fullRotaionRadians = Math.PI * 2
+            /** Map scroll position to full rotation (2π radians) */
             /** Full rotation from top to bottom */
-            angleXRef.current = proportionY * fullRotaionRadians
+            angleXRef.current = proportionY * FULL_ROTATION_RADIANS
             /** Full rotation from left to right */
-            angleYRef.current = proportionX * fullRotaionRadians
+            angleYRef.current = proportionX * FULL_ROTATION_RADIANS
 
             /** Optimize animation using requestAnimationFrame */
             requestAnimationFrame(updateVertices)
-        }, 16), []
-    )
+        }, THROTTLE_DELAY_MS), [])
+
+    const handleScroll = useCallback(
+        throttle(() => {
+            if (!document.body.classList.contains('mobile-view')) return
+
+            const scrollY = window.scrollY
+            const maxScrollY = document.documentElement.scrollHeight - window.innerHeight
+
+            /** Map scroll position to twice full rotation on mobile(2π radians) */
+            angleYRef.current = (scrollY / maxScrollY) * FULL_ROTATION_RADIANS * 2
+            angleXRef.current = (scrollY / maxScrollY) * FULL_ROTATION_RADIANS * 2
+
+            /** Optimize animation using requestAnimationFrame */
+            requestAnimationFrame(updateVertices)
+        }, THROTTLE_DELAY_MS), [])
 
     useEffect(() => {
         if (cubeRef.current) {
             const cubeRect = cubeRef.current.getBoundingClientRect()
             centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
             window.addEventListener('mousemove', handleMouseMove, false)
+            window.addEventListener('scroll', handleScroll, false)
+
+            /** Paint Cube on load */
+            updateVertices()
         }
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove)
+            window.removeEventListener('scroll', handleScroll, false)
         }
-    }, [])
+    }, [handleMouseMove, handleScroll])
 
     return (
         <div className={`${styles.cube} ${className || ''}`} ref={cubeRef}>
