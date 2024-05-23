@@ -1,4 +1,4 @@
-@import '/styles/palettes.scss';
+@import '../../styles/vars.scss';
 
 .cube {
     height: 100%;
@@ -11,12 +11,11 @@
 .vertex {
     display: inline-block;
     position: absolute;
-    width: 5px;
-    height: 5px;
-    cursor: pointer;
+    width: $s-small;
+    height: $s-small;
     transition: transform 0.1s ease-out;
     image-rendering: pixelated;
-    font-size: 10px;
+    mix-blend-mode: multiply;
 
     @include themeComponent($themes) {
         background-color: t('border');

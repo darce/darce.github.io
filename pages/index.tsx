@@ -16,11 +16,11 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [isTablet, setIsTablet] = useState<boolean | null>(null)
     const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
-    const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
+    // const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
 
     const handleSelectedProject = (selectedProject: MarkdownData) => {
         setSelectedProject(selectedProject)
-        setIsAutoAdvance(false)
+        // setIsAutoAdvance(false)
     }
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
             setIsMobile(isCurrentlyMobile)
             setIsTablet(isCurrentlyTablet)
             setIsDesktop(isCurrentlyDesktop)
-            setIsAutoAdvance(isCurrentlyDesktop)
+            // setIsAutoAdvance(isCurrentlyDesktop)
             setSelectedProject(null)
         }
 
@@ -52,25 +52,25 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (!isDesktop || !isAutoAdvance) return
-        /** Autoadvance projects */
-        let curSelection: number = 0;
-        let timeout: ReturnType<typeof setTimeout>
+    // useEffect(() => {
+    //     if (!isDesktop || !isAutoAdvance) return
+    //     /** Autoadvance projects */
+    //     let curSelection: number = 0;
+    //     let timeout: ReturnType<typeof setTimeout>
 
-        const updateProject = () => {
-            setSelectedProject(projectsData[curSelection])
-            /** Deactivate auto advance. It's jarring if the user is already reading. */
-            // curSelection = (curSelection + 1) % projectsData.length
-        }
+    //     const updateProject = () => {
+    //         setSelectedProject(projectsData[curSelection])
+    //         /** Deactivate auto advance. It's jarring if the user is already reading. */
+    //         // curSelection = (curSelection + 1) % projectsData.length
+    //     }
 
-        updateProject()
-        timeout = setInterval(() => {
-            updateProject()
-        }, 0)
+    //     updateProject()
+    //     timeout = setInterval(() => {
+    //         updateProject()
+    //     }, 0)
 
-        return () => clearInterval(timeout)
-    }, [isAutoAdvance, isDesktop, projectsData])
+    //     return () => clearInterval(timeout)
+    // }, [isAutoAdvance, isDesktop, projectsData])
 
     if (!projectsData || projectsData.length === 0) {
         return (
