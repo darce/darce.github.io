@@ -33,7 +33,9 @@
 
         .subtitle {
             font-size: 1.8rem;
-            font-weight: 300;
+            font-weight: 600;
+            line-height: 3rem;
+
 
             @include themeComponent($themes) {
                 color: t('subheader');
@@ -43,9 +45,9 @@
                 width: 50%;
                 float: right;
                 display: inline-block;
-                font-size: 0.7rem;
-                margin: 0;
+                font-size: 0.8rem;
                 line-height: 1rem;
+                margin: 0;
             }
         }
     }
@@ -57,8 +59,8 @@
         @media(max-width: $tabletMax) {
             width: auto;
             position: absolute;
-            top: $s-x-large;
-            left: 30%;
+            top: calc(12*$s-small);
+            left: 80%;
             z-index: 12;
         }
     }
