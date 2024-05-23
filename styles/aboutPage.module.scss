@@ -7,6 +7,10 @@
     }
 
     .headshot {
+        @media (max-width:$tabletMax) {
+            margin: 0;
+        }
+
         img {
             border-radius: 50%;
             width: 100%;
