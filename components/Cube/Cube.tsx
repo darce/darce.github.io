@@ -68,7 +68,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
             if (!document.body.classList.contains('mobile-view')) return
 
             const scrollY = window.scrollY
-            const maxScrollY = document.documentElement.scrollHeight - window.innerHeight
+            const maxScrollY = window.innerHeight
 
             /** Map scroll position to twice full rotation on mobile(2π radians) */
             angleYRef.current = (scrollY / maxScrollY) * FULL_ROTATION_RADIANS * 2
