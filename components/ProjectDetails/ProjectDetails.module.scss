@@ -19,6 +19,10 @@
         padding: 0 $s-x-large;
         font-weight: 200;
         font-style: italic;
+
+        @media (max-width:$tabletMax) {
+            padding: 0;
+        }
     }
 
     .post {
