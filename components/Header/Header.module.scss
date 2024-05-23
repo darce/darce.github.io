@@ -5,7 +5,7 @@
         width: 50%;
         padding: 0 0 0 $s-x-large;
         position: relative;
-        z-index: 10;
+        z-index: 14;
 
         @media(max-width: $tabletMax) {
             width: 100%;
@@ -57,7 +57,9 @@
         @media(max-width: $tabletMax) {
             width: 100%;
             position: absolute;
-            top: 0;
+            top: $s-x-large;
+            left: 30%;
+            z-index: 12;
         }
     }
 }
