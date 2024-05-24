@@ -9,6 +9,7 @@
     .headshot {
         @media (max-width:$tabletMax) {
             margin: 0;
+            max-width: 505px;
         }
 
         img {
