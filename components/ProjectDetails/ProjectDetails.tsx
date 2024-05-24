@@ -23,19 +23,19 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
             {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
-            <h2>{project.frontMatter.title}</h2>
+            <h2>{project.metaData.title}</h2>
             <aside className={styles.metadata}>
-                {project.frontMatter.links && (
+                {project.metaData.links && (
                     <div className={styles.links}>
-                        <a target="_blank" href={project.frontMatter.links[0].url}>{project.frontMatter.links[0].label}</a>
+                        <a target="_blank" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
                     </div>
                 )}
-                <p>{project.frontMatter.details}</p>
+                <p>{project.metaData.details}</p>
             </aside>
 
             <div className={styles.post}>
-                {project.frontMatter.images &&
-                    project.frontMatter.images.map((image, index) => {
+                {project.metaData.images &&
+                    project.metaData.images.map((image, index) => {
                         return (
                             <figure className={styles.imgWrapper} key={index}>
                                 <img src={`/images/${image.src}`} alt={image.alt} />

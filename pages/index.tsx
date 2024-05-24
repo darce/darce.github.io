@@ -84,7 +84,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         <main className="content">
             <Menu className="menu" projects={projectsData} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
             {selectedProject && (
-                <ProjectDetails className="projectDetails" key={selectedProject?.frontMatter.index} project={selectedProject} />
+                <ProjectDetails className="projectDetails" key={selectedProject?.metaData.index} project={selectedProject} />
             )}
         </main>
     </>
