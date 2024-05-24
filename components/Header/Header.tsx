@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
     const [GRAD, setGRAD] = useState(0)
     const [wght, setWght] = useState(0)
 
-    const masthead = headerData[0].frontMatter
+    const masthead = headerData[0].metaData
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove, false)

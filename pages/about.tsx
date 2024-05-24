@@ -12,7 +12,7 @@ interface AboutPageProps {
 
 const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
     const aboutContent = aboutData[0]
-    const headShotObj = aboutContent.frontMatter.images ? aboutContent.frontMatter.images[0] : null
+    const headShotObj = aboutContent.metaData.images ? aboutContent.metaData.images[0] : null
 
     return (
         <main className={`content ${styles.about}`}>

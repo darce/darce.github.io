@@ -1,7 +1,7 @@
 
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 
-export interface FrontMatter {
+export interface MetaData {
     index: number
     year: number
     title: string
@@ -22,6 +22,6 @@ export interface FrontMatter {
 
 export interface MarkdownData {
     slug: string
-    frontMatter: FrontMatter
+    metaData: MetaData
     mdxSource: MDXRemoteSerializeResult
 }
