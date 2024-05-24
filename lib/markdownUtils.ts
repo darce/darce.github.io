@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { serialize } from 'next-mdx-remote/serialize'
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
-import { FrontMatter } from '../types'
+import { MetaData } from '../types'
 
 
 /** Get MDX files in a subdirectory
@@ -28,13 +28,13 @@ export const getMdxFiles = (contentDir: string): string[] => {
  * @param filePath
  * @returns front matter & mdx source objects
  */
-export const parseMarkdownFile = async (filePath: string): Promise<{ frontMatter: FrontMatter; mdxSource: MDXRemoteSerializeResult }> => {
+export const parseMarkdownFile = async (filePath: string): Promise<{ metaData: MetaData; mdxSource: MDXRemoteSerializeResult }> => {
     const markdownWithMeta = fs.readFileSync(filePath, 'utf-8')
     const { data, content } = matter(markdownWithMeta)
-    const frontMatter = data as FrontMatter
+    const metaData = data as MetaData
 
     /** Serialize MDX into HTML */
     const mdxSource = await serialize(content)
 
-    return { frontMatter, mdxSource }
+    return { metaData, mdxSource }
 }

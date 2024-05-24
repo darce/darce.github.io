@@ -1,22 +1,22 @@
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import { parseMarkdownFile } from '../lib/markdownUtils'
-import { FrontMatter } from '../types'
+import { MetaData } from '../types'
 import { MDXRemote } from 'next-mdx-remote';
 
 import fs from 'fs'
 import path from 'path'
 
 interface ProjectProps {
-    frontMatter: FrontMatter
+    metaData: MetaData
     mdxSource: any
 }
 
-const ProjectPage: NextPage<ProjectProps> = ({ frontMatter, mdxSource }) => {
+const ProjectPage: NextPage<ProjectProps> = ({ metaData, mdxSource }) => {
     return (
         <>
-            <h1>{frontMatter.title}</h1>
-            <p>{frontMatter.subtitle}</p>
-            <p>{frontMatter.description}</p>
+            <h1>{metaData.title}</h1>
+            <p>{metaData.subtitle}</p>
+            <p>{metaData.description}</p>
             <MDXRemote {...mdxSource} />
         </>
     )
@@ -41,11 +41,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<ProjectProps> = async ({ params }) => {
     const slug = params?.slug as string;
     const filePath = path.join('content', 'projects', `${slug}.mdx`)
-    const { frontMatter, mdxSource } = await parseMarkdownFile(filePath)
+    const { metaData, mdxSource } = await parseMarkdownFile(filePath)
 
     return {
         props: {
-            frontMatter,
+            metaData,
             mdxSource,
         },
     };
