@@ -17,12 +17,12 @@ export const getMdxContent = async ({ subDir }: GetMdxContentArgs): Promise<MdxC
     const parsedMdxArray = await Promise.all(
         mdxFiles.map(async (filePath) => {
             const slug = path.basename(filePath).replace('.mdx', '')
-            const { frontMatter, mdxSource } = await parseMarkdownFile(filePath)
-            const index = typeof frontMatter.index === 'number' ? frontMatter.index : null
+            const { metaData, mdxSource } = await parseMarkdownFile(filePath)
+            const index = typeof metaData.index === 'number' ? metaData.index : null
             /** Return object for each mdx file */
             return {
                 slug,
-                frontMatter,
+                metaData,
                 mdxSource,
                 index
             }
