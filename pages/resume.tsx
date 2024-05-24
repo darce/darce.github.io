@@ -19,11 +19,11 @@ interface ResumeItem {
 }
 
 interface ResumePageProps {
-    resumeData: { frontMatter: ResumeSection }[]
+    resumeData: { metaData: ResumeSection }[]
 }
 
 const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
-    const resumeContent = resumeData[0]?.frontMatter
+    const resumeContent = resumeData[0]?.metaData
 
     const renderResumeValue = (value: string | string[] | ResumeItem | ResumeItem[]): React.ReactNode => {
         if (Array.isArray(value)) {
