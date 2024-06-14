@@ -13,6 +13,7 @@
 
     .navMobile {
         display: block;
+        margin: 0;
 
         @media(max-width: $tabletMax) {
             position: absolute;
@@ -22,10 +23,6 @@
             z-index: 10;
             box-shadow: $s-medium $s-medium rgba(0, 0, 0, 0.5);
             border: 1px solid black;
-
-            @include themeComponent($themes) {
-                background-color: t('background');
-            }
         }
     }
 
@@ -51,7 +48,7 @@
 
     li {
         counter-increment: custom;
-        padding: 0 0 0 $s-large;
+        padding: 0 $s-medium 0 $s-medium;
         border-bottom: $s solid;
         position: relative;
         cursor: pointer;
@@ -71,18 +68,23 @@
             }
         }
 
-        /** define outline color before passing to isFocused() */
         @include themeComponent($themes) {
+            /** define outline color before passing to isFocused() */
             $outline-color: t('activeBg');
             color: t('text');
-            background-color: t('backgroundColor');
+            background-color: t('inactiveBg');
             border-bottom-color: t('link');
             @include isFocused($outline-color);
         }
 
+        &.selected {
+            @include themeComponent($themes) {
+                background-color: t('backgroundColor');
+            }
+        }
 
         &::marker {
-            content: counter(custom);
+            content: counter(custom) ' ';
             font-variation-settings: 'wght' 300;
             font-size: 1.2rem;
 
