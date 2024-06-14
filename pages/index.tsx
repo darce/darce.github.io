@@ -5,7 +5,6 @@ import { MarkdownData } from '../types'
 import Layout from '../components/Layout'
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
-import { useSearchParams } from 'next/navigation'
 
 interface WorkProps {
     projectsData: MarkdownData[],
@@ -19,7 +18,6 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
     const handleSelectedProject = (selectedProject: MarkdownData) => {
-        console.log('selectedProject:', selectedProject)
         setSelectedProject(selectedProject)
     }
 
