@@ -52,7 +52,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     }, [])
 
     useEffect(() => {
-        if (isDesktop) {
+        if (isDesktop && projectsData && projectsData.length > 0) {
             setSelectedProject(projectsData[0])
         }
     }, [isDesktop, projectsData])
