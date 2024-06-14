@@ -22,7 +22,7 @@
     ul {
         list-style: none;
         padding: 0;
-        margin: $s-small $s-large;
+        margin: $s-small calc($s-small * 6.5);
         position: relative;
 
         @media (max-width:$tabletMax) {
