@@ -5,6 +5,7 @@ import { MarkdownData } from '../types'
 import Layout from '../components/Layout'
 import Menu from '../components/Menu/Menu'
 import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
+import { useSearchParams } from 'next/navigation'
 
 interface WorkProps {
     projectsData: MarkdownData[],
@@ -12,15 +13,14 @@ interface WorkProps {
 
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
+    // const [selectedProjectUrl, setSelectedProjectUrl] = useSearchParams()
     const [isMobile, setIsMobile] = useState<boolean | null>(null)
     const [isTablet, setIsTablet] = useState<boolean | null>(null)
     const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
-    // const [isAutoAdvance, setIsAutoAdvance] = useState<boolean | null>(null)
-
     const handleSelectedProject = (selectedProject: MarkdownData) => {
+        console.log('selectedProject:', selectedProject)
         setSelectedProject(selectedProject)
-        // setIsAutoAdvance(false)
     }
 
     useEffect(() => {
@@ -34,7 +34,6 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
             setIsMobile(isCurrentlyMobile)
             setIsTablet(isCurrentlyTablet)
             setIsDesktop(isCurrentlyDesktop)
-            // setIsAutoAdvance(isCurrentlyDesktop)
             setSelectedProject(null)
         }
 
@@ -52,25 +51,11 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (!isDesktop || !isAutoAdvance) return
-    //     /** Autoadvance projects */
-    //     let curSelection: number = 0;
-    //     let timeout: ReturnType<typeof setTimeout>
-
-    //     const updateProject = () => {
-    //         setSelectedProject(projectsData[curSelection])
-    //         /** Deactivate auto advance. It's jarring if the user is already reading. */
-    //         // curSelection = (curSelection + 1) % projectsData.length
-    //     }
-
-    //     updateProject()
-    //     timeout = setInterval(() => {
-    //         updateProject()
-    //     }, 0)
-
-    //     return () => clearInterval(timeout)
-    // }, [isAutoAdvance, isDesktop, projectsData])
+    useEffect(() => {
+        if (isDesktop) {
+            setSelectedProject(projectsData[0])
+        }
+    }, [isDesktop, projectsData])
 
     if (!projectsData || projectsData.length === 0) {
         return (
