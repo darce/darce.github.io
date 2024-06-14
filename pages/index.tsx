@@ -26,7 +26,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     useEffect(() => {
         /** Observe changes in the body element */
         /** Autoadvance projects on desktop only */
-        const updateResponsiveView = () => {
+        const setResponsiveViewStates = () => {
             const isCurrentlyMobile = document.body.classList.contains('mobile-view')
             const isCurrentlyTablet = document.body.classList.contains('mobile-view')
             const isCurrentlyDesktop = !isCurrentlyMobile && !isCurrentlyTablet
@@ -34,14 +34,13 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
             setIsMobile(isCurrentlyMobile)
             setIsTablet(isCurrentlyTablet)
             setIsDesktop(isCurrentlyDesktop)
-            setSelectedProject(null)
         }
 
-        updateResponsiveView()
+        setResponsiveViewStates()
 
         const observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
-                updateResponsiveView()
+                setResponsiveViewStates()
             })
         })
 
@@ -51,9 +50,12 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
         }
     }, [])
 
+    /** Auto select first project only on desktop */
     useEffect(() => {
         if (isDesktop && projectsData && projectsData.length > 0) {
             setSelectedProject(projectsData[0])
+        } else if (isTablet || isMobile) {
+            setSelectedProject(null)
         }
     }, [isDesktop, projectsData])
 
