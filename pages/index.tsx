@@ -1,82 +1,24 @@
-import { useState, useEffect, useContext, ReactElement } from 'react'
+import { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
-import { getMdxContent } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
 import Layout from '../components/Layout'
-import Menu from '../components/Menu/Menu'
-import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
+import Work from '../components/Work/Work'
+import { ProjectDataProvider } from '../contexts/ProjectsContext'
 
-interface WorkProps {
-    projectsData: MarkdownData[],
+interface HomePageProps {
+    projectsData: MarkdownData[]
 }
 
-const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
-    const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
-    // const [selectedProjectUrl, setSelectedProjectUrl] = useSearchParams()
-    const [isMobile, setIsMobile] = useState<boolean | null>(null)
-    const [isTablet, setIsTablet] = useState<boolean | null>(null)
-    const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
-
-    const handleSelectedProject = (selectedProject: MarkdownData) => {
-        setSelectedProject(selectedProject)
-    }
-
-    useEffect(() => {
-        /** Observe changes in the body element */
-        /** Autoadvance projects on desktop only */
-        const setResponsiveViewStates = () => {
-            const isCurrentlyMobile = document.body.classList.contains('mobile-view')
-            const isCurrentlyTablet = document.body.classList.contains('mobile-view')
-            const isCurrentlyDesktop = !isCurrentlyMobile && !isCurrentlyTablet
-
-            setIsMobile(isCurrentlyMobile)
-            setIsTablet(isCurrentlyTablet)
-            setIsDesktop(isCurrentlyDesktop)
-        }
-
-        setResponsiveViewStates()
-
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                setResponsiveViewStates()
-            })
-        })
-
-        observer.observe(document.body, { attributes: true })
-        return () => {
-            observer.disconnect()
-        }
-    }, [])
-
-    /** Auto select first project only on desktop */
-    useEffect(() => {
-        if (isDesktop && projectsData && projectsData.length > 0) {
-            setSelectedProject(projectsData[0])
-        } else if (isTablet || isMobile) {
-            setSelectedProject(null)
-        }
-    }, [isDesktop, projectsData])
-
-    if (!projectsData || projectsData.length === 0) {
-        return (
-            <>
-                <p>No markdown content found</p>
-            </>
-        )
-    }
-
-    return (<>
-        <main className="content">
-            <Menu className="menu" projects={projectsData} selectedProject={selectedProject} onSelectProject={handleSelectedProject} />
-            {selectedProject && (
-                <ProjectDetails className="projectDetails" key={selectedProject?.metaData.index} project={selectedProject} />
-            )}
-        </main>
-    </>
+const HomePage: NextPageWithLayout<HomePageProps> = ({ projectsData }) => {
+    console.log('projectsData, index', projectsData)
+    return (
+        <ProjectDataProvider projectsData={projectsData}>
+            <Work projectsData={projectsData} />
+        </ProjectDataProvider>
     )
 }
 
-Work.getLayout = (page: ReactElement) => {
+HomePage.getLayout = (page: ReactElement) => {
     return (
         <Layout>
             {page}
@@ -84,17 +26,4 @@ Work.getLayout = (page: ReactElement) => {
     )
 }
 
-/** Call getStaticProps on build to get data from mdx files*/
-export const getStaticProps = async () => {
-    const projectsProps = await getMdxContent({ subDir: 'projects' })
-    const headerProps = await getMdxContent({ subDir: 'header' })
-
-    return {
-        props: {
-            projectsData: projectsProps.parsedMdxArray,
-            headerData: headerProps.parsedMdxArray,
-        }
-    }
-}
-
-export default Work
+export default HomePage
