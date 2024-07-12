@@ -16,7 +16,6 @@ export const useHeaderData = () => {
 }
 
 export const HeaderDataProvider: React.FC<{ children: React.ReactNode, initialData?: MarkdownData[] }> = ({ children, initialData = [] }) => {
-
     return (
         <HeaderContext.Provider value={{ headerData: initialData }}>
             {children}
