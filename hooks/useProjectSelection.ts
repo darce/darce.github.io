@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { MarkdownData } from '../types'
+import { useProjectData } from '../contexts/ProjectsContext'
 
-const useProjectSelection = (projectsData: MarkdownData[]) => {
+const useProjectSelection = () => {
     const router = useRouter()
+    const { projectsData } = useProjectData()
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
 
     useEffect(() => {
-        const projectName = router.query.project
+        console.log('projectsData', projectsData)
+        const projectName = router.query.slug
         if (projectName && projectsData) {
-            const project = projectsData.find(p => p.metaData.title === projectName)
+            const project = projectsData.find(p => p.slug === projectName)
             setSelectedProject(project || null)
         }
     }, [router.query, projectsData])
 
     const handleSelectedProject = (project: MarkdownData) => {
         setSelectedProject(project)
-        router.push(`/work/${project.metaData.title}`, undefined, { shallow: true })
+        router.push(`/work/${project.slug}`, undefined, { shallow: true })
     }
 
     return {
