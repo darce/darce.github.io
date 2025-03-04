@@ -22,6 +22,8 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+    console.log('App render pageProps:', pageProps)
+
     useEffect(() => {
         /** Throttled event handler for handling window resize */
         const handleResize = throttle(() => {
@@ -105,25 +107,14 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                         `
                     }}
                 />
+                <Component {...pageProps} />
             </HeaderDataProvider>
 
-            <ProjectDataProvider projectsData={pageProps.projectsData}>
+            {/* <ProjectDataProvider projectsData={pageProps.projectsData}>
                 <Component {...pageProps} />
-            </ProjectDataProvider>
+            </ProjectDataProvider> */}
         </>
     )
-}
-
-/** Call getStaticProps on build to get data from mdx files*/
-export const getStaticProps = async () => {
-    const projectsProps = await getMdxContent({ subDir: 'projects' })
-    const headerProps = await getMdxContent({ subDir: 'header' })
-    return {
-        props: {
-            projectsData: projectsProps.parsedMdxArray,
-            headerData: headerProps.parsedMdxArray,
-        }
-    }
 }
 
 export default PortfolioApp

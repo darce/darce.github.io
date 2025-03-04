@@ -12,7 +12,10 @@ interface MdxContentProps {
 
 export const getMdxContent = async ({ subDir }: GetMdxContentArgs): Promise<MdxContentProps> => {
     const contentDir = path.join(process.cwd(), 'content', subDir)
+    console.log('Reading directory:', contentDir)
+
     const mdxFiles = getMdxFiles(contentDir)
+    console.log('Found files:', mdxFiles)
 
     const parsedMdxArray = await Promise.all(
         mdxFiles.map(async (filePath) => {
@@ -35,6 +38,8 @@ export const getMdxContent = async ({ subDir }: GetMdxContentArgs): Promise<MdxC
         }
         )
     }
+
+    console.log('Parsed MDX array:', parsedMdxArray)
 
     return {
         parsedMdxArray
