@@ -19,7 +19,6 @@ const Nav: React.FC<NavProps> = ({ className }) => {
     const sections: NavItem[] = [
         { loc: '/', label: 'work' },
         { loc: 'about', label: 'about' },
-        { loc: 'resume', label: 'resume' },
     ]
 
     const updateSliderStyle = () => {
