@@ -19,13 +19,10 @@ const Work: NextPageWithLayout<WorkProps> = () => {
     console.log('Work component render:', { projectsData, selectedProject, isDesktop })
 
     useEffect(() => {
-        if (!projectsData) return;
+        if (!projectsData || projectsData.length === 0) return;
         // If we're on a project page, find and select that project
-        if (router.query.project && projectsData.length > 0) {
-            const project = projectsData.find(p => p.slug === router.query.project)
-            if (project) {
-                handleSelectedProject(project)
-            }
+        if (isDesktop && !selectedProject && !router.query.project) {
+            handleSelectedProject(projectsData[0])
         }
         // Otherwise, if we're on desktop, select the first project
         else if
