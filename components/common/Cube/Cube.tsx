@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
-import * as MatrixTransforms from '../../lib/matrixTransformations'
+import * as MatrixTransforms from '../../../lib/matrixTransformations'
 import styles from './Cube.module.scss'
-import { throttle } from '../../lib/utils'
+import { throttle } from '../../../lib/utils'
 
 interface Vertex {
     x: number

@@ -1,4 +1,4 @@
-@import '../../styles/vars.scss';
+@import '../../../styles/vars.scss';
 
 @mixin generateSlats($slatCount: 0) {
     $totalDuration: 1s;

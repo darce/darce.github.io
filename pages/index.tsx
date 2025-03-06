@@ -2,9 +2,9 @@ import { useState, useEffect, useContext, ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
 import { getMdxContent } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
-import Layout from '../components/Layout'
-import Menu from '../components/Menu/Menu'
-import ProjectDetails from '../components/ProjectDetails/ProjectDetails'
+import Layout from '../components/layout/Layout'
+import Menu from '../components/composite/Menu/Menu'
+import ProjectDetails from '../components/features/ProjectDetails/ProjectDetails'
 
 interface WorkProps {
     projectsData: MarkdownData[],
