@@ -3,7 +3,7 @@ import type { NextPageWithLayout } from './_app'
 import { MarkdownData } from '../types'
 import { getMdxContent } from '../lib/getMdxContent'
 import { MDXRemote } from 'next-mdx-remote'
-import Layout from '../components/Layout'
+import Layout from '../components/layout/Layout'
 import styles from '../styles/aboutPage.module.scss'
 
 interface AboutPageProps {

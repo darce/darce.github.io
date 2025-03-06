@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Header from './Header/Header'
-import { useHeaderData } from '../contexts/HeaderContext'
+import { useHeaderData } from '../../contexts/HeaderContext'
 
 interface LayoutProps {
     children: React.ReactNode,

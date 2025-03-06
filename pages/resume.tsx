@@ -2,7 +2,7 @@ import React from 'react'
 import type { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
 import { getMdxContent } from '../lib/getMdxContent'
-import Layout from '../components/Layout'
+import Layout from '../components/layout/Layout'
 import styles from '../styles/resumePage.module.scss'
 
 interface ResumeSection {
