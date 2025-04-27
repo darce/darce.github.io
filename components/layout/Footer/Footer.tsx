@@ -1,5 +1,5 @@
 import React from 'react'
-import { MarkdownData } from '../../types'
+import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 
 interface FooterProps {

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { MarkdownData } from '../../types'
+import { MarkdownData } from '../../../types'
 import styles from './Menu.module.scss'
 
 interface MenuProps {
