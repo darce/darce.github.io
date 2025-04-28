@@ -1,8 +1,7 @@
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import { parseMarkdownFile } from '../lib/markdownUtils'
-import { MetaData } from '../types'
+import { parseMarkdownFile } from '../../lib/markdownUtils'
+import { MetaData } from '../../types'
 import { MDXRemote } from 'next-mdx-remote';
-
 import fs from 'fs'
 import path from 'path'
 
@@ -23,14 +22,22 @@ const ProjectPage: NextPage<ProjectProps> = ({ metaData, mdxSource }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    /** Content is only in the 'projects' subdirectory */
-    const files = fs.readdirSync(path.join('content', 'projects'))
-    const paths = files.filter(file => file.endsWith('.mdx'))
-        .map((filename) => ({
-            params: {
-                slug: filename.replace('.mdx', ''),
-            }
-        }))
+    const sections = ['projects'];
+
+    /** return flat array of paths to use in getStaticProps. slug is inferred from filename. */
+    const paths = sections.flatMap(section => {
+        const dirPath = path.join('content', section);
+        if (!fs.existsSync(dirPath)) return [];
+
+        return fs.readdirSync(dirPath)
+            .filter(file => file.endsWith('.mdx'))
+            .map((filename) => ({
+                params: {
+                    section,
+                    slug: filename.replace('.mdx', ''),
+                }
+            }));
+    });
 
     return {
         paths,
@@ -39,8 +46,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async ({ params }) => {
+    const section = params?.section as string;
     const slug = params?.slug as string;
-    const filePath = path.join('content', 'projects', `${slug}.mdx`)
+    const filePath = path.join('content', section, `${slug}.mdx`)
     const { metaData, mdxSource } = await parseMarkdownFile(filePath)
 
     return {
