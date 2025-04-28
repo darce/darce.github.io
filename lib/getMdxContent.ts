@@ -14,8 +14,13 @@ export const getMdxContent = async ({ subDir }: GetMdxContentArgs): Promise<MdxC
     const contentDir = path.join(process.cwd(), 'content', subDir)
     const mdxFiles = getMdxFiles(contentDir)
 
-    const parsedMdxArray = await Promise.all(
+    const mdxArray = await Promise.all(
         mdxFiles.map(async (filePath) => {
+            if(!filePath || typeof filePath !== 'string') {
+                console.warn('** Invalid file path:', filePath);
+                return null;
+            }
+
             const slug = path.basename(filePath).replace('.mdx', '')
             const { metaData, mdxSource } = await parseMarkdownFile(filePath)
             const index = typeof metaData.index === 'number' ? metaData.index : null
@@ -26,12 +31,13 @@ export const getMdxContent = async ({ subDir }: GetMdxContentArgs): Promise<MdxC
                 mdxSource,
                 index
             }
-        }))
+        }));
 
+    const parsedMdxArray = mdxArray.filter(mdx => mdx !== null) as MarkdownData[]
     /** Only sort if index is present in all members of the array */
-    if (parsedMdxArray.every(mdx => mdx.index !== null)) {
+    if (parsedMdxArray.every(mdx => mdx.metaData.index !== null)) {
         parsedMdxArray.sort((a, b) => {
-            return (a.index as number) - (b.index as number)
+            return (a.metaData.index as number) - (b.metaData.index as number)
         }
         )
     }
