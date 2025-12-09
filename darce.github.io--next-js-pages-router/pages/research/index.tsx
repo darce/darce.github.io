@@ -10,6 +10,9 @@ interface ResearchProps {
 }
 
 const Research: NextPageWithLayout<ResearchProps> = ({ researchData }) => {
+    // DEBUG: Log the data being passed
+    console.log('Research page researchData:', researchData?.map(d => d.slug))
+
     return (
         <SectionView
             section="research"
