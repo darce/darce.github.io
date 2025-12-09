@@ -7,14 +7,17 @@ interface OrderBookProps {
     apiBaseUrl?: string
 }
 
-// API base URL - can be overridden via props or environment variable
-const DEFAULT_API_URL = process.env.NEXT_PUBLIC_ORDERBOOK_API_URL || 'https://orderbook-api.vercel.app'
+// API URLs
+const BINANCE_API_URL = 'https://api.binance.com/api/v3'
+const PROXY_API_URL = process.env.NEXT_PUBLIC_ORDERBOOK_API_URL || ''
 
+// Binance trading pairs
 const SYMBOLS = [
-    { id: 'KRAKEN_SPOT_BTC_USD', label: 'BTC/USD (Kraken)' },
-    { id: 'KRAKEN_SPOT_ETH_USD', label: 'ETH/USD (Kraken)' },
-    { id: 'COINBASE_SPOT_BTC_USD', label: 'BTC/USD (Coinbase)' },
-    { id: 'BINANCE_SPOT_BTC_USDT', label: 'BTC/USDT (Binance)' },
+    { id: 'BTCUSDT', label: 'BTC/USDT' },
+    { id: 'ETHUSDT', label: 'ETH/USDT' },
+    { id: 'BNBUSDT', label: 'BNB/USDT' },
+    { id: 'SOLUSDT', label: 'SOL/USDT' },
+    { id: 'XRPUSDT', label: 'XRP/USDT' },
 ]
 
 const SIGNIFICANT_SIZE_THRESHOLD = 1 // Size threshold for significant orders
@@ -73,28 +76,42 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    const baseUrl = apiBaseUrl || DEFAULT_API_URL
-
     const fetchOrderBook = useCallback(async () => {
         setLoading(true)
         setError(null)
 
         try {
-            const response = await fetch(`${baseUrl}/api/orderbook?symbol=${symbol}`)
+            // Use proxy API if provided, otherwise call Binance directly
+            const url = apiBaseUrl || PROXY_API_URL
+                ? `${apiBaseUrl || PROXY_API_URL}/api/orderbook?symbol=${symbol}`
+                : `${BINANCE_API_URL}/depth?symbol=${symbol}&limit=20`
+
+            const response = await fetch(url)
 
             if (!response.ok) {
                 const errorData = await response.json()
-                throw new Error(errorData.error || 'Failed to fetch order book')
+                throw new Error(errorData.error || errorData.msg || 'Failed to fetch order book')
             }
 
-            const orderBookData: OrderBookData = await response.json()
+            const rawData = await response.json()
+            
+            // Transform Binance format if calling directly
+            const orderBookData: OrderBookData = rawData.bids && Array.isArray(rawData.bids[0])
+                ? {
+                    symbol,
+                    lastUpdateId: rawData.lastUpdateId,
+                    bids: rawData.bids.map((b: string[]) => ({ price: parseFloat(b[0]), size: parseFloat(b[1]) })),
+                    asks: rawData.asks.map((a: string[]) => ({ price: parseFloat(a[0]), size: parseFloat(a[1]) })),
+                }
+                : rawData
+
             setData(orderBookData)
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred')
         } finally {
             setLoading(false)
         }
-    }, [symbol, baseUrl])
+    }, [symbol, apiBaseUrl])
 
     useEffect(() => {
         fetchOrderBook()
@@ -138,7 +155,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
                 <div className={styles.error}>
                     <strong>Error:</strong> {error}
                     <br />
-                    <small>Make sure COINAPI_KEY is set in your environment variables.</small>
+                    <small>Please try again or select a different trading pair.</small>
                 </div>
             </div>
         )
@@ -265,7 +282,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
 
             {/* Timestamp */}
             <div className={styles.timestamp}>
-                Last updated: {new Date(data.time_coinapi).toLocaleString()}
+                {data.symbol} · Update ID: {data.lastUpdateId}
             </div>
         </div>
     )

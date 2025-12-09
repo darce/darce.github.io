@@ -2,7 +2,13 @@ import React, { useState } from 'react'
 import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import TransitionOverlay from '../../composite/TransitionOverlay/TransitionOverlay'
+import OrderBook from '../OrderBook/OrderBook'
 import styles from './ProjectDetails.module.scss'
+
+// Custom components available in MDX content
+const mdxComponents = {
+    OrderBook,
+}
 
 interface ProjectDetailsProps {
     project: MarkdownData
@@ -44,7 +50,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                         )
                     })}
                 <div className={styles.source}>
-                    <MDXRemote {...project.mdxSource} />
+                    <MDXRemote {...project.mdxSource} components={mdxComponents} />
                 </div>
             </div>
         </article >

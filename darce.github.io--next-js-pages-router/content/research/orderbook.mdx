@@ -4,32 +4,36 @@ year: 2024
 title: Crypto Order Book Visualizer
 subtitle: Real-time market depth analysis
 description: Interactive cryptocurrency order book visualization
-details: Real-time order book data visualization using CoinAPI, displaying market depth, bid-ask spread, and order imbalance metrics.
+details: Real-time order book data visualization using Binance API, displaying market depth, bid-ask spread, and order imbalance metrics.
 links:
-- url: https://docs.coinapi.io/
-  label: CoinAPI Documentation
+- url: https://developers.binance.com/docs/binance-spot-api-docs/rest-api
+  label: Binance API Documentation
 tags:
 - React
 - TypeScript
-- CoinAPI
+- Binance API
 - Data Visualization
 - Cryptocurrency
 ---
 
+## Live Order Book
+
+<OrderBook />
+
 ## Overview
 
-This research prototype demonstrates real-time cryptocurrency order book data retrieval and visualization using the CoinAPI cryptocurrency API.
+This research prototype demonstrates real-time cryptocurrency order book data retrieval and visualization using the Binance public API.
 
 ### Features
 
 - **Order Book Depth Visualization**: Visual representation of buy (bid) and sell (ask) orders at different price levels
 - **Market Spread**: Real-time calculation of the difference between best bid and best ask prices
 - **Order Imbalance**: Analysis of the disparity between total bid and ask volumes
-- **Significant Price Levels**: Identification of price levels with substantial order volumes
+- **Multiple Trading Pairs**: Support for BTC, ETH, BNB, SOL, and XRP against USDT
 
 ### How It Works
 
-The application fetches real-time order book data from the CoinAPI REST endpoint, which provides:
+The application fetches real-time order book data from the Binance REST API, which provides:
 - Current bid orders (buyers willing to purchase)
 - Current ask orders (sellers willing to sell)
 - Price and size for each order level
