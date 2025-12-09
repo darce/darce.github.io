@@ -18,20 +18,34 @@ const Nav: React.FC<NavProps> = ({ className }) => {
 
     const sections: NavItem[] = [
         { loc: '/', label: 'work' },
+        { loc: '/research', label: 'research' },
         { loc: '/about', label: 'about' },
     ]
 
     const updateSliderStyle = () => {
         if (navRef.current) {
-            /** Handle slash in pathname & root route */
-            /** Treat /projects/* and /[section]/[slug] paths as 'work' section */
+            /** Determine which nav item should be highlighted based on current path */
             let dataPathToken: string
-            if (router.pathname === '/' || 
-                router.pathname.startsWith('/projects') || 
-                router.pathname === '/[section]/[slug]') {
+            const pathname = router.pathname
+            const asPath = router.asPath
+
+            if (pathname === '/' || pathname.startsWith('/projects') || asPath.startsWith('/projects')) {
+                // Homepage and project pages map to 'work'
                 dataPathToken = '/'
+            } else if (pathname.startsWith('/research') || asPath.startsWith('/research')) {
+                // Research section pages
+                dataPathToken = '/research'
+            } else if (pathname === '/[section]/[slug]') {
+                // Dynamic section pages - determine from actual path
+                if (asPath.startsWith('/projects')) {
+                    dataPathToken = '/'
+                } else if (asPath.startsWith('/research')) {
+                    dataPathToken = '/research'
+                } else {
+                    dataPathToken = pathname
+                }
             } else {
-                dataPathToken = router.pathname
+                dataPathToken = pathname
             }
             /** cast element as HTMLElement */
             const activeElement = navRef.current.querySelector(`[data-path="${dataPathToken}"]`) as HTMLElement
@@ -69,7 +83,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
         return () => {
             window.removeEventListener('resize', handleResize)
         }
-    }, [router.pathname])
+    }, [router.pathname, router.asPath])
 
     return (
         <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé' ref={navRef}>

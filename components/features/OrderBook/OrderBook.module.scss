@@ -1,0 +1,225 @@
+.orderBook {
+    width: 100%;
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.symbolSelect {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border, #ccc);
+    border-radius: 4px;
+    background: var(--color-bg, #fff);
+    color: var(--color-text, #000);
+    cursor: pointer;
+}
+
+.refreshButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border, #ccc);
+    border-radius: 4px;
+    background: var(--color-bg-secondary, #f5f5f5);
+    color: var(--color-text, #000);
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: var(--color-bg-hover, #e5e5e5);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.metricCard {
+    padding: 1rem;
+    border: 1px solid var(--color-border, #ccc);
+    border-radius: 8px;
+    background: var(--color-bg-secondary, #f9f9f9);
+}
+
+.metricLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 0.25rem;
+}
+
+.metricValue {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.positive {
+    color: var(--color-positive, #22c55e);
+}
+
+.negative {
+    color: var(--color-negative, #ef4444);
+}
+
+.chartContainer {
+    margin-bottom: 2rem;
+}
+
+.chartTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.depthChart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.depthRow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.bidBar {
+    height: 24px;
+    background: linear-gradient(to left, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+}
+
+.askBar {
+    height: 24px;
+    background: linear-gradient(to right, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
+.priceColumn {
+    text-align: center;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.sizeText {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #666);
+}
+
+.orderTable {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.orderColumn {
+    h4 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--color-border, #ccc);
+    }
+}
+
+.bidsColumn h4 {
+    color: var(--color-positive, #22c55e);
+}
+
+.asksColumn h4 {
+    color: var(--color-negative, #ef4444);
+}
+
+.orderList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.orderRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    border-radius: 2px;
+
+    &:hover {
+        background: var(--color-bg-hover, #f0f0f0);
+    }
+}
+
+.bidRow {
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.askRow {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--color-text-muted, #666);
+}
+
+.error {
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: var(--color-negative, #ef4444);
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #666);
+    margin-top: 1rem;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .orderTable {
+        grid-template-columns: 1fr;
+    }
+
+    .depthRow {
+        font-size: 0.75rem;
+    }
+
+    .metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+}
