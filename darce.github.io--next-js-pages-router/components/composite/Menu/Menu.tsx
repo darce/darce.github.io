@@ -64,19 +64,21 @@ const Menu: React.FC<MenuProps> = ({ projects, selectedProject, onSelectProject,
                 </div>
             </label>
             <ol className={styles.navMobile}>
-                {projects.map((project, index) => (
-                    <li key={project.slug + index}
-                        role="button"
-                        aria-label={project.metaData.title}
-                        tabIndex={0}
-                        className={project === selectedProject ? styles.selected : ''}
-                        onClick={() => handleClick(project)}
-                        onKeyDown={(event) => handleKeyDown(event, project)}>
-                        <h3 className={styles.title}>{project.metaData.title}</h3>
-                        <p className={styles.subtitle}>{project.metaData.subtitle}</p>
-                    </li>
-                ))
-                }
+                {projects.map((project, index) => {
+                    const isSelected = selectedProject?.slug === project.slug
+                    return (
+                        <li key={project.slug + index}
+                            role="button"
+                            aria-label={project.metaData.title}
+                            tabIndex={0}
+                            className={isSelected ? styles.selected : ''}
+                            onClick={() => handleClick(project)}
+                            onKeyDown={(event) => handleKeyDown(event, project)}>
+                            <h3 className={styles.title}>{project.metaData.title}</h3>
+                            <p className={styles.subtitle}>{project.metaData.subtitle}</p>
+                        </li>
+                    )
+                })}
             </ol >
         </nav>
 
