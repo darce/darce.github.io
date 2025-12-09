@@ -81,7 +81,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
 
         try {
             const response = await fetch(`${baseUrl}/api/orderbook?symbol=${symbol}`)
-            
+
             if (!response.ok) {
                 const errorData = await response.json()
                 throw new Error(errorData.error || 'Failed to fetch order book')
@@ -111,17 +111,15 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
 
     // Get top N levels for visualization
     const displayLevels = useMemo(() => {
-        if (!data) return { bids: [], asks: [] }
-        
+        if (!data) return { bids: [], asks: [], maxSize: 0 }
+
         const maxLevels = 15
         const bids = data.bids.slice(0, maxLevels)
         const asks = data.asks.slice(0, maxLevels)
-        
+
         // Find max size for scaling bars
-        const maxSize = Math.max(
-            ...bids.map(b => b.size),
-            ...asks.map(a => a.size)
-        )
+        const allSizes = [...bids.map(b => b.size), ...asks.map(a => a.size)]
+        const maxSize = allSizes.length > 0 ? Math.max(...allSizes) : 1
 
         return { bids, asks, maxSize }
     }, [data])
@@ -153,7 +151,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
     return (
         <div className={`${styles.orderBook} ${className || ''}`}>
             <div className={styles.header}>
-                <select 
+                <select
                     className={styles.symbolSelect}
                     value={symbol}
                     onChange={(e) => setSymbol(e.target.value)}
@@ -162,7 +160,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
                         <option key={s.id} value={s.id}>{s.label}</option>
                     ))}
                 </select>
-                <button 
+                <button
                     className={styles.refreshButton}
                     onClick={fetchOrderBook}
                     disabled={loading}
@@ -210,8 +208,8 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
 
                         return (
                             <div key={index} className={styles.depthRow}>
-                                <div 
-                                    className={styles.bidBar} 
+                                <div
+                                    className={styles.bidBar}
                                     style={{ width: `${bidWidth}%`, marginLeft: 'auto' }}
                                 >
                                     <span className={styles.sizeText}>{formatSize(bid.size)}</span>
@@ -226,8 +224,8 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
                                     )}
                                 </div>
                                 {ask && (
-                                    <div 
-                                        className={styles.askBar} 
+                                    <div
+                                        className={styles.askBar}
                                         style={{ width: `${askWidth}%` }}
                                     >
                                         <span className={styles.sizeText}>{formatSize(ask.size)}</span>
