@@ -94,7 +94,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ className, apiBaseUrl }) => {
             }
 
             const rawData = await response.json()
-            
+
             // Transform Binance format if calling directly
             const orderBookData: OrderBookData = rawData.bids && Array.isArray(rawData.bids[0])
                 ? {
