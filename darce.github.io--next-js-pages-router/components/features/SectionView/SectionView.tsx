@@ -52,6 +52,9 @@ const SectionView: React.FC<SectionViewProps> = ({
   }, [isDesktop, isMobile, isTablet, items, autoSelectFirst, initialSelectedItem])
 
   const handleSelectItem = (item: MarkdownData) => {
+    // Update local state immediately for visual feedback
+    setSelectedItem(item)
+    // Then navigate to the detail page
     navigateToItem(item)
   }
 
