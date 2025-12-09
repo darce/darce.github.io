@@ -10,16 +10,16 @@ runs:
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
-      with: 
+      with:
         node-version: 20
-    
+
     - name: Cache dependencies
       id: cache_dependencies
       uses: actions/cache@v4
       with:
         path: ${{ inputs.working-directory }}/node_modules
         key: node-modules-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
-    
+
     - name: Install dependencies
       shell: bash
       if: steps.cache_dependencies.outputs.cache-hit != 'true'
