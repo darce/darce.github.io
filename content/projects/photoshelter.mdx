@@ -44,7 +44,7 @@ Most Photoshelter customers are institutional clients (either universities or pr
 An initial code audit surfaced Accessibility violations that could be classified into two main camps: "Low-hanging fruit," such as missing ARIA attributes and labels for forms and buttons, and more involved omissions, such as mouse-only navigation for all menus.
 
 - **Implementing Keyboard Navigation**: 
-![Keyboard navigation for main menu](images/photoshelter-keyboard-navigation.gif)*Keyboard Navigation for main menu*
+![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard Navigation for main menu*
 
 Before my time at Photoshelter, the mouse was the only way to navigate through the main menu. Using the keyboard to access features within the product is not only necessary for users with low mobility, but it also improves the productivity of abled users who prefer keyboard shortcuts.
 Implementing keyboard navigation significantly reduced our Accessibility tech debt, moving the company closer to meeting WCAG standards.
@@ -55,7 +55,7 @@ These tools helped identify various issues, including non-compliant ARIA roles, 
 Adding a layer of keyboard navigation presented unique challenges, primarily due to using the Shadow DOM with Polymer and Web Components. 
 Shadow DOM's encapsulation can obscure elements from standard JavaScript event listeners, making it difficult to ensure consistent focus management and keyboard accessibility. 
 Overcoming this required a detailed understanding of both the accessibility requirements and the internals of the Shadow DOM.
-![The main menu seamlessly goes from mouse to keyboard control](images/photoshelter-empty-trash.gif)*The main menu seamlessly goes from mouse to keyboard control*
+![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*The main menu seamlessly goes from mouse to keyboard control*
 
 A custom solution was developed to bridge these gaps, allowing keyboard events to propagate correctly and ensuring all interactive elements were accessible via keyboard navigation.
 
