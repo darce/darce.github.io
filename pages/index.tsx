@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, ReactElement } from 'react'
+import { useRouter } from 'next/router'
 import type { NextPageWithLayout } from './_app'
 import { getMdxContent } from '../lib/getMdxContent'
 import { MarkdownData } from '../types'
@@ -11,6 +12,7 @@ interface WorkProps {
 }
 
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
+    const router = useRouter()
     const [selectedProject, setSelectedProject] = useState<MarkdownData | null>(null)
     // const [selectedProjectUrl, setSelectedProjectUrl] = useSearchParams()
     const [isMobile, setIsMobile] = useState<boolean | null>(null)
@@ -18,7 +20,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
     const handleSelectedProject = (selectedProject: MarkdownData) => {
-        setSelectedProject(selectedProject)
+        router.push(`/projects/${selectedProject.slug}`)
     }
 
     useEffect(() => {
