@@ -26,16 +26,15 @@ export interface MarkdownData {
     mdxSource: MDXRemoteSerializeResult
 }
 
-// OrderBook types for CoinAPI data
+// OrderBook types for Binance API data
 export interface OrderBookEntry {
     price: number
     size: number
 }
 
 export interface OrderBookData {
-    symbol_id: string
-    time_exchange: string
-    time_coinapi: string
+    symbol: string
+    lastUpdateId: number
     asks: OrderBookEntry[]
     bids: OrderBookEntry[]
 }
