@@ -39,10 +39,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
         <header className={`${styles.header} ${className || ''}`}>
             <section className="marquee">
                 <div className={styles.masthead}>
-                    <h1 className={styles.title}
-                        style={{
-                            fontVariationSettings: `"GRAD" ${GRAD}, "wght" ${wght}`
-                        }}>
+                    <h1 className={styles.title}>
                         {masthead.title}</h1>
                     <h2 className={styles.subtitle}
                     >{masthead.subtitle}</h2>
