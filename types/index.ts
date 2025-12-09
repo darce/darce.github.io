@@ -25,3 +25,28 @@ export interface MarkdownData {
     metaData: MetaData
     mdxSource: MDXRemoteSerializeResult
 }
+
+// OrderBook types for CoinAPI data
+export interface OrderBookEntry {
+    price: number
+    size: number
+}
+
+export interface OrderBookData {
+    symbol_id: string
+    time_exchange: string
+    time_coinapi: string
+    asks: OrderBookEntry[]
+    bids: OrderBookEntry[]
+}
+
+export interface OrderBookMetrics {
+    spread: number
+    orderImbalance: number
+    significantBids: OrderBookEntry[]
+    significantAsks: OrderBookEntry[]
+    bestBid: number
+    bestAsk: number
+    totalBidVolume: number
+    totalAskVolume: number
+}
