@@ -18,13 +18,21 @@ const Nav: React.FC<NavProps> = ({ className }) => {
 
     const sections: NavItem[] = [
         { loc: '/', label: 'work' },
-        { loc: 'about', label: 'about' },
+        { loc: '/about', label: 'about' },
     ]
 
     const updateSliderStyle = () => {
         if (navRef.current) {
             /** Handle slash in pathname & root route */
-            const dataPathToken = router.pathname === '/' ? '/' : router.pathname.slice(1)
+            /** Treat /projects/* and /[section]/[slug] paths as 'work' section */
+            let dataPathToken: string
+            if (router.pathname === '/' || 
+                router.pathname.startsWith('/projects') || 
+                router.pathname === '/[section]/[slug]') {
+                dataPathToken = '/'
+            } else {
+                dataPathToken = router.pathname
+            }
             /** cast element as HTMLElement */
             const activeElement = navRef.current.querySelector(`[data-path="${dataPathToken}"]`) as HTMLElement
             const newStyle = activeElement ?
