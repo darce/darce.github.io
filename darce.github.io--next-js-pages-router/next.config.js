@@ -9,6 +9,7 @@ const nextConfig = {
     pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
     reactStrictMode: false,
     output: 'export',
+    trailingSlash: true,  // GitHub Pages compatibility
 }
 
 module.exports = withMDX(nextConfig)
