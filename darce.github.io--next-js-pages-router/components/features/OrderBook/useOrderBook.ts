@@ -9,6 +9,30 @@ const PROXY_API_URL = process.env.NEXT_PUBLIC_ORDERBOOK_API_URL || ''
 
 /**
  * Parse Binance WebSocket message into OrderBookData
+ * 
+ * Binance sends depth updates in this format:
+ * {
+ *   "lastUpdateId": 160,
+ *   "bids": [              // Buy orders (people wanting to buy)
+ *     ["0.0024", "10"],    // [price, quantity] - "Buy 10 units at $0.0024"
+ *     ["0.0023", "5"]
+ *   ],
+ *   "asks": [              // Sell orders (people wanting to sell)
+ *     ["0.0025", "8"],     // [price, quantity] - "Sell 8 units at $0.0025"
+ *     ["0.0026", "12"]
+ *   ]
+ * }
+ * 
+ * We transform this into our internal format:
+ * {
+ *   symbol: "XRPUSDT",
+ *   lastUpdateId: 160,
+ *   bids: [{ price: 0.0024, size: 10 }, { price: 0.0023, size: 5 }],
+ *   asks: [{ price: 0.0025, size: 8 }, { price: 0.0026, size: 12 }]
+ * }
+ * 
+ * Note: Binance uses "b" and "a" shorthand in some stream types,
+ * and "bids"/"asks" in others, so we handle both.
  */
 const parseBinanceMessage = (symbol: string) => (event: MessageEvent): OrderBookData | null => {
     try {

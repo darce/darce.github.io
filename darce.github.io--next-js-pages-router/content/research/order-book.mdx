@@ -51,23 +51,83 @@ Together, best bid and best ask define the **top of book**.
 
 ## Key Structures to Watch
 
-### Spread
-<Spread />
-The **spread** is:
-
-> spread = best ask − best bid
-
-- Narrow spread → buyers and sellers mostly agree on price; the market is liquid.  
-- Wide spread → less agreement; it is more expensive to trade immediately.
-
 ### Order Imbalance
 <OrderImbalance />
-**Order imbalance** describes the relative weight of bids vs asks at or near the current price:
+**Order imbalance** tells you who's winning: buyers or sellers.
 
-- More bid volume than ask volume → buying pressure; upward bias.  
-- More ask volume than bid volume → selling pressure; downward bias.
+- More buyers waiting → price might go up  
+- More sellers waiting → price might go down
 
-You can think of this as a snapshot of who is "waiting in line" to trade.
+#### Where Does Volume Come From?
+
+Every order in the book has a **size**, how many units someone wants to buy or sell at that price.
+
+For example, Binance might send:
+
+```json
+{
+  "bids": [["2.35", "1500"], ["2.34", "800"]],
+  "asks": [["2.36", "1200"], ["2.37", "600"]]
+}
+```
+
+Reading this: "Someone wants to buy 1,500 units at \$2.35" and "Someone wants to sell 1,200 units at \$2.36."
+
+**Total volume** is just adding up all the sizes on each side:
+
+- Bids: 1,500 + 800 = **2,300 total**
+- Asks: 1,200 + 600 = **1,800 total**
+
+```typescript
+const totalBidVolume = bids.reduce((sum, entry) => sum + entry.size, 0)
+const totalAskVolume = asks.reduce((sum, entry) => sum + entry.size, 0)
+```
+
+#### How Imbalance Is Calculated
+
+The formula compares how much is on each side:
+
+> **Order Imbalance** = (Bid Volume − Ask Volume) ÷ (Bid Volume + Ask Volume)
+
+In plain English: **subtract the two sides, then divide by the total.**
+
+```typescript
+const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
+```
+
+This gives a number between -1 and +1:
+
+| Result | What It Means |
+|--------|---------------|
+| **+1** | All buyers, no sellers |
+| **+0.5** | Buyers outnumber sellers 3 to 1 |
+| **0** | Perfectly balanced |
+| **-0.5** | Sellers outnumber buyers 3 to 1 |
+| **-1** | All sellers, no buyers |
+
+#### A Simple Example
+
+Using the numbers above (bids = 2,300, asks = 1,800):
+
+$$\frac{2300 - 1800}{2300 + 1800} = \frac{500}{4100} = 0.12$$
+
+That's **+12%** slightly more buyers than sellers. The book leans toward buying pressure.
+
+---
+
+### Spread
+<Spread />
+
+The **spread** is the gap between the best ask and the best bid:
+
+> Spread = Best Ask − Best Bid
+
+The live value above shows the current spread for the selected trading pair.
+
+- **Narrow spread** → buyers and sellers mostly agree on price; the market is liquid.  
+- **Wide spread** → less agreement; it costs more to trade immediately.
+
+--- 
 
 ### Market Depth
 
