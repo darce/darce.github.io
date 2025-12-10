@@ -26,35 +26,42 @@
     }
 
     .post {
-        display: grid;
-        grid-template-columns: [post-start] auto [thumbnail] auto [post-end];
-        grid-gap: $s-large;
-        grid-template-areas: "left right gutter";
-
         @media (max-width: $tabletMax) {
             display: block;
         }
 
         .imgWrapper {
-            grid-area: right;
-            margin: 0;
+            float: right;
+            max-width: 45%;
+            margin: 0 0 $s-large $s-large;
+
+            @media (max-width: $tabletMax) {
+                float: none;
+                max-width: 100%;
+                margin: 0 0 $s-large 0;
+            }
         }
 
         img {
             width: 100%;
             object-fit: cover;
-            padding-top: $s-large;
         }
 
         figcaption {
             font-weight: 200;
             font-style: italic;
         }
+
+        // Clear floats after post content
+        &::after {
+            content: '';
+            display: table;
+            clear: both;
+        }
     }
 
     .source {
-        grid-area: left;
-        min-width: 0; // Prevents grid blowout
+        min-width: 0;
 
         blockquote {
             margin: 0;
