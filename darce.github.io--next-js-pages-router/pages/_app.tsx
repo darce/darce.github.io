@@ -3,6 +3,10 @@ import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import Head from "next/head";
+import { Theme } from '@radix-ui/themes'
+import '@radix-ui/themes/styles.css'
+import 'katex/dist/katex.min.css'
+import 'highlight.js/styles/github.css'
 
 import { HeaderDataProvider } from '../contexts/HeaderContext'
 import { throttle } from '../lib/utils'
@@ -67,41 +71,43 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
     /** Wrap getLayout with HeaderDataProvider */
     return (
-        <HeaderDataProvider initialData={pageProps.headerData}>
-            <Head>
-                <link
-                    rel="icon"
-                    href="/favicon.ico"
-                    sizes="16x16"
+        <Theme appearance="light" accentColor="cyan" grayColor="gray" radius="medium" style={{ backgroundColor: '#fafafa' }}>
+            <HeaderDataProvider initialData={pageProps.headerData}>
+                <Head>
+                    <link
+                        rel="icon"
+                        href="/favicon.ico"
+                        sizes="16x16"
+                    />
+                    <link
+                        rel="icon"
+                        href="/favicon-32x32.png"
+                        sizes="32x32"
+                    />
+                    <link
+                        rel="icon"
+                        href="/favicon-96x96.png"
+                        sizes="96x96"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/apple-icon-180x180.png"
+                    />
+                </Head>
+                {/* Google tag (gtag.js) */}
+                <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHTZJGSKZL"></script>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-MHTZJGSKZL');
+                            `
+                    }}
                 />
-                <link
-                    rel="icon"
-                    href="/favicon-32x32.png"
-                    sizes="32x32"
-                />
-                <link
-                    rel="icon"
-                    href="/favicon-96x96.png"
-                    sizes="96x96"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/apple-icon-180x180.png"
-                />
-            </Head>
-            {/* Google tag (gtag.js) */}
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHTZJGSKZL"></script>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('config', 'G-MHTZJGSKZL');
-                        `
-                }}
-            />
-            {getLayout(<Component {...pageProps} />)}
-        </HeaderDataProvider>
+                {getLayout(<Component {...pageProps} />)}
+            </HeaderDataProvider>
+        </Theme>
     )
 }
 

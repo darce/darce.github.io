@@ -4,6 +4,10 @@ import path from 'path'
 import { serialize } from 'next-mdx-remote/serialize'
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { MetaData } from '../types'
+import remarkMath from 'remark-math'
+import remarkGfm from 'remark-gfm'
+import rehypeKatex from 'rehype-katex'
+import rehypeHighlight from 'rehype-highlight'
 
 
 /** Get MDX files in a subdirectory
@@ -34,7 +38,12 @@ export const parseMarkdownFile = async (filePath: string): Promise<{ metaData: M
     const metaData = data as MetaData
 
     /** Serialize MDX into HTML */
-    const mdxSource = await serialize(content)
+    const mdxSource = await serialize(content, {
+        mdxOptions: {
+            remarkPlugins: [remarkMath, remarkGfm],
+            rehypePlugins: [rehypeKatex, rehypeHighlight],
+        },
+    })
 
     return { metaData, mdxSource }
 }
