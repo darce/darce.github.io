@@ -1,10 +1,10 @@
 ---
 index: 10
 year: 2024
-title: Crypto Order Book Visualizer
-subtitle: Real-time market depth analysis
-description: Interactive cryptocurrency order book visualization
-details: Real-time order book data visualization using Binance API, displaying market depth, bid-ask spread, and order imbalance metrics.
+title: Order Books Explainer
+subtitle: Matching buyers and sellers - real time visualization
+description: An interactive guide to cryptocurrency order books and market dynamics
+details: Short explanation of how finanical markets work. Bids, asks, spread, and market depth explained using a live order book visualization.
 links:
 - url: https://developers.binance.com/docs/binance-spot-api-docs/rest-api
   label: Binance API Documentation
@@ -16,26 +16,84 @@ tags:
 - Cryptocurrency
 ---
 
-## Live Order Book
+## What is an Order Book?
+
+In a marketplace, some market participantswant to **buy**, and others want to **sell**. An order book is a list that organizes all these intentions in one place.
+
+Every financial market uses an order book to match buyers with sellers.
+
+---
+
+## See It In Action
+
+Below is a **live order book** from the Binance cryptocurrency exchange. The numbers are updated in real-time as traders place buy and sell orders.
 
 <OrderBook />
 
-## Overview
 
-This research prototype demonstrates real-time cryptocurrency order book data retrieval and visualization using the Binance public API.
+## The Two Sides of Every Trade
 
-### Features
+### 🟢 Bids: The Buyers
 
-- **Order Book Depth Visualization**: Visual representation of buy (bid) and sell (ask) orders at different price levels
-- **Market Spread**: Real-time calculation of the difference between best bid and best ask prices
-- **Order Imbalance**: Analysis of the disparity between total bid and ask volumes
-- **Multiple Trading Pairs**: Support for BTC, ETH, BNB, SOL, and XRP against USDT
+On one side, you have **buyers**. They submit "bids"—the prices they're willing to pay. Think of it like an auction: buyers compete by offering higher prices.
 
-### How It Works
+> *"I'll buy 0.5 Bitcoin for $103,000"*
 
-The application fetches real-time order book data from the Binance REST API, which provides:
-- Current bid orders (buyers willing to purchase)
-- Current ask orders (sellers willing to sell)
-- Price and size for each order level
+The highest bid is called the **best bid**. It represents the most someone is currently willing to pay.
 
-This data is then analyzed to compute key trading metrics and displayed in an interactive visualization.
+### 🔴 Asks: The Sellers
+
+On the other side, you have **sellers**. They submit "asks"—the prices at which they're willing to sell. Sellers compete by offering lower prices.
+
+> *"I'll sell 0.3 Bitcoin for $103,050"*
+
+The lowest ask is called the **best ask**. It represents the cheapest price at which someone is willing to sell right now.
+
+---
+
+## Key Concepts to Notice
+
+### The Spread
+
+Look at the gap between the **best bid** (highest buy offer) and the **best ask** (lowest sell offer). This gap is called the **spread**.
+
+- A **small spread** means buyers and sellers mostly agree on price—the market is "liquid"
+- A **large spread** means there's more disagreement—it costs more to trade immediately
+
+### Order Imbalance
+
+The **order imbalance** tells you whether there's more buying or selling pressure:
+
+- **Positive imbalance** (more bids than asks): More buyers are waiting—prices might rise
+- **Negative imbalance** (more asks than bids): More sellers are waiting—prices might fall
+
+### Market Depth
+
+The colored bars show **how much** people want to buy or sell at each price level. Longer bars mean more volume. This is called "depth"—it shows how much the price would move if a large order came in.
+
+---
+
+## How Trades Happen
+
+A trade occurs when a buyer's bid **matches** a seller's ask:
+
+1. **Market order**: *"I want to buy right now at whatever price is available"* — This instantly takes the best ask
+2. **Limit order**: *"I want to buy, but only at $103,000 or less"* — This sits in the order book waiting
+
+When someone places a market buy order, they "lift" the lowest ask. When someone market sells, they "hit" the highest bid. The order book updates instantly.
+
+---
+
+## Why This Matters
+
+Understanding order books helps you:
+
+- **Time your trades better** — See if there's support (lots of bids) or resistance (lots of asks) at certain prices
+- **Estimate trading costs** — The spread is essentially a fee you pay for immediacy
+- **Gauge market sentiment** — Order imbalance hints at short-term price direction
+
+---
+
+## Try It Yourself
+
+Use the dropdown above to switch between different cryptocurrency pairs (BTC, ETH, SOL, etc.) and observe how each market behaves differently. Some are calmer, some are more volatile—you can see it in the order book.
