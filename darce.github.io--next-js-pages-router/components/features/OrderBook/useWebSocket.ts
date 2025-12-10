@@ -1,17 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface UseWebSocketOptions<T> {
-    /** Full WebSocket URL to connect to */
     url: string
-    /** Whether the WebSocket should be active */
     enabled?: boolean
-    /** Transform raw message data to desired type */
     parseMessage?: (event: MessageEvent) => T | null
-    /** Called when connection opens */
     onOpen?: () => void
-    /** Called when connection closes */
     onClose?: () => void
-    /** Called on connection error */
     onError?: (error: Event) => void
 }
 
