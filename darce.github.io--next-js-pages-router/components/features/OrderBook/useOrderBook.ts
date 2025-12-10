@@ -1,10 +1,42 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { OrderBookData } from '../../../types'
+import { useWebSocket } from './useWebSocket'
 
 // API URLs
 const BINANCE_API_URL = 'https://api.binance.com/api/v3'
 const BINANCE_WS_URL = 'wss://stream.binance.com:9443/ws'
 const PROXY_API_URL = process.env.NEXT_PUBLIC_ORDERBOOK_API_URL || ''
+
+/**
+ * Parse Binance WebSocket message into OrderBookData
+ */
+const parseBinanceMessage = (symbol: string) => (event: MessageEvent): OrderBookData | null => {
+    try {
+        const wsData = JSON.parse(event.data)
+        return {
+            symbol,
+            lastUpdateId: wsData.lastUpdateId || wsData.u,
+            bids: (wsData.bids || wsData.b || []).map((b: string[]) => ({
+                price: parseFloat(b[0]),
+                size: parseFloat(b[1])
+            })),
+            asks: (wsData.asks || wsData.a || []).map((a: string[]) => ({
+                price: parseFloat(a[0]),
+                size: parseFloat(a[1])
+            })),
+        }
+    } catch {
+        return null
+    }
+}
+
+/**
+ * Build Binance WebSocket URL for order book depth stream
+ */
+const buildBinanceWsUrl = (symbol: string, depthLevels: number = 20, updateSpeed: number = 100): string => {
+    const streamName = `${symbol.toLowerCase()}@depth${depthLevels}@${updateSpeed}ms`
+    return `${BINANCE_WS_URL}/${streamName}`
+}
 
 export interface UseOrderBookOptions {
     /** Initial symbol to fetch */
@@ -38,83 +70,39 @@ export function useOrderBook({
     pollInterval = 1000
 }: UseOrderBookOptions = {}): UseOrderBookResult {
     const [symbol, setSymbol] = useState(initialSymbol)
-    const [data, setData] = useState<OrderBookData | null>(null)
+    const [restData, setRestData] = useState<OrderBookData | null>(null)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-    const [isConnected, setIsConnected] = useState(false)
-    const wsRef = useRef<WebSocket | null>(null)
-    const symbolRef = useRef(symbol)
+    const [restError, setRestError] = useState<string | null>(null)
 
-    // Keep symbolRef in sync with symbol state
+    // Memoize WebSocket URL and parser to prevent unnecessary reconnections
+    const wsUrl = useMemo(() => buildBinanceWsUrl(symbol), [symbol])
+    const parseMessage = useMemo(() => parseBinanceMessage(symbol), [symbol])
+
+    // WebSocket connection (only active in websocket mode)
+    const {
+        data: wsData,
+        isConnected,
+        error: wsError
+    } = useWebSocket<OrderBookData>({
+        url: wsUrl,
+        enabled: updateMode === 'websocket',
+        parseMessage
+    })
+
+    // Use WebSocket data when available, fall back to REST data
+    const data = updateMode === 'websocket' ? (wsData || restData) : restData
+    const error = updateMode === 'websocket' ? wsError : restError
+
+    // Update loading state when WebSocket data arrives
     useEffect(() => {
-        symbolRef.current = symbol
-    }, [symbol])
-
-    // Parse WebSocket message and update state
-    const handleWsMessage = useCallback((event: MessageEvent) => {
-        try {
-            const wsData = JSON.parse(event.data)
-            // Binance depth stream format - use ref to avoid stale closure
-            const currentSymbol = symbolRef.current
-            const orderBookData: OrderBookData = {
-                symbol: currentSymbol,
-                lastUpdateId: wsData.lastUpdateId || wsData.u,
-                bids: (wsData.bids || wsData.b || []).map((b: string[]) => ({
-                    price: parseFloat(b[0]),
-                    size: parseFloat(b[1])
-                })),
-                asks: (wsData.asks || wsData.a || []).map((a: string[]) => ({
-                    price: parseFloat(a[0]),
-                    size: parseFloat(a[1])
-                })),
-            }
-            setData(orderBookData)
-            setLoading(false)
-        } catch (err) {
-            console.error('WebSocket message parse error:', err)
-        }
-    }, []) // No dependencies - uses ref for symbol
-
-    // Connect to WebSocket
-    const connectWebSocket = useCallback(() => {
-        // Mark that we're intentionally reconnecting (don't flash "Connecting" status)
-        const isReconnecting = wsRef.current?.readyState === WebSocket.OPEN
-        
-        if (wsRef.current) {
-            // Remove the onclose handler before closing to prevent status flash
-            wsRef.current.onclose = null
-            wsRef.current.close()
-        }
-
-        const streamName = `${symbol.toLowerCase()}@depth20@100ms`
-        const ws = new WebSocket(`${BINANCE_WS_URL}/${streamName}`)
-
-        ws.onopen = () => {
-            setIsConnected(true)
-            setError(null)
+        if (wsData) {
             setLoading(false)
         }
-
-        ws.onmessage = handleWsMessage
-
-        ws.onerror = () => {
-            setError('WebSocket connection error')
-            setIsConnected(false)
-        }
-
-        ws.onclose = () => {
-            // Only set disconnected if this is the current WebSocket
-            if (wsRef.current === ws) {
-                setIsConnected(false)
-            }
-        }
-
-        wsRef.current = ws
-    }, [symbol, handleWsMessage])
+    }, [wsData])
 
     const fetchOrderBook = useCallback(async () => {
         setLoading(true)
-        setError(null)
+        setRestError(null)
 
         try {
             // Use proxy API if provided, otherwise call Binance directly
@@ -141,26 +129,13 @@ export function useOrderBook({
                 }
                 : rawData
 
-            setData(orderBookData)
+            setRestData(orderBookData)
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred')
+            setRestError(err instanceof Error ? err.message : 'An error occurred')
         } finally {
             setLoading(false)
         }
     }, [symbol, apiBaseUrl])
-
-    // WebSocket mode: connect on mount and when symbol changes
-    useEffect(() => {
-        if (updateMode === 'websocket') {
-            connectWebSocket()
-
-            return () => {
-                if (wsRef.current) {
-                    wsRef.current.close()
-                }
-            }
-        }
-    }, [updateMode, connectWebSocket])
 
     // Polling mode: fetch periodically
     useEffect(() => {
@@ -171,12 +146,12 @@ export function useOrderBook({
         }
     }, [updateMode, fetchOrderBook, pollInterval])
 
-    // Initial fetch for both modes (WebSocket needs initial data while connecting)
+    // Initial fetch for WebSocket mode (provides data while connecting)
     useEffect(() => {
-        if (updateMode === 'websocket' && !data) {
+        if (updateMode === 'websocket' && !wsData && !restData) {
             fetchOrderBook()
         }
-    }, [updateMode, data, fetchOrderBook])
+    }, [updateMode, wsData, restData, fetchOrderBook])
 
     return {
         data,
