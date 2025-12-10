@@ -1,0 +1,100 @@
+---
+index: 10
+year: 2024
+title: Order Book Basics
+subtitle: Matching buyers and sellers - real time visualization
+description: An interactive guide to cryptocurrency order books and market dynamics
+details: Short explanation of how finanical markets work. Bids, asks, spread, and market depth explained using a live order book visualization.
+links:
+- url: https://developers.binance.com/docs/binance-spot-api-docs/rest-api
+  label: Binance API Documentation
+tags:
+- React
+- TypeScript
+- Binance API
+- Data Visualization
+- Cryptocurrency
+---
+
+## What is an Order Book?
+
+In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
+
+Below is a **live limit order book** from the Binance cryptocurrency exchange. rendered via React and TypeScript. The data updates in real time as new orders arrive and old ones are filled or cancelled.
+<OrderBook />
+
+
+## The Two Sides of Every Trade
+
+### 🟢 Bids: (Buy Side)
+
+**Bids** are prices at which traders are willing to buy.
+
+> “Buy 0.5 BTC at 93,000 USDT”
+
+The **best bid** is the highest buy price currently in the book. It defines the top of the bid side.
+
+### 🔴 Asks: (Sell Side)
+
+**Asks** are prices at which traders are willing to sell.
+
+> “Sell 0.3 BTC at 93,050 USDT”
+
+The **best ask** is the lowest sell price currently in the book. It defines the top of the ask side.
+
+Together, best bid and best ask define the **top of book**.
+
+---
+
+## Key Structures to Watch
+
+### Spread
+
+The **spread** is:
+
+> spread = best ask − best bid
+
+- Narrow spread → buyers and sellers mostly agree on price; the market is liquid.  
+- Wide spread → less agreement; it is more expensive to trade immediately.
+
+### Order Imbalance
+
+**Order imbalance** describes the relative weight of bids vs asks at or near the current price:
+
+- More bid volume than ask volume → buying pressure; upward bias.  
+- More ask volume than bid volume → selling pressure; downward bias.
+
+You can think of this as a snapshot of who is “waiting in line” to trade.
+
+### Market Depth
+
+The colored bars aggregate **volume at each price level**. Longer bars mean more resting size at that price.
+
+Depth tells you:
+
+- How far price might move if a large market order hits the book  
+- Where size is concentrated (potential support/resistance zones)
+
+---
+
+## How Trades Execute
+
+A trade occurs when a buy order and a sell order cross.
+
+Two basic order types:
+
+1. **Market order**  
+   - “Buy now, whatever the best available price is.”  
+   - Matches immediately against the best prices on the opposite side.  
+   - Consumes liquidity.
+
+2. **Limit order**  
+   - “Buy at 93,000 or better (lower).”  
+   - Sits in the book until matched or cancelled.  
+   - Provides liquidity.
+
+When a market buy arrives, it lifts the lowest ask.  
+When a market sell arrives, it hits the highest bid.  
+Each match removes volume from those levels and the book updates.
+
+---
