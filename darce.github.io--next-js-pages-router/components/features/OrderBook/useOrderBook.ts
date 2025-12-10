@@ -47,6 +47,8 @@ export interface UseOrderBookOptions {
     updateMode?: 'websocket' | 'polling'
     /** Polling interval in ms (only used when updateMode is 'polling') */
     pollInterval?: number
+    /** Whether the hook is enabled (default: true). Set to false to disable all data fetching. */
+    enabled?: boolean
 }
 
 export interface UseOrderBookResult {
@@ -67,7 +69,8 @@ export function useOrderBook({
     initialSymbol = 'XRPUSDT',
     apiBaseUrl,
     updateMode = 'websocket',
-    pollInterval = 1000
+    pollInterval = 1000,
+    enabled = true
 }: UseOrderBookOptions = {}): UseOrderBookResult {
     const [symbol, setSymbol] = useState(initialSymbol)
     const [restData, setRestData] = useState<OrderBookData | null>(null)
@@ -78,14 +81,14 @@ export function useOrderBook({
     const wsUrl = useMemo(() => buildBinanceWsUrl(symbol), [symbol])
     const parseMessage = useMemo(() => parseBinanceMessage(symbol), [symbol])
 
-    // WebSocket connection (only active in websocket mode)
+    // WebSocket connection (only active in websocket mode and when hook is enabled)
     const {
         data: wsData,
         isConnected,
         error: wsError
     } = useWebSocket<OrderBookData>({
         url: wsUrl,
-        enabled: updateMode === 'websocket',
+        enabled: enabled && updateMode === 'websocket',
         parseMessage
     })
 
@@ -137,21 +140,21 @@ export function useOrderBook({
         }
     }, [symbol, apiBaseUrl])
 
-    // Polling mode: fetch periodically
+    // Polling mode: fetch periodically (only when enabled)
     useEffect(() => {
-        if (updateMode === 'polling') {
+        if (enabled && updateMode === 'polling') {
             fetchOrderBook()
             const interval = setInterval(fetchOrderBook, pollInterval)
             return () => clearInterval(interval)
         }
-    }, [updateMode, fetchOrderBook, pollInterval])
+    }, [enabled, updateMode, fetchOrderBook, pollInterval])
 
     // Initial fetch for WebSocket mode (provides data while connecting)
     useEffect(() => {
-        if (updateMode === 'websocket' && !wsData && !restData) {
+        if (enabled && updateMode === 'websocket' && !wsData && !restData) {
             fetchOrderBook()
         }
-    }, [updateMode, wsData, restData, fetchOrderBook])
+    }, [enabled, updateMode, wsData, restData, fetchOrderBook])
 
     return {
         data,
