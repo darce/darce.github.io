@@ -21,24 +21,27 @@ tags:
 In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
 
 Below is a **live limit order book** from the Binance cryptocurrency exchange. React and TypeScript handle rendering. Data fetching is done with a WebSocket connection. The data updates in real time as new orders arrive and old ones are filled or cancelled.
+
+<OrderBookProvider>
+
 <OrderBook />
 
 
 ## The Two Sides of Every Trade
 
 ### 🟢 Bids: (Buy Side)
-
+<BestBid />
 **Bids** are prices at which traders are willing to buy.
 
-> “Buy 0.5 BTC at 93,000 USDT”
+> "Buy 0.5 BTC at 93,000 USDT"
 
 The **best bid** is the highest buy price currently in the book. It defines the top of the bid side.
 
 ### 🔴 Asks: (Sell Side)
-
+<BestAsk />
 **Asks** are prices at which traders are willing to sell.
 
-> “Sell 0.3 BTC at 93,050 USDT”
+> "Sell 0.3 BTC at 93,050 USDT"
 
 The **best ask** is the lowest sell price currently in the book. It defines the top of the ask side.
 
@@ -49,7 +52,7 @@ Together, best bid and best ask define the **top of book**.
 ## Key Structures to Watch
 
 ### Spread
-
+<Spread />
 The **spread** is:
 
 > spread = best ask − best bid
@@ -58,13 +61,13 @@ The **spread** is:
 - Wide spread → less agreement; it is more expensive to trade immediately.
 
 ### Order Imbalance
-
+<OrderImbalance />
 **Order imbalance** describes the relative weight of bids vs asks at or near the current price:
 
 - More bid volume than ask volume → buying pressure; upward bias.  
 - More ask volume than bid volume → selling pressure; downward bias.
 
-You can think of this as a snapshot of who is “waiting in line” to trade.
+You can think of this as a snapshot of who is "waiting in line" to trade.
 
 ### Market Depth
 
@@ -74,6 +77,8 @@ Depth tells you:
 
 - How far price might move if a large market order hits the book  
 - Where size is concentrated (potential support/resistance zones)
+
+</OrderBookProvider>
 
 ---
 

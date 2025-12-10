@@ -82,7 +82,12 @@ const OrderBookView: React.FC<OrderBookViewProps> = ({
         onRefresh={onRefresh}
       />
 
-      <MetricsCards metrics={metrics} />
+      <MetricsCards
+        bestBid={metrics.bestBid}
+        bestAsk={metrics.bestAsk}
+        spread={metrics.spread}
+        orderImbalance={metrics.orderImbalance}
+      />
 
       <DepthChart bids={data.bids} asks={data.asks} />
 
