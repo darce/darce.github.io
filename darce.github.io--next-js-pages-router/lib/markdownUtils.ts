@@ -9,6 +9,9 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rehypePlugins: any[] = [rehypeKatex, rehypeHighlight]
+
 
 /** Get MDX files in a subdirectory
  * @param subDir subdirectory inside 'content'
@@ -41,7 +44,7 @@ export const parseMarkdownFile = async (filePath: string): Promise<{ metaData: M
     const mdxSource = await serialize(content, {
         mdxOptions: {
             remarkPlugins: [remarkMath, remarkGfm],
-            rehypePlugins: [rehypeKatex, rehypeHighlight],
+            rehypePlugins,
         },
     })
 
