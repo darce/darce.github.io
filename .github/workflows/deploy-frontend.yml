@@ -40,9 +40,7 @@ jobs:
 
       - name: Build with Next.js
         working-directory: ${{ env.FRONTEND_DIR }}
-        run: |
-          export NODE_ENV=production
-          npx next build
+        run: npx next build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
