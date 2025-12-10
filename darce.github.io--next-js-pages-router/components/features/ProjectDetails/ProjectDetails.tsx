@@ -3,11 +3,21 @@ import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import TransitionOverlay from '../../composite/TransitionOverlay/TransitionOverlay'
 import OrderBook from '../OrderBook/OrderBook'
+import Cube from '../../common/Cube/Cube'
+import cubeStyles from '../../common/Cube/Cube.module.scss'
 import styles from './ProjectDetails.module.scss'
+
+// Wrapped Cube for MDX content with constrained height
+const MDXCube = () => (
+    <div className={cubeStyles.cubeContainer}>
+        <Cube />
+    </div>
+)
 
 // Custom components available in MDX content
 const mdxComponents = {
     OrderBook,
+    Cube: MDXCube,
 }
 
 interface ProjectDetailsProps {

@@ -1,5 +1,11 @@
 @import '../../../styles/vars.scss';
 
+.cubeContainer {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
 .cube {
     height: 100%;
 
