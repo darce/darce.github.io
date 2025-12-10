@@ -1,0 +1,201 @@
+---
+index: 20
+year: 2024
+title: 3D with DOM Elements
+subtitle: Rotation matrices and CSS transforms - no canvas, no WebGL
+description: An intentionally minimal 3D demo using pure DOM manipulation and TypeScript - no canvas, no 3D library.
+details: Move your mouse to rotate the cube. This is a small experimental playground - 3D rotation math in TypeScript, rendered as positioned div elements using CSS transforms.
+links:
+- url: https://en.wikipedia.org/wiki/Rotation_matrix
+  label: Wikipedia
+tags:
+- Linear Algebra
+- 3D Graphics
+- DOM Manipulation
+- CSS Transforms
+- Experimental
+---
+
+<Cube />
+
+> **What this is:** a tiny experiment showing how 3D rotation math maps to browser rendering using only DOM elements, TypeScript, and CSS transforms.  
+> **What this is not:** a general-purpose 3D engine or recommended production pipeline.
+
+## Why DOM Instead of Canvas?
+
+In this experiment, the cube is not drawn on a canvas. Each vertex is a `div` element, positioned using CSS transforms.
+
+This is very much a “can we do this with _only_ the DOM?” exercise. A 3D graphics lab notebook: minimal tools, no engines, just enough code for rotation matrices to render motion on the screen.
+
+## The Problem
+
+A cube has eight vertices. Each vertex is a point in space: $(x, y, z)$.
+
+To rotate the cube, we need new coordinates for every vertex—coordinates that place each point in its rotated position.
+
+This is what rotation matrices do. They transform one set of coordinates into another. In this demo, we apply those matrices directly in TypeScript and push the results straight into CSS.
+
+## One Axis at a Time
+
+Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
+
+Each axis has its own matrix.
+
+### Around X
+
+The first row is $[1, 0, 0]$. This preserves $x$:
+
+$$R_x(\theta) = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix}$$
+
+```typescript
+const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [1, 0, 0],
+        [0, Math.cos(angle), -Math.sin(angle)],
+        [0, Math.sin(angle), Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+### Around Y
+
+The middle row is $[0, 1, 0]$. This preserves $y$:
+
+$$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & -\sin\theta \\ 0 & 1 & 0 \\ \sin\theta & 0 & \cos\theta \end{bmatrix}$$
+
+```typescript
+const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), 0, -Math.sin(angle)],
+        [0, 1, 0],
+        [-Math.sin(angle), 0, Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+### Around Z
+
+The last row is $[0, 0, 1]$. This preserves $z$:
+
+$$R_z(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}$$
+
+```typescript
+const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), -Math.sin(angle), 0],
+        [Math.sin(angle), Math.cos(angle), 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+## Applying a Rotation
+
+To rotate a vertex, multiply the matrix by its coordinates:
+
+$$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
+
+The result $(x', y', z')$ is the rotated position.
+In this demo, that math is done in plain TypeScript:
+```typescript
+const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
+    const result: number[][] = []
+    for (let i = 0; i < matrix.length; i++) {
+        let sum = 0
+        sum += matrix[i][0] * vertex.x
+        sum += matrix[i][1] * vertex.y
+        sum += matrix[i][2] * vertex.z
+        result[i] = [sum]
+    }
+    return { x: result[0][0], y: result[1][0], z: result[2][0] }
+}
+```
+
+## Combining Rotations
+
+The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
+
+Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
+
+```typescript
+export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
+    let rotatedPoints = rotationX(vertexArray, angleX)
+    rotatedPoints = rotationY(rotatedPoints, angleY)
+    rotatedPoints = rotationZ(rotatedPoints, angleZ)
+    const scaledPoints = scaleXYZ(rotatedPoints, scale)
+    const projectedPoints = projectPoints(scaledPoints, distance)
+    return projectedPoints
+}
+```
+
+The goal here isn’t to build a general transform stack. It’s to make the math visible and traceable end-to-end: from matrix multiplication in TypeScript to pixels moving in the browser.
+
+## From 3D to Screen
+
+After rotation, the cube exists in three dimensions. Your screen has two.
+
+A perspective projection maps 3D points to 2D. Points farther from the viewer appear smaller. The projection divides $x$ and $y$ by a factor that depends on $z$:
+
+$$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
+
+where $d$ is the distance from the viewer to the projection plane.
+
+```typescript
+const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+    const result: Vertex[] = []
+    vertexArray.forEach(vertex => {
+        const f = 1 / (distance - vertex.z)
+        const projectionMatrix = [
+            [f, 0, 0],
+            [0, f, 0],
+            [0, 0, 1]
+        ]
+        result.push(matrixMultiplyVertex(projectionMatrix, vertex))
+    })
+    return result
+}
+```
+
+Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
+
+Again: no canvas, no 3D engine—just math → DOM updates.
+
+### The Render Loop
+
+React manages the vertices as state. When mouse movement triggers a recalculation, the component re-renders with new coordinates:
+
+```typescript
+{vertices.map((vertex, index) => (
+    <div
+        key={index}
+        className={styles.vertex}
+        style={{
+            // Template literal: backticks allow embedded expressions ${...}
+            // to inject computed coordinates directly into the CSS string
+            transform: `translate3d(
+                ${vertex.x + center.x}px,
+                ${vertex.y + center.y}px,
+                ${vertex.z}px
+            )`
+        }}
+    />
+))}
+```
+
+The browser handles the actual positioning. We compute the math; CSS does the rendering.
+
+### DOM, GPU, and Seeing the Math
+
+Using `translate3d` lets the browser composite vertices on the GPU. For eight tiny `div`s, that’s plenty: the GPU moves a few layers while the CPU focuses on the math.
+
+This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
+
+This cube is intentionally tiny so you can follow the full chain:
+
+1. Take a 3D point  
+2. Apply rotation matrices  
+3. Project to 2D  
+4. Push the result into a CSS transform
