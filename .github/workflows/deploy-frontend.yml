@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "darce.github.io--next-js-pages-router/**"
+      - ".github/workflows/deploy-frontend.yml"
+      - ".github/workflows/setup-node/**"
   workflow_dispatch:
 
 permissions:
