@@ -48,7 +48,7 @@ jobs:
             echo "Missing required secret: ALTCTX_INGEST_API_KEY"
             exit 1
           fi
-          npx next build
+          npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
