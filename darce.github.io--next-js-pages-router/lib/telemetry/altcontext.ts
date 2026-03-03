@@ -6,6 +6,9 @@ const backendUrl = (
     process.env.NEXT_PUBLIC_ALTCTX_BACKEND_URL?.trim()
     ?? 'https://marketing-altcontext.fly.dev'
 ).replace(/\/$/, '')
+// API key is optional while bootstrap tenant resolution handles single-tenant
+// ingest via origin/referer check. Set NEXT_PUBLIC_ALTCTX_INGEST_API_KEY when
+// multi-tenant API keys are provisioned.
 const ingestApiKey = process.env.NEXT_PUBLIC_ALTCTX_INGEST_API_KEY?.trim() ?? ''
 
 const EVENT_SAMPLE_RATES: Partial<Record<string, number>> = {
@@ -40,7 +43,6 @@ let flushWebVitalsTimeout: ReturnType<typeof setTimeout> | null = null
 const canTrack = (): boolean =>
     typeof window !== 'undefined'
     && backendUrl.length > 0
-    && ingestApiKey.length > 0
 
 const randomId = (): string =>
     `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
@@ -126,7 +128,7 @@ const sendEvent = (eventType: string, options?: EventPayloadOptions): void => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(ingestApiKey ? { 'x-api-key': ingestApiKey } : {}),
+            ...(ingestApiKey ? { 'x-api-key': ingestApiKey } : undefined),
         },
         body: payload,
         keepalive: true,

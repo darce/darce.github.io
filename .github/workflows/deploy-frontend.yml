@@ -22,7 +22,9 @@ concurrency:
 env:
   FRONTEND_DIR: darce.github.io--next-js-pages-router
   NEXT_PUBLIC_ALTCTX_BACKEND_URL: https://marketing-altcontext.fly.dev
-  NEXT_PUBLIC_ALTCTX_INGEST_API_KEY: ${{ secrets.ALTCTX_INGEST_API_KEY }}
+  # NEXT_PUBLIC_ALTCTX_INGEST_API_KEY: ${{ secrets.ALTCTX_INGEST_API_KEY }}
+  # Not required while bootstrap tenant resolution handles single-tenant ingest
+  # via origin check. Re-enable when multi-tenant API keys are provisioned.
 
 jobs:
   build:
@@ -45,12 +47,7 @@ jobs:
 
       - name: Build with Next.js
         working-directory: ${{ env.FRONTEND_DIR }}
-        run: |
-          if [ -z "${NEXT_PUBLIC_ALTCTX_INGEST_API_KEY}" ]; then
-            echo "Missing required secret: ALTCTX_INGEST_API_KEY"
-            exit 1
-          fi
-          npm run build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
