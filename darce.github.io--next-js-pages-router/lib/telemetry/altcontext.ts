@@ -2,7 +2,10 @@ import type { NextWebVitalsMetric } from 'next/app'
 
 const ANON_ID_STORAGE_KEY = 'altctx_anon_id'
 const PROPERTY_ID = 'darce.xyz'
-const backendUrl = process.env.NEXT_PUBLIC_ALTCTX_BACKEND_URL?.trim() ?? ''
+const backendUrl = (
+    process.env.NEXT_PUBLIC_ALTCTX_BACKEND_URL?.trim()
+    ?? 'https://marketing-altcontext.fly.dev'
+).replace(/\/$/, '')
 const ingestApiKey = process.env.NEXT_PUBLIC_ALTCTX_INGEST_API_KEY?.trim() ?? ''
 
 const EVENT_SAMPLE_RATES: Partial<Record<string, number>> = {
@@ -34,7 +37,10 @@ interface EventPayloadOptions {
 let pendingWebVitals: WebVitalsPayload = {}
 let flushWebVitalsTimeout: ReturnType<typeof setTimeout> | null = null
 
-const canTrack = (): boolean => typeof window !== 'undefined' && backendUrl.length > 0
+const canTrack = (): boolean =>
+    typeof window !== 'undefined'
+    && backendUrl.length > 0
+    && ingestApiKey.length > 0
 
 const randomId = (): string =>
     `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
