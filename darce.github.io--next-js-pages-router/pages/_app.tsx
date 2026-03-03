@@ -1,14 +1,21 @@
 import { useEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import Head from "next/head";
+import { useRouter } from 'next/router'
 import { Theme } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
 
 import { HeaderDataProvider } from '../contexts/HeaderContext'
+import {
+    initAltContextEngagementTracking,
+    initAltContextScrollTracking,
+    trackAltContextPageView,
+    trackAltContextWebVital,
+} from '../lib/telemetry/altcontext'
 import { throttle } from '../lib/utils'
 import '../styles/global.scss'
 import styles from '../styles/breakpoints.module.scss'
@@ -22,6 +29,8 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+    const router = useRouter()
+
     useEffect(() => {
         /** Throttled event handler */
         const handleResize = throttle(() => {
@@ -66,6 +75,24 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
             window.removeEventListener('mousedown', handleMouseDownOnce)
         }
     }, [])
+
+    useEffect(() => {
+        trackAltContextPageView()
+
+        const handleRouteChangeComplete = () => {
+            trackAltContextPageView()
+        }
+
+        const stopEngagementTracking = initAltContextEngagementTracking()
+        const stopScrollTracking = initAltContextScrollTracking()
+        router.events.on('routeChangeComplete', handleRouteChangeComplete)
+
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChangeComplete)
+            stopEngagementTracking()
+            stopScrollTracking()
+        }
+    }, [router.events])
 
     const getLayout = Component.getLayout ?? ((page) => page)
 
@@ -112,3 +139,7 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 }
 
 export default PortfolioApp
+
+export const reportWebVitals = (metric: NextWebVitalsMetric): void => {
+    trackAltContextWebVital(metric)
+}
