@@ -81,6 +81,9 @@ web_modules/
 .env.production.local
 .env.local
 
+# Local/private docs
+.local/
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

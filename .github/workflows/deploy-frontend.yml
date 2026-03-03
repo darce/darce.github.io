@@ -19,6 +19,8 @@ concurrency:
 
 env:
   FRONTEND_DIR: darce.github.io--next-js-pages-router
+  NEXT_PUBLIC_ALTCTX_BACKEND_URL: https://marketing-altcontext.fly.dev
+  NEXT_PUBLIC_ALTCTX_INGEST_API_KEY: ${{ secrets.ALTCTX_INGEST_API_KEY }}
 
 jobs:
   build:
@@ -41,7 +43,12 @@ jobs:
 
       - name: Build with Next.js
         working-directory: ${{ env.FRONTEND_DIR }}
-        run: npx next build
+        run: |
+          if [ -z "${NEXT_PUBLIC_ALTCTX_INGEST_API_KEY}" ]; then
+            echo "Missing required secret: ALTCTX_INGEST_API_KEY"
+            exit 1
+          fi
+          npx next build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
