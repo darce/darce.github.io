@@ -1,31 +1,35 @@
 ---
-index: 30
+index: 50
 year: 2023
-title: Bauhaus Dances Film Redesign
-subtitle: Redesign and site development
-description:
-details: Brand Identity and Custom Wordpress Rheme.
+title: 'bauhausdances.org: Visual Identity & Custom WordPress Theme'
+subtitle: Arts & Film (Independent)
+description: Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
+details: Filmmaker Debra McCall needed a redesign for the site promoting her 1982 recreation of Oskar Schlemmer’s Bauhaus Dances. I developed a visual system inspired by the Hoop Dance sequence, built a custom WordPress theme, and implemented self-hosted video with caching optimizations for fast delivery.
 links:
 - url: http://bauhausdances.org
   label: Launch Project
 images:
 - src: bauhaus-dances.png
-  alt: Bauhaus Dances
-tags: 
-- Front-end
-- Wordpress
-- Custom-theme
+  alt: Bauhaus Dances site inspired by the Hoop Dance sequence
+tags:
+- WordPress
+- Custom Theme
 - PHP
+- CSS Animation
+- JavaScript
+- Video
+- Accessibility
 ---
-Filmmaker Debra McCall wanted a website redesign to promote her 1982 film that recreates Oskar Schlemmer&apos;s Bauhaus Dances.
-The design needed to capture the essence of the Bauhaus aesthetic and translate it into modern web development.
-However, some proposed solutions didn&apos;t match this aspirational aesthetic, and had an "out-of-the-box" feel we wanted to avoid.
+## The design challenge
 
-Although the site's content is mostly static, a CMS was needed to allow for future updates without requiring developer assistance.
-WordPress was chosen because of its large install base, and the abilty to heavily customize the front end. 
-The most efficient solution was to develop a custom WordPress Theme. 
-Using [Underscores](https://underscores.me/) as a base theme saved considerable development time while providing a solid foundation.
+Filmmaker Debra McCall wanted a new website for her 1982 film recreating Oskar Schlemmer’s Bauhaus Dances. The challenge was to reflect Bauhaus visual language without falling into generic arts-site conventions.
 
-The inspiration for the new identity came from the Hoop Dance segment of the film, where a dancer holds white hoops against a dark background.
-![Reinfentanz performance. A dancer is standing on one foot, with her left foot stretched towards the back. She is holding five white rings in her hands. Two of the rings make concentric circles near her head, and the other three rings form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
-These rings are mapped to the user&apos;s movements, and are subtly animated to follow the cursor.
+The visual direction grew out of the film’s Hoop Dance sequence, where white rings create stark geometric forms against a dark stage. I used that imagery as the basis for the site’s visual system and interaction language.
+
+![Reinfentanz performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
+
+A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motion without overpowering the content.
+
+## Implementation
+
+I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. The site also uses self-hosted video with caching optimizations to keep load times low without relying on third-party embeds.

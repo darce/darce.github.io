@@ -1,38 +1,48 @@
 ---
-index: 20
-year: 2023
-title: Barbara Beirne Portfolio
-subtitle: Portfolio Design and Development
-description: 
-details: Redesign and develop a new site with assets rescued from a legacy Flash website.
+index: 40
+year: 2023, 2026
+title: 'barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh'
+subtitle: Artist Archive / Portfolio
+description: Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
+details: Barbara Beirne’s archive was originally trapped inside a non-functioning Flash website with no source files available. In the first phase, I recovered the image assets and rebuilt the site from scratch. In 2026, I rewrote the live site using Web Components and a modern front-end build pipeline, expanding it into a more durable archive and portfolio experience.
 links:
 - url: http://barbarabeirne.com/
-  label: Launch Project
+  label: Live Site
 images:
 - src: barbara-beirne.jpg
   alt: A boy holding a rock to his ear. Image by Barbara Beirne
-tags: 
-- Front-end
-- Javascript
+tags:
+- Web Components
+- JavaScript
+- Sass
+- Rollup
+- Accessibility
+- Archive Recovery
 ---
-Barbara Beirne was a prolific New York photographer during the 1980s. Most of her archives were encapsulated in a Flash website, and neither the source files nor the original developer were available.
-I was approached to retrieve the images from the defunct Flash website and use those images to revamp Barbara Beirne's photography showcase.
+## The problem
 
-The process of reverse engineering a binary .SWF file is called “decompiling,” and there are several tools available, both free and paid. 
-I discovered that there is an active "Flash Decompiler Scene," and I used [FFDec](https://blog.free-decompiler.com/) for the job. 
-Although FFDec is cumbersome to install, the software successfully extracted the images from the .SWF provided. ![Black and white image image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted by FFDec from a .SWF file*
+Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were both unavailable. I was brought in to recover the images and rebuild the site from scratch.
 
-Since future compatibility was a concern, features such as the full-screen image carousel were built using Vanilla JavaScript. Keyboard navigation was also implemented for both accessibility and ease of use.
+## Recovering the images
+
+The images were embedded in a compiled .SWF binary file. I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract usable assets from the binary. It took some work to get clean exports, but the tool pulled the full image set.
+
+![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted from a .SWF file using FFDec*
+
+## The rebuild
+
+Future compatibility was the priority, so I built the site with Web Components and Vanilla JavaScript instead of a framework that could age out. The build pipeline runs on Rollup with Sass for styling. The full-screen image carousel and all navigation are keyboard-accessible.
 
 Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
-![A group of children are climbing on a large pile of debris, one of them is waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
 
-**Kind words from the client after project delivery:**
+![A group of children climbing on a large pile of debris, one waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
 
-> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional. 
-Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life. 
-The site is responsive and works seamlessly on all platforms and browsers. 
-Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate. 
+## Client feedback
+
+> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional.
+Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.
+The site is responsive and works seamlessly on all platforms and browsers.
+Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate.
 I had no references to go by when we hired Daniel and couldn't be more pleased with his work."
 >> *Alison Cornyn*
 

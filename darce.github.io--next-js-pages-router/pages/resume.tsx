@@ -1,9 +1,11 @@
 import React from 'react'
 import type { ReactElement } from 'react'
+import Head from 'next/head'
 import type { NextPageWithLayout } from './_app'
-import { getMdxContent } from '../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
 import Layout from '../components/layout/Layout'
 import styles from '../styles/resumePage.module.scss'
+import { SITE_URL, SITE_NAME } from '../lib/seo'
 
 interface ResumeSection {
     [key: string]: string[] | ResumeSection
@@ -24,6 +26,7 @@ interface ResumePageProps {
 
 const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
     const resumeContent = resumeData[0]?.metaData
+    const resumeDescription = 'Resume of Daniel Arcé — product engineer with 14+ years in accessibility, AI workflows, React, TypeScript, and front-end systems for Apple, MSNBC, Photoshelter, and startups.'
 
     const renderResumeValue = (value: string | string[] | ResumeItem | ResumeItem[]): React.ReactNode => {
         if (Array.isArray(value)) {
@@ -99,6 +102,14 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
 
     return (
         <main className={`content ${styles.resume}`}>
+            <Head>
+                <title>Resume — {SITE_NAME}</title>
+                <meta name="robots" content="noindex, nofollow" />
+                <meta name="description" content={resumeDescription} />
+                <meta property="og:title" content={`Resume — ${SITE_NAME}`} />
+                <meta property="og:description" content={resumeDescription} />
+                <meta property="og:url" content={`${SITE_URL}/resume/`} />
+            </Head>
             <aside>
                 <a href="/daniel_arce_resume_2024-q2.pdf">Download PDF</a>
             </aside>
@@ -118,7 +129,7 @@ ResumePage.getLayout = (page: ReactElement) => {
 /** Call getStaticProps on build */
 export const getStaticProps = async () => {
     const resumeProps = await getMdxContent({ subDir: 'resume' })
-    const headerProps = await getMdxContent({ subDir: 'header' })
+    const headerProps = await getMdxIndexContent({ subDir: 'header' })
 
     return {
         props: {

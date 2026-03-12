@@ -1,18 +1,20 @@
 ---
-index: 10
+index: 20
 year: 2024
-title: Order Book Basics
-subtitle: Matching buyers and sellers - real time visualization
-description: An interactive guide to cryptocurrency order books and market dynamics
-details: Short explanation of how finanical markets work. Bids, asks, spread, and market depth explained using a live order book visualization.
+title: 'Live Order Book: Real-Time Market Visualization'
+subtitle: Streaming top-of-book depth with WebSockets and React
+description: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
+details: An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. React and TypeScript render the top 20 bid and ask levels in real time over a direct WebSocket connection.
 links:
-- url: https://developers.binance.com/docs/binance-spot-api-docs/rest-api
-  label: Binance API Documentation
+- url: https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
+  label: Binance WebSocket Streams
 tags:
 - React
 - TypeScript
+- WebSocket
 - Binance API
 - Data Visualization
+- Market Microstructure
 - Cryptocurrency
 ---
 
@@ -20,12 +22,10 @@ tags:
 
 In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
 
-Below is a **live limit order book** from the Binance cryptocurrency exchange. React and TypeScript handle rendering. Data fetching is done with a WebSocket connection. The data updates in real time as new orders arrive and old ones are filled or cancelled.
-
+Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
 <OrderBookProvider>
 
 <OrderBook />
-
 
 ## The Two Sides of Every Trade
 
@@ -53,7 +53,7 @@ Together, best bid and best ask define the **top of book**.
 
 ### Order Imbalance
 <OrderImbalance />
-**Order imbalance** tells you who's winning: buyers or sellers.
+**Order imbalance** compares visible buy and sell volume. In this demo, it reflects the top 20 levels of the book, not the full market.
 
 - More buyers waiting → price might go up  
 - More sellers waiting → price might go down
@@ -90,6 +90,7 @@ The formula compares how much is on each side:
 > **Order Imbalance** = (Bid Volume − Ask Volume) ÷ (Bid Volume + Ask Volume)
 
 In plain English: **subtract the two sides, then divide by the total.**
+In this demo, order imbalance is calculated from the currently visible depth levels (top 20 levels), not the full exchange order book.
 
 ```typescript
 const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
