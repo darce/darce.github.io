@@ -7,11 +7,6 @@ import styles from './OrderBook.module.scss'
 
 export interface OrderBookProps {
     className?: string
-    apiBaseUrl?: string
-    /** Update mode: 'websocket' for real-time, 'polling' for REST API polling */
-    updateMode?: 'websocket' | 'polling'
-    /** Polling interval in ms (only used when updateMode is 'polling') */
-    pollInterval?: number
 }
 
 /**
@@ -25,18 +20,12 @@ export interface OrderBookProps {
  */
 const OrderBook: React.FC<OrderBookProps> = ({
     className,
-    apiBaseUrl,
-    updateMode = 'websocket',
-    pollInterval = 1000
 }) => {
     // Check if we're inside a shared provider
     const sharedContext = useOrderBookContext()
 
     // Use our own hook only if not in a shared context
     const ownHook = useOrderBook({
-        apiBaseUrl,
-        updateMode,
-        pollInterval,
         // Disable own hook if using shared context
         enabled: !sharedContext
     })
@@ -88,7 +77,7 @@ const OrderBook: React.FC<OrderBookProps> = ({
             symbol={symbol}
             loading={loading}
             isConnected={isConnected}
-            showConnectionStatus={updateMode === 'websocket'}
+            showConnectionStatus={true}
             onSymbolChange={setSymbol}
             onRefresh={refresh}
         />

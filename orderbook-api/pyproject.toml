@@ -1,7 +1,7 @@
 [project]
 name = "orderbook-api"
 version = "0.1.0"
-description = "Serverless Python API for fetching cryptocurrency order book data from CoinAPI"
+description = "Serverless Python API proxy for Binance order book data"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}

@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react'
-import { MarkdownData } from '../types'
+import { ContentIndexData } from '../types'
 
 interface HeaderContextProps {
-    headerData: MarkdownData[]
+    headerData: ContentIndexData[]
 }
 
 const HeaderContext = createContext<HeaderContextProps | undefined>(undefined)
@@ -15,7 +15,7 @@ export const useHeaderData = () => {
     return context
 }
 
-export const HeaderDataProvider: React.FC<{ children: React.ReactNode, initialData?: MarkdownData[] }> = ({ children, initialData = [] }) => {
+export const HeaderDataProvider: React.FC<{ children: React.ReactNode, initialData?: ContentIndexData[] }> = ({ children, initialData = [] }) => {
 
     return (
         <HeaderContext.Provider value={{ headerData: initialData }}>

@@ -22,15 +22,13 @@ def get_cors_headers(origin: str) -> dict:
     headers = {
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
+        "Vary": "Origin",
         "Content-Type": "application/json",
     }
     
     # Check if origin is allowed or is a Vercel preview
     if origin in ALLOWED_ORIGINS or (origin and origin.endswith(".vercel.app")):
         headers["Access-Control-Allow-Origin"] = origin
-    else:
-        # Default to localhost for development
-        headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
     
     return headers
 

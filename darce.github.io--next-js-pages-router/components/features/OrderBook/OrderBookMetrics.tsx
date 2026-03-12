@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react'
+import React, { createContext, useContext, ReactNode } from 'react'
 import { useOrderBook } from './useOrderBook'
 import { MetricCard, formatPrice } from './components/MetricsCards'
 import { OrderBookData } from '../../../types'
@@ -53,16 +53,16 @@ export const OrderBookProvider: React.FC<{
  */
 const useOrderBookData = (propSymbol?: string): { data: OrderBookData | null } => {
   const context = useContext(OrderBookContext)
+  const ownOrderBook = useOrderBook({
+    initialSymbol: propSymbol ?? 'XRPUSDT',
+    enabled: !context,
+  })
 
-  // If we're inside a provider, use shared data (ignore propSymbol)
   if (context) {
     return { data: context.data }
   }
 
-  // Otherwise, create our own connection (standalone usage)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data } = useOrderBook({ initialSymbol: propSymbol ?? 'XRPUSDT' })
-  return { data }
+  return { data: ownOrderBook.data }
 }
 
 /**
