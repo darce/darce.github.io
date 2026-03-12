@@ -1,39 +1,38 @@
 ---
-index: 20
+index: 10
 year: 2024
-title: 3D with DOM Elements
-subtitle: Rotation matrices and CSS transforms - no canvas, no WebGL
-description: An intentionally minimal 3D demo using pure DOM manipulation and TypeScript - no canvas, no 3D library.
-details: Move your mouse to rotate the cube. This is a small experimental playground - 3D rotation math in TypeScript, rendered as positioned div elements using CSS transforms.
+title: 3D Without Canvas or WebGL
+subtitle: Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL
+description: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
+details: Move your mouse to rotate the cube. A hands-on study of rotation matrices and perspective projection, implemented in TypeScript and rendered with CSS transforms.
 links:
 - url: https://en.wikipedia.org/wiki/Rotation_matrix
-  label: Wikipedia
+  label: Rotation Matrix
 tags:
 - Linear Algebra
 - 3D Graphics
+- TypeScript
 - DOM Manipulation
 - CSS Transforms
-- Experimental
 ---
 
 <Cube />
 
-> **What this is:** a tiny experiment showing how 3D rotation math maps to browser rendering using only DOM elements, TypeScript, and CSS transforms.  
-> **What this is not:** a general-purpose 3D engine or recommended production pipeline.
+> **What this is:** a small experiment showing how 3D rotation and projection map to browser rendering using only DOM elements, TypeScript, and CSS transforms.
+> **What this is not:** a general-purpose 3D engine or a recommended production rendering pipeline.
 
 ## Why DOM Instead of Canvas?
 
 In this experiment, the cube is not drawn on a canvas. Each vertex is a `div` element, positioned using CSS transforms.
 
-This is very much a “can we do this with _only_ the DOM?” exercise. A 3D graphics lab notebook: minimal tools, no engines, just enough code for rotation matrices to render motion on the screen.
-
+This is a deliberate constraint: no canvas, no WebGL, no engine; just enough code to make the math visible from matrix multiplication to motion on screen.
 ## The Problem
 
 A cube has eight vertices. Each vertex is a point in space: $(x, y, z)$.
 
 To rotate the cube, we need new coordinates for every vertex—coordinates that place each point in its rotated position.
 
-This is what rotation matrices do. They transform one set of coordinates into another. In this demo, we apply those matrices directly in TypeScript and push the results straight into CSS.
+Rotation matrices perform that transformation. In this demo, the math is done directly in TypeScript and the result is pushed into CSS transforms.
 
 ## One Axis at a Time
 
@@ -60,14 +59,13 @@ const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
 
 ### Around Y
 
-The middle row is $[0, 1, 0]$. This preserves $y$:
+The middle row is $[0, 1, 0]$. o rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
 
-$$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & -\sin\theta \\ 0 & 1 & 0 \\ \sin\theta & 0 & \cos\theta \end{bmatrix}$$
-
+$$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}$$
 ```typescript
 const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
     const rotationMatrix = [
-        [Math.cos(angle), 0, -Math.sin(angle)],
+        [Math.cos(angle), 0, Math.sin(angle)],
         [0, 1, 0],
         [-Math.sin(angle), 0, Math.cos(angle)]
     ]
@@ -131,7 +129,7 @@ export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: n
 }
 ```
 
-The goal here isn’t to build a general transform stack. It’s to make the math visible and traceable end-to-end: from matrix multiplication in TypeScript to pixels moving in the browser.
+The goal isn’t to build a general transform stack; it’s to keep the full pipeline visible: matrix multiplication in TypeScript, projection, and DOM updates in the browser.
 
 ## From 3D to Screen
 
@@ -158,6 +156,7 @@ const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
     return result
 }
 ```
+This simplified projection works for a small demo, though in a more robust renderer you’d guard against points crossing the projection plane.
 
 Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
 
@@ -193,7 +192,7 @@ Using `translate3d` lets the browser composite vertices on the GPU. For eight ti
 
 This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
 
-This cube is intentionally tiny so you can follow the full chain:
+Here's the full chain:
 
 1. Take a 3D point  
 2. Apply rotation matrices  

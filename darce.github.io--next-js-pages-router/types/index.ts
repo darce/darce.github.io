@@ -1,28 +1,33 @@
-
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 
+export interface MetaLink {
+    url: string
+    label: string
+}
+
+export interface MetaImage {
+    src: string
+    alt: string
+}
+
 export interface MetaData {
-    index: number
-    year: number
-    title: string
-    subtitle: string
-    description: string
-    details: string
-    links?:
-    {
-        url: string,
-        label: string
-    }[]
-    images?: {
-        src: string,
-        alt: string
-    }[]
+    index?: number
+    year?: number
+    title?: string
+    subtitle?: string
+    description?: string
+    details?: string
+    links?: MetaLink[]
+    images?: MetaImage[]
     tags?: string[]
 }
 
-export interface MarkdownData {
+export interface ContentIndexData {
     slug: string
     metaData: MetaData
+}
+
+export interface MarkdownData extends ContentIndexData {
     mdxSource: MDXRemoteSerializeResult
 }
 

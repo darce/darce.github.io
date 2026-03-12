@@ -1,32 +1,48 @@
 import { ReactElement } from 'react'
 import { GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import type { NextPageWithLayout } from '../_app'
 import { parseMarkdownFile } from '../../lib/markdownUtils'
-import { getMdxContent } from '../../lib/getMdxContent'
-import { MarkdownData } from '../../types'
+import { getMdxIndexContent } from '../../lib/getMdxContent'
+import { ContentIndexData, MarkdownData } from '../../types'
 import Layout from '../../components/layout/Layout'
 import SectionView from '../../components/features/SectionView/SectionView'
 import fs from 'fs'
 import path from 'path'
+import { ContentSection } from '../../lib/routes'
+import { SITE_URL, SITE_NAME } from '../../lib/seo'
 
 /** Supported content sections - add new sections here */
 const CONTENT_SECTIONS = ['projects', 'research'] as const
-type ContentSection = typeof CONTENT_SECTIONS[number]
 
 interface SectionPageProps {
     section: ContentSection
     selectedItem: MarkdownData
-    items: MarkdownData[]
+    items: ContentIndexData[]
 }
 
 const SectionPage: NextPageWithLayout<SectionPageProps> = ({ section, selectedItem, items }) => {
+    const title = selectedItem.metaData.title || ''
+    const subtitle = selectedItem.metaData.subtitle || ''
+    const pageTitle = `${title} — ${SITE_NAME}`
+    const pageDescription = subtitle ? `${title}: ${subtitle}` : title
+    const pageUrl = `${SITE_URL}/${section}/${selectedItem.slug}/`
+
     return (
-        <SectionView
-            section={section}
-            items={items}
-            selectedItem={selectedItem}
-            autoSelectFirst={false}
-        />
+        <>
+            <Head>
+                <title>{pageTitle}</title>
+                <meta name="description" content={pageDescription} />
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={pageDescription} />
+                <meta property="og:url" content={pageUrl} />
+            </Head>
+            <SectionView
+                section={section}
+                items={items}
+                selectedItem={selectedItem}
+            />
+        </>
     )
 }
 
@@ -61,15 +77,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<SectionPageProps> = async ({ params }) => {
-    const section = params?.section as ContentSection;
-    const slug = params?.slug as string;
+    const section = params?.section as ContentSection
+    const slug = params?.slug as string
     const filePath = path.join('content', section, `${slug}.mdx`)
     const { metaData, mdxSource } = await parseMarkdownFile(filePath)
+    if (!mdxSource) {
+        throw new Error(`Expected mdxSource for "${filePath}"`)
+    }
 
     // Get header data for Layout
-    const headerProps = await getMdxContent({ subDir: 'header' })
+    const headerProps = await getMdxIndexContent({ subDir: 'header' })
     // Get all items for this section's Menu navigation
-    const sectionProps = await getMdxContent({ subDir: section })
+    const sectionProps = await getMdxIndexContent({ subDir: section })
 
     return {
         props: {
@@ -82,7 +101,7 @@ export const getStaticProps: GetStaticProps<SectionPageProps> = async ({ params 
             items: sectionProps.parsedMdxArray,
             headerData: headerProps.parsedMdxArray,
         },
-    };
-};
+    }
+}
 
-export default SectionPage;
+export default SectionPage

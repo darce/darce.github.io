@@ -1,62 +1,49 @@
 ---
 index: 10
 year: 2021
-title: 'Photoshelter.com: Accessibility & UI Prototyping'
-subtitle: Enterprise SaaS Development
-description: Front-end and interface development
-details: Photoshelter is a cloud-based Digital Asset Management tool hosting 1B+ files for 80,000+ users, including universities and sports teams. I helped modernize its codebase for WCAG 2.1 compliance and prototyped new features.
+title: 'PhotoShelter: Accessibility Leadership & Product Prototyping'
+subtitle: Enterprise DAM Platform
+description: Led WCAG remediation, front-end systems work, and R&D prototyping for a cloud-based media platform
+details: PhotoShelter is a cloud-based Digital Asset Management platform serving 80,000+ users and hosting 1B+ files. I led the WCAG 2.1 audit and remediation effort, helped protect contracts tied to accessibility compliance, mentored four developers on accessible engineering practices, and prototyped new product workflows in R&D.
 links:
 - url: http://www.photoshelter.com
-  label: Photoshelter.com
-images: 
+  label: PhotoShelter.com
+images:
 - src: photoshelter-main-menu.png
-  alt: "Main Photoshelter Menu"
+  alt: "Main PhotoShelter menu with accessible keyboard navigation"
 tags:
-- Front-end
-- React
-- Web-components
-- PolymerLit
-- OpenCV
-- Javascript
 - Accessibility
+- React
+- Web Components
+- PolymerLit
+- JavaScript
+- OpenCV.js
+- Enterprise SaaS
 ---
-## Research and Development
-The primary goal of the R&D Department at Photoshelter was to explore and prototype features outside the existing production timeline, ensuring our products remained innovative and competitive.
-Working closely with the Chief Architect, we identified critical areas for improvement and innovation. 
-My role was central in prototyping these new features using technologies including PolymerLit, React.js, and the Javascript implementation of OpenCV.
+## Accessibility
 
-*Key Achievements:*
-- **Workflow Automation Interface**:
+PhotoShelter's customer base includes universities and professional sports organizations, and several key contracts worth a combined $9.2M ARR were exposed if the product could not demonstrate [ADA](https://www.ada.gov/law-and-regs/ada/) and WCAG compliance. I led the WCAG 2.1 audit and front-end remediation effort for PhotoShelter's core product to close that gap.
 
-I prototyped this highly requested feature which accelerated the development of the **Smart Galleries** feature and laid the groundwork for its implementation. 
-This prototype reduced production time by 30% compared to building the feature in the production environment, as it identified roadblocks to integrating it with the rest of the application.
-[See the documentation for the final feature](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries)
+The initial audit surfaced two classes of issues: fast fixes such as missing ARIA attributes and unlabeled controls, and deeper structural problems such as mouse-only navigation across core menus.
 
-- **Image Blur Comparison Tool**: 
-I built this with the client-side implementation of OpenCV. Although this prototype ultimately did not make it into production, it served as an example of client-side image manipulation tools that do not require backend development time or server-side resources beyond static files.
+- **Keyboard navigation for every menu**:
 
-## Production Team Initiatives
-In addition to new feature development, another goal was to align our codebase with contemporary Accessibility standards. 
-Most Photoshelter customers are institutional clients (either universities or professional sports teams) and there was a concrete risk of running up against the [Americans with Disabilities Act (ADA.)](https://www.ada.gov/law-and-regs/ada/)
+![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard navigation for the main menu*
 
-*Key Achievements:*
-- **Roadmap to achieve Accessibility**: 
-An initial code audit surfaced Accessibility violations that could be classified into two main camps: "Low-hanging fruit," such as missing ARIA attributes and labels for forms and buttons, and more involved omissions, such as mouse-only navigation for all menus.
+Before this work, every menu in the product was mouse-only. Keyboard access is essential for users with limited mobility and speeds things up for power users who prefer shortcuts.
 
-- **Implementing Keyboard Navigation**: 
-![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard Navigation for main menu*
+The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
 
-Before my time at Photoshelter, the mouse was the only way to navigate through the main menu. Using the keyboard to access features within the product is not only necessary for users with low mobility, but it also improves the productivity of abled users who prefer keyboard shortcuts.
-Implementing keyboard navigation significantly reduced our Accessibility tech debt, moving the company closer to meeting WCAG standards.
+![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
 
-Using accessibility tools such as the [Deque's axe DevTools Library](https://www.deque.com/axe/devtools/), we conducted thorough audits of our codebase. 
-These tools helped identify various issues, including non-compliant ARIA roles, missing labels, and problematic focus management.
+- **Team adoption**:
 
-Adding a layer of keyboard navigation presented unique challenges, primarily due to using the Shadow DOM with Polymer and Web Components. 
-Shadow DOM's encapsulation can obscure elements from standard JavaScript event listeners, making it difficult to ensure consistent focus management and keyboard accessibility. 
-Overcoming this required a detailed understanding of both the accessibility requirements and the internals of the Shadow DOM.
-![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*The main menu seamlessly goes from mouse to keyboard control*
+I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
 
-A custom solution was developed to bridge these gaps, allowing keyboard events to propagate correctly and ensuring all interactive elements were accessible via keyboard navigation.
+## R&D Prototyping
 
-My efforts significantly reduced our accessibility tech debt, ensured compliance with WCAG 2.1 standards, and introduced the development culture to the habit of considering Accessibility before a feature is shipped.
+In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped validate ideas, de-risk implementation, and surface integration challenges earlier.
+
+- **Workflow automation interface**: This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+
+- **Client-side image blur comparison**: Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
