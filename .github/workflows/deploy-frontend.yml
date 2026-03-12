@@ -27,8 +27,25 @@ env:
   # via origin check. Re-enable when multi-tenant API keys are provisioned.
 
 jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js, cache dependencies, install dependencies
+        uses: ./.github/workflows/setup-node
+        with:
+          working-directory: ${{ env.FRONTEND_DIR }}
+
+      - name: Typecheck
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run check
+
   build:
     runs-on: ubuntu-latest
+    needs: quality
 
     steps:
       - name: Checkout
