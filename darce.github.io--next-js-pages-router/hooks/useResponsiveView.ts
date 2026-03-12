@@ -1,47 +1,50 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
+import breakpoints from '../styles/breakpoints.module.scss'
 
 interface ResponsiveViewState {
-    isMobile: boolean | null
-    isTablet: boolean | null
-    isDesktop: boolean | null
+    isMobile: boolean
+    isTablet: boolean
+    isDesktop: boolean
 }
 
-/**
- * Hook to track responsive view state based on body class changes
- * Classes are set by _app.tsx based on window width
- */
+const mobileMax = Number.parseInt(breakpoints.mobileMax, 10)
+const tabletMax = Number.parseInt(breakpoints.tabletMax, 10)
+
+const SSR_DEFAULT: ResponsiveViewState = {
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+}
+
 export const useResponsiveView = (): ResponsiveViewState => {
-    const [isMobile, setIsMobile] = useState<boolean | null>(null)
-    const [isTablet, setIsTablet] = useState<boolean | null>(null)
-    const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
+    const [state, setState] = useState<ResponsiveViewState>(SSR_DEFAULT)
 
     useEffect(() => {
-        const setResponsiveViewStates = () => {
-            const isCurrentlyMobile = document.body.classList.contains('mobile-view')
-            const isCurrentlyTablet = document.body.classList.contains('tablet-view')
-            const isCurrentlyDesktop = !isCurrentlyMobile && !isCurrentlyTablet
+        const mobileQuery = window.matchMedia(`(max-width: ${mobileMax}px)`)
+        const tabletQuery = window.matchMedia(`(min-width: ${mobileMax + 1}px) and (max-width: ${tabletMax}px)`)
 
-            setIsMobile(isCurrentlyMobile)
-            setIsTablet(isCurrentlyTablet)
-            setIsDesktop(isCurrentlyDesktop)
+        const update = () => {
+            const isMobile = mobileQuery.matches
+            const isTablet = tabletQuery.matches
+            setState({
+                isMobile,
+                isTablet,
+                isDesktop: !isMobile && !isTablet,
+            })
         }
 
-        setResponsiveViewStates()
+        update()
+        mobileQuery.addEventListener('change', update)
+        tabletQuery.addEventListener('change', update)
 
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(() => {
-                setResponsiveViewStates()
-            })
-        })
-
-        observer.observe(document.body, { attributes: true })
-        
         return () => {
-            observer.disconnect()
+            mobileQuery.removeEventListener('change', update)
+            tabletQuery.removeEventListener('change', update)
         }
     }, [])
 
-    return { isMobile, isTablet, isDesktop }
+    return state
 }
 
 export default useResponsiveView

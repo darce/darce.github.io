@@ -3,22 +3,20 @@ import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import Head from "next/head";
+import Script from 'next/script'
 import { useRouter } from 'next/router'
 import { Theme } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
-import 'katex/dist/katex.min.css'
-import 'highlight.js/styles/github.css'
-
 import { HeaderDataProvider } from '../contexts/HeaderContext'
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_NAME } from '../lib/seo'
 import {
-    initAltContextEngagementTracking,
-    initAltContextScrollTracking,
-    trackAltContextPageView,
-    trackAltContextWebVital,
-} from '../lib/telemetry/altcontext'
-import { throttle } from '../lib/utils'
+    analyticsConfig,
+    initAnalytics,
+    trackPageView,
+    trackWebVital,
+} from '../lib/telemetry/analytics'
+import { GA_MEASUREMENT_ID } from '../lib/telemetry/ga'
 import '../styles/global.scss'
-import styles from '../styles/breakpoints.module.scss'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode
@@ -30,28 +28,6 @@ type AppPropsWithLayout = AppProps & {
 
 const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     const router = useRouter()
-
-    useEffect(() => {
-        /** Throttled event handler */
-        const handleResize = throttle(() => {
-            /** Cast css variable */
-            const mobileMax: number = parseInt(styles.mobileMax, 10)
-            const tabletMax: number = parseInt(styles.tabletMax, 10)
-            const isMobile = window.innerWidth <= mobileMax
-            const isTablet = window.innerWidth > mobileMax
-                && window.innerWidth <= tabletMax
-            document.body.classList.toggle('mobile-view', isMobile)
-            document.body.classList.toggle('tablet-view', isTablet)
-
-        }, 100)
-
-        handleResize()
-        window.addEventListener('resize', handleResize)
-
-        return () => {
-            window.removeEventListener('resize', handleResize)
-        }
-    }, [])
 
     /** Style tab focus */
     useEffect(() => {
@@ -77,22 +53,20 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     }, [])
 
     useEffect(() => {
-        trackAltContextPageView()
+        trackPageView(router.asPath)
 
         const handleRouteChangeComplete = () => {
-            trackAltContextPageView()
+            trackPageView(window.location.pathname)
         }
 
-        const stopEngagementTracking = initAltContextEngagementTracking()
-        const stopScrollTracking = initAltContextScrollTracking()
+        const stopAnalytics = initAnalytics()
         router.events.on('routeChangeComplete', handleRouteChangeComplete)
 
         return () => {
             router.events.off('routeChangeComplete', handleRouteChangeComplete)
-            stopEngagementTracking()
-            stopScrollTracking()
+            stopAnalytics()
         }
-    }, [router.events])
+    }, [router.asPath, router.events])
 
     const getLayout = Component.getLayout ?? ((page) => page)
 
@@ -101,6 +75,28 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
         <Theme appearance="light" accentColor="cyan" grayColor="gray" radius="medium" style={{ backgroundColor: '#fafafa' }}>
             <HeaderDataProvider initialData={pageProps.headerData}>
                 <Head>
+                    <meta name="description" content={SITE_DESCRIPTION} />
+                    <meta name="author" content={SITE_NAME} />
+                    <meta property="og:site_name" content={SITE_NAME} />
+                    <meta property="og:type" content="website" />
+                    <meta property="og:title" content={SITE_TITLE} />
+                    <meta property="og:description" content={SITE_DESCRIPTION} />
+                    <meta property="og:url" content={SITE_URL} />
+                    <link rel="canonical" href={`${SITE_URL}${router.asPath}`} />
+                    <link
+                        rel="preload"
+                        href="/fonts/GeistMonoVariableVF.woff2"
+                        as="font"
+                        type="font/woff2"
+                        crossOrigin="anonymous"
+                    />
+                    <link
+                        rel="preload"
+                        href="/fonts/RobotoFlex[GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght].woff2"
+                        as="font"
+                        type="font/woff2"
+                        crossOrigin="anonymous"
+                    />
                     <link
                         rel="icon"
                         href="/favicon.ico"
@@ -121,17 +117,23 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                         href="/apple-icon-180x180.png"
                     />
                 </Head>
-                {/* Google tag (gtag.js) */}
-                <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHTZJGSKZL"></script>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', 'G-MHTZJGSKZL');
-                            `
-                    }}
-                />
+                {analyticsConfig.gaEnabled && (
+                    <>
+                        <Script
+                            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+                            strategy="afterInteractive"
+                        />
+                        <Script id="ga4-init" strategy="afterInteractive">
+                            {`
+                                window.dataLayer = window.dataLayer || [];
+                                function gtag(){dataLayer.push(arguments);}
+                                window.gtag = gtag;
+                                gtag('js', new Date());
+                                gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
+                            `}
+                        </Script>
+                    </>
+                )}
                 {getLayout(<Component {...pageProps} />)}
             </HeaderDataProvider>
         </Theme>
@@ -141,5 +143,5 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 export default PortfolioApp
 
 export const reportWebVitals = (metric: NextWebVitalsMetric): void => {
-    trackAltContextWebVital(metric)
+    trackWebVital(metric)
 }
