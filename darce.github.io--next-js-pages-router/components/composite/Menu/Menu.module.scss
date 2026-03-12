@@ -55,7 +55,6 @@
         padding: 0 $s-medium 0 $s-medium;
         border-bottom: $s solid;
         position: relative;
-        cursor: pointer;
 
         h3 {
             margin: 0;
@@ -70,6 +69,13 @@
             @media (max-width: $tabletMax) {
                 font-size: 0.7rem;
             }
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
         }
 
         @include themeComponent($themes) {

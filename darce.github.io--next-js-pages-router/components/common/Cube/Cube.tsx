@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as MatrixTransforms from '../../../lib/matrixTransformations'
 import styles from './Cube.module.scss'
 import { throttle } from '../../../lib/utils'
+import breakpoints from '../../../styles/breakpoints.module.scss'
 
 interface Vertex {
     x: number
@@ -22,6 +23,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
     const FULL_ROTATION_RADIANS = Math.PI * 2
     const THROTTLE_DELAY_MS = 32
+    const mobileMax = Number.parseInt(breakpoints.mobileMax, 10)
 
     /** Use refs for transient state */
     const verticesRef = useRef<Vertex[]>([
@@ -48,7 +50,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
     const handleMouseMove = useCallback(
         throttle((event: MouseEvent) => {
-            if (document.body.classList.contains('mobile-view')) return
+            if (window.innerWidth <= mobileMax) return
 
             const proportionX = event.clientX / window.innerWidth
             const proportionY = event.clientY / window.innerHeight
@@ -61,11 +63,11 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
             /** Optimize animation using requestAnimationFrame */
             requestAnimationFrame(updateVertices)
-        }, THROTTLE_DELAY_MS), [])
+        }, THROTTLE_DELAY_MS), [mobileMax, updateVertices])
 
     const handleScroll = useCallback(
         throttle(() => {
-            if (!document.body.classList.contains('mobile-view')) return
+            if (window.innerWidth > mobileMax) return
 
             const scrollY = window.scrollY
             const maxScrollY = window.innerHeight
@@ -76,7 +78,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
             /** Optimize animation using requestAnimationFrame */
             requestAnimationFrame(updateVertices)
-        }, THROTTLE_DELAY_MS), [])
+        }, THROTTLE_DELAY_MS), [mobileMax, updateVertices])
 
     useEffect(() => {
         if (cubeRef.current) {
@@ -93,7 +95,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
             window.removeEventListener('mousemove', handleMouseMove)
             window.removeEventListener('scroll', handleScroll, false)
         }
-    }, [handleMouseMove, handleScroll])
+    }, [handleMouseMove, handleScroll, updateVertices])
 
     return (
         <div className={`${styles.cube} ${className || ''}`} ref={cubeRef}>

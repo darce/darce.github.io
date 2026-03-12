@@ -8,7 +8,6 @@ interface FooterProps {
 }
 const Footer: React.FC<FooterProps> = ({ footerData, className }) => {
     const footerContent = footerData[0]
-    console.log(footerContent)
     return (
         <footer className={`${className || ''}`}>
             <div>

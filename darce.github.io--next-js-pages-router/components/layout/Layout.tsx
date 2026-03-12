@@ -10,8 +10,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { headerData } = useHeaderData()
     return (
         <div className="base__typography base__palette theme--default layout">
+            <a href="#main-content" className="skip-link">Skip to main content</a>
             <Header className="header" headerData={headerData} />
-            {children}
+            <main id="main-content">
+                {children}
+            </main>
         </div>
     )
 }
