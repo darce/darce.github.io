@@ -51,13 +51,16 @@ const Nav: React.FC<NavProps> = ({ className }) => {
         <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé' ref={navRef}>
             <ul>
                 {sections.map((section) => (
-                    <li key={section.label} data-path={section.href}>
+                    <li
+                        key={section.label}
+                        data-path={section.href}
+                        className={activePath === section.href ? styles.selected : ''}
+                    >
                         <Link href={section.href} aria-label={section.label}>
                             {section.label}
                         </Link>
                     </li>
-                )
-                )}
+                ))}
                 <div className={styles.slider} style={sliderStyle}></div>
             </ul>
         </nav>
