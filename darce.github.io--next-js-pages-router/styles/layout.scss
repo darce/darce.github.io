@@ -44,6 +44,8 @@
             @media (max-width: $tabletMax) {
                 display: block;
                 padding: 0 $s-large;
+                position: relative;
+                overflow: hidden;
             }
         }
 
