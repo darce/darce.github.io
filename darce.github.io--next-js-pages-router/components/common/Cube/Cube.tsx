@@ -99,7 +99,6 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
     return (
         <div className={`${styles.cube} ${className || ''}`} ref={cubeRef}>
-            <div className="info"></div>
             {vertices.map((vertexDiv, index) => (
                 <div
                     key={index}

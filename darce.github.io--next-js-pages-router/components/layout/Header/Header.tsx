@@ -19,8 +19,8 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
                 <div className={styles.masthead}>
                     <h1 className={styles.title}>
                         {masthead?.title}</h1>
-                    <h2 className={styles.subtitle}
-                    >{masthead?.subtitle}</h2>
+                    <p className={styles.subtitle}
+                    >{masthead?.subtitle}</p>
                 </div>
 
                 <section className={styles.decoration} aria-hidden="true">

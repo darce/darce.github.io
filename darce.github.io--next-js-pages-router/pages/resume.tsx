@@ -101,7 +101,7 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
     }
 
     return (
-        <main className={`content ${styles.resume}`}>
+        <div className={`content ${styles.resume}`}>
             <Head>
                 <title>Resume — {SITE_NAME}</title>
                 <meta name="robots" content="noindex, nofollow" />
@@ -114,7 +114,7 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
                 <a href="/daniel_arce_resume_2024-q2.pdf">Download PDF</a>
             </aside>
             {resumeContent && renderResumeSection(resumeContent)}
-        </main>
+        </div>
     )
 }
 

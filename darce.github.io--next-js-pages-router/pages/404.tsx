@@ -7,20 +7,20 @@ import { SITE_NAME } from '../lib/seo'
 
 const NotFoundPage: NextPageWithLayout = () => {
     return (
-        <main className="content" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+        <div className="singleColumn" style={{ textAlign: 'center' }}>
             <Head>
                 <title>404 — {SITE_NAME}</title>
                 <meta name="robots" content="noindex" />
             </Head>
             <h2>Page not found</h2>
-            <p style={{ marginTop: '1rem' }}>
-                <a href="/" style={{ textDecoration: 'underline' }}>Back to projects</a>
+            <p>
+                <a href="/">Back to projects</a>
                 {' | '}
-                <a href="/about/" style={{ textDecoration: 'underline' }}>About</a>
+                <a href="/about/">About</a>
                 {' | '}
-                <a href="/research/" style={{ textDecoration: 'underline' }}>Research</a>
+                <a href="/research/">Research</a>
             </p>
-        </main>
+        </div>
     )
 }
 

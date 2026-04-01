@@ -7,7 +7,7 @@ import { SITE_URL, SITE_NAME } from '../lib/seo'
 
 const PrivacyPage: NextPageWithLayout = () => {
     return (
-        <main className="content" style={{ maxWidth: 640, padding: '2rem' }}>
+        <div className="singleColumn">
             <Head>
                 <title>Privacy — {SITE_NAME}</title>
                 <meta name="description" content="Privacy policy for darce.xyz" />
@@ -68,7 +68,7 @@ const PrivacyPage: NextPageWithLayout = () => {
             <p>
                 Questions about this policy: <a href="mailto:daniel.arce@gmail.com">daniel.arce@gmail.com</a>
             </p>
-        </main>
+        </div>
     )
 }
 

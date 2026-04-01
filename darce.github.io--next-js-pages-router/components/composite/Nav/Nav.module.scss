@@ -72,7 +72,7 @@
         }
 
         z-index: 0;
-        transition: left 0.1s ease-in-out,
-        width 0.3s ease-in-out;
+        transition: left 0.1s $ease-decel,
+        width 0.3s $ease-decel;
     }
 }

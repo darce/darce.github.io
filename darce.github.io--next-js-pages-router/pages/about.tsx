@@ -20,7 +20,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
     const aboutPageDescription = 'About Daniel Arcé — product engineer building accessible, high-trust software systems with AI-assisted workflows, React, and TypeScript.'
 
     return (
-        <main className={`content ${styles.about}`}>
+        <div className={`content ${styles.about}`}>
             <Head>
                 <title>About — {SITE_NAME}</title>
                 <meta name="description" content={aboutPageDescription} />
@@ -50,7 +50,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
             <article className={styles.source}>
                 <MDXRemote {...aboutContent.mdxSource} />
             </article>
-        </main>
+        </div>
     )
 }
 
