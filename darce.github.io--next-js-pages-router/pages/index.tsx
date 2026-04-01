@@ -41,12 +41,12 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                             <picture>
                                 <source
                                     media="(max-width: 768px)"
-                                    srcSet="/images/headshot-dithered-atkinson-96.png"
+                                    srcSet="/images/headshot-dithered-bayer-96.png"
                                     width={96}
                                     height={96}
                                 />
                                 <img
-                                    src="/images/headshot-dithered-atkinson-120.png"
+                                    src="/images/headshot-dithered-bayer-120.png"
                                     alt="Daniel Arcé, portrait by Liam Maloney"
                                     width={120}
                                     height={120}
