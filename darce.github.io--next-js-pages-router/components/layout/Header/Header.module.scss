@@ -59,9 +59,18 @@
         @media(max-width: $tabletMax) {
             width: auto;
             position: absolute;
-            // top: calc(12*$s-small);
             left: 85%;
-            // z-index: 12;
+        }
+    }
+
+    .navRow {
+        display: flex;
+        align-items: center;
+        gap: $s-medium;
+        width: 100%;
+
+        .nav {
+            flex: 1;
         }
     }
 }

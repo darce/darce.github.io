@@ -9,6 +9,7 @@ const staticPages = [
     { loc: '/', priority: '1.0' },
     { loc: '/about/', priority: '0.8' },
     { loc: '/research/', priority: '0.7' },
+    { loc: '/privacy/', priority: '0.3' },
 ]
 
 function getSlugs(subDir) {
