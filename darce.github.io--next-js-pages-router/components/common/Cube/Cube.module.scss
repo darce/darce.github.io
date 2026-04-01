@@ -8,10 +8,6 @@
 
 .cube {
     height: 100%;
-
-    @include themeComponent($themes) {
-        background-color: t('');
-    }
 }
 
 .vertex {
@@ -19,11 +15,18 @@
     position: absolute;
     width: $s-small;
     height: $s-small;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s $ease-decel;
     image-rendering: pixelated;
-    mix-blend-mode: multiply;
 
     @include themeComponent($themes) {
         background-color: t('border');
+    }
+
+    :global(.theme--default) & {
+        mix-blend-mode: multiply;
+    }
+
+    :global(.theme--dark) & {
+        mix-blend-mode: screen;
     }
 }

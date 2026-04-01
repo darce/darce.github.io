@@ -26,14 +26,14 @@ const SectionView: React.FC<SectionViewProps> = ({
 }) => {
   if (!items || items.length === 0) {
     return (
-      <main aria-label="Empty Section" className={`content ${className || ''}`}>
+      <section aria-label="Empty Section" className={`content ${className || ''}`}>
         <p>No content found</p>
-      </main>
+      </section>
     )
   }
 
   return (
-    <main aria-label="Content Section" className={`content ${className || ''}`}>
+    <section aria-label="Content Section" className={`content ${className || ''}`}>
       <Menu
         className="menu"
         section={section}
@@ -47,7 +47,7 @@ const SectionView: React.FC<SectionViewProps> = ({
           project={selectedItem}
         />
       )}
-    </main>
+    </section>
   )
 }
 

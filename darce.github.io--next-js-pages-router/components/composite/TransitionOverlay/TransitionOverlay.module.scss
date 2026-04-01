@@ -18,7 +18,7 @@
         width: calc(100% / $slatCount);
         bottom: 0;
         height: 100%;
-        animation: slideUp $totalDuration ease-in-out forwards;
+        animation: slideUp $totalDuration $ease-decel forwards;
 
         @include themeComponent($themes) {
             background-color: t('backgroundColor')
@@ -46,4 +46,11 @@
     }
 }
 
-@include generateSlats(16)
+@include generateSlats(16);
+
+@media (prefers-reduced-motion: reduce) {
+    .slatElement {
+        animation: none;
+        height: 0;
+    }
+}
