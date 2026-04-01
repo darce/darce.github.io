@@ -2,7 +2,7 @@ const sharp = require('sharp')
 const path = require('path')
 
 const INPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300.jpg')
-const OUTPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300-dithered-atkinson.png')
+const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images')
 
 /**
  * Atkinson dithering — distributes 6/8 of the quantization error to
@@ -27,7 +27,6 @@ function atkinsonDither(pixels, width, height) {
             buf[i] = val
             const err = (old - val) / 8
 
-            // Spread 6/8 of error to six neighbors
             if (x + 1 < width)                          buf[i + 1]         += err
             if (x + 2 < width)                          buf[i + 2]         += err
             if (y + 1 < height) {
@@ -46,18 +45,37 @@ function atkinsonDither(pixels, width, height) {
     return out
 }
 
-async function run() {
-    const image = sharp(INPUT).grayscale()
-    const { width, height } = await image.metadata()
+/**
+ * Generate a dithered image at an exact pixel size.
+ * The source is resized FIRST (with good interpolation), then dithered.
+ * This means each pixel in the output is a deliberate dithering decision
+ * at that resolution — not a browser-rescaled approximation.
+ */
+async function generateAtSize(size, suffix) {
+    const image = sharp(INPUT).resize(size, size).grayscale()
     const { data } = await image.raw().toBuffer({ resolveWithObject: true })
 
-    const out = atkinsonDither(data, width, height)
+    const out = atkinsonDither(data, size, size)
+    const outputPath = path.join(IMAGES_DIR, `headshot-dithered-atkinson-${suffix}.png`)
 
-    await sharp(out, { raw: { width, height, channels: 1 } })
+    await sharp(out, { raw: { width: size, height: size, channels: 1 } })
         .png()
-        .toFile(OUTPUT)
+        .toFile(outputPath)
 
-    console.log(`Atkinson-dithered headshot written to ${OUTPUT} (${width}x${height})`)
+    console.log(`  ${outputPath} (${size}x${size})`)
+}
+
+async function run() {
+    console.log('Generating Atkinson-dithered headshots at display sizes:')
+
+    // Each size matches an exact CSS display context.
+    // Use image-rendering: pixelated so browsers render 1:1 pixels.
+    await generateAtSize(300, '300')  // about page desktop
+    await generateAtSize(200, '200')  // about page mobile
+    await generateAtSize(120, '120')  // landing page desktop
+    await generateAtSize(96, '96')    // landing page mobile
+
+    console.log('Done.')
 }
 
 run().catch(err => {

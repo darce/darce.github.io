@@ -63,9 +63,14 @@
         position: relative;
 
         @media(max-width: $tabletMax) {
-            width: auto;
-            position: absolute;
-            left: 85%;
+            width: 100%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
         }
     }
 }
