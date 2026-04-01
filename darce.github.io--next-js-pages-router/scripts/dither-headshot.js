@@ -4,42 +4,63 @@ const path = require('path')
 const INPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300.jpg')
 const OUTPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300-dithered.png')
 
-// 8x8 Bayer threshold matrix (normalized to 0-255)
-const BAYER_8x8 = [
-    [ 0, 128,  32, 160,   8, 136,  40, 168],
-    [192,  64, 224,  96, 200,  72, 232, 104],
-    [ 48, 176,  16, 144,  56, 184,  24, 152],
-    [240, 112, 208,  80, 248, 120, 216,  88],
-    [ 12, 140,  44, 172,   4, 132,  36, 164],
-    [204,  76, 236, 108, 196,  68, 228, 100],
-    [ 60, 188,  28, 156,  52, 180,  20, 148],
-    [252, 124, 220,  92, 244, 116, 212,  84],
-]
-
-async function bayerDither() {
-    const image = sharp(INPUT).grayscale()
-    const { width, height } = await image.metadata()
-    const { data } = await image.raw().toBuffer({ resolveWithObject: true })
-
-    const out = Buffer.alloc(width * height)
+/**
+ * Atkinson dithering — distributes 6/8 of the quantization error to
+ * six neighboring pixels. The remaining 1/4 is discarded, which
+ * preserves more contrast than Floyd-Steinberg and produces the
+ * characteristic high-contrast look from the original Macintosh.
+ *
+ * Diffusion pattern (current pixel marked *):
+ *
+ *          *   1/8  1/8
+ *    1/8  1/8  1/8
+ *         1/8
+ */
+function atkinsonDither(pixels, width, height) {
+    const buf = Float64Array.from(pixels)
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const i = y * width + x
-            const gray = data[i]
-            const threshold = BAYER_8x8[y % 8][x % 8]
-            out[i] = gray > threshold ? 255 : 0
+            const old = buf[i]
+            const val = old > 128 ? 255 : 0
+            buf[i] = val
+            const err = (old - val) / 8
+
+            // Spread 6/8 of error to six neighbors
+            if (x + 1 < width)                          buf[i + 1]         += err
+            if (x + 2 < width)                          buf[i + 2]         += err
+            if (y + 1 < height) {
+                if (x - 1 >= 0)                         buf[i + width - 1] += err
+                                                        buf[i + width]     += err
+                if (x + 1 < width)                      buf[i + width + 1] += err
+            }
+            if (y + 2 < height)                         buf[i + 2 * width] += err
         }
     }
+
+    const out = Buffer.alloc(width * height)
+    for (let i = 0; i < buf.length; i++) {
+        out[i] = buf[i] > 128 ? 255 : 0
+    }
+    return out
+}
+
+async function run() {
+    const image = sharp(INPUT).grayscale()
+    const { width, height } = await image.metadata()
+    const { data } = await image.raw().toBuffer({ resolveWithObject: true })
+
+    const out = atkinsonDither(data, width, height)
 
     await sharp(out, { raw: { width, height, channels: 1 } })
         .png()
         .toFile(OUTPUT)
 
-    console.log(`Dithered headshot written to ${OUTPUT} (${width}x${height})`)
+    console.log(`Atkinson-dithered headshot written to ${OUTPUT} (${width}x${height})`)
 }
 
-bayerDither().catch(err => {
+run().catch(err => {
     console.error(err)
     process.exit(1)
 })
