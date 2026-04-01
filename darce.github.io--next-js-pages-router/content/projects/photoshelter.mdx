@@ -26,7 +26,7 @@ PhotoShelter's customer base includes universities and professional sports organ
 
 The initial audit surfaced two classes of issues: fast fixes such as missing ARIA attributes and unlabeled controls, and deeper structural problems such as mouse-only navigation across core menus.
 
-- **Keyboard navigation for every menu**:
+### Keyboard navigation for every menu
 
 ![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard navigation for the main menu*
 
@@ -36,14 +36,18 @@ The hardest part was keyboard support across Shadow DOM-based components. Becaus
 
 ![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
 
-- **Team adoption**:
+### Team adoption
 
 I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
 
 ## R&D Prototyping
 
-In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped validate ideas, de-risk implementation, and surface integration challenges earlier.
+In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped test ideas and catch integration problems before they reached production.
 
-- **Workflow automation interface**: This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+### Workflow automation interface
 
-- **Client-side image blur comparison**: Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+
+### Client-side image blur comparison
+
+Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
