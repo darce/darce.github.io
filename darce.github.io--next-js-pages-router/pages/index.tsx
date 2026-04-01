@@ -1,7 +1,6 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/image'
 import type { NextPageWithLayout } from './_app'
 import { getMdxIndexContent } from '../lib/getMdxContent'
 import { ContentIndexData } from '../types'
@@ -39,13 +38,20 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                 <section className={styles.hero}>
                     <div className={styles.heroInner}>
                         <figure className={styles.headshot}>
-                            <Image
-                                src="/images/headshot-6-300-dithered-atkinson.png"
-                                alt="Daniel Arcé, portrait by Liam Maloney"
-                                width={120}
-                                height={120}
-                                style={{ width: '100%', height: 'auto' }}
-                            />
+                            <picture>
+                                <source
+                                    media="(max-width: 768px)"
+                                    srcSet="/images/headshot-dithered-atkinson-96.png"
+                                    width={96}
+                                    height={96}
+                                />
+                                <img
+                                    src="/images/headshot-dithered-atkinson-120.png"
+                                    alt="Daniel Arcé, portrait by Liam Maloney"
+                                    width={120}
+                                    height={120}
+                                />
+                            </picture>
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
