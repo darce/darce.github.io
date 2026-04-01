@@ -1,8 +1,8 @@
 export const SITE_URL = 'https://darce.xyz'
 export const SITE_NAME = 'Daniel Arcé'
-export const SITE_TITLE = 'Daniel Arcé — Product Engineer, Accessibility, AI Workflows & Front-End Systems'
+export const SITE_TITLE = 'Daniel Arcé — Product Engineer, Accessibility & Front-End Architecture'
 export const SITE_DESCRIPTION =
-    'Product engineer with 14+ years building accessible, scalable software. Specializing in accessibility, AI-assisted workflows, and front-end systems for consumer platforms and startups.'
+    'Product engineer with 14+ years building accessible software for consumer platforms, media companies, and startups. Front-end architecture, WCAG compliance, and AI accessibility tooling.'
 
 export const personJsonLd = {
     '@context': 'https://schema.org',
