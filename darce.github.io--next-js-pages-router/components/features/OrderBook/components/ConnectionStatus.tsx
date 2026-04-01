@@ -25,7 +25,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           variant="soft"
           size="1"
         >
-          {isConnected ? '🟢 Live' : '🔴 Connecting...'}
+          {isConnected ? 'Live' : 'Connecting...'}
         </Badge>
       )}
     </Flex>

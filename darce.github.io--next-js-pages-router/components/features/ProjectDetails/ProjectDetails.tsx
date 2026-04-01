@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
@@ -11,8 +11,16 @@ import 'highlight.js/styles/github.css'
 import cubeStyles from '../../common/Cube/Cube.module.scss'
 import styles from './ProjectDetails.module.scss'
 
-// Dynamic imports for MDX components
-const OrderBook = dynamic(() => import('../OrderBook/OrderBook'), { ssr: false })
+// Dynamic imports for MDX components — render noscript fallback when JS is unavailable
+const NoScriptFallback = () => (
+    <noscript>
+        <p style={{ padding: '1rem', border: '1px solid var(--gray-a6)', borderRadius: 4 }}>
+            This interactive component requires JavaScript to run.
+        </p>
+    </noscript>
+)
+
+const OrderBook = dynamic(() => import('../OrderBook/OrderBook'), { ssr: false, loading: NoScriptFallback })
 const OrderBookProvider = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.OrderBookProvider), { ssr: false })
 const BestBid = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestBid), { ssr: false })
 const BestAsk = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestAsk), { ssr: false })
@@ -45,10 +53,15 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) => {
     const [showOverlay, setShowOverlay] = useState(true)
+    const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
 
     const handleAnimationEnd = () => {
         setShowOverlay(false)
     }
+
+    const handleImageError = useCallback((index: number) => {
+        setFailedImages(prev => new Set(prev).add(index))
+    }, [])
 
     if (!project) {
         return null
@@ -61,7 +74,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
             <aside className={styles.metadata}>
                 {project.metaData.links && (
                     <div className={styles.links}>
-                        <a target="_blank" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
+                        <a target="_blank" rel="noopener noreferrer" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
                     </div>
                 )}
                 <p>{project.metaData.details}</p>
@@ -70,6 +83,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
             <div className={styles.post}>
                 {project.metaData.images &&
                     project.metaData.images.map((image, index) => {
+                        if (failedImages.has(index)) return null
                         return (
                             <figure className={styles.imgWrapper} key={index}>
                                 <Image
@@ -79,6 +93,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                                     height={800}
                                     style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                                     sizes="(max-width: 768px) 100vw, 45vw"
+                                    onError={() => handleImageError(index)}
                                 />
                                 <figcaption>{image.alt}</figcaption>
                             </figure>

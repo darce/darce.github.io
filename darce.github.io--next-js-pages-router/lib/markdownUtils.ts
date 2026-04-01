@@ -11,8 +11,10 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 
-// Unified plugin typing is noisy across rehype plugin packages.
+// Unified plugin typing is noisy across remark/rehype plugin packages.
 // The pipeline is build-time only and validated by Next build/typecheck.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const remarkPlugins: any[] = [remarkMath, remarkGfm]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rehypePlugins: any[] = [rehypeKatex, rehypeHighlight]
 
@@ -171,7 +173,7 @@ export const parseMarkdownFile = async (
     /** Serialize MDX into HTML */
     const mdxSource = await serialize(content, {
         mdxOptions: {
-            remarkPlugins: [remarkMath, remarkGfm],
+            remarkPlugins,
             rehypePlugins,
         },
     })

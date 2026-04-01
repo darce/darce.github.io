@@ -3,6 +3,7 @@ import Head from 'next/head'
 import type { NextPageWithLayout } from './_app'
 import { MarkdownData } from '../types'
 import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
+import Image from 'next/image'
 import { MDXRemote } from 'next-mdx-remote'
 import Layout from '../components/layout/Layout'
 import styles from '../styles/aboutPage.module.scss'
@@ -35,8 +36,13 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
                 {headShotObj &&
                     (
                         <figure className={styles.headshot}>
-                            <img src={`/images/${headShotObj.src}`}
-                                alt={headShotObj.alt} />
+                            <Image
+                                src={`/images/${headShotObj.src}`}
+                                alt={headShotObj.alt}
+                                width={300}
+                                height={300}
+                                style={{ width: '100%', height: 'auto' }}
+                            />
                         </figure>)
                 }
 

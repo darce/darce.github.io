@@ -1,6 +1,7 @@
 import React from 'react'
 import { ContentIndexData } from '../../../types'
 import Cube from '../../common/Cube/Cube'
+import ThemeToggle from '../../common/ThemeToggle/ThemeToggle'
 import Nav from '../../composite/Nav/Nav'
 import styles from './Header.module.scss'
 
@@ -26,7 +27,10 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
                     <Cube />
                 </section>
             </section>
-            <Nav className="nav" />
+            <div className={styles.navRow}>
+                <Nav className="nav" />
+                <ThemeToggle />
+            </div>
         </header>
     )
 }

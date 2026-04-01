@@ -8,6 +8,8 @@ import { useRouter } from 'next/router'
 import { Theme } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
 import { HeaderDataProvider } from '../contexts/HeaderContext'
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
+import ErrorBoundary from '../components/common/ErrorBoundary'
 import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_NAME } from '../lib/seo'
 import {
     analyticsConfig,
@@ -26,8 +28,14 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout
 }
 
-const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
     const router = useRouter()
+    const { appearance } = useTheme()
+
+    /** Sync body data-theme for SCSS dark styles */
+    useEffect(() => {
+        document.body.setAttribute('data-theme', appearance)
+    }, [appearance])
 
     /** Style tab focus */
     useEffect(() => {
@@ -39,7 +47,7 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
             window.addEventListener('mousedown', handleMouseDownOnce)
         }
 
-        const handleMouseDownOnce = (event: MouseEvent) => {
+        const handleMouseDownOnce = () => {
             document.body.classList.remove('is-tab')
             window.removeEventListener('mousedown', handleMouseDownOnce)
             window.addEventListener('keydown', handleKeyDownOnce)
@@ -69,10 +77,10 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     }, [router.asPath, router.events])
 
     const getLayout = Component.getLayout ?? ((page) => page)
+    const themeClass = appearance === 'dark' ? 'theme--dark' : 'theme--default'
 
-    /** Wrap getLayout with HeaderDataProvider */
     return (
-        <Theme appearance="light" accentColor="cyan" grayColor="gray" radius="medium" style={{ backgroundColor: '#fafafa' }}>
+        <Theme appearance={appearance} accentColor="cyan" grayColor="gray" radius="medium">
             <HeaderDataProvider initialData={pageProps.headerData}>
                 <Head>
                     <meta name="description" content={SITE_DESCRIPTION} />
@@ -97,25 +105,10 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                         type="font/woff2"
                         crossOrigin="anonymous"
                     />
-                    <link
-                        rel="icon"
-                        href="/favicon.ico"
-                        sizes="16x16"
-                    />
-                    <link
-                        rel="icon"
-                        href="/favicon-32x32.png"
-                        sizes="32x32"
-                    />
-                    <link
-                        rel="icon"
-                        href="/favicon-96x96.png"
-                        sizes="96x96"
-                    />
-                    <link
-                        rel="apple-touch-icon"
-                        href="/apple-icon-180x180.png"
-                    />
+                    <link rel="icon" href="/favicon.ico" sizes="16x16" />
+                    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" />
+                    <link rel="icon" href="/favicon-96x96.png" sizes="96x96" />
+                    <link rel="apple-touch-icon" href="/apple-icon-180x180.png" />
                 </Head>
                 {analyticsConfig.gaEnabled && (
                     <>
@@ -134,11 +127,21 @@ const PortfolioApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                         </Script>
                     </>
                 )}
-                {getLayout(<Component {...pageProps} />)}
+                <ErrorBoundary>
+                    <div className={themeClass}>
+                        {getLayout(<Component {...pageProps} />)}
+                    </div>
+                </ErrorBoundary>
             </HeaderDataProvider>
         </Theme>
     )
 }
+
+const PortfolioApp = (props: AppPropsWithLayout) => (
+    <ThemeProvider>
+        <AppShell {...props} />
+    </ThemeProvider>
+)
 
 export default PortfolioApp
 

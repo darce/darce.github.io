@@ -5,6 +5,11 @@
 
 body {
     background-color: $alabaster-white;
+    transition: background-color 0.3s;
+}
+
+body[data-theme='dark'] {
+    background-color: #1a1a1a;
 }
 
 .base__palette {

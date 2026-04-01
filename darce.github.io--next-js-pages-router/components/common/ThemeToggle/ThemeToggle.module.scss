@@ -1,0 +1,29 @@
+.toggle {
+    background: none;
+    border: 1px solid var(--gray-a6);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: border-color 0.2s;
+    color: var(--gray-11);
+    font-size: 14px;
+    line-height: 1;
+
+    &:hover {
+        border-color: var(--gray-a8);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-9);
+        outline-offset: 2px;
+    }
+}
+
+.icon {
+    display: block;
+}
