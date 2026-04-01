@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { NextPageWithLayout } from './_app'
 import { getMdxIndexContent } from '../lib/getMdxContent'
 import { ContentIndexData } from '../types'
@@ -36,20 +37,33 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
             </Head>
             <div className={styles.landing}>
                 <section className={styles.hero}>
-                    <p className={styles.positioning}>
-                        Product engineer with 14+ years building accessible software
-                        for Apple, MSNBC, PhotoShelter, and startups. Currently building
-                        AI-assisted accessibility tooling at{' '}
-                        <a href="https://altcontext.com" target="_blank" rel="noopener noreferrer">
-                            AltContext.com
-                        </a>.
-                    </p>
-                    <a
-                        className={styles.cta}
-                        href="mailto:daniel.arce@gmail.com"
-                    >
-                        Get in touch
-                    </a>
+                    <div className={styles.heroInner}>
+                        <figure className={styles.headshot}>
+                            <Image
+                                src="/images/headshot-6-300-dithered-atkinson.png"
+                                alt="Daniel Arcé, portrait by Liam Maloney"
+                                width={120}
+                                height={120}
+                                style={{ width: '100%', height: 'auto' }}
+                            />
+                        </figure>
+                        <div className={styles.heroText}>
+                            <p className={styles.positioning}>
+                                Product engineer with 14+ years building accessible software
+                                for Apple, MSNBC, PhotoShelter, and startups. Currently building
+                                AI-assisted accessibility tooling at{' '}
+                                <a href="https://altcontext.com" target="_blank" rel="noopener noreferrer">
+                                    AltContext.com
+                                </a>.
+                            </p>
+                            <a
+                                className={styles.cta}
+                                href="mailto:daniel.arce@gmail.com"
+                            >
+                                Get in touch
+                            </a>
+                        </div>
+                    </div>
                 </section>
 
                 <section className={styles.featured}>

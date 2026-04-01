@@ -13,6 +13,36 @@
     margin-bottom: $s-x-large;
 }
 
+.heroInner {
+    display: flex;
+    align-items: flex-start;
+    gap: $s-large;
+
+    @media (max-width: $mobileMax) {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.headshot {
+    flex-shrink: 0;
+    width: 120px;
+    margin: 0;
+
+    img {
+        border-radius: 50%;
+    }
+
+    @media (max-width: $mobileMax) {
+        width: 96px;
+    }
+}
+
+.heroText {
+    flex: 1;
+    min-width: 0;
+}
+
 .positioning {
     font-size: 1.4rem;
     line-height: 2.2rem;
