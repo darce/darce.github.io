@@ -88,9 +88,10 @@
         }
 
         &.selected {
-            @include themeComponent($themes) {
-                background-color: t('backgroundColor');
-            }
+            // Must match Radix Theme background exactly — #fff (light) or var(--gray-1) (dark).
+            // Uses !important to override the theme-mixin-applied inactiveBg on the li,
+            // which has higher specificity via :global(.theme--default) ancestor selector.
+            background-color: var(--color-background) !important;
         }
 
         &::marker {
