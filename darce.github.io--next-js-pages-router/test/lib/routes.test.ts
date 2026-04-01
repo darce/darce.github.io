@@ -16,9 +16,13 @@ describe('resolveNavPath', () => {
         expect(resolveNavPath('/')).toBe('/')
     })
 
-    it('maps /projects/* to /', () => {
-        expect(resolveNavPath('/projects/apple')).toBe('/')
-        expect(resolveNavPath('/projects/photoshelter')).toBe('/')
+    it('maps /work to /work', () => {
+        expect(resolveNavPath('/work')).toBe('/work')
+    })
+
+    it('maps /projects/* to /work', () => {
+        expect(resolveNavPath('/projects/apple')).toBe('/work')
+        expect(resolveNavPath('/projects/photoshelter')).toBe('/work')
     })
 
     it('maps /research/* to /research', () => {
@@ -37,9 +41,9 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains work, research, and about', () => {
+    it('contains home, work, research, and about', () => {
         const labels = NAV_ITEMS.map(item => item.label)
-        expect(labels).toEqual(['work', 'research', 'about'])
+        expect(labels).toEqual(['home', 'work', 'research', 'about'])
     })
 
     it('has valid href values', () => {

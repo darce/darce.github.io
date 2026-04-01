@@ -1,0 +1,134 @@
+@import '../styles/vars.scss';
+
+.landing {
+    max-width: 720px;
+    padding: $s-x-large $s-large;
+
+    @media (max-width: $tabletMax) {
+        padding: $s-large;
+    }
+}
+
+.hero {
+    margin-bottom: $s-x-large;
+}
+
+.positioning {
+    font-size: 1.4rem;
+    line-height: 2.2rem;
+    font-weight: 400;
+    margin: 0 0 $s-large 0;
+
+    @include themeComponent($themes) {
+        color: t('text');
+    }
+
+    @media (max-width: $tabletMax) {
+        font-size: 1.1rem;
+        line-height: 1.8rem;
+    }
+}
+
+.cta {
+    display: inline-block;
+    padding: $s-medium $s-large;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid;
+    transition: background-color 0.2s $ease-standard, color 0.2s $ease-standard;
+
+    @include themeComponent($themes) {
+        color: t('text');
+        border-color: t('text');
+    }
+
+    &:hover {
+        @include themeComponent($themes) {
+            background-color: t('text');
+            color: t('backgroundColor');
+        }
+    }
+}
+
+.featured {
+    margin-top: $s-x-large;
+
+    h2 {
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 400;
+        margin: 0 0 $s-large 0;
+
+        @include themeComponent($themes) {
+            color: t('highlight');
+        }
+    }
+}
+
+.projectList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.projectItem {
+    padding: $s-medium 0;
+    border-bottom: 1px solid;
+
+    @include themeComponent($themes) {
+        border-bottom-color: t('inactiveBg');
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+
+        &:hover .projectTitle {
+            @include themeComponent($themes) {
+                color: t('link');
+            }
+        }
+    }
+}
+
+.projectTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    transition: color 0.15s $ease-standard;
+}
+
+.projectMeta {
+    font-weight: 200;
+    font-size: 0.9rem;
+    margin: $s-small / 2 0 0 0;
+
+    @include themeComponent($themes) {
+        color: t('highlight');
+    }
+}
+
+.projectDesc {
+    font-weight: 300;
+    font-size: 0.85rem;
+    margin: $s-small 0 0 0;
+    line-height: 1.5;
+}
+
+.viewAll {
+    display: inline-block;
+    margin-top: $s-large;
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    @include themeComponent($themes) {
+        color: t('link');
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

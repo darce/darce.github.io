@@ -1,20 +1,26 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
-import path from 'path'
+import Link from 'next/link'
 import type { NextPageWithLayout } from './_app'
 import { getMdxIndexContent } from '../lib/getMdxContent'
-import { parseMarkdownFile } from '../lib/markdownUtils'
-import { ContentIndexData, MarkdownData } from '../types'
+import { ContentIndexData } from '../types'
 import Layout from '../components/layout/Layout'
-import SectionView from '../components/features/SectionView/SectionView'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
+import styles from '../styles/landingPage.module.scss'
 
-interface WorkProps {
-    projectsData: ContentIndexData[]
-    firstItem: MarkdownData | null
+const FEATURED_SLUGS = ['photoshelter', 'apple', 'msnbc']
+
+const FEATURED_METRICS: Record<string, string> = {
+    photoshelter: 'Led WCAG remediation protecting $9.2M ARR in institutional contracts',
+    apple: '92% open rate on the marketing department\'s first CSS-animated email campaign',
+    msnbc: 'Shipped live video platform under a six-month litigation deadline',
 }
 
-const Work: NextPageWithLayout<WorkProps> = ({ projectsData, firstItem }) => {
+interface LandingProps {
+    featuredProjects: ContentIndexData[]
+}
+
+const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
     return (
         <>
             <Head>
@@ -28,17 +34,53 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData, firstItem }) => {
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
                 />
             </Head>
-            <SectionView
-                section="projects"
-                items={projectsData}
-                selectedItem={firstItem}
-                hideDetailOnMobile
-            />
+            <div className={styles.landing}>
+                <section className={styles.hero}>
+                    <p className={styles.positioning}>
+                        Product engineer with 14+ years building accessible software
+                        for Apple, MSNBC, PhotoShelter, and startups. Currently building
+                        AI-assisted accessibility tooling at{' '}
+                        <a href="https://altcontext.com" target="_blank" rel="noopener noreferrer">
+                            AltContext.com
+                        </a>.
+                    </p>
+                    <a
+                        className={styles.cta}
+                        href="mailto:daniel.arce@gmail.com"
+                    >
+                        Get in touch
+                    </a>
+                </section>
+
+                <section className={styles.featured}>
+                    <h2>Selected work</h2>
+                    <ul className={styles.projectList}>
+                        {featuredProjects.map((project) => (
+                            <li key={project.slug} className={styles.projectItem}>
+                                <Link href={`/projects/${project.slug}/`}>
+                                    <h3 className={styles.projectTitle}>
+                                        {project.metaData.title}
+                                    </h3>
+                                    <p className={styles.projectMeta}>
+                                        {project.metaData.subtitle}
+                                    </p>
+                                    <p className={styles.projectDesc}>
+                                        {FEATURED_METRICS[project.slug]}
+                                    </p>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                    <Link href="/work/" className={styles.viewAll}>
+                        View all projects &rarr;
+                    </Link>
+                </section>
+            </div>
         </>
     )
 }
 
-Work.getLayout = (page: ReactElement) => {
+Landing.getLayout = (page: ReactElement) => {
     return (
         <Layout>
             {page}
@@ -46,29 +88,20 @@ Work.getLayout = (page: ReactElement) => {
     )
 }
 
-/** Call getStaticProps on build to get data from mdx files*/
 export const getStaticProps = async () => {
     const projectsProps = await getMdxIndexContent({ subDir: 'projects' })
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
 
-    // Fetch first item's full MDX for the desktop detail pane
-    let firstItem: MarkdownData | null = null
-    const first = projectsProps.parsedMdxArray[0]
-    if (first) {
-        const filePath = path.join('content', 'projects', `${first.slug}.mdx`)
-        const { metaData, mdxSource } = await parseMarkdownFile(filePath)
-        if (mdxSource) {
-            firstItem = { slug: first.slug, metaData, mdxSource }
-        }
-    }
+    const featuredProjects = FEATURED_SLUGS
+        .map(slug => projectsProps.parsedMdxArray.find(p => p.slug === slug))
+        .filter((p): p is ContentIndexData => p !== undefined)
 
     return {
         props: {
-            projectsData: projectsProps.parsedMdxArray,
-            firstItem,
+            featuredProjects,
             headerData: headerProps.parsedMdxArray,
         }
     }
 }
 
-export default Work
+export default Landing
