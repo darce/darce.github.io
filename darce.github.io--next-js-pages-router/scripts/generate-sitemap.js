@@ -7,6 +7,7 @@ const OUT_PATH = path.join(__dirname, '..', 'public', 'sitemap.xml')
 
 const staticPages = [
     { loc: '/', priority: '1.0' },
+    { loc: '/work/', priority: '0.9' },
     { loc: '/about/', priority: '0.8' },
     { loc: '/research/', priority: '0.7' },
     { loc: '/privacy/', priority: '0.3' },

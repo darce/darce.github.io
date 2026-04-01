@@ -6,7 +6,8 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-    { href: '/', label: 'work' },
+    { href: '/', label: 'home' },
+    { href: '/work', label: 'work' },
     { href: '/research', label: 'research' },
     { href: '/about', label: 'about' },
 ]
@@ -15,8 +16,11 @@ export const buildItemPath = (section: ContentSection, slug: string): string =>
     `/${section}/${slug}`
 
 export const resolveNavPath = (asPath: string): string => {
-    if (asPath === '/' || asPath.startsWith('/projects')) {
+    if (asPath === '/') {
         return '/'
+    }
+    if (asPath.startsWith('/work') || asPath.startsWith('/projects')) {
+        return '/work'
     }
     if (asPath.startsWith('/research')) {
         return '/research'
