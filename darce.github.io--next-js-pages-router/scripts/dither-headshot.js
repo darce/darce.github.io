@@ -2,7 +2,7 @@ const sharp = require('sharp')
 const path = require('path')
 
 const INPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300.jpg')
-const OUTPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300-dithered.png')
+const OUTPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300-dithered-atkinson.png')
 
 /**
  * Atkinson dithering — distributes 6/8 of the quantization error to
