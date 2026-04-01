@@ -88,7 +88,9 @@
         }
 
         &.selected {
-            background-color: transparent;
+            @include themeComponent($themes) {
+                background-color: t('backgroundColor');
+            }
         }
 
         &::marker {
