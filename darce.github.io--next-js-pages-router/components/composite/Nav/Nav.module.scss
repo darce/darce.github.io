@@ -3,7 +3,7 @@
 
 .nav {
     @include themeComponent($themes) {
-        background-color: t('activeText');
+        background-color: t('backgroundColor');
     }
 
     display: flex;

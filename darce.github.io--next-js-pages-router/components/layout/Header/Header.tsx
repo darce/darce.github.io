@@ -17,8 +17,11 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
         <header className={`${styles.header} ${className || ''}`}>
             <section className="marquee">
                 <div className={styles.masthead}>
-                    <h1 className={styles.title}>
-                        {masthead?.title}</h1>
+                    <div className={styles.mastheadTop}>
+                        <h1 className={styles.title}>
+                            {masthead?.title}</h1>
+                        <ThemeToggle />
+                    </div>
                     <p className={styles.subtitle}
                     >{masthead?.subtitle}</p>
                 </div>
@@ -27,10 +30,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
                     <Cube />
                 </section>
             </section>
-            <div className={styles.navRow}>
-                <Nav className="nav" />
-                <ThemeToggle />
-            </div>
+            <Nav className="nav" />
         </header>
     )
 }
