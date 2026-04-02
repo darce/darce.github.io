@@ -1,13 +1,9 @@
-name: Deploy Frontend to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "darce.github.io--next-js-pages-router/**"
-      - ".github/workflows/deploy-frontend.yml"
-      - ".github/workflows/setup-node/**"
   workflow_dispatch:
 
 permissions:
@@ -20,11 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  FRONTEND_DIR: darce.github.io--next-js-pages-router
   NEXT_PUBLIC_ALTCTX_BACKEND_URL: https://marketing-altcontext.fly.dev
-  # NEXT_PUBLIC_ALTCTX_INGEST_API_KEY: ${{ secrets.ALTCTX_INGEST_API_KEY }}
-  # Not required while bootstrap tenant resolution handles single-tenant ingest
-  # via origin check. Re-enable when multi-tenant API keys are provisioned.
 
 jobs:
   quality:
@@ -36,11 +28,8 @@ jobs:
 
       - name: Setup Node.js, cache dependencies, install dependencies
         uses: ./.github/workflows/setup-node
-        with:
-          working-directory: ${{ env.FRONTEND_DIR }}
 
       - name: Typecheck
-        working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run check
 
   build:
@@ -53,8 +42,6 @@ jobs:
 
       - name: Setup Node.js, cache dependencies, install dependencies
         uses: ./.github/workflows/setup-node
-        with:
-          working-directory: ${{ env.FRONTEND_DIR }}
 
       - name: Setup pages
         uses: actions/configure-pages@v4
@@ -63,13 +50,12 @@ jobs:
           enablement: true
 
       - name: Build with Next.js
-        working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./${{ env.FRONTEND_DIR }}/out
+          path: ./out
 
   deploy:
     environment:
