@@ -4,6 +4,11 @@ const path = require('path')
 const INPUT = path.join(__dirname, '..', 'public', 'images', 'headshot-6-300.jpg')
 const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images')
 
+// Contrast multiplier for small headshots.
+// Pushes midtones toward black/white before dithering so shadows read
+// more clearly at 96-120px. Does not affect the large Atkinson renders.
+const SMALL_CONTRAST = 1.5
+
 // 8x8 Bayer threshold matrix (normalized to 0-255)
 const BAYER_8x8 = [
     [ 0, 128,  32, 160,   8, 136,  40, 168],
@@ -19,7 +24,6 @@ const BAYER_8x8 = [
 /**
  * Bayer (ordered) dithering — compares each pixel against a fixed
  * threshold matrix. Produces a regular geometric dot pattern.
- * Works well at small sizes where error diffusion loses detail.
  */
 function bayerDither(pixels, width, height) {
     const out = Buffer.alloc(width * height)
@@ -67,8 +71,11 @@ function atkinsonDither(pixels, width, height) {
     return out
 }
 
-async function generate(size, algorithm) {
-    const image = sharp(INPUT).resize(size, size).grayscale()
+async function generate(size, algorithm, { contrast = 1 } = {}) {
+    let image = sharp(INPUT).resize(size, size).grayscale()
+    if (contrast !== 1) {
+        image = image.linear(contrast, -(128 * (contrast - 1)))
+    }
     const { data } = await image.raw().toBuffer({ resolveWithObject: true })
 
     const dither = algorithm === 'bayer' ? bayerDither : atkinsonDither
@@ -79,19 +86,17 @@ async function generate(size, algorithm) {
         .png()
         .toFile(outputPath)
 
-    console.log(`  ${algorithm} ${size}px → ${outputPath}`)
+    console.log(`  ${algorithm} ${size}px (contrast ${contrast}) → ${outputPath}`)
 }
 
 async function run() {
     console.log('Generating dithered headshots:')
 
-    // Large sizes: Atkinson (high contrast, organic texture)
-    await generate(300, 'atkinson')  // about page desktop
-    await generate(200, 'atkinson')  // about page mobile
-
-    // Small sizes: Bayer (geometric pattern holds up better at low resolution)
-    await generate(120, 'bayer')     // landing page desktop
-    await generate(96, 'bayer')      // landing page mobile
+    // All sizes: Atkinson with contrast boost for defined shadows
+    await generate(300, 'atkinson', { contrast: SMALL_CONTRAST })
+    await generate(200, 'atkinson', { contrast: SMALL_CONTRAST })
+    await generate(120, 'atkinson', { contrast: SMALL_CONTRAST })
+    await generate(96, 'atkinson', { contrast: SMALL_CONTRAST })
 
     console.log('Done.')
 }
