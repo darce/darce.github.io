@@ -1,29 +1,76 @@
+@import '../../../styles/vars.scss';
+@import '../../../styles/mixins.scss';
+
+$cell: 12px;
+$grid-size: $cell * 2;
+
 .toggle {
     background: none;
-    border: 1px solid var(--gray-a6);
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
+    border: $s-line solid;
+    border-radius: 0;
+    width: $grid-size;
+    height: $grid-size;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 0;
-    transition: border-color 0.2s;
-    color: var(--gray-11);
-    font-size: 14px;
-    line-height: 1;
+    position: relative;
+    transition: border-color 200ms $ease-accel,
+                transform 200ms $ease-accel;
+
+    @include themeComponent($themes) {
+        border-color: t('text');
+    }
+
+    @include ditheredShadow(
+        $offset: $s-small / 2,
+        $offset-hover: $s-small
+    );
 
     &:hover {
-        border-color: var(--gray-a8);
+        transform: translateY(-$s-small / 2);
+        transition: border-color 200ms $ease-decel,
+                    transform 200ms $ease-decel;
+
+        @include themeComponent($themes) {
+            border-color: t('border');
+        }
     }
 
     &:focus-visible {
-        outline: 2px solid var(--accent-9);
-        outline-offset: 2px;
+        @include themeComponent($themes) {
+            outline: 2px solid t('link');
+            outline-offset: 2px;
+        }
     }
 }
 
-.icon {
-    display: block;
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+}
+
+.c1 {
+    @include themeComponent($themes) {
+        background-color: t('surface');
+    }
+}
+
+.c2 {
+    @include themeComponent($themes) {
+        background-color: t('text');
+    }
+}
+
+.c3 {
+    @include themeComponent($themes) {
+        background-color: t('link');
+    }
+}
+
+.c4 {
+    @include themeComponent($themes) {
+        background-color: t('border');
+    }
 }

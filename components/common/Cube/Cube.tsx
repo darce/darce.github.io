@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as MatrixTransforms from '../../../lib/matrixTransformations'
 import styles from './Cube.module.scss'
-import { throttle } from '../../../lib/utils'
 import breakpoints from '../../../styles/breakpoints.module.scss'
 
 interface Vertex {
@@ -22,8 +21,8 @@ interface CubeProps {
 const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
     const FULL_ROTATION_RADIANS = Math.PI * 2
-    const THROTTLE_DELAY_MS = 32
     const mobileMax = Number.parseInt(breakpoints.mobileMax, 10)
+    const rafPending = useRef(false)
 
     /** Use refs for transient state */
     const verticesRef = useRef<Vertex[]>([
@@ -42,58 +41,51 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
     const centerRef = useRef<Point>({ x: 0, y: 0 })
     const cubeRef = useRef<HTMLDivElement>(null)
 
-    /** useCallback to memoize function */
     const updateVertices = useCallback(() => {
+        rafPending.current = false
         const transformedVertices = MatrixTransforms.transformPoints(verticesRef.current, angleXRef.current, angleYRef.current, angleZRef.current, 500, 10)
         setVertices(transformedVertices)
     }, [])
 
-    const handleMouseMove = useCallback(
-        throttle((event: MouseEvent) => {
-            if (window.innerWidth <= mobileMax) return
-
-            const proportionX = event.clientX / window.innerWidth
-            const proportionY = event.clientY / window.innerHeight
-
-            /** Map scroll position to full rotation (2π radians) */
-            /** Full rotation from top to bottom */
-            angleXRef.current = proportionY * FULL_ROTATION_RADIANS
-            /** Full rotation from left to right */
-            angleYRef.current = proportionX * FULL_ROTATION_RADIANS
-
-            /** Optimize animation using requestAnimationFrame */
+    const scheduleUpdate = useCallback(() => {
+        if (!rafPending.current) {
+            rafPending.current = true
             requestAnimationFrame(updateVertices)
-        }, THROTTLE_DELAY_MS), [mobileMax, updateVertices])
+        }
+    }, [updateVertices])
 
-    const handleScroll = useCallback(
-        throttle(() => {
-            if (window.innerWidth > mobileMax) return
+    const handleMouseMove = useCallback((event: MouseEvent) => {
+        if (window.innerWidth <= mobileMax) return
 
-            const scrollY = window.scrollY
-            const maxScrollY = window.innerHeight
+        angleXRef.current = (event.clientY / window.innerHeight) * FULL_ROTATION_RADIANS
+        angleYRef.current = (event.clientX / window.innerWidth) * FULL_ROTATION_RADIANS
 
-            /** Map scroll position to twice full rotation on mobile(2π radians) */
-            angleYRef.current = (scrollY / maxScrollY) * FULL_ROTATION_RADIANS * 2
-            angleXRef.current = (scrollY / maxScrollY) * FULL_ROTATION_RADIANS * 2
+        scheduleUpdate()
+    }, [mobileMax, scheduleUpdate])
 
-            /** Optimize animation using requestAnimationFrame */
-            requestAnimationFrame(updateVertices)
-        }, THROTTLE_DELAY_MS), [mobileMax, updateVertices])
+    const handleScroll = useCallback(() => {
+        if (window.innerWidth > mobileMax) return
+
+        const proportion = window.scrollY / window.innerHeight
+        angleYRef.current = proportion * FULL_ROTATION_RADIANS * 2
+        angleXRef.current = proportion * FULL_ROTATION_RADIANS * 2
+
+        scheduleUpdate()
+    }, [mobileMax, scheduleUpdate])
 
     useEffect(() => {
         if (cubeRef.current) {
             const cubeRect = cubeRef.current.getBoundingClientRect()
             centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
-            window.addEventListener('mousemove', handleMouseMove, false)
-            window.addEventListener('scroll', handleScroll, false)
+            window.addEventListener('mousemove', handleMouseMove, { passive: true })
+            window.addEventListener('scroll', handleScroll, { passive: true })
 
-            /** Paint Cube on load */
             updateVertices()
         }
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove)
-            window.removeEventListener('scroll', handleScroll, false)
+            window.removeEventListener('scroll', handleScroll)
         }
     }, [handleMouseMove, handleScroll, updateVertices])
 

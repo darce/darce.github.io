@@ -5,44 +5,12 @@
     margin: 0;
     list-style: none;
 
-    #menuCheckbox {
-        appearance: none;
-        position: absolute;
-        opacity: 0;
-    }
-
-    .navMobile {
+    .menuList {
         display: block;
         margin: 0;
 
         @include themeComponent($themes) {
             background-color: t('inactiveBg');
-        }
-
-        @media(max-width: $tabletMax) {
-            position: absolute;
-            left: -100%;
-            width: 90%;
-            transition: left 0.5s $ease-decel;
-            z-index: 10;
-            box-shadow: $s-medium $s-medium rgba(0, 0, 0, 0.5);
-            border: 1px solid black;
-        }
-    }
-
-    /** toggle mobile nav*/
-    #menuCheckbox:checked~.navMobile {
-        left: 0;
-    }
-
-    .labelMenuToggle {
-        display: none;
-
-        @media (max-width: $tabletMax) {
-            cursor: pointer;
-            display: inline-block;
-            font-size: 3rem;
-            margin-left: calc(-1 * $s-small);
         }
     }
 
@@ -59,16 +27,6 @@
         h3 {
             margin: 0;
             padding: 0;
-
-            @media (max-width: $tabletMax) {
-                font-size: 1rem;
-            }
-        }
-
-        p {
-            @media (max-width: $tabletMax) {
-                font-size: 0.7rem;
-            }
         }
 
         a {
@@ -79,19 +37,17 @@
         }
 
         @include themeComponent($themes) {
-            /** define outline color before passing to isFocused() */
-            $outline-color: t('activeBg');
+            $outline-color: t('castShadow');
             color: t('text');
             background-color: t('inactiveBg');
-            border-bottom-color: t('link');
+            border-bottom-color: t('surface');
             @include isFocused($outline-color);
         }
 
         &.selected {
-            // Must match Radix Theme background exactly — #fff (light) or var(--gray-1) (dark).
-            // Uses !important to override the theme-mixin-applied inactiveBg on the li,
-            // which has higher specificity via :global(.theme--default) ancestor selector.
-            background-color: var(--color-background) !important;
+            @include themeComponent($themes) {
+                background-color: t('surface');
+            }
         }
 
         &::marker {
@@ -100,15 +56,11 @@
             font-size: 1.2rem;
 
             @include themeComponent($themes) {
-                color: t('highlight')
-            }
-
-            @media (max-width: $tabletMax) {
-                font-size: 1rem;
+                color: t('link');
             }
         }
 
-        /** bottom border animation */
+        /** bottom border animation — blue accent, coral on hover */
         &::before {
             content: '';
             position: absolute;
@@ -116,16 +68,23 @@
             left: 0;
             width: 0;
             height: $s;
-            transition: width 0.2s $ease-standard;
+            transition: width 200ms $ease-decel,
+                        background-color 200ms $ease-decel;
 
             @include themeComponent($themes) {
                 background: t('link');
+            }
+        }
+
+        &:hover::before {
+            @include themeComponent($themes) {
+                background: t('border');
             }
         }
     }
 
     & :hover::before,
     & .selected::before {
-        width: 100%
+        width: 100%;
     }
 }

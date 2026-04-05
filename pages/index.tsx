@@ -59,14 +59,14 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                 for Apple, MSNBC, PhotoShelter, and startups. Currently building
                                 AI-assisted accessibility tooling at{' '}
                                 <a href="https://altcontext.com" target="_blank" rel="noopener noreferrer">
-                                    AltContext.com
-                                </a>.
+                                    AltContext.com.
+                                </a>
                             </p>
                             <a
                                 className={styles.cta}
                                 href="mailto:daniel.arce@gmail.com"
                             >
-                                Get in touch
+                                <span className={styles.ctaInner}>Get in touch</span>
                             </a>
                         </div>
                     </div>
@@ -77,16 +77,18 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                     <ul className={styles.projectList}>
                         {featuredProjects.map((project) => (
                             <li key={project.slug} className={styles.projectItem}>
-                                <Link href={`/projects/${project.slug}/`}>
-                                    <h3 className={styles.projectTitle}>
-                                        {project.metaData.title}
-                                    </h3>
-                                    <p className={styles.projectMeta}>
-                                        {project.metaData.subtitle}
-                                    </p>
-                                    <p className={styles.projectDesc}>
-                                        {FEATURED_METRICS[project.slug]}
-                                    </p>
+                                <Link href={`/projects/${project.slug}/`} className={styles.projectLink}>
+                                    <div className={styles.projectItemInner}>
+                                        <h3 className={styles.projectTitle}>
+                                            {project.metaData.title}
+                                        </h3>
+                                        <p className={styles.projectMeta}>
+                                            {project.metaData.subtitle}
+                                        </p>
+                                        <p className={styles.projectDesc}>
+                                            {FEATURED_METRICS[project.slug]}
+                                        </p>
+                                    </div>
                                 </Link>
                             </li>
                         ))}

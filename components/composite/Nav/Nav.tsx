@@ -1,68 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import ThemeToggle from '../../common/ThemeToggle/ThemeToggle'
 import styles from './Nav.module.scss'
 import { NAV_ITEMS, resolveNavPath } from '../../../lib/routes'
+import { useBreadcrumb } from '../../../contexts/BreadcrumbContext'
 
 interface NavProps {
     className?: string
 }
 
-interface NavItem {
-    href: string
-    label: string
-}
-
 const Nav: React.FC<NavProps> = ({ className }) => {
     const router = useRouter()
-    const navRef = useRef<HTMLElement>(null)
-    const [sliderStyle, setSliderStyle] = useState({})
-    const [activePath, setActivePath] = useState('/')
-
-    const sections: NavItem[] = NAV_ITEMS
-
-    const updateSliderStyle = () => {
-        if (navRef.current) {
-            const activeElement = navRef.current.querySelector(`[data-path="${activePath}"]`) as HTMLElement
-            const newStyle = activeElement ?
-                {
-                    left: activeElement.offsetLeft,
-                    width: activeElement.offsetWidth
-                } : {}
-            setSliderStyle(newStyle)
-        }
-    }
+    const [activePath, setActivePath] = useState(() => resolveNavPath(router.asPath))
+    const { title, prev, next } = useBreadcrumb()
 
     useEffect(() => {
         setActivePath(resolveNavPath(router.asPath))
-        updateSliderStyle()
-
-        const handleResize = () => {
-            updateSliderStyle()
-        }
-
-        window.addEventListener('resize', handleResize)
-        return () => {
-            window.removeEventListener('resize', handleResize)
-        }
-    }, [activePath, router.asPath])
+    }, [router.asPath])
 
     return (
-        <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé' ref={navRef}>
+        <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
-                {sections.map((section) => (
+                {NAV_ITEMS.map((navItem) => (
                     <li
-                        key={section.label}
-                        data-path={section.href}
-                        className={activePath === section.href ? styles.selected : ''}
+                        key={navItem.label}
+                        data-path={navItem.href}
+                        className={activePath === navItem.href ? styles.selected : ''}
                     >
-                        <Link href={section.href} aria-label={section.label}>
-                            {section.label}
+                        <Link href={navItem.href} aria-label={navItem.label}>
+                            {navItem.label}
                         </Link>
                     </li>
                 ))}
-                <div className={styles.slider} style={sliderStyle}></div>
             </ul>
+            <div className={styles.themeToggle}>
+                <ThemeToggle />
+            </div>
+            {title && (
+                <div className={styles.breadcrumb}>
+                    {prev ? (
+                        <Link href={prev.href} className={styles.breadcrumbArrow} aria-label={`Previous: ${prev.title}`}>
+                            &larr;
+                        </Link>
+                    ) : (
+                        <span className={styles.breadcrumbArrowDisabled} aria-hidden="true">&larr;</span>
+                    )}
+                    <span className={styles.breadcrumbTitle}>{title}</span>
+                    {next ? (
+                        <Link href={next.href} className={styles.breadcrumbArrow} aria-label={`Next: ${next.title}`}>
+                            &rarr;
+                        </Link>
+                    ) : (
+                        <span className={styles.breadcrumbArrowDisabled} aria-hidden="true">&rarr;</span>
+                    )}
+                </div>
+            )}
         </nav>
     )
 }

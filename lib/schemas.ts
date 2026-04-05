@@ -9,6 +9,8 @@ const metaLinkSchema = z.object({
 const metaImageSchema = z.object({
     src: z.string().min(1),
     alt: z.string().default(''),
+    position: z.string().optional(),
+    scale: z.number().positive().optional(),
 })
 
 /** Base schema — all optional. Used for sections without specific requirements. */
@@ -20,6 +22,7 @@ export const baseMetaSchema = z.object({
     description: z.string().trim().min(1).optional(),
     details: z.string().trim().min(1).optional(),
     links: z.array(metaLinkSchema).min(1).optional(),
+    thumbnail: metaImageSchema.optional(),
     images: z.array(metaImageSchema).min(1).optional(),
     tags: z.array(z.string().trim().min(1)).min(1).optional(),
 })

@@ -92,7 +92,7 @@ const ResumePage: NextPageWithLayout<ResumePageProps> = ({ resumeData }) => {
                 {Object.entries(section)
                     .map(([key, value]) => (
                         <React.Fragment key={key}>
-                            <h3>{key}</h3>
+                            <h2>{key}</h2>
                             {renderResumeValue(value)}
                         </React.Fragment>
                     ))}

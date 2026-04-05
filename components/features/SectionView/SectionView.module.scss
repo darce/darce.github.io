@@ -1,0 +1,56 @@
+@import '../../../styles/vars.scss';
+@import '../../../styles/mixins.scss';
+
+.mobileNav {
+    display: none;
+    grid-column: 1 / -1;
+
+    @media (max-width: $tabletMax) {
+        display: flex;
+        justify-content: space-between;
+        gap: $s-medium;
+        // Full bleed: break out of .content's $s-large padding
+        margin-left: -$s-large;
+        margin-right: -$s-large;
+        // Standard content padding on the cards inside
+        padding: $s-large;
+        margin-top: $s-large;
+
+        @include themeComponent($themes) {
+            background-color: t('inactiveBg');
+        }
+    }
+}
+
+.navLink {
+    flex: 1;
+    min-width: 0;
+
+    @include ditheredCard;
+
+    @include themeComponent($themes) {
+        color: t('text');
+    }
+}
+
+.navNext {
+    text-align: right;
+    margin-left: auto;
+}
+
+.navLabel {
+    display: block;
+    padding: $s-medium $s-medium 0;
+    font-size: 0.8rem;
+    font-variation-settings: 'wght' 300;
+}
+
+.navTitle {
+    display: block;
+    padding: 0 $s-medium $s-medium;
+    font-variation-settings: 'wght' 500;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

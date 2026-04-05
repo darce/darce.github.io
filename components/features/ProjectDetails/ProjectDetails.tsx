@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import Image from 'next/image'
-import TransitionOverlay from '../../composite/TransitionOverlay/TransitionOverlay'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
@@ -44,6 +43,7 @@ const mdxComponents = {
     Spread,
     OrderImbalance,
     Cube: MDXCube,
+    hr: () => null,
 }
 
 interface ProjectDetailsProps {
@@ -52,12 +52,7 @@ interface ProjectDetailsProps {
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) => {
-    const [showOverlay, setShowOverlay] = useState(true)
     const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
-
-    const handleAnimationEnd = () => {
-        setShowOverlay(false)
-    }
 
     const handleImageError = useCallback((index: number) => {
         setFailedImages(prev => new Set(prev).add(index))
@@ -69,7 +64,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
 
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
-            {showOverlay && <TransitionOverlay onAnimationEnd={handleAnimationEnd} />}
             <h2>{project.metaData.title}</h2>
             <aside className={styles.metadata}>
                 {project.metaData.links && (
@@ -103,6 +97,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                     <MDXRemote {...project.mdxSource} components={mdxComponents} />
                 </div>
             </div>
+            <hr className={styles.divider} />
         </article >
     )
 }

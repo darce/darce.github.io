@@ -1,0 +1,19 @@
+@import '../../../styles/vars.scss';
+@import '../../../styles/mixins.scss';
+
+.outer {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+
+    @include ditheredShadow;
+}
+
+.inner {
+    overflow: hidden;
+
+    @include themeComponent($themes) {
+        background-color: t('surface');
+    }
+}

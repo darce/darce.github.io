@@ -5,7 +5,7 @@ import path from 'path'
 /**
  * The selected menu item must share a background color with the adjacent
  * article pane so they read as one surface. This test verifies the SCSS
- * source uses the Radix --color-background variable.
+ * source uses the theme background token via the themeComponent mixin.
  */
 describe('Menu selected background matches page background', () => {
     const menuScss = fs.readFileSync(
@@ -13,10 +13,10 @@ describe('Menu selected background matches page background', () => {
         'utf-8'
     )
 
-    it('selected li uses Radix --color-background variable', () => {
-        const selectedBlock = menuScss.match(/&\.selected\s*\{[^}]*\}/s)
+    it('selected li uses theme surface token', () => {
+        const selectedBlock = menuScss.match(/&\.selected\s*\{[\s\S]*?\n        \}/s)
         expect(selectedBlock).not.toBeNull()
-        expect(selectedBlock![0]).toContain('--color-background')
+        expect(selectedBlock![0]).toContain("t('surface')")
     })
 
     it('does not use transparent for selected background', () => {

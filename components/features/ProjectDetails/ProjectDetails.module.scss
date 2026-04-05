@@ -1,4 +1,5 @@
 @import '../../../styles/vars.scss';
+@import '../../../styles/mixins.scss';
 
 .projectDetails {
     position: relative;
@@ -53,6 +54,16 @@
             content: '';
             display: table;
             clear: both;
+        }
+    }
+
+    .divider {
+        border: none;
+        height: 2px;
+        margin: $s-x-large 0 $s-large;
+
+        @include themeComponent($themes) {
+            background-color: t('text');
         }
     }
 

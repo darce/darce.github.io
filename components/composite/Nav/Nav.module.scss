@@ -3,35 +3,33 @@
 
 .nav {
     @include themeComponent($themes) {
-        background-color: t('backgroundColor');
+        background-color: t('surface');
     }
 
     display: flex;
+    flex-wrap: wrap;
     font-size: 2.6rem;
     font-variation-settings: 'wght' 200;
+    margin: 0;
 
     @media(max-width: $tabletMax) {
-        font-size: 0.7rem;
-        position: absolute;
-        top: 0;
-        padding: $s-medium 0;
-        z-index: -1;
+        font-size: 1.15rem;
+        margin-top: $s-large;
     }
 
-
-    ul {
+    > ul {
         list-style: none;
         padding: 0;
-        margin: $s-small calc($s-small * 6.5);
-        position: relative;
+        margin: 0 $s-large;
+        display: flex;
+        align-items: center;
 
-        @media (max-width:$tabletMax) {
+        @media (max-width: $tabletMax) {
             margin: 0;
         }
     }
 
-    li {
-        float: left;
+    > ul > li {
         text-transform: capitalize;
         line-height: 100%;
 
@@ -39,40 +37,133 @@
             line-height: inherit;
         }
 
-        a {
+        > a {
             display: block;
-            padding: 0 $s-large 0 $s-large;
+            padding: $s-small $s-large;
             text-decoration: none;
             color: inherit;
             cursor: pointer;
             position: relative;
-            z-index: 1;
-        }
 
-        &.selected {
-            @include themeComponent($themes) {
-                color: t('activeText');
+            @media (max-width: $tabletMax) {
+                padding: $s-medium $s-large;
+            }
+
+            /** Animated underline accent */
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                transition: width 300ms $ease-decel,
+                            background-color 200ms $ease-decel;
+
+                @include themeComponent($themes) {
+                    background-color: t('link');
+                }
             }
         }
 
-        /** define outline color before passing to isFocused() */
+        &:hover > a::after {
+            width: 100%;
+
+            @include themeComponent($themes) {
+                background-color: t('border');
+            }
+        }
+
+        &.selected > a {
+            font-variation-settings: 'wght' 600;
+
+            &::after {
+                width: 100%;
+            }
+        }
+
         @include themeComponent($themes) {
             $outline-color: t('castShadow');
             @include isFocused($outline-color);
         }
     }
 
-    .slider {
-        position: absolute;
-        bottom: 0;
-        height: 100%;
+    .themeToggle {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        padding: $s-medium $s-large;
+    }
+
+    .breadcrumb {
+        display: none;
+        align-items: center;
+        width: 100%;
+        font-size: 0.9rem;
+        font-variation-settings: 'wght' 300;
+        text-transform: none;
 
         @include themeComponent($themes) {
-            background-color: t('activeBg');
+            color: t('link');
         }
 
-        z-index: 0;
-        transition: left 0.1s $ease-decel,
-        width 0.3s $ease-decel;
+        @media (max-width: $tabletMax) {
+            display: flex;
+            // Left padding matches nav link padding ($s-large)
+            // Right padding matches themeToggle padding ($s-large)
+            padding: $s-small $s-large;
+            font-size: 0.85rem;
+
+            @include themeComponent($themes) {
+                background-color: t('inactiveBg');
+            }
+        }
+    }
+
+    .breadcrumbTitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+    }
+
+    .breadcrumbArrow,
+    .breadcrumbArrowDisabled {
+        display: none;
+
+        @media (max-width: $tabletMax) {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            min-width: $s-x-large;
+            min-height: $s-x-large;
+            font-size: 1rem;
+            text-decoration: none;
+
+            &:first-child {
+                margin-left: -$s-medium;
+            }
+
+            &:last-child {
+                margin-right: -$s-medium;
+            }
+        }
+    }
+
+    .breadcrumbArrow {
+        @include themeComponent($themes) {
+            color: t('link');
+        }
+
+        &:hover {
+            @include themeComponent($themes) {
+                color: t('border');
+            }
+        }
+    }
+
+    .breadcrumbArrowDisabled {
+        opacity: 0.25;
     }
 }

@@ -14,8 +14,11 @@ const ThemeToggle: React.FC = () => {
             title={isDark ? 'Light mode' : 'Dark mode'}
             type="button"
         >
-            <span className={`${styles.icon} ${isDark ? styles.dark : styles.light}`} aria-hidden="true">
-                {isDark ? '\u263E' : '\u25CB'}
+            <span className={styles.grid} aria-hidden="true">
+                <span className={styles.c1} />
+                <span className={styles.c2} />
+                <span className={styles.c3} />
+                <span className={styles.c4} />
             </span>
         </button>
     )
