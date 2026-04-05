@@ -1,7 +1,7 @@
 import React from 'react'
+import Link from 'next/link'
 import { ContentIndexData } from '../../../types'
 import Cube from '../../common/Cube/Cube'
-import ThemeToggle from '../../common/ThemeToggle/ThemeToggle'
 import Nav from '../../composite/Nav/Nav'
 import styles from './Header.module.scss'
 
@@ -15,16 +15,13 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
 
     return (
         <header className={`${styles.header} ${className || ''}`}>
-            <section className="marquee">
-                <div className={styles.masthead}>
-                    <div className={styles.mastheadTop}>
-                        <h1 className={styles.title}>
-                            {masthead?.title}</h1>
-                        <ThemeToggle />
-                    </div>
+            <section className={`marquee ${styles.marqueeSection}`}>
+                <Link href="/" className={styles.masthead}>
+                    <h1 className={styles.title}>
+                        {masthead?.title}</h1>
                     <p className={styles.subtitle}
                     >{masthead?.subtitle}</p>
-                </div>
+                </Link>
 
                 <section className={styles.decoration} aria-hidden="true">
                     <Cube />

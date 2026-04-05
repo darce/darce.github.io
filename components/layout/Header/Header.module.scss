@@ -1,16 +1,25 @@
 @import '../../../styles/vars.scss';
 
 .header {
+    .marqueeSection {
+        @include themeComponent($themes) {
+            background-color: t('masthead');
+        }
+    }
+
     .masthead {
+        display: block;
         width: 50%;
         padding: 0 0 0 $s-x-large;
         position: relative;
         z-index: 14;
+        text-decoration: none;
+        color: inherit;
 
         @media(max-width: $tabletMax) {
-            width: 80%;
+            width: auto;
             padding: 0;
-            margin-top: $s-x-large;
+            margin-top: $s-large;
         }
 
         .title {
@@ -24,17 +33,9 @@
             }
 
             @media(max-width: $tabletMax) {
-                width: 50%;
-                display: inline-block;
-                font-size: 1rem;
-                margin: 0;
+                font-size: 1.4rem;
+                margin: 0 0 $s-small 0;
             }
-        }
-
-        .mastheadTop {
-            display: flex;
-            align-items: center;
-            gap: $s-medium;
         }
 
         .subtitle {
@@ -44,15 +45,12 @@
 
 
             @include themeComponent($themes) {
-                color: t('subheader');
+                color: t('text');
             }
 
             @media(max-width: $tabletMax) {
-                width: 50%;
-                float: right;
-                display: inline-block;
-                font-size: 0.8rem;
-                line-height: 1rem;
+                font-size: 1rem;
+                line-height: 1.3rem;
                 margin: 0;
             }
         }
@@ -63,10 +61,10 @@
         position: relative;
 
         @media(max-width: $tabletMax) {
-            width: 100%;
+            width: auto;
             position: absolute;
             top: 0;
-            left: 0;
+            right: calc($s-large + $s-medium);
             height: 100%;
             z-index: 0;
             pointer-events: none;

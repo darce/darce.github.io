@@ -1,8 +1,9 @@
 @import '../styles/vars.scss';
+@import '../styles/mixins.scss';
 
 .landing {
     max-width: 720px;
-    padding: $s-x-large $s-large;
+    padding: $s-x-large;
 
     @media (max-width: $tabletMax) {
         padding: $s-large;
@@ -16,7 +17,7 @@
 .heroInner {
     display: flex;
     align-items: flex-start;
-    gap: $s-large;
+    gap: $s-x-large;
 
     @media (max-width: $mobileMax) {
         flex-direction: column;
@@ -62,23 +63,30 @@
 
 .cta {
     display: inline-block;
-    padding: $s-medium $s-large;
-    font-size: 1rem;
-    font-weight: 600;
     text-decoration: none;
-    border: 2px solid;
-    transition: background-color 0.2s $ease-standard, color 0.2s $ease-standard;
+
+    @include ditheredCard;
 
     @include themeComponent($themes) {
         color: t('text');
-        border-color: t('text');
     }
 
-    &:hover {
-        @include themeComponent($themes) {
-            background-color: t('text');
-            color: t('backgroundColor');
-        }
+    @media (max-width: $mobileMax) {
+        display: block;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}
+
+.ctaInner {
+    display: block;
+    padding: $s-medium $s-large;
+    font-size: 1rem;
+    font-weight: 600;
+
+    @include themeComponent($themes) {
+        background-color: t('surface');
     }
 }
 
@@ -93,7 +101,7 @@
         margin: 0 0 $s-large 0;
 
         @include themeComponent($themes) {
-            color: t('highlight');
+            color: t('text');
         }
     }
 }
@@ -105,23 +113,25 @@
 }
 
 .projectItem {
-    padding: $s-medium 0;
-    border-bottom: 1px solid;
+    margin-bottom: $s-large;
+}
+
+.projectLink {
+    text-decoration: none;
+    display: block;
+
+    @include ditheredCard;
 
     @include themeComponent($themes) {
-        border-bottom-color: t('inactiveBg');
+        color: t('text');
     }
+}
 
-    a {
-        text-decoration: none;
-        color: inherit;
-        display: block;
+.projectItemInner {
+    padding: $s-medium;
 
-        &:hover .projectTitle {
-            @include themeComponent($themes) {
-                color: t('link');
-            }
-        }
+    @include themeComponent($themes) {
+        background-color: t('surface');
     }
 }
 
@@ -129,17 +139,13 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
-    transition: color 0.15s $ease-standard;
 }
 
 .projectMeta {
     font-weight: 200;
     font-size: 0.9rem;
     margin: $s-small / 2 0 0 0;
-
-    @include themeComponent($themes) {
-        color: t('highlight');
-    }
+    color: inherit;
 }
 
 .projectDesc {
@@ -160,6 +166,8 @@
     }
 
     &:hover {
-        text-decoration: underline;
+        @include themeComponent($themes) {
+            color: t('border');
+        }
     }
 }

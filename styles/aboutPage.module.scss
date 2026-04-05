@@ -27,11 +27,8 @@
     }
 
     .source {
-        width: 50%;
+        width: 100%;
+        max-width: 720px;
         padding-top: $s-x-large;
-
-        @media (max-width: $tabletMax) {
-            width: 100%;
-        }
     }
 }

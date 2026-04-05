@@ -1,13 +1,91 @@
     @import 'spacing.scss';
     @import 'palettes.scss';
 
+    /// Dithered (stippled) shadow using a checkerboard pseudo-element.
+    /// Requires `position: relative` on the parent.
+    /// @param {Length} $offset - shadow offset at rest
+    /// @param {Length} $offset-hover - shadow offset on hover
+    /// @param {Number} $opacity - shadow opacity (0–1)
+    /// @param {Length} $dot-size - size of each dither cell (smaller = finer grain)
+    @keyframes dither-bob {
+        0%, 100% { translate: 0 0; }
+        50% { translate: 0 (-$s-small / 2); }
+    }
+
+    @mixin ditheredShadow(
+        $offset: $s-small,
+        $offset-hover: $s-medium,
+        $opacity: 0.5,
+        $dot-size: 2px
+    ) {
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            translate: $offset $offset;
+            opacity: $opacity;
+            transition: translate 200ms $ease-accel,
+                        opacity 200ms $ease-accel;
+
+            @include themeComponent($themes) {
+                background: repeating-conic-gradient(
+                    t('text') 0% 25%, transparent 0% 50%
+                ) 0 0 / #{$dot-size} #{$dot-size};
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                transition: none;
+            }
+        }
+
+        &:hover {
+            animation: dither-bob 3s ease-in-out infinite;
+
+            @media (prefers-reduced-motion: reduce) {
+                animation: none;
+            }
+        }
+
+        &:hover::after {
+            translate: $offset-hover $offset-hover;
+            transition: translate 200ms $ease-decel,
+                        opacity 200ms $ease-decel;
+        }
+    }
+
+    /// Interactive card with dithered shadow, border, and hover lift.
+    /// Combines ditheredShadow + transition easing + hover border shift.
+    @mixin ditheredCard {
+        position: relative;
+        border: $s-line solid;
+        transition: border-color 200ms $ease-accel,
+                    transform 200ms $ease-accel;
+
+        @include themeComponent($themes) {
+            border-color: t('text');
+        }
+
+        @include ditheredShadow;
+
+        &:hover {
+            transform: translateY(-$s-small);
+            transition: border-color 200ms $ease-decel,
+                        transform 200ms $ease-decel;
+
+            @include themeComponent($themes) {
+                border-color: t('border');
+            }
+        }
+    }
+
     @mixin isFocused($outline-color) {
 
         /** global prevents appending selector to component name when importing */
         :global(body.is-tab) & {
             &:focus {
                 outline-style: solid;
-                outline-color: $outline-color
+                outline-color: $outline-color;
             }
         }
     }

@@ -8,6 +8,8 @@ export interface MetaLink {
 export interface MetaImage {
     src: string
     alt: string
+    position?: string
+    scale?: number
 }
 
 export interface MetaData {
@@ -17,6 +19,7 @@ export interface MetaData {
     subtitle?: string
     description?: string
     details?: string
+    thumbnail?: MetaImage
     links?: MetaLink[]
     images?: MetaImage[]
     tags?: string[]

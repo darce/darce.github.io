@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { Theme } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
 import { HeaderDataProvider } from '../contexts/HeaderContext'
+import { BreadcrumbProvider } from '../contexts/BreadcrumbContext'
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
 import ErrorBoundary from '../components/common/ErrorBoundary'
 import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_NAME } from '../lib/seo'
@@ -82,6 +83,11 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
     return (
         <Theme appearance={appearance} accentColor="cyan" grayColor="gray" radius="medium">
             <HeaderDataProvider initialData={pageProps.headerData}>
+            <BreadcrumbProvider
+                title={pageProps.breadcrumb ?? null}
+                prev={pageProps.breadcrumbPrev ?? null}
+                next={pageProps.breadcrumbNext ?? null}
+            >
                 <Head>
                     <meta name="description" content={SITE_DESCRIPTION} />
                     <meta name="author" content={SITE_NAME} />
@@ -132,6 +138,7 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
                         {getLayout(<Component {...pageProps} />)}
                     </div>
                 </ErrorBoundary>
+            </BreadcrumbProvider>
             </HeaderDataProvider>
         </Theme>
     )

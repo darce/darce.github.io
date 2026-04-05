@@ -2,7 +2,9 @@ import React from 'react'
 import { ContentIndexData, MarkdownData } from '../../../types'
 import Menu from '../../composite/Menu/Menu'
 import ProjectDetails from '../ProjectDetails/ProjectDetails'
-import { ContentSection } from '../../../lib/routes'
+import DitheredCard from '../../common/DitheredCard/DitheredCard'
+import { ContentSection, buildItemPath } from '../../../lib/routes'
+import styles from './SectionView.module.scss'
 
 interface SectionViewProps {
   /** The section name used for routing (e.g., 'projects', 'research') */
@@ -32,6 +34,12 @@ const SectionView: React.FC<SectionViewProps> = ({
     )
   }
 
+  const currentIndex = selectedItem
+    ? items.findIndex(item => item.slug === selectedItem.slug)
+    : -1
+  const prev = currentIndex > 0 ? items[currentIndex - 1] : null
+  const next = currentIndex < items.length - 1 ? items[currentIndex + 1] : null
+
   return (
     <section aria-label="Content Section" className={`content ${className || ''}`}>
       <Menu
@@ -41,11 +49,29 @@ const SectionView: React.FC<SectionViewProps> = ({
         selectedProject={selectedItem ?? null}
       />
       {selectedItem && 'mdxSource' in selectedItem && (
-        <ProjectDetails
-          className={`projectDetails${hideDetailOnMobile ? ' desktopDetailOnly' : ''}`}
-          key={selectedItem.slug}
-          project={selectedItem}
-        />
+        <>
+          <ProjectDetails
+            className={`projectDetails${hideDetailOnMobile ? ' desktopDetailOnly' : ''}`}
+            key={selectedItem.slug}
+            project={selectedItem}
+          />
+          {(prev || next) && (
+            <nav className={styles.mobileNav} aria-label="Previous and next">
+              {prev && (
+                <DitheredCard href={buildItemPath(section, prev.slug)} className={styles.navLink}>
+                  <span className={styles.navLabel}>&larr; Previous</span>
+                  <span className={styles.navTitle}>{prev.metaData.title}</span>
+                </DitheredCard>
+              )}
+              {next && (
+                <DitheredCard href={buildItemPath(section, next.slug)} className={`${styles.navLink} ${styles.navNext}`}>
+                  <span className={styles.navLabel}>Next &rarr;</span>
+                  <span className={styles.navTitle}>{next.metaData.title}</span>
+                </DitheredCard>
+              )}
+            </nav>
+          )}
+        </>
       )}
     </section>
   )
