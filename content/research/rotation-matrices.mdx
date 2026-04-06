@@ -59,7 +59,7 @@ const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
 
 ### Around Y
 
-The middle row is $[0, 1, 0]$. o rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
+The middle row is $[0, 1, 0]$. No rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
 
 $$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}$$
 ```typescript
