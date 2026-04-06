@@ -2,6 +2,7 @@
 
 .layout {
     display: block;
+    overflow-x: clip;
 
     .skip-link {
         position: absolute;

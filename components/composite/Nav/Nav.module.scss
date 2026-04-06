@@ -26,6 +26,8 @@
 
         @media (max-width: $tabletMax) {
             margin: 0;
+            flex: 1;
+            min-width: 0;
         }
     }
 
@@ -46,7 +48,7 @@
             position: relative;
 
             @media (max-width: $tabletMax) {
-                padding: $s-medium $s-large;
+                padding: $s-medium;
             }
 
             /** Animated underline accent */
@@ -93,6 +95,10 @@
         display: flex;
         align-items: center;
         padding: $s-medium $s-large;
+
+        @media (max-width: $tabletMax) {
+            padding: $s-medium $s-medium $s-medium 0;
+        }
     }
 
     .breadcrumb {
