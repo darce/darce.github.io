@@ -9,6 +9,10 @@
     @media (max-width: $tabletMax) {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    @media (max-width: $mobileMax) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .card {
@@ -33,6 +37,10 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     overflow: hidden;
+
+    @media (max-width: $mobileMax) {
+        aspect-ratio: 16 / 9;
+    }
 
     @include themeComponent($themes) {
         background:
