@@ -76,9 +76,11 @@
             }
         }
 
-        &:hover::before {
-            @include themeComponent($themes) {
-                background: t('border');
+        @media (hover: hover) {
+            &:hover::before {
+                @include themeComponent($themes) {
+                    background: t('border');
+                }
             }
         }
     }

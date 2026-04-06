@@ -113,6 +113,10 @@
         display: block;
         padding: $s-x-large;
         max-width: 1200px;
+
+        @media (max-width: $tabletMax) {
+            padding: $s-large;
+        }
     }
 
     .singleColumn {

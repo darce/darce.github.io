@@ -35,16 +35,20 @@ a {
 .theme--default #main-content a:not([class]) {
     color: $electric-ultramarine;
 
-    &:hover {
-        color: $coral-red;
+    @media (hover: hover) {
+        &:hover {
+            color: $coral-red;
+        }
     }
 }
 
 .theme--dark #main-content a:not([class]) {
     color: $sky-blue;
 
-    &:hover {
-        color: $coral-red;
+    @media (hover: hover) {
+        &:hover {
+            color: $coral-red;
+        }
     }
 }
 

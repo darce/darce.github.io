@@ -165,9 +165,11 @@
         color: t('link');
     }
 
-    &:hover {
-        @include themeComponent($themes) {
-            color: t('border');
+    @media (hover: hover) {
+        &:hover {
+            @include themeComponent($themes) {
+                color: t('border');
+            }
         }
     }
 }
