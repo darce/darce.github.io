@@ -19,7 +19,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
     const aboutPageDescription = 'About Daniel Arcé — product engineer building accessible, high-trust software systems with AI-assisted workflows, React, and TypeScript.'
 
     return (
-        <div className={`content ${styles.about}`}>
+        <div className={`aboutPage ${styles.about}`}>
             <Head>
                 <title>About — {SITE_NAME}</title>
                 <meta name="description" content={aboutPageDescription} />

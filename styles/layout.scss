@@ -97,15 +97,19 @@
             }
         }
 
-        .aboutPage {
+    }
+
+    .aboutPage {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: $s-x-large;
+        padding: $s-x-large;
+
+        @media (max-width: $tabletMax) {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: $s-x-large;
-
-            @media (max-width: $tabletMax) {
-                padding: $s-large;
-            }
+            padding: $s-large;
         }
     }
 
