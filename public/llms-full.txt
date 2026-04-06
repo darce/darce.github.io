@@ -1,0 +1,373 @@
+# Daniel Arcé
+Product engineer with 14+ years building accessible software for consumer platforms, media companies, and startups. Front-end architecture, WCAG compliance, and AI accessibility tooling.
+
+## About
+Hello, I'm Daniel Arcé.
+
+I build accessible software that holds up under real scrutiny.
+
+I'm a product engineer with 14+ years of experience building user-facing software for consumer platforms, media companies, and startups. My background is in front-end architecture and accessibility. More recently, my work has moved into AI-assisted accessibility tooling, product architecture, and the UX problems that come with shipping AI to end users.
+
+I've led accessibility programs that protected millions in contract revenue, built reusable front-end systems in React and TypeScript, and worked closely with product, design, and compliance teams to ship software that passes accessibility audits and holds up to legal review.
+
+I'm currently building [AltContext.com](https://altcontext.com), a product that uses AI to generate context-aware alt text for media systems. That work has pushed me further into product architecture, backend services, data workflows, and the practical realities of shipping AI in user-facing software.
+
+What I bring:
+- Led WCAG remediation at PhotoShelter, protecting $9.2M ARR in institutional contracts
+- Front-end architecture in React and TypeScript, with reusable component systems
+- Experience working across design, product, engineering, and compliance to ship accessible software
+- Building AI tooling for accessibility (AltContext.com) from prototype through production
+
+I'm most interested in roles involving accessibility, AI tooling, design systems, content and media platforms, and software where compliance and user safety are real constraints.
+
+Get in touch: [daniel.arce@gmail.com](mailto:daniel.arce@gmail.com)
+
+Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
+
+## Projects
+
+### PhotoShelter: Accessibility Leadership & Product Prototyping
+*Enterprise DAM Platform*
+Year: 2021
+Tags: Accessibility, React, Web Components, PolymerLit, JavaScript, OpenCV.js, Enterprise SaaS
+Summary: Led WCAG remediation, front-end systems work, and R&D prototyping for a cloud-based media platform
+
+## Accessibility
+
+PhotoShelter's customer base includes universities and professional sports organizations, and several key contracts worth a combined $9.2M ARR were exposed if the product could not demonstrate [ADA](https://www.ada.gov/law-and-regs/ada/) and WCAG compliance. I led the WCAG 2.1 audit and front-end remediation effort for PhotoShelter's core product to close that gap.
+
+The initial audit surfaced two classes of issues: fast fixes such as missing ARIA attributes and unlabeled controls, and deeper structural problems such as mouse-only navigation across core menus.
+
+### Keyboard navigation for every menu
+
+![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard navigation for the main menu*
+
+Before this work, every menu in the product was mouse-only. Keyboard access is essential for users with limited mobility and speeds things up for power users who prefer shortcuts.
+
+The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
+
+![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
+
+### Team adoption
+
+I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
+
+## R&D Prototyping
+
+In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped test ideas and catch integration problems before they reached production.
+
+### Workflow automation interface
+
+This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+
+### Client-side image blur comparison
+
+Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+
+### Apple: iPhone X Launch & Marketing Tooling
+*Marketing Engineering*
+Year: 2017
+Tags: Front-End, CSS3 Animations, Sass, JavaScript, Node.js, Bash, Gulp, Marketing Engineering
+Summary: Built launch-critical landing pages, a CSS-animated email campaign, and internal workflow tooling for Apple’s iPhone X release
+
+## iPhone X launch pages
+
+I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. The work involved translating high-fidelity static comps into pixel-perfect, responsive front-end code under tight launch deadlines.
+## CSS-animated email campaign
+
+I prototyped and developed what was reportedly the marketing department’s first CSS-animated direct email campaign. The animations were designed to increase engagement without relying on JavaScript or image-heavy treatments, keeping the email lightweight and broadly compatible across clients. The campaign recorded a 92% open rate, based on internal reporting.
+## Campaign tooling
+
+The email production workflow was manual and repetitive, so I built a set of CLI tools in Node.js, Bash, and Gulp to automate build, preview, and deployment steps for direct email campaigns. This reduced turnaround time and made campaign production more repeatable.
+
+### MSNBC: Video Platform Prototyping & Launch
+*Broadcast Media Platform*
+Year: 2014
+Tags: Front-End, AngularJS, Drupal, SCSS, JavaScript, Media Platform
+Summary: Prototyped and shipped a live video platform under a six-month deadline for a major broadcast news network
+
+## Context
+
+MSNBC.com had recently been rebuilt on Drupal following the Microsoft/NBC split, with [Lullabot leading the broader platform work](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study). Once the main site was live, the network needed a dedicated video experience. The project had a hard six-month deadline and meaningful partner litigation risk if it failed to launch on time.
+
+## The video platform
+
+I prototyped and developed the video section for msnbc.com/videos in collaboration with an in-house team and external vendors. The product goal was continuous video consumption: viewers could watch live or archived segments while browsing related stories and engagement features without interrupting playback.
+![MSNBC interface](/images/msnbc-interface.png)
+
+I iterated through multiple working prototypes, proposing and implementing interface patterns in collaboration with stakeholders. The platform launched on schedule.
+
+## CMS contributions
+
+In parallel, I contributed AngularJS components to MSNBC’s in-house content management system, integrating them with the Drupal backend that powered the broader site.
+
+### barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh
+*Artist Archive / Portfolio*
+Year: 2023, 2026
+Tags: Web Components, JavaScript, Sass, Rollup, Accessibility, Archive Recovery
+Summary: Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
+
+## The problem
+
+Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were both unavailable. I was brought in to recover the images and rebuild the site from scratch.
+
+## Recovering the images
+
+The images were embedded in a compiled .SWF binary file. I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract usable assets from the binary. It took some work to get clean exports, but the tool pulled the full image set.
+
+![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted from a .SWF file using FFDec*
+
+## The rebuild
+
+Future compatibility was the priority, so I built the site with Web Components and Vanilla JavaScript instead of a framework that could age out. The build pipeline runs on Rollup with Sass for styling. The full-screen image carousel and all navigation are keyboard-accessible.
+
+Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
+
+![A group of children climbing on a large pile of debris, one waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
+
+## Client feedback
+
+> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional.
+Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.
+The site is responsive and works seamlessly on all platforms and browsers.
+Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate.
+I had no references to go by when we hired Daniel and couldn't be more pleased with his work."
+>> *Alison Cornyn*
+
+>> *Artist + Co-Founder and Creative Director Picture Projects*
+
+>> *June 13, 2023*
+
+### bauhausdances.org: Visual Identity & Custom WordPress Theme
+*Arts & Film (Independent)*
+Year: 2023
+Tags: WordPress, Custom Theme, PHP, CSS Animation, JavaScript, Video, Accessibility
+Summary: Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
+
+## The design challenge
+
+Filmmaker Debra McCall wanted a new website for her 1982 film recreating Oskar Schlemmer’s Bauhaus Dances. The challenge was to reflect Bauhaus visual language without falling into generic arts-site conventions.
+
+The visual direction grew out of the film’s Hoop Dance sequence, where white rings create stark geometric forms against a dark stage. I used that imagery as the basis for the site’s visual system and interaction language.
+
+![Reinfentanz performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
+
+A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motion without overpowering the content.
+
+## Implementation
+
+I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. The site also uses self-hosted video with caching optimizations to keep load times low without relying on third-party embeds.
+
+## Research
+
+### 3D Without Canvas or WebGL
+*Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL*
+Tags: Linear Algebra, 3D Graphics, TypeScript, DOM Manipulation, CSS Transforms
+Summary: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
+
+> **What this is:** a small experiment showing how 3D rotation and projection map to browser rendering using only DOM elements, TypeScript, and CSS transforms.
+> **What this is not:** a general-purpose 3D engine or a recommended production rendering pipeline.
+
+## Why DOM Instead of Canvas?
+
+In this experiment, the cube is not drawn on a canvas. Each vertex is a `div` element, positioned using CSS transforms.
+
+This is a deliberate constraint: no canvas, no WebGL, no engine; just enough code to make the math visible from matrix multiplication to motion on screen.
+## The Problem
+
+A cube has eight vertices. Each vertex is a point in space: $(x, y, z)$.
+
+To rotate the cube, we need new coordinates for every vertex—coordinates that place each point in its rotated position.
+
+Rotation matrices perform that transformation. In this demo, the math is done directly in TypeScript and the result is pushed into CSS transforms.
+
+## One Axis at a Time
+
+Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
+
+Each axis has its own matrix.
+
+### Around X
+
+The first row is $[1, 0, 0]$. This preserves $x$:
+
+$$R_x(\theta) = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix}$$
+
+```typescript
+const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [1, 0, 0],
+        [0, Math.cos(angle), -Math.sin(angle)],
+        [0, Math.sin(angle), Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+### Around Y
+
+The middle row is $[0, 1, 0]$. No rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
+
+$$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}$$
+```typescript
+const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), 0, Math.sin(angle)],
+        [0, 1, 0],
+        [-Math.sin(angle), 0, Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+### Around Z
+
+The last row is $[0, 0, 1]$. This preserves $z$:
+
+$$R_z(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}$$
+
+```typescript
+const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), -Math.sin(angle), 0],
+        [Math.sin(angle), Math.cos(angle), 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+```
+
+## Applying a Rotation
+
+To rotate a vertex, multiply the matrix by its coordinates:
+
+$$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
+
+The result $(x', y', z')$ is the rotated position.
+In this demo, that math is done in plain TypeScript:
+```typescript
+const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
+    const result: number[][] = []
+    for (let i = 0; i < matrix.length; i++) {
+        let sum = 0
+        sum += matrix[i][0] * vertex.x
+        sum += matrix[i][1] * vertex.y
+        sum += matrix[i][2] * vertex.z
+        result[i] = [sum]
+    }
+    return { x: result[0][0], y: result[1][0], z: result[2][0] }
+}
+```
+
+## Combining Rotations
+
+The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
+
+Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
+
+```typescript
+export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
+    let rotatedPoints = rotationX(vertexArray, angleX)
+    rotatedPoints = rotationY(rotatedPoints, angleY)
+    rotatedPoints = rotationZ(rotatedPoints, angleZ)
+    const scaledPoints = scaleXYZ(rotatedPoints, scale)
+    const projectedPoints = projectPoints(scaledPoints, distance)
+    return projectedPoints
+}
+```
+
+The goal isn’t to build a general transform stack; it’s to keep the full pipeline visible: matrix multiplication in TypeScript, projection, and DOM updates in the browser.
+
+## From 3D to Screen
+
+After rotation, the cube exists in three dimensions. Your screen has two.
+
+A perspective projection maps 3D points to 2D. Points farther from the viewer appear smaller. The projection divides $x$ and $y$ by a factor that depends on $z$:
+
+$$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
+
+where $d$ is the distance from the viewer to the projection plane.
+
+```typescript
+const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+    const result: Vertex[] = []
+    vertexArray.forEach(vertex => {
+        const f = 1 / (distance - vertex.z)
+        const projectionMatrix = [
+            [f, 0, 0],
+            [0, f, 0],
+            [0, 0, 1]
+        ]
+        result.push(matrixMultiplyVertex(projectionMatrix, vertex))
+    })
+    return result
+}
+```
+This simplified projection works for a small demo, though in a more robust renderer you’d guard against points crossing the projection plane.
+
+Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
+
+Again: no canvas, no 3D engine—just math → DOM updates.
+
+### The Render Loop
+
+React manages the vertices as state. When mouse movement triggers a recalculation, the component re-renders with new coordinates:
+
+```typescript
+{vertices.map((vertex, index) => (
+    
+))}
+```
+
+The browser handles the actual positioning. We compute the math; CSS does the rendering.
+
+### DOM, GPU, and Seeing the Math
+
+Using `translate3d` lets the browser composite vertices on the GPU. For eight tiny `div`s, that’s plenty: the GPU moves a few layers while the CPU focuses on the math.
+
+This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
+
+Here's the full chain:
+
+1. Take a 3D point  
+2. Apply rotation matrices  
+3. Project to 2D  
+4. Push the result into a CSS transform
+---
+
+### Live Order Book: Real-Time Market Visualization
+*Streaming top-of-book depth with WebSockets and React*
+Tags: React, TypeScript, WebSocket, Binance API, Data Visualization, Market Microstructure, Cryptocurrency
+Summary: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
+
+## What is an Order Book?
+
+In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
+
+Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
+
+---
+
+## How Trades Execute
+
+A trade occurs when a buy order and a sell order cross.
+
+Two basic order types:
+
+1. **Market order**  
+   - “Buy now, whatever the best available price is.”  
+   - Matches immediately against the best prices on the opposite side.  
+   - Consumes liquidity.
+
+2. **Limit order**  
+   - “Buy at 93,000 or better (lower).”  
+   - Sits in the book until matched or cancelled.  
+   - Provides liquidity.
+
+When a market buy arrives, it lifts the lowest ask.  
+When a market sell arrives, it hits the highest bid.  
+Each match removes volume from those levels and the book updates.
+
+---
+
+*Data streamed from [Binance's public WebSocket API](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams). This page is not affiliated with or endorsed by Binance.*

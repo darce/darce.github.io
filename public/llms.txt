@@ -1,0 +1,25 @@
+# darce.xyz
+> Portfolio and case studies for Daniel Arcé, product engineer.
+> Product engineer with 14+ years building accessible software for consumer platforms, media companies, and startups. Front-end architecture, WCAG compliance, and AI accessibility tooling.
+
+## Pages
+- / — Home
+- /work/ — Index of project case studies
+- /about/ — Bio, role focus, strengths
+- /research/ — Index of technical writing and experiments
+
+## Projects
+- /projects/photoshelter/ — Led WCAG remediation, front-end systems work, and R&D prototyping for a cloud-based media platform
+- /projects/apple/ — Built launch-critical landing pages, a CSS-animated email campaign, and internal workflow tooling for Apple’s iPhone X release
+- /projects/msnbc/ — Prototyped and shipped a live video platform under a six-month deadline for a major broadcast news network
+- /projects/barbarabeirne/ — Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
+- /projects/bauhausdances/ — Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
+
+## Research
+- /research/rotation-matrices/ — A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
+- /research/order-book/ — An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
+
+## Contact
+- Email: daniel.arce@gmail.com
+- GitHub: https://github.com/darce
+- LinkedIn: https://www.linkedin.com/in/danarce/

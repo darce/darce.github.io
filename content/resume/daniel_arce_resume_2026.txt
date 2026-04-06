@@ -1,0 +1,75 @@
+DANIEL ARCÉ
+Senior Front-End Developer darce.xyz • daniel.arce@gmail.com • (646) 506-8957 • Toronto, ON
+
+SUMMARY
+Senior Front-End Developer (14+ years) specializing in accessible, performant UI systems and scalable component architecture in React/TypeScript. Led WCAG 2.1 compliance programs, shipped reusable component patterns at scale (80,000+ users), and reduced accessibility risk to support $9.2M ARR retention. 
+SKILLS  
+	•	Design Systems: Radix UI, design tokens, theming (CSS variables)
+	•	Frameworks & Languages: React, Gatsby, Next.js, TypeScript, Web Components, SCSS/Sass, Zustand, Redux, Node.js, Express.js
+	•	Compliance & Accessibility: WCAG 2.1 AA, ARIA, keyboard navigation, screen reader optimization
+	•	Testing: Cypress (E2E & component), Jest, Mocha
+	•	Tooling & DevOps: Webpack, Babel, Rollup, ESLint, Git, Jenkins, Vercel
+	•	Collaboration: Product/UX, Design, Compliance Teams, External Auditors
+	•	Spoken Languages: Fluent in English, French, and Spanish
+
+EXPERIENCE
+AltContext.com (pre-incorporation), Founder / Sole Developer, Toronto, ON 						Mar 2025 - present
+Developing a WordPress plugin to generate alt text and tenant-scoped face recognition for images, improving alt text quality for users with visual impairments. Targeting MVP release Q2 2026.
+	•	Define product requirements, architecture, and implementation end-to-end.
+	•	Build an accessibility-focused media workflow integrating LLM-based alt text generation and face recognition.
+	•	Develop the WordPress admin UI (React) and plugin integration layer.
+	•	Design a multi-tenant PostgreSQL database with row-level security and API integration for tenant isolation.
+	•	Drive AI-assisted development using spec-first task briefs, acceptance tests, and code review, integrating them into versioned releases.
+
+Independent Front-End Developer									Apr 2023 - present
+Contract work for clients in insurance, non-profit, and creative industries.	
+Catch Insurance, Accessibility and React Consultant (Contract), Remote, Toronto, ON				Aug 2024 - Feb 2025
+U.S. health insurance and benefits SaaS startup, www.catch.co, app.catch.co
+	•	Owned accessibility remediation, reducing delivery risk for the Aetna partnership milestone.
+	•	Developed modular React/TypeScript components (Radix UI, Zustand) in a Gatsby app, integrating APIs and authentication workflows.
+	•	Designed custom Webpack and Babel configurations to improve build tooling.
+	•	Implemented design-system patterns (theming via CSS variables, component composition) to standardize UI across product surfaces.
+	•	Partnered with Design to translate UI specs into scalable components. Documented usage guidelines for consistent implementation.
+	•	Implemented Cypress E2E/component tests, including automated accessibility checks.
+
+Additional client work
+	•	barbarabeirne.com: Accessible portfolio built with Web Components, Sass styling, and a Rollup build pipeline.          	                  Feb 2026
+	•	bauhausdances.org: Custom WordPress theme with video self-hosting and caching optimizations.                                                      Jul 2023
+
+PhotoShelter, Senior Front-End Developer, New York, NY							Sep 2018 - Feb 2022
+Cloud-based Digital Asset Management platform hosting 1B+ assets
+	•	Led WCAG audit and front-end remediation effort, introducing keyboard navigation patterns for 80,000+ users.
+	•	Established accessibility standards (component patterns and review checklists) adopted by the team to scale remediation.
+	•	Helped retain $9.2M ARR in key client contracts by proactively reducing accessibility risk.
+	•	Mentored four developers on accessibility best practices.
+	•	Prototyped a React-based workflow automation tool in collaboration with the UX team.
+	•	Wrote and maintained Mocha tests used in Jenkins CI/CD pipelines to support safe, iterative shipping.
+
+Apple Inc., Senior Front-End Developer (Contract), Sunnyvale, CA							Jul 2017 - Mar 2018
+	•	Delivered responsive, pixel-perfect landing pages for the iPhone X launch in collaboration with Apple’s marketing team.
+	•	Developed a CSS-animated email campaign; 92% open rate for the campaign (internally reported).
+	•	Streamlined email campaign processes by building CLI automation tools in Node.js, Bash, and Gulp.
+
+Early Career																																																																																																				   2010 - 2017
+Publicis North America, Senior Interactive Developer, New York, NY																																																																																																		 2015 - 2017
+	•	Upgraded Citibank’s citirewards.com to WCAG AAA, exceeding ADA requirements.
+
+MSNBC, Senior Design Technologist and Front-End Developer, New York, NY 					2012 - 2015
+	•	Prototyped and developed a live video platform with an in-house team and vendors.
+	•	Launched within six months, averting partner litigation.
+	•	Contributed to the in-house CMS with AngularJS components, integrating with a Drupal backend.
+
+The Huffington Post / AOL, UI Engineer, New York, NY								2010 - 2012
+	•	Contributed to a 30% faster First Contentful Paint for 3M+ monthly visitors via front-end optimizations.
+
+Independent Projects
+	•	darce.xyz: Personal portfolio. Next.js + MDX publishing pipeline (frontmatter, static site generation).                                                 	Mar 2024                                                                                                                       
+	•	Texting Syria: SMS texting app using the Twilio API, an artistic collaboration with Canadian photojournalist Liam Maloney.                  	2014 Documentation: https://photoville.com/projects/texting-syria
+
+PROFESSIONAL DEVELOPMENT / SABBATICAL								May 2022 - Mar 2023
+	•	University of Helsinki Full Stack Open (React, TypeScript, Node.js, testing)
+	•	Focused on upskilling in modern React architecture and accessibility-led UI systems.
+
+EDUCATION
+	•	NYU Tisch School of the Arts, MPS, Interactive Telecommunications, New York
+	•	Concordia University, BFA, Interdisciplinary Studies, Studio Arts, Montreal

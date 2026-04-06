@@ -14,6 +14,18 @@ interface ResearchProps {
 const Research: NextPageWithLayout<ResearchProps> = ({ researchData }) => {
     const researchDescription = 'Research and technical explorations by Daniel Arcé — order book visualization, 3D rotation matrices, and front-end engineering experiments.'
 
+    const itemListJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Research',
+        itemListElement: researchData.map((item, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/research/${item.slug}/`,
+            name: item.metaData.title,
+        })),
+    }
+
     return (
         <>
             <Head>
@@ -22,6 +34,10 @@ const Research: NextPageWithLayout<ResearchProps> = ({ researchData }) => {
                 <meta property="og:title" content={`Research — ${SITE_NAME}`} />
                 <meta property="og:description" content={researchDescription} />
                 <meta property="og:url" content={`${SITE_URL}/research/`} />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+                />
             </Head>
             <SectionCards section="research" items={researchData} />
         </>

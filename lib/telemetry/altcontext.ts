@@ -43,6 +43,7 @@ let flushWebVitalsTimeout: ReturnType<typeof setTimeout> | null = null
 const canTrack = (): boolean =>
     typeof window !== 'undefined'
     && backendUrl.length > 0
+    && process.env.NODE_ENV === 'production'
 
 const randomId = (): string =>
     `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
