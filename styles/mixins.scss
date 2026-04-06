@@ -39,18 +39,20 @@
             }
         }
 
-        &:hover {
-            animation: dither-bob 3s ease-in-out infinite;
+        @media (hover: hover) {
+            &:hover {
+                animation: dither-bob 3s ease-in-out infinite;
 
-            @media (prefers-reduced-motion: reduce) {
-                animation: none;
+                @media (prefers-reduced-motion: reduce) {
+                    animation: none;
+                }
             }
-        }
 
-        &:hover::after {
-            translate: $offset-hover $offset-hover;
-            transition: translate 200ms $ease-decel,
-                        opacity 200ms $ease-decel;
+            &:hover::after {
+                translate: $offset-hover $offset-hover;
+                transition: translate 200ms $ease-decel,
+                            opacity 200ms $ease-decel;
+            }
         }
     }
 
@@ -68,13 +70,15 @@
 
         @include ditheredShadow;
 
-        &:hover {
-            transform: translateY(-$s-small);
-            transition: border-color 200ms $ease-decel,
-                        transform 200ms $ease-decel;
+        @media (hover: hover) {
+            &:hover {
+                transform: translateY(-$s-small);
+                transition: border-color 200ms $ease-decel,
+                            transform 200ms $ease-decel;
 
-            @include themeComponent($themes) {
-                border-color: t('border');
+                @include themeComponent($themes) {
+                    border-color: t('border');
+                }
             }
         }
     }

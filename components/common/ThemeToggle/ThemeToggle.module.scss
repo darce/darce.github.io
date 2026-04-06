@@ -25,13 +25,15 @@ $grid-size: $cell * 2;
         $offset-hover: $s-small
     );
 
-    &:hover {
-        transform: translateY(-$s-small / 2);
-        transition: border-color 200ms $ease-decel,
-                    transform 200ms $ease-decel;
+    @media (hover: hover) {
+        &:hover {
+            transform: translateY(-$s-small / 2);
+            transition: border-color 200ms $ease-decel,
+                        transform 200ms $ease-decel;
 
-        @include themeComponent($themes) {
-            border-color: t('border');
+            @include themeComponent($themes) {
+                border-color: t('border');
+            }
         }
     }
 
