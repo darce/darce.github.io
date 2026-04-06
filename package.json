@@ -8,12 +8,13 @@
         "test:watch": "vitest",
         "test:a11y": "vitest run --testPathPattern=a11y",
         "dev": "next dev",
-        "prebuild": "node scripts/generate-sitemap.js",
+        "prebuild": "node scripts/generate-llm-content.js",
         "build": "next build",
         "start": "next start",
         "typecheck": "tsc --noEmit",
         "lint": "tsc --noEmit",
-        "check": "npm run typecheck && npm run lint"
+        "check": "npm run typecheck && npm run lint",
+        "inspect": "node scripts/inspect-dom.mjs"
     },
     "repository": {
         "type": "git",

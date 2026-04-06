@@ -14,6 +14,18 @@ interface WorkProps {
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
     const workDescription = 'Selected projects by Daniel Arcé — accessibility, front-end architecture, and product engineering for Apple, MSNBC, PhotoShelter, and more.'
 
+    const itemListJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Projects',
+        itemListElement: projectsData.map((item, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/projects/${item.slug}/`,
+            name: item.metaData.title,
+        })),
+    }
+
     return (
         <>
             <Head>
@@ -22,6 +34,10 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
                 <meta property="og:title" content={`Work — ${SITE_NAME}`} />
                 <meta property="og:description" content={workDescription} />
                 <meta property="og:url" content={`${SITE_URL}/work/`} />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+                />
             </Head>
             <SectionCards section="projects" items={projectsData} />
         </>

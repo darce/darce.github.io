@@ -28,6 +28,29 @@ const SectionPage: NextPageWithLayout<SectionPageProps> = ({ section, selectedIt
     const pageTitle = `${title} — ${SITE_NAME}`
     const pageDescription = subtitle ? `${title}: ${subtitle}` : title
     const pageUrl = `${SITE_URL}/${section}/${selectedItem.slug}/`
+    const sectionLabel = section === 'projects' ? 'Work' : 'Research'
+    const sectionUrl = section === 'projects' ? '/work/' : '/research/'
+
+    const creativeWorkJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: title,
+        description: selectedItem.metaData.description || pageDescription,
+        author: { '@type': 'Person', name: SITE_NAME },
+        ...(selectedItem.metaData.year ? { datePublished: String(selectedItem.metaData.year) } : {}),
+        ...(selectedItem.metaData.tags?.length ? { keywords: selectedItem.metaData.tags } : {}),
+        url: pageUrl,
+    }
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' },
+            { '@type': 'ListItem', position: 2, name: sectionLabel, item: SITE_URL + sectionUrl },
+            { '@type': 'ListItem', position: 3, name: title },
+        ],
+    }
 
     const currentIndex = items.findIndex(item => item.slug === selectedItem.slug)
     const prevItem = currentIndex > 0 ? items[currentIndex - 1] : null
@@ -45,6 +68,14 @@ const SectionPage: NextPageWithLayout<SectionPageProps> = ({ section, selectedIt
                 <meta property="og:title" content={pageTitle} />
                 <meta property="og:description" content={pageDescription} />
                 <meta property="og:url" content={pageUrl} />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+                />
             </Head>
             <SectionView
                 section={section}
