@@ -37,6 +37,10 @@
 
         @media (max-width: $tabletMax) {
             line-height: inherit;
+
+            &:first-child > a {
+                padding-left: $s-large;
+            }
         }
 
         > a {
@@ -68,11 +72,13 @@
             }
         }
 
-        &:hover > a::after {
-            width: 100%;
+        @media (hover: hover) {
+            &:hover > a::after {
+                width: 100%;
 
-            @include themeComponent($themes) {
-                background-color: t('border');
+                @include themeComponent($themes) {
+                    background-color: t('border');
+                }
             }
         }
 
@@ -97,7 +103,7 @@
         padding: $s-medium $s-large;
 
         @media (max-width: $tabletMax) {
-            padding: $s-medium $s-medium $s-medium 0;
+            padding: $s-medium $s-large $s-medium 0;
         }
     }
 
@@ -162,9 +168,11 @@
             color: t('link');
         }
 
-        &:hover {
-            @include themeComponent($themes) {
-                color: t('border');
+        @media (hover: hover) {
+            &:hover {
+                @include themeComponent($themes) {
+                    color: t('border');
+                }
             }
         }
     }

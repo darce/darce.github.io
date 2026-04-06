@@ -25,11 +25,25 @@
 .navLink {
     flex: 1;
     min-width: 0;
-
-    @include ditheredCard;
+    border: $s-line solid;
+    transition: border-color 200ms $ease-accel,
+                transform 200ms $ease-accel;
 
     @include themeComponent($themes) {
         color: t('text');
+        border-color: t('text');
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            transform: translateY(-$s-small);
+            transition: border-color 200ms $ease-decel,
+                        transform 200ms $ease-decel;
+
+            @include themeComponent($themes) {
+                border-color: t('border');
+            }
+        }
     }
 }
 

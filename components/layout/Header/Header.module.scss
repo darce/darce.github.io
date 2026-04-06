@@ -64,7 +64,7 @@
             width: auto;
             position: absolute;
             top: 0;
-            right: calc($s-large + $s-medium);
+            right: $s-large;
             height: 100%;
             z-index: 0;
             pointer-events: none;
