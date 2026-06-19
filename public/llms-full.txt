@@ -34,51 +34,41 @@ Summary: A local handoff database for moving AI-assisted coding work between Cla
 
 ## The problem
 
-I was using coding agents more often, and the same failure kept showing up. The code could move forward, but the state around the work was fragile.
+I was leaning on coding agents more, and the same failure kept showing up. The code could move forward while the state around it stayed fragile.
 
-A session would know the current plan. Another session would not. Claude Code might have the useful context for a branch, then I would want Codex or Cursor for a different pass and have to rebuild the thread by hand. Summaries helped, but they were still summaries. They did not reliably carry the open task, the review finding that had not been fixed, the reason for a decision, or the last command that actually passed.
+One session knew the current plan; the next one didn't. Claude Code might hold the right context for a branch, and then I'd want Codex or Cursor for a different pass and have to rebuild the thread by hand. Summaries helped, but a summary is still a summary. It rarely carried the thing I needed later — the review finding I hadn't fixed yet, or the reason behind a decision I'd half-forgotten.
 
-That is a vendor lock-in problem as much as a memory problem. If the useful history only exists inside one agent transcript, the project starts depending on that harness.
-
-Workstate is my attempt to move that state into the repository.
+That's a lock-in problem as much as a memory problem. When the useful history lives inside one agent's transcript, the project starts depending on that tool. So I moved the state into the repository.
 
 ## What it does
 
-Workstate stores a local SQLite handoff database for the project. Agents read and write to it over MCP. The database tracks the active task, branch, worktree, touched files, decisions, blockers, review findings, and test runs with commands and exit codes.
+Workstate keeps a local SQLite database alongside the project, and agents read and write to it over MCP. It records the work: the active task and branch, the files being touched, decisions and blockers, review findings, and test runs with their commands and exit codes.
 
-The point is that the next agent does not need a long prompt explaining what happened. It can ask the project.
+The next agent doesn't need a long prompt explaining what happened. It can ask the project instead.
 
-A task can start in Claude Code and continue in Codex, Cursor, Grok, or VS Code Copilot with the same underlying record. Claude can use the local plugin surfaces. Other clients can discover the generated skills, prompts, commands, and MCP tools. The workflow is attached to the repo, not to whichever chat window happened to be open.
+A task can start in Claude Code and continue in Codex, Cursor, Grok, or Copilot against the same record. Claude reaches it through the local plugin surfaces; the other clients pick it up through generated skills, commands, and MCP tools. The workflow belongs to the repo, so it survives whichever chat window you close.
 
-That matters when tools change. One agent may be better for planning, another for implementation, another for review. Pricing can change. Context limits can get in the way. A team may want to keep Claude installations local and avoid routing coordination through a hosted API service. Workstate keeps the handoff state local while still making the same workflow visible to the other agents.
+That helps when the tools shift under you, which they do. One agent turns out better at planning, another at implementation. Pricing changes. You hit a context limit at a bad moment. A team might want to keep its Claude installs local instead of routing coordination through a hosted service. Through all of it, the handoff state stays put and stays visible to whatever agent you reach for next.
 
 ## Enforcement
 
-The useful part was not saving notes. The useful part was making the notes hard to ignore.
+Saving the notes was easy. The point was making them hard to ignore.
 
-Workstate adds Git hooks around the workflow:
-- Edits to main are refused outside a small set of allowed files.
-- Branch names have to match a fixed grammar tied to a task reference.
-- A branch cannot be marked review-ready while any finding is still open.
-- A task cannot be closed until every slice has a recorded decision.
+Workstate wraps the workflow in Git hooks. Edits to main are refused outside a small allowlist of files. Branch names have to match a fixed grammar tied to a task reference. A branch can't go review-ready while a finding is still open, and a task can't close until every slice has a recorded decision.
 
-Findings and decisions are tied to commit SHAs. When an agent says a finding was fixed, there is a commit to inspect. When a task is closed, there is a record of what changed, what passed, and what still had to be accepted as a tradeoff.
-
-I wanted less performance around confidence and more evidence I could check later. Because findings and decisions are anchored to commit SHAs, "this was fixed" is a claim you can check against git history rather than take on faith.
+Findings and decisions are anchored to commit SHAs. When an agent claims a finding is fixed, there's a commit to inspect. When a task closes, there's a record of what changed, what passed, and what got accepted as a tradeoff anyway. I wanted less talk about confidence and more evidence I could check later — "this was fixed" should be something you verify against git history.
 
 ## Building it
 
-This was backend-heavy work for me: Python packages, MCP servers, Git hooks, SQLite migrations, installers, generated command surfaces, and release automation. My usual base is front-end architecture and accessibility, so I used the same approach I use when a UI has to survive audit: write the spec, split the work, review each slice, keep the evidence.
+This was backend-heavy work, well outside my usual front-end-and-accessibility base: Python packaging, MCP servers, Git hooks, SQLite migrations, installers, release automation. I handled it the way I handle a UI that has to survive an audit: write the spec, split the work, review each slice, keep the evidence.
 
-AI agents wrote a large share of the implementation. I did not treat that as delegation. I treated it as supervised production. I owned the spec, the architecture, the acceptance criteria, the reviews, and the definition of done.
-
-Workstate ended up enforcing the process I used to build it.
+Agents wrote a large share of the implementation, and I treated that as supervised production rather than delegation. I owned the spec and the architecture, set the acceptance criteria, ran the reviews, and decided when it was done. In the end, Workstate enforces the same process I used to build it.
 
 ## Where it stands
 
-Workstate was released in June 2026. It installs into a Git repository through a CLI, provisions the local database, registers MCP servers, and generates surfaces for Claude Code, Codex, Cursor, Grok, and VS Code Copilot. It is open source at [github.com/darce/workstate](https://github.com/darce/workstate).
+Workstate shipped in June 2026. A CLI installs it into a Git repository, provisions the local database, registers the MCP servers, and generates the surfaces for each supported agent. It's open source at [github.com/darce/workstate](https://github.com/darce/workstate).
 
-The connection to my accessibility work is direct. In accessibility remediation, a claim has to survive inspection: keyboard path, screen reader behavior, audit finding, fix, regression test. Workstate applies the same habit to AI-assisted engineering. The agent can move quickly, but the project keeps the record.
+The line back to my accessibility work is short. A remediation claim has to survive inspection — the keyboard path, the screen reader behavior, the fix, the regression test that proves it stayed fixed. Workstate brings that habit to AI-assisted engineering. The agent moves fast; the project keeps the record.
 
 ### PhotoShelter: Accessibility Leadership & Product Prototyping
 *Enterprise DAM Platform*
