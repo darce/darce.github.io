@@ -134,3 +134,21 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+# >>> WORKBAY_BOOTSTRAP OVERLAY IGNORE >>>
+/.workbay
+/.task-state
+/.github/hooks
+/scripts/hooks
+/docs/workbay/contracts
+/docs/workbay/rules
+/docs/workbay/templates
+/Makefile.d
+/scripts/workbay
+/.codex/hooks.json
+/.github/prompts
+/scripts/generate_agent_workflows.py
+/config/agent-workflows/portable_commands.json
+/skills
+/.cursor/hooks.json
+/.grok/plugins/workbay-system
+# <<< WORKBAY_BOOTSTRAP OVERLAY IGNORE <<<
