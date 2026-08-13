@@ -335,9 +335,12 @@ def combine_frame(
     now_label: str = "",
     now_at: int = 2,
     note: str = "",
+    ox: float | None = None,
 ) -> tuple[list, str]:
     """One isometric step. Returns (crop points, svg body) for a shared camera."""
-    S, ox, oy = 132, 90, 210
+    S, ox0, oy = 132, 90, 210
+    if ox is None:
+        ox = ox0
 
     def P(p):
         return _iso_zup(p, ox, oy, S)
@@ -467,6 +470,29 @@ def combine_steps() -> list[tuple[str, str]]:
     return [(name, svg(W, H, body, x=x0, y=y0)) for name, body in frames]
 
 
+def combine_compare() -> str:
+    """Punchline plate: two finals only, no ghosts, one glance."""
+    ang = math.radians(65)
+    start = _l_floor()
+    after_zx = _apply_ops(start, (_rz, _rx), ang)
+    after_xz = _apply_ops(start, (_rx, _rz), ang)
+    gap = 310
+    pts_a, body_a = combine_frame("c5a", "Rz then Rx", after_zx)
+    pts_b, body_b = combine_frame("c5b", "Rx then Rz", after_xz, ox=90 + gap)
+    left_o = _iso_zup((0, 0, 0), 90, 210, 132)
+    right_o = _iso_zup((0, 0, 0), 90 + gap, 210, 132)
+    left_x = _iso_zup((1.35, 0, 0), 90, 210, 132)
+    neq = ((left_x[0] + right_o[0]) / 2, left_o[1] - 18)
+    mark = text(neq[0], neq[1], "≠", size=28, fill=CORAL, anchor="middle")
+    geom = [*pts_a, *pts_b, neq, (neq[0] - 16, neq[1] - 16), (neq[0] + 16, neq[1] + 16)]
+    x0, y0, w, h = crop(geom, pad=22)
+    H = 320.0
+    if h < H:
+        y0 -= (H - h) / 2
+        h = H
+    return svg(w, h, "\n".join([body_a, body_b, mark]), x=x0, y=y0)
+
+
 def _iso(p, ox, oy, S):
     """Isometric pinhole frame: +x up, +y width (right-down), +z depth (right-up).
 
@@ -480,21 +506,41 @@ def _iso(p, ox, oy, S):
     )
 
 
-def dim_along(a, b, label, *, offset, color=INK2, size=13) -> list[str]:
-    """Measure between two already-projected points, offset in screen-perpendicular."""
+def eq_line(x, y, parts, *, size=14, anchor="middle") -> str:
+    """Colored tspan run so equation tokens match their braces."""
+    inner = "".join(f'<tspan fill="{c}">{s}</tspan>' for s, c in parts)
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
+        f'text-anchor="{anchor}">{inner}</text>'
+    )
+
+
+def brace_along(a, b, label, *, offset, color=INK2, size=13) -> tuple[list[str], list]:
+    """Hard-edge brace (square C + nub) offset from already-projected a→b."""
     dx, dy = b[0] - a[0], b[1] - a[1]
     length = math.hypot(dx, dy) or 1.0
-    px, py = -dy / length * offset, dx / length * offset
-    a2, b2 = (a[0] + px, a[1] + py), (b[0] + px, b[1] + py)
-    nx, ny = px / offset, py / offset
+    nx, ny = -dy / length, dx / length
+    if offset < 0:
+        nx, ny = -nx, -ny
+        off = abs(offset)
+    else:
+        off = offset
+    tick, nub = 9.0, 7.0
+    a2 = (a[0] + nx * off, a[1] + ny * off)
+    b2 = (b[0] + nx * off, b[1] + ny * off)
+    a1 = (a[0] + nx * (off - tick), a[1] + ny * (off - tick))
+    b1 = (b[0] + nx * (off - tick), b[1] + ny * (off - tick))
     mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
-    lx, ly = mx + nx * 10, my + ny * 10 + 4
-    return [
-        line(a2[0], a2[1], b2[0], b2[1], stroke=color, width=1),
-        line(a2[0] - nx * 4, a2[1] - ny * 4, a2[0] + nx * 4, a2[1] + ny * 4, stroke=color, width=1),
-        line(b2[0] - nx * 4, b2[1] - ny * 4, b2[0] + nx * 4, b2[1] + ny * 4, stroke=color, width=1),
+    nub_pt = (mx + nx * nub, my + ny * nub)
+    lx, ly = mx + nx * (nub + 13), my + ny * (nub + 13) + 4
+    parts = [
+        line(a1[0], a1[1], a2[0], a2[1], stroke=color, width=1.4),
+        line(a2[0], a2[1], b2[0], b2[1], stroke=color, width=1.4),
+        line(b2[0], b2[1], b1[0], b1[1], stroke=color, width=1.4),
+        line(mx, my, nub_pt[0], nub_pt[1], stroke=color, width=1.4),
         text(lx, ly, label, size=size, fill=color, anchor="middle"),
     ]
+    return parts, [a1, b1, a2, b2, nub_pt, (lx, ly)]
 
 
 def perspective() -> str:
@@ -552,18 +598,36 @@ def perspective() -> str:
         text(Pb[0] + 10, Pb[1] - 4, "B", size=16),
         circle(Pa[0], Pa[1], 5.5, fill=CORAL),
         text(Pa[0] + 10, Pa[1] - 6, "A", size=16, fill=CORAL),
-        *dim_along(Pe, Pfb, "d  to the screen", offset=30, size=13),
-        *dim_along(Pe, Pfa, "depth", offset=52, size=14),
-        *dim_along(Pfa, Pa, "height", offset=18, color=CORAL, size=14),
-        *dim_along(Pfb, Pb, "mark", offset=-22, size=14),
-        text(eq[0], eq[1], "height on screen", size=14, fill=INK, anchor="middle"),
-        text(eq2[0], eq2[1], "= height in space × d / depth", size=14, fill=INK, anchor="middle"),
+    ]
+    b_d, p_d = brace_along(Pe, Pfb, "d", offset=30, color=BLUE, size=15)
+    b_depth, p_depth = brace_along(Pe, Pfa, "depth", offset=54, color=INK2, size=14)
+    b_h, p_h = brace_along(Pfa, Pa, "height", offset=20, color=CORAL, size=14)
+    b_m, p_m = brace_along(Pfb, Pb, "mark", offset=-32, color=INK, size=14)
+    body += [
+        *b_d,
+        *b_depth,
+        *b_h,
+        *b_m,
+        eq_line(
+            eq2[0],
+            eq2[1],
+            [
+                ("mark", INK),
+                (" = ", INK),
+                ("height", CORAL),
+                (" × ", INK),
+                ("d", BLUE),
+                (" / ", INK),
+                ("depth", INK2),
+            ],
+            size=15,
+        ),
     ]
     pts = [
         Pe, Pa, Pb, Pfa, Pfb, Pz, Px, Py, *Pp, screen_lab, eq, eq2,
+        *p_d, *p_depth, *p_h, *p_m,
         (Pe[0] - 36, Pe[1] + 58), (Pa[0] + 52, Pa[1] - 18),
-        (Pfa[0] + 36, Pfa[1] + 62), (Px[0] - 20, Px[1] - 12),
-        (Pb[0] - 56, Pb[1] + 8), (eq2[0] - 130, eq[1] - 8), (eq2[0] + 130, eq2[1] + 8),
+        (Px[0] - 20, Px[1] - 12), (eq2[0] - 120, eq[1] - 8), (eq2[0] + 120, eq2[1] + 8),
     ]
     x0, y0, w, h = crop(pts, pad=16)
     return svg(w, h, "\n".join(body), x=x0, y=y0)
@@ -627,12 +691,26 @@ def f_projection() -> str:
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=15),
         text(Pbn[0] - 10, Pbn[1] - 10, "near mark", size=13, anchor="end"),
         text(Pbf[0] + 10, Pbf[1] + 14, "far mark", size=13, fill=INK2),
-        *dim_along(Pe, Pplane, "d  to the screen", offset=30, size=13),
-        *dim_along(Pplane, Pnz, "d − z  depth", offset=30, color=CORAL, size=13),
-        text(eq[0], eq[1], "s = 1 / (d − z)", size=15, fill=INK, anchor="middle"),
+    ]
+    b_d, p_d = brace_along(Pe, Pplane, "d", offset=30, color=BLUE, size=15)
+    b_z, p_z = brace_along(Pplane, Pnz, "d − z", offset=32, color=INK2, size=14)
+    body += [
+        *b_d,
+        *b_z,
+        eq_line(
+            eq[0],
+            eq[1],
+            [
+                ("s = 1 / (", INK),
+                ("d − z", INK2),
+                (")", INK),
+            ],
+            size=15,
+        ),
     ]
     pts = [
         Pe, Pn, Pf, Pbn, Pbf, Pz, Px, Py, Pplane, Pnz, *Pp, screen_lab, eq,
+        *p_d, *p_z,
         (Pe[0] - 40, Pe[1] + 52), (Pf[0] + 40, Pf[1] - 16),
         (Pn[0] + 48, Pn[1] - 10), (Pbn[0] - 72, Pbn[1] - 12),
         (Pbf[0] + 64, Pbf[1] + 16), (eq[0] - 90, eq[1] - 8), (eq[0] + 90, eq[1] + 8),
@@ -650,6 +728,7 @@ def main() -> None:
         write("rotation-f-projection.svg", f_projection()),
     ]
     written += [write(name, content) for name, content in combine_steps()]
+    written.append(write("rotation-combine-5.svg", combine_compare()))
     stale = OUT / "rotation-combine.svg"
     if stale.exists():
         stale.unlink()
