@@ -30,43 +30,43 @@ Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 *Open-source developer tooling*
 Year: 2026
 Tags: Developer Tooling, AI-assisted Engineering, MCP, SQLite, Git, Python
-Summary: I got tired of rebuilding a coding task every time I changed agents. WorkBay keeps the task, the open findings, and the tests that passed in the repository, so the next window can continue from the same record.
+Summary: I got tired of rebuilding a coding task every time I changed agents. WorkBay keeps the open findings and the tests that passed in the repository, so the next window can continue from the same record.
 
 I was leaning on coding agents more, and I kept losing the work around the code.
 
-One session knew the current plan. The next one did not. Claude Code would hold the right context for a branch, then I'd want Codex or Cursor for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet, or the reason I'd half-forgotten.
+One session knew the current plan. The next one did not. Claude Code would hold the right context for a branch, then I'd want Codex for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet.
 
 So I moved the record into the repository.
 
-WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task and branch, the decisions and blockers, the open review findings, and the tests that passed. Claude Code, Codex, Cursor, Grok, and VS Code Copilot all hit the same rows.
+WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task, plus the review findings still open and the tests that passed. Claude Code and Codex both hit the same rows. Cursor does too, along with Grok and VS Code Copilot.
 
 The short version: the task stays in the repo. You can change the window.
 
-That matters on a Tuesday when Codex is cheap and I already started the work in Claude Code. I log into the other tool. The history is still there. If I want Claude, I can run it inside Claude Code at the harness price. WorkBay installs as a native surface there, so I can keep that work off the Anthropic API.
+That matters on a Tuesday when Codex is cheap and I already started in Claude Code. I log into the other tool. The history is still there. If I want Claude, I run it inside Claude Code at the subscription price. WorkBay installs there as a native plugin, so I can keep that work off the Anthropic API.
 
-I also got tired of picking up a half-finished slice and watching the next model invent a fresh approach to a decision I'd already made. Optional semantic embeddings help after a cold start. They surface related decisions and open slices, including when the wording changed.
+I also got tired of picking up a half-finished slice and watching the next model invent a fresh approach to a decision I'd already made. Optional semantic embeddings help after a cold start. They pull up related decisions and open slices even when the wording changed.
 
 I wanted a second model that could review without reading the first model's pep talk. A reviewing agent writes findings into the database. The author has to clear them before merge. Neither one sees the other transcript.
 
-I think about that the same way I think about a prompt I would ship to a user. What you feed the next model has to earn its way in. A transcript summary is easy to paste and easy to trust. It is also easy for the next agent to treat as fact. WorkBay stores the finding, the commit, and the test.
+I think about that the same way I think about a prompt I would ship to a user. What you feed the next model has to earn its way in. A transcript summary is easy to paste. It is also easy for the next agent to treat as fact. WorkBay stores the finding and the commit that backs it.
 
 ## How a task actually goes
 
-A vague idea starts with `/scope`. A draft plan gets a review before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
+Start a vague idea with `/scope`. Review the draft plan before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
 
-The commands mean the same thing wherever you run them. `/tdd`, `/branch-review`, `/offload`. Creating a worktree or closing a slice is a make target, so that bookkeeping does not burn a model turn.
+The commands mean the same thing wherever you run them. `/tdd` and `/branch-review` keep their meaning in every window, and so does `/offload`. Creating a worktree is a make target, so that bookkeeping does not burn a model turn.
 
-`/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan and the gate.
+`/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan.
 
-Install and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope` or `make task-start`.
+Install and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope`.
 
 ## How I built it
 
-This sat well outside my usual front-end and accessibility work: Python packaging, MCP servers, Git hooks, SQLite, installers. I used the same method I use on a UI that has to survive an audit. I wrote the spec, split the work, reviewed each slice, and kept the evidence.
+This sat well outside my usual front-end and accessibility work. I was in Python packaging and Git hooks, writing MCP servers and a SQLite schema. I used the same method I use on a UI that has to survive an audit. I wrote the spec first. Then I split the work and reviewed each slice.
 
-Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec and the architecture, set the bar for done, and ran the reviews.
+Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec. I set the bar for done and ran the reviews.
 
-I used to treat accessibility claims the same way. The keyboard path, the screen reader behavior, the fix, the regression test that proves it stayed. I stay in the loop. The project keeps the evidence.
+I used to treat accessibility claims the same way. If I said a menu was keyboard-accessible, I had to show the path and the regression test. I stay in the loop. The project keeps the evidence.
 
 ### PhotoShelter: Accessibility Leadership & Product Prototyping
 *Enterprise DAM Platform*
