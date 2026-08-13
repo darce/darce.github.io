@@ -75,6 +75,18 @@ def dim_h(x1, y, x2, label, *, color=INK2, sub=None) -> list[str]:
     return out
 
 
+def dim_v(x, y1, y2, label, *, color=INK2, side=-1) -> list[str]:
+    """Vertical measure with end ticks. side −1 = label to the left."""
+    mid = (y1 + y2) / 2
+    lx = x + 12 * side
+    return [
+        line(x, y1, x, y2, stroke=color, width=1),
+        line(x - 4, y1, x + 4, y1, stroke=color, width=1),
+        line(x - 4, y2, x + 4, y2, stroke=color, width=1),
+        text(lx, mid + 4, label, size=13, fill=color, anchor="end" if side < 0 else "start"),
+    ]
+
+
 def circle(x, y, r, *, fill=INK, stroke=None, sw=0) -> str:
     extra = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ""
     return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"{extra}/>'
@@ -160,7 +172,7 @@ def counterclockwise() -> str:
         _arc_arrow(ox, oy, 72, 0, ang, ccw=True),
         text(ox + reach + 16, oy + 5, "x", size=16),
         text(ox - 20, oy - reach - 14, "y", size=16),
-        text(ox + 88, oy - 18, "turn", size=14, fill=CORAL),
+        text(ox + 88, oy - 18, "θ", size=16, fill=CORAL),
         text(24, 328, "y points up — the usual math picture", size=12, fill=INK2),
     ]
     return svg(360, 348, "\n".join(body))
@@ -181,7 +193,7 @@ def clockwise() -> str:
         _arc_arrow(ox, oy, 72, 0, -ang, ccw=False),
         text(ox + reach + 16, oy + 5, "x", size=16),
         text(ox - 20, oy + reach + 22, "y", size=16),
-        text(ox + 88, oy + 32, "turn", size=14, fill=CORAL),
+        text(ox + 88, oy + 32, "θ", size=16, fill=CORAL),
         text(24, 328, "y points down — how a screen is numbered", size=12, fill=INK2),
     ]
     return svg(360, 348, "\n".join(body))
@@ -216,7 +228,7 @@ def decomposition() -> str:
     ax0, ay0 = S((r, 0))
     ax1 = ox + r * math.cos(ang)
     ay1 = oy - r * math.sin(ang)
-    mid = S(_rot2((r + 22, 0), ang * 0.55))
+    mid = S(_rot2((r - 10, 0), ang * 0.42))
 
     body = [
         defs("rd"),
@@ -225,13 +237,13 @@ def decomposition() -> str:
         poly(L, fill=INK2, stroke=INK2, width=1.4, dash="6 4"),
         poly(L2, fill=CORAL, stroke=CORAL, width=1.7),
         f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 0 {ax1:.1f},{ay1:.1f}" '
-        f'fill="none" stroke="{CORAL}" stroke-width="1.3"/>',
+        f'fill="none" stroke="{CORAL}" stroke-width="1.4" marker-end="url(#rd-coral)"/>',
         circle(ox, oy, 3.5, fill=INK),
         text(ox + 228, oy + 5, "x", size=16),
         text(ox - 18, oy - 256, "y", size=16),
         text(S((168, 0))[0] + 8, S((168, 0))[1] + 20, "before", fill=INK2, size=13),
         text(S(L2[1])[0] + 10, S(L2[1])[1] - 6, "after", fill=CORAL, size=14),
-        text(mid[0] + 6, mid[1] + 4, "turn", fill=CORAL, size=13),
+        text(mid[0] - 4, mid[1] + 2, "θ", fill=CORAL, size=16, anchor="end"),
     ]
     return svg(460, 360, "\n".join(body))
 
@@ -276,8 +288,8 @@ def perspective() -> str:
         defs("pj"),
         line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="pj-ink"),
         line(Pe[0], Pe[1] - 28, yup[0], yup[1], width=1.2, end="pj-ink"),
-        text(axis[0] + 8, axis[1] + 4, "depth", size=13),
-        text(yup[0] - 14, yup[1] - 8, "up", size=13),
+        text(axis[0] + 8, axis[1] + 4, "z", size=13),
+        text(yup[0] - 14, yup[1] - 8, "x", size=13),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
         f'stroke="{BLUE}" stroke-width="1.5"/>',
         text((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 10, "screen", fill=BLUE, size=13, anchor="middle"),
@@ -288,10 +300,13 @@ def perspective() -> str:
         line(Pa[0], Pa[1], foot_a[0], foot_a[1], stroke=INK2, width=1, dash="3 3"),
         eye_side(Pe[0], Pe[1]),
         circle(Pb[0], Pb[1], 5, fill=INK),
-        text(Pb[0] - 10, Pb[1] - 12, "on screen", size=13, anchor="end"),
+        text(Pb[0] + 10, Pb[1] - 4, "B", size=14),
         circle(Pa[0], Pa[1], 5, fill=CORAL),
-        text(Pa[0] + 10, Pa[1] - 6, "point in space", size=13, fill=CORAL),
-        *dim_h(Pe[0], Pe[1] + 36, foot_b[0], "F", sub="focal length"),
+        text(Pa[0] + 10, Pa[1] - 6, "A", size=14, fill=CORAL),
+        *dim_h(Pe[0], Pe[1] + 28, foot_b[0], "F"),
+        *dim_h(Pe[0], Pe[1] + 52, foot_a[0], "Az"),
+        *dim_v(Pa[0] + 16, foot_a[1], Pa[1], "Ax", color=CORAL, side=1),
+        *dim_v(Pb[0] - 16, foot_b[1], Pb[1], "Bx", side=-1),
     ]
     return svg(640, 430, "\n".join(body))
 
@@ -329,7 +344,7 @@ def f_projection() -> str:
     body = [
         defs("fp"),
         line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="fp-ink"),
-        text(axis[0] + 8, axis[1] + 4, "depth", size=13),
+        text(axis[0] + 8, axis[1] + 4, "z", size=13),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
         f'stroke="{BLUE}" stroke-width="1.5"/>',
         text((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 10, "screen", fill=BLUE, size=13, anchor="middle"),
@@ -342,9 +357,10 @@ def f_projection() -> str:
         circle(Pf[0], Pf[1], 5, fill=CORAL),
         text(Pn[0] + 10, Pn[1] - 8, "near", fill=CORAL, size=14),
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=14),
-        text(Pbn[0] - 12, Pbn[1] - 12, "bigger", size=13, anchor="end"),
-        text(Pbf[0] + 12, Pbf[1] + 4, "smaller", size=13, fill=INK2),
-        *dim_h(Pe[0], Pe[1] + 36, proj((0, 0, d))[0], "F", sub="focal length"),
+        text(Pbn[0] - 12, Pbn[1] - 12, "x′", size=14, anchor="end"),
+        text(Pbf[0] + 12, Pbf[1] + 4, "x″", size=13, fill=INK2),
+        *dim_h(Pe[0], Pe[1] + 36, proj((0, 0, d))[0], "F", sub="d  =  focal length"),
+        *dim_h(proj((0, 0, d))[0], Pe[1] + 36, proj((0, 0, d + z_near))[0], "d − z", color=CORAL),
     ]
     return svg(640, 420, "\n".join(body))
 
