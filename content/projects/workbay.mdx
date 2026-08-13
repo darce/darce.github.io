@@ -3,8 +3,8 @@ index: 5
 year: 2026
 title: 'WorkBay: Durable State for Coding Agents'
 subtitle: Open-source developer tooling
-description: 'WorkBay keeps the task record in the repository so a coding agent can switch tools mid-work. Context, open findings, and test evidence stay on the task. You can take a token sale or stay inside Claude Code and continue from the same record.'
-details: 'A coding agent starts every session cold. It does not remember what it shipped yesterday, who reviewed it, or why the last attempt was rejected. Conversation tools save a summary of the chat. WorkBay saves the workflow: the active task, its branch and worktree, which slices closed and at which commit, the review findings still open against it, and the test evidence behind them.'
+description: 'I got tired of rebuilding a coding task every time I changed agents. WorkBay keeps the task, the open findings, and the tests that passed in the repository, so the next window can continue from the same record.'
+details: 'I got tired of rebuilding a coding task every time I changed agents. One session knew the plan. The next one started over. WorkBay keeps the workflow in the repository: the active task, its branch, the findings still open, and the tests that actually passed.'
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -23,32 +23,38 @@ tags:
 - Git
 - Python
 ---
-The task record lives in the repository. Claude Code, Codex, Cursor, Grok, and VS Code Copilot all read the same rows.
+I was leaning on coding agents more, and I kept losing the work around the code.
 
-## What it solves
+One session knew the current plan. The next one did not. Claude Code would hold the right context for a branch, then I'd want Codex or Cursor for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet, or the reason I'd half-forgotten.
 
-- Switch agents mid-task. Start in Claude Code. Continue in Codex, Cursor, Grok, or Copilot. The plan, the open findings, and the tests that passed stay on the task.
-- Take a token sale when one model is cheap. The switch costs a new login. The history stays in the repository.
-- Run Claude inside Claude Code at the harness price. WorkBay installs as a native surface there, so you can keep that work off the Anthropic API.
-- Resume half-finished work. Optional semantic embeddings surface related decisions and open slices after a cold start, including when the wording changed.
-- Split author and reviewer. A second model writes findings. The first model must clear them before merge. The two agents do not share a transcript.
+So I moved the record into the repository.
 
-## How it helps the work
+WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task and branch, the decisions and blockers, the open review findings, and the tests that passed. Claude Code, Codex, Cursor, Grok, and VS Code Copilot all hit the same rows.
 
-Work breaks after compaction, after a tool change, and between a claim of done and a merge. The task record holds those intervals.
+The short version: the task stays in the repo. You can change the window.
 
-A vague idea starts with `/scope`. A draft plan gets a review before anyone opens a branch. Implementation lands in small slices. Each slice starts from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
+That matters on a Tuesday when Codex is cheap and I already started the work in Claude Code. I log into the other tool. The history is still there. If I want Claude, I can run it inside Claude Code at the harness price. WorkBay installs as a native surface there, so I can keep that work off the Anthropic API.
 
-The commands mean the same thing in every harness. `/tdd`, `/branch-review`, and `/offload` keep that meaning wherever you run them. Each agent gets a native surface. Creating a worktree or closing a slice runs as a make target, so that bookkeeping skips a model turn.
+I also got tired of picking up a half-finished slice and watching the next model invent a fresh approach to a decision I'd already made. Optional semantic embeddings help after a cold start. They surface related decisions and open slices, including when the wording changed.
 
-`/offload` sends one self-contained slice to a cheaper backend under a token cap. That lane never merges. You review the diff. Mechanical work can go to the sale model. The stronger model stays on the plan and the merge gate.
+I wanted a second model that could review without reading the first model's pep talk. A reviewing agent writes findings into the database. The author has to clear them before merge. Neither one sees the other transcript.
 
-Install steps and the full command list live in the [WorkBay repository](https://github.com/darce/workbay). After install, restart the agent, then start from `/scope` or `make task-start`.
+I think about that the same way I think about a prompt I would ship to a user. What you feed the next model has to earn its way in. A transcript summary is easy to paste and easy to trust. It is also easy for the next agent to treat as fact. WorkBay stores the finding, the commit, and the test.
+
+## How a task actually goes
+
+A vague idea starts with `/scope`. A draft plan gets a review before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
+
+The commands mean the same thing wherever you run them. `/tdd`, `/branch-review`, `/offload`. Creating a worktree or closing a slice is a make target, so that bookkeeping does not burn a model turn.
+
+`/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan and the gate.
+
+Install and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope` or `make task-start`.
 
 ## How I built it
 
-This was backend-heavy work, outside my usual front-end and accessibility base. I used the same method I use on a UI that must survive an audit. I wrote the spec, split the work, reviewed each slice, and kept the evidence.
+This sat well outside my usual front-end and accessibility work: Python packaging, MCP servers, Git hooks, SQLite, installers. I used the same method I use on a UI that has to survive an audit. I wrote the spec, split the work, reviewed each slice, and kept the evidence.
 
-Agents wrote a large share of the implementation. I treated that as supervised production. The spec and the architecture stayed with me. I set the acceptance criteria, ran the reviews, and decided when the work was done.
+Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec and the architecture, set the bar for done, and ran the reviews.
 
-The line back to my accessibility work is short. A remediation claim must survive inspection: the keyboard path, the screen reader behavior, the fix, and the regression test that proves the fix stayed. WorkBay applies that inspection habit to an agentic development cycle.
+I used to treat accessibility claims the same way. The keyboard path, the screen reader behavior, the fix, the regression test that proves it stayed. I stay in the loop. The project keeps the evidence.
