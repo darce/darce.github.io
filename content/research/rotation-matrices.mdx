@@ -279,4 +279,111 @@ Here's the full chain:
 2. Apply rotation matrices  
 3. Project to 2D  
 4. Push the result into a CSS transform
+
+## The complete code
+
+The functions from the article, in one place, in the order the cube runs them. This is `lib/matrixTransformations.ts` plus the vertex `div`s.
+
+```typescript
+interface Vertex {
+    x: number
+    y: number
+    z: number
+}
+
+const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [1, 0, 0],
+        [0, Math.cos(angle), -Math.sin(angle)],
+        [0, Math.sin(angle), Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), 0, Math.sin(angle)],
+        [0, 1, 0],
+        [-Math.sin(angle), 0, Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), -Math.sin(angle), 0],
+        [Math.sin(angle), Math.cos(angle), 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const transformPointsWithMatrix = (vertexArray: Vertex[], matrix: number[][]): Vertex[] => {
+    return vertexArray.map(vertex => matrixMultiplyVertex(matrix, vertex))
+}
+
+const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
+    const result: number[][] = []
+    for (let i = 0; i < matrix.length; i++) {
+        let sum = 0
+        sum += matrix[i][0] * vertex.x
+        sum += matrix[i][1] * vertex.y
+        sum += matrix[i][2] * vertex.z
+        result[i] = [sum]
+    }
+    return { x: result[0][0], y: result[1][0], z: result[2][0] }
+}
+
+const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
+    const scaleMatrix = [
+        [scale, 0, 0],
+        [0, scale, 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, scaleMatrix)
+}
+
+const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
+    const result: Vertex[] = []
+    vertexArray.forEach(vertex => {
+        const perspectiveScale = 1 / (eyeDistance - vertex.z)
+        const projectionMatrix = [
+            [perspectiveScale, 0, 0],
+            [0, perspectiveScale, 0],
+            [0, 0, 1]
+        ]
+        result.push(matrixMultiplyVertex(projectionMatrix, vertex))
+    })
+    return result
+}
+
+export const transformPoints = (
+    vertexArray: Vertex[],
+    angleX: number,
+    angleY: number,
+    angleZ: number,
+    scale: number,
+    eyeDistance: number,
+) => {
+    let rotatedPoints = rotationX(vertexArray, angleX)
+    rotatedPoints = rotationY(rotatedPoints, angleY)
+    rotatedPoints = rotationZ(rotatedPoints, angleZ)
+    const scaledPoints = scaleXYZ(rotatedPoints, scale)
+    return projectPoints(scaledPoints, eyeDistance)
+}
+
+{vertices.map((vertex, index) => (
+    <div
+        key={index}
+        className={styles.vertex}
+        style={{
+            transform: `translate3d(
+                ${vertex.x + center.x}px,
+                ${vertex.y + center.y}px,
+                ${vertex.z}px
+            )`
+        }}
+    />
+))}
+```
 ---
