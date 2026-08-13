@@ -13,6 +13,7 @@ from pathlib import Path
 OUT = Path(__file__).resolve().parents[1] / "public" / "images" / "research"
 
 PAPER = "#e7eaef"
+SURFACE = "#f2f4f7"
 INK = "#171920"
 INK2 = "#464c5c"
 CORAL = "#d9253f"
@@ -60,8 +61,32 @@ def line(x1, y1, x2, y2, *, stroke=INK, width=1.2, end=None, dash=None) -> str:
     )
 
 
-def circle(x, y, r, *, fill=INK) -> str:
-    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"/>'
+def circle(x, y, r, *, fill=INK, stroke=None, sw=0) -> str:
+    extra = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ""
+    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"{extra}/>'
+
+
+def eye_side(cx: float, cy: float) -> str:
+    """Side-view eye looking right. Pupil / ray origin is (cx, cy)."""
+    gx, r = cx - 6.0, 13.0
+    back = gx - r
+    front = gx + r
+    lid = (
+        f'<path d="M{back + 3:.1f},{cy:.1f} '
+        f'Q{gx:.1f},{cy - r - 2:.1f} {front + 1:.1f},{cy:.1f} '
+        f'Q{gx:.1f},{cy + r + 2:.1f} {back + 3:.1f},{cy:.1f} Z" '
+        f'fill="{PAPER}" stroke="{INK}" stroke-width="1.6"/>'
+    )
+    globe = circle(gx, cy, r - 1.5, fill=SURFACE, stroke=INK, sw=1.2)
+    iris = circle(cx, cy, 5.4, fill=PAPER, stroke=INK, sw=1.15)
+    pupil = circle(cx, cy, 2.6, fill=INK)
+    # cornea — the front of the eye, facing the screen
+    cornea = (
+        f'<path d="M{front - 2:.1f},{cy - 5:.1f} '
+        f'Q{front + 8:.1f},{cy:.1f} {front - 2:.1f},{cy + 5:.1f}" '
+        f'fill="{PAPER}" stroke="{INK}" stroke-width="1.5"/>'
+    )
+    return "\n".join([lid, globe, iris, pupil, cornea])
 
 
 def write(name: str, content: str) -> Path:
@@ -305,7 +330,7 @@ def perspective() -> str:
     body = [
         defs("pj"),
         line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="pj-ink"),
-        line(Pe[0], Pe[1], yup[0], yup[1], width=1.2, end="pj-ink"),
+        line(Pe[0], Pe[1] - 16, yup[0], yup[1], width=1.2, end="pj-ink"),
         text(axis[0] + 8, axis[1] + 4, "depth", size=13),
         text(yup[0] - 14, yup[1] - 8, "up", size=13),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
@@ -316,8 +341,7 @@ def perspective() -> str:
         line(Pe[0], Pe[1], Pa[0], Pa[1], stroke=CORAL, width=1.7, end="pj-coral"),
         line(Pb[0], Pb[1], foot_b[0], foot_b[1], stroke=INK2, width=1, dash="3 3"),
         line(Pa[0], Pa[1], foot_a[0], foot_a[1], stroke=INK2, width=1, dash="3 3"),
-        f'<rect x="{Pe[0] - 6:.1f}" y="{Pe[1] - 6:.1f}" width="12" height="12" fill="{INK}"/>',
-        text(Pe[0] - 22, Pe[1] + 26, "eye", size=14),
+        eye_side(Pe[0], Pe[1]),
         circle(Pb[0], Pb[1], 5, fill=INK),
         text(Pb[0] - 10, Pb[1] - 12, "on screen", size=13, anchor="end"),
         circle(Pa[0], Pa[1], 5, fill=CORAL),
@@ -363,8 +387,7 @@ def f_projection() -> str:
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
         f'stroke="{BLUE}" stroke-width="1.5"/>',
         text((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 10, "screen", fill=BLUE, size=13, anchor="middle"),
-        f'<rect x="{Pe[0] - 6:.1f}" y="{Pe[1] - 6:.1f}" width="12" height="12" fill="{INK}"/>',
-        text(Pe[0] - 22, Pe[1] + 26, "eye", size=14),
+        eye_side(Pe[0], Pe[1]),
         line(Pe[0], Pe[1], Pn[0], Pn[1], stroke=CORAL, width=1.7, end="fp-coral"),
         line(Pe[0], Pe[1], Pf[0], Pf[1], stroke=CORAL, width=1.3, dash="5 3"),
         circle(Pbn[0], Pbn[1], 5, fill=INK),
