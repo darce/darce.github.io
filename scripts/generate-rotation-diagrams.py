@@ -291,12 +291,23 @@ def _apply_ops(pts, ops, ang):
     return out
 
 
-def _iso_arc(P, pts3, *, color, end) -> str:
+def _iso_arc(P, pts3, *, color, width=2.4) -> str:
     q = [P(p) for p in pts3]
     d = f"M{q[0][0]:.1f},{q[0][1]:.1f}" + "".join(f" L{p[0]:.1f},{p[1]:.1f}" for p in q[1:])
+    a, b = q[-2], q[-1]
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    length = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / length, dy / length
+    nx, ny = -uy, ux
+    ah, aw = 16, 9
+    p1 = (b[0] + ux * 2, b[1] + uy * 2)
+    p2 = (b[0] - ah * ux + aw * nx, b[1] - ah * uy + aw * ny)
+    p3 = (b[0] - ah * ux - aw * nx, b[1] - ah * uy - aw * ny)
     return (
-        f'<path d="{d}" fill="none" stroke="{color}" stroke-width="1.6" '
-        f'marker-end="url(#{end})"/>'
+        f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{width}" '
+        f'stroke-linecap="round" stroke-linejoin="round"/>'
+        f'<polygon points="{p1[0]:.1f},{p1[1]:.1f} {p2[0]:.1f},{p2[1]:.1f} '
+        f'{p3[0]:.1f},{p3[1]:.1f}" fill="{color}"/>'
     )
 
 
@@ -369,12 +380,12 @@ def combine_frame(
     ]
     geom.append(title_pt)
     if change == "z":
-        body.append(_iso_arc(P, _arc_pts("z", 0.46, 0.18, 0.95), color=CORAL, end=f"{prefix}-coral"))
-        rz = P((0.98, 0.68, 0.0))
-        body.append(text(rz[0] + 6, rz[1] + 4, "Rz", size=14, fill=CORAL))
-        geom.append((rz[0] + 28, rz[1] + 4))
+        body.append(_iso_arc(P, _arc_pts("z", 0.86, 0.08, 0.98), color=CORAL, width=2.6))
+        rz = P((1.08, 0.58, 0.0))
+        body.append(text(rz[0] + 8, rz[1] + 6, "Rz", size=16, fill=CORAL))
+        geom.append((rz[0] + 32, rz[1] + 6))
     elif change == "x":
-        body.append(_iso_arc(P, _arc_pts("x", 0.46, 0.18, 0.95), color=CORAL, end=f"{prefix}-coral"))
+        body.append(_iso_arc(P, _arc_pts("x", 0.62, 0.12, 1.05), color=CORAL, width=2.2))
         rx = ((o[0] + px[0]) / 2, px[1] - 16)
         body.append(text(rx[0], rx[1], "Rx", size=14, fill=CORAL, anchor="middle"))
         geom.append(rx)
@@ -517,6 +528,8 @@ def perspective() -> str:
     Py = proj((0.0, 0.95, 0.0))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
     screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
+    eq = (screen_lab[0], screen_lab[1] - 38)
+    eq2 = (screen_lab[0], screen_lab[1] - 20)
 
     body = [
         defs("pj"),
@@ -539,16 +552,18 @@ def perspective() -> str:
         text(Pb[0] + 10, Pb[1] - 4, "B", size=16),
         circle(Pa[0], Pa[1], 5.5, fill=CORAL),
         text(Pa[0] + 10, Pa[1] - 6, "A", size=16, fill=CORAL),
-        *dim_along(Pe, Pfb, "to the screen", offset=28, size=13),
-        *dim_along(Pe, Pfa, "depth", offset=50, size=14),
+        *dim_along(Pe, Pfb, "d  to the screen", offset=30, size=13),
+        *dim_along(Pe, Pfa, "depth", offset=52, size=14),
         *dim_along(Pfa, Pa, "height", offset=18, color=CORAL, size=14),
         *dim_along(Pfb, Pb, "mark", offset=-22, size=14),
+        text(eq[0], eq[1], "height on screen", size=14, fill=INK, anchor="middle"),
+        text(eq2[0], eq2[1], "= height in space × d / depth", size=14, fill=INK, anchor="middle"),
     ]
     pts = [
-        Pe, Pa, Pb, Pfa, Pfb, Pz, Px, Py, *Pp, screen_lab,
+        Pe, Pa, Pb, Pfa, Pfb, Pz, Px, Py, *Pp, screen_lab, eq, eq2,
         (Pe[0] - 36, Pe[1] + 58), (Pa[0] + 52, Pa[1] - 18),
         (Pfa[0] + 36, Pfa[1] + 62), (Px[0] - 20, Px[1] - 12),
-        (Pb[0] - 56, Pb[1] + 8),
+        (Pb[0] - 56, Pb[1] + 8), (eq2[0] - 130, eq[1] - 8), (eq2[0] + 130, eq2[1] + 8),
     ]
     x0, y0, w, h = crop(pts, pad=16)
     return svg(w, h, "\n".join(body), x=x0, y=y0)
@@ -588,6 +603,7 @@ def f_projection() -> str:
     Pnz = proj((0.0, 0.0, d + z_near))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
     screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
+    eq = (screen_lab[0], screen_lab[1] - 22)
 
     body = [
         defs("fp"),
@@ -611,14 +627,15 @@ def f_projection() -> str:
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=15),
         text(Pbn[0] - 10, Pbn[1] - 10, "near mark", size=13, anchor="end"),
         text(Pbf[0] + 10, Pbf[1] + 14, "far mark", size=13, fill=INK2),
-        *dim_along(Pe, Pplane, "to the screen", offset=28, size=13),
-        *dim_along(Pplane, Pnz, "depth", offset=28, color=CORAL, size=14),
+        *dim_along(Pe, Pplane, "d  to the screen", offset=30, size=13),
+        *dim_along(Pplane, Pnz, "d − z  depth", offset=30, color=CORAL, size=13),
+        text(eq[0], eq[1], "s = 1 / (d − z)", size=15, fill=INK, anchor="middle"),
     ]
     pts = [
-        Pe, Pn, Pf, Pbn, Pbf, Pz, Px, Py, Pplane, Pnz, *Pp, screen_lab,
+        Pe, Pn, Pf, Pbn, Pbf, Pz, Px, Py, Pplane, Pnz, *Pp, screen_lab, eq,
         (Pe[0] - 40, Pe[1] + 52), (Pf[0] + 40, Pf[1] - 16),
         (Pn[0] + 48, Pn[1] - 10), (Pbn[0] - 72, Pbn[1] - 12),
-        (Pbf[0] + 64, Pbf[1] + 16),
+        (Pbf[0] + 64, Pbf[1] + 16), (eq[0] - 90, eq[1] - 8), (eq[0] + 90, eq[1] + 8),
     ]
     x0, y0, w, hgt = crop(pts, pad=16)
     return svg(w, hgt, "\n".join(body), x=x0, y=y0)

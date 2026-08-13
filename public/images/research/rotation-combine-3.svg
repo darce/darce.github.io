@@ -13,7 +13,7 @@
 <text x="198.0" y="273.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
 <text x="74.0" y="41.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
 <text x="82.0" y="17.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">3 · then Rx</text>
-<path d="M122.9,218.2 L122.6,215.5 L122.2,212.8 L121.8,210.1 L121.4,207.4 L120.8,204.6 L120.3,201.9 L119.6,199.2 L118.9,196.6 L118.2,193.9 L117.4,191.3 L116.6,188.7 L115.7,186.1 L114.7,183.6 L113.8,181.2 L112.7,178.8 L111.7,176.4 L110.6,174.1 L109.4,171.9" fill="none" stroke="#d9253f" stroke-width="1.6" marker-end="url(#s3-coral)"/>
+<path d="M134.7,226.2 L134.4,221.8 L133.9,217.4 L133.3,213.0 L132.6,208.5 L131.8,204.1 L130.9,199.7 L129.9,195.3 L128.8,190.9 L127.5,186.6 L126.2,182.4 L124.8,178.2 L123.2,174.2 L121.6,170.2 L119.9,166.3 L118.2,162.5 L116.3,158.9 L114.4,155.4 L112.4,152.0" fill="none" stroke="#d9253f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><polygon points="111.4,150.3 128.3,161.2 112.8,170.4" fill="#d9253f"/>
 <text x="179.1" y="194.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="middle">Rx</text>
 <polygon points="92.0,213.4 245.2,261.6 216.7,267.3 102.4,231.3 18.8,248.1 -20.1,235.9" fill="#464c5c" fill-opacity="0.1" stroke="#464c5c" stroke-width="1.2" stroke-dasharray="5 4"/>
 <text x="-12.1" y="225.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#464c5c" text-anchor="start">after Rz</text>

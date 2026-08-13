@@ -201,16 +201,16 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="An eye looking at a screen. A ray through B on the screen hits point A. Marks show the gap to the screen, the point's depth, its height in space, and the height on screen."
-    caption="A is the point. B is the mark on the screen. Height on screen is a shrink of the height in space — farther away, smaller mark."
+    alt="An eye looking at a screen. A ray through B on the screen hits point A. Marks show d to the screen, depth, height, and the mark. The equation height on screen = height in space times d over depth sits above the screen."
+    caption="A is the point. B is the mark on the screen. Height on screen = height in space × d / depth."
 />
 
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Same $d$, two depths: the far point lands closer to the middle.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="An eye, a screen, and two rays to a near point and a far point. Marks show the gap to the screen and each point's depth. The far mark on the screen sits closer to the middle."
-    caption="Same gap to the screen, two depths. Farther away draws closer to the middle."
+    alt="An eye, a screen, and two rays to a near point and a far point. Marks show d to the screen and depth d minus z. The equation s = 1 over d minus z sits above the screen."
+    caption="s = 1/(d − z). Same gap to the screen, two depths. Farther away draws closer to the middle."
 />
 
 ```typescript
