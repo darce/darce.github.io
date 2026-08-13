@@ -66,10 +66,21 @@ class Camera:
 # ---------------------------------------------------------------------------
 
 
-def _svg(w: float, h: float, body: str, *, x: float = 0, y: float = 0) -> str:
+def _svg(
+    w: float,
+    h: float,
+    body: str,
+    *,
+    x: float = 0,
+    y: float = 0,
+    width: float | None = None,
+    height: float | None = None,
+) -> str:
+    ow = width if width is not None else w
+    oh = height if height is not None else h
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x:.1f} {y:.1f} {w:.1f} {h:.1f}" '
-        f'width="{w:.0f}" height="{h:.0f}" role="img">\n'
+        f'width="{ow:.0f}" height="{oh:.0f}" role="img">\n'
         f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="{PAPER}"/>\n'
         f"{body}\n</svg>\n"
     )
@@ -730,12 +741,15 @@ def combine_steps() -> list[tuple[str, str]]:
         ),
     ]
     gathered = [(name, scene.gather()) for name, scene in beats]
-    all_pts = [p for _, (_, pts) in gathered for p in pts]
-    x0, y0, w, h = _crop(all_pts, pad=20)
-    W, H = max(w, COMBINE_SIZE[0]), max(h, COMBINE_SIZE[1])
-    x0 -= (W - w) / 2
-    y0 -= (H - h) / 2
-    return [(name, _svg(W, H, "\n".join(parts), x=x0, y=y0)) for name, (parts, _) in gathered]
+    # Same output box; each beat is framed on its own subject (Manim still).
+    out_w, out_h = COMBINE_SIZE
+    written = []
+    for name, (parts, pts) in gathered:
+        x0, y0, vw, vh = _crop(pts, pad=24)
+        written.append(
+            (name, _svg(vw, vh, "\n".join(parts), x=x0, y=y0, width=out_w, height=out_h))
+        )
+    return written
 
 
 def combine_compare() -> str:
@@ -754,11 +768,8 @@ def combine_compare() -> str:
     neq = ((left_x[0] + right_o[0]) / 2, left_o[1] - 18)
     parts = pa + pb + [_text(neq[0], neq[1], "≠", size=28, fill=CORAL, anchor="middle")]
     pts = [*qa, *qb, neq, (neq[0] - 16, neq[1] - 16), (neq[0] + 16, neq[1] + 16)]
-    x0, y0, w, h = _crop(pts, pad=32)
-    if h < COMBINE_SIZE[1]:
-        y0 -= (COMBINE_SIZE[1] - h) / 2
-        h = COMBINE_SIZE[1]
-    return _svg(w, h, "\n".join(parts), x=x0, y=y0)
+    x0, y0, vw, vh = _crop(pts, pad=40)
+    return _svg(vw, vh, "\n".join(parts), x=x0, y=y0, width=860, height=COMBINE_SIZE[1])
 
 
 # ---------------------------------------------------------------------------

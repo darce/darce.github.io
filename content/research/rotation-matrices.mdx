@@ -42,13 +42,13 @@ Each axis has its own matrix. In the plane perpendicular to that axis the pictur
 
 <DiagramPair>
 <Diagram
-    src="/images/research/rotation-ccw.svg?v=3"
+    src="/images/research/rotation-ccw.svg?v=4"
     alt="A coral arrow starting on the x-axis and turning left by an angle theta, with y pointing up."
     caption="θ measured left from +x. This is the usual math picture, with y pointing up."
 />
 
 <Diagram
-    src="/images/research/rotation-cw.svg?v=3"
+    src="/images/research/rotation-cw.svg?v=4"
     alt="A coral arrow starting on the x-axis and turning right by an angle theta, with y pointing down."
     caption="θ measured right from +x. Screens number y downward, so the same matrix looks clockwise."
 />
@@ -113,7 +113,7 @@ $$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y 
 The result $(x', y', z')$ is the rotated position. Do that for every vertex and the whole shape turns. The origin stays put.
 
 <Diagram
-    src="/images/research/rotation-apply.svg?v=3"
+    src="/images/research/rotation-apply.svg?v=4"
     alt="A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow."
     caption="Apply R to every corner. Same L, turned by θ. Ghost is before, coral is after."
 />
@@ -143,31 +143,31 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 
 <DiagramPair>
 <Diagram
-    src="/images/research/rotation-combine-1.svg?v=3"
+    src="/images/research/rotation-combine-1.svg?v=4"
     alt="Step 1. An L lies on the xy plane. Axes x, y, and z meet at the origin."
     caption="1 · Start. The L sits on the xy plane."
 />
 <Diagram
-    src="/images/research/rotation-combine-2.svg?v=3"
+    src="/images/research/rotation-combine-2.svg?v=4"
     alt="Step 2. The L has turned around z. Ghost shows the start pose. The L is still on the floor."
     caption="2 · Apply Rz. It turns around z and stays on the floor."
 />
 </DiagramPair>
 <DiagramPair>
 <Diagram
-    src="/images/research/rotation-combine-3.svg?v=3"
+    src="/images/research/rotation-combine-3.svg?v=4"
     alt="Step 3. The L from step 2 has now tipped around x. Ghost is the after-Rz pose."
     caption="3 · Then Rx. That pose tips around x."
 />
 <Diagram
-    src="/images/research/rotation-combine-4.svg?v=3"
+    src="/images/research/rotation-combine-4.svg?v=4"
     alt="Step 4. Other order: the L first tipped around x, then turned around z. A coral arrow marks the last turn. The pose does not match step 3."
     caption="4 · Other order: Rx first, then Rz. Same two turns, different pose."
 />
 </DiagramPair>
 
 <Diagram
-    src="/images/research/rotation-combine-5.svg?v=3"
+    src="/images/research/rotation-combine-5.svg?v=4"
     alt="Two coral L poses side by side. Left is Rz then Rx. Right is Rx then Rz. A not-equals sign sits between them."
     caption="5 · The two finals. Same turns, opposite order — not the same pose."
 />
@@ -206,7 +206,7 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
 Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
-    src="/images/research/rotation-perspective.svg?v=3"
+    src="/images/research/rotation-perspective.svg?v=4"
     alt="An eye looking at a screen. A ray through B on the screen hits point A. Marks show d to the screen, depth, height, and the mark. The equation height on screen = height in space times d over depth sits above the screen."
     caption="A is the point. B is the mark. Same colors as the braces: mark = height × d / depth."
 />
@@ -214,7 +214,7 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Same $d$, two depths: the far point lands closer to the middle.
 
 <Diagram
-    src="/images/research/rotation-f-projection.svg?v=3"
+    src="/images/research/rotation-f-projection.svg?v=4"
     alt="An eye, a screen, and two rays to a near point and a far point. Marks show d to the screen and depth d minus z. The equation s = 1 over d minus z sits above the screen."
     caption="s = 1/(d − z). Same gap to the screen, two depths. Farther away draws closer to the middle."
 />
