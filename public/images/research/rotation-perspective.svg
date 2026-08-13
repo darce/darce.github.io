@@ -6,7 +6,7 @@
 <marker id="pj-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
 </defs>
 <line x1="96.0" y1="248.0" x2="441.0" y2="248.0" stroke="#171920" stroke-width="1.2" fill="none" marker-end="url(#pj-ink)"/>
-<line x1="96.0" y1="232.0" x2="96.0" y2="78.0" stroke="#171920" stroke-width="1.2" fill="none" marker-end="url(#pj-ink)"/>
+<line x1="96.0" y1="220.0" x2="96.0" y2="78.0" stroke="#171920" stroke-width="1.2" fill="none" marker-end="url(#pj-ink)"/>
 <text x="449.0" y="252.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="start">depth</text>
 <text x="82.0" y="70.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="start">up</text>
 <polygon points="196.0,61.0 306.0,125.0 306.0,385.0 196.0,321.0" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.5"/>
@@ -15,11 +15,9 @@
 <line x1="96.0" y1="248.0" x2="401.0" y2="120.0" stroke="#d9253f" stroke-width="1.7" fill="none" marker-end="url(#pj-coral)"/>
 <line x1="251.0" y1="183.0" x2="251.0" y2="248.0" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
 <line x1="401.0" y1="120.0" x2="401.0" y2="248.0" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
-<path d="M80.0,248.0 Q90.0,233.0 104.0,248.0 Q90.0,263.0 80.0,248.0 Z" fill="#e7eaef" stroke="#171920" stroke-width="1.6"/>
-<circle cx="90.0" cy="248.0" r="11.5" fill="#f2f4f7" stroke="#171920" stroke-width="1.2"/>
-<circle cx="96.0" cy="248.0" r="5.4" fill="#e7eaef" stroke="#171920" stroke-width="1.15"/>
-<circle cx="96.0" cy="248.0" r="2.6" fill="#171920"/>
-<path d="M101.0,243.0 Q111.0,248.0 101.0,253.0" fill="#e7eaef" stroke="#171920" stroke-width="1.5"/>
+<path d="M96.0,248.0 L108.7,235.3 A18.0,18.0 0 0 1 108.7,260.7 Z" fill="#e7eaef" stroke="none"/>
+<path d="M111.6,232.4 L96.0,248.0 L111.6,263.6" fill="none" stroke="#171920" stroke-width="1.6" stroke-linejoin="miter"/>
+<path d="M108.7,235.3 A18.0,18.0 0 0 1 108.7,260.7" fill="none" stroke="#171920" stroke-width="1.6"/>
 <circle cx="251.0" cy="183.0" r="5" fill="#171920"/>
 <text x="241.0" y="171.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="end">on screen</text>
 <circle cx="401.0" cy="120.0" r="5" fill="#d9253f"/>

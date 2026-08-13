@@ -67,26 +67,37 @@ def circle(x, y, r, *, fill=INK, stroke=None, sw=0) -> str:
 
 
 def eye_side(cx: float, cy: float) -> str:
-    """Side-view eye looking right. Pupil / ray origin is (cx, cy)."""
-    gx, r = cx - 6.0, 13.0
-    back = gx - r
-    front = gx + r
-    lid = (
-        f'<path d="M{back + 3:.1f},{cy:.1f} '
-        f'Q{gx:.1f},{cy - r - 2:.1f} {front + 1:.1f},{cy:.1f} '
-        f'Q{gx:.1f},{cy + r + 2:.1f} {back + 3:.1f},{cy:.1f} Z" '
-        f'fill="{PAPER}" stroke="{INK}" stroke-width="1.6"/>'
+    """Wiki-style side view: two rays + quarter-circle, opening toward the screen.
+
+    Same mark as Perspective_transform_diagram.svg (axes + arc at the camera).
+    (cx, cy) is the ray origin.
+    """
+    r = 18.0
+    arm = 22.0
+    # 90° opening, looking right — same as the wiki triad, aimed down the axis
+    a0, a1 = math.radians(-45), math.radians(45)
+    ux = cx + arm * math.cos(a1)
+    uy = cy - arm * math.sin(a1)
+    lx = cx + arm * math.cos(a0)
+    ly = cy - arm * math.sin(a0)
+    ax0 = cx + r * math.cos(a1)
+    ay0 = cy - r * math.sin(a1)
+    ax1 = cx + r * math.cos(a0)
+    ay1 = cy - r * math.sin(a0)
+    fill = (
+        f'<path d="M{cx:.1f},{cy:.1f} L{ax0:.1f},{ay0:.1f} '
+        f'A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f} Z" '
+        f'fill="{PAPER}" stroke="none"/>'
     )
-    globe = circle(gx, cy, r - 1.5, fill=SURFACE, stroke=INK, sw=1.2)
-    iris = circle(cx, cy, 5.4, fill=PAPER, stroke=INK, sw=1.15)
-    pupil = circle(cx, cy, 2.6, fill=INK)
-    # cornea — the front of the eye, facing the screen
-    cornea = (
-        f'<path d="M{front - 2:.1f},{cy - 5:.1f} '
-        f'Q{front + 8:.1f},{cy:.1f} {front - 2:.1f},{cy + 5:.1f}" '
-        f'fill="{PAPER}" stroke="{INK}" stroke-width="1.5"/>'
+    lids = (
+        f'<path d="M{ux:.1f},{uy:.1f} L{cx:.1f},{cy:.1f} L{lx:.1f},{ly:.1f}" '
+        f'fill="none" stroke="{INK}" stroke-width="1.6" stroke-linejoin="miter"/>'
     )
-    return "\n".join([lid, globe, iris, pupil, cornea])
+    arc = (
+        f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f}" '
+        f'fill="none" stroke="{INK}" stroke-width="1.6"/>'
+    )
+    return "\n".join([fill, lids, arc])
 
 
 def write(name: str, content: str) -> Path:
@@ -330,7 +341,7 @@ def perspective() -> str:
     body = [
         defs("pj"),
         line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="pj-ink"),
-        line(Pe[0], Pe[1] - 16, yup[0], yup[1], width=1.2, end="pj-ink"),
+        line(Pe[0], Pe[1] - 28, yup[0], yup[1], width=1.2, end="pj-ink"),
         text(axis[0] + 8, axis[1] + 4, "depth", size=13),
         text(yup[0] - 14, yup[1] - 8, "up", size=13),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
