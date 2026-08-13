@@ -142,6 +142,38 @@
     }
 }
 
+.projectHead {
+    display: flex;
+    align-items: flex-start;
+    gap: $s-medium;
+}
+
+.projectIcon {
+    box-sizing: border-box;
+    flex: 0 0 $s-x-large;
+    width: $s-x-large;
+    height: $s-x-large;
+    overflow: hidden;
+    border: $s-line solid;
+
+    @include themeComponent($themes) {
+        border-color: t('text');
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0;
+    }
+}
+
+.projectText {
+    flex: 1;
+    min-width: 0;
+}
+
 .projectTitle {
     font-size: 1.1rem;
     font-weight: 600;
