@@ -988,7 +988,7 @@ def f_projection() -> str:
     d, hgt = 1.38, 0.78
     # Opposite sides so the two images do not nest; y_near kept inside the film.
     y_near, y_far = 0.56, -0.60
-    z_near, z_far = 0.50, 2.05
+    z_near, z_far = 0.92, 2.05
     eye = (0.0, 0.0, 0.0)
     zn, zf = d + z_near, d + z_far
     near_top, near_bot = (hgt, y_near, zn), (0.0, y_near, zn)
