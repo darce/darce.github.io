@@ -152,3 +152,8 @@ dist
 /.cursor/hooks.json
 /.grok/plugins/workbay-system
 # <<< WORKBAY_BOOTSTRAP OVERLAY IGNORE <<<
+
+# WorkBay generated projections (runtime; DB is SSOT). Installer should own this fence.
+/CURRENT_TASK.json
+/DASHBOARD.txt
+/scripts/workbay_lifecycle
