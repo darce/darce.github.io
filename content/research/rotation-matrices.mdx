@@ -40,6 +40,12 @@ Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves po
 
 Each axis has its own matrix.
 
+<Diagram
+    src="/images/research/rotation-axes.svg"
+    alt="Three rows: Rx leaves x unchanged and rotates the yz plane; Ry leaves y and rotates xz; Rz leaves z and rotates xy."
+    caption="Each matrix is the identity on its own axis. The other two coordinates rotate together."
+/>
+
 ### Around X
 
 The first row is $[1, 0, 0]$. This preserves $x$:
@@ -118,6 +124,12 @@ The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z
 
 Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
 
+<Diagram
+    src="/images/research/rotation-compose.svg"
+    alt="Two paths from the same point: Rx then Ry yields Pxy; Ry then Rx yields Pyx. The two results are not equal."
+    caption="Same start, opposite order — two different points. Rx Ry ≠ Ry Rx."
+/>
+
 ```typescript
 export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
     let rotatedPoints = rotationX(vertexArray, angleX)
@@ -140,6 +152,12 @@ A perspective projection maps 3D points to 2D. Points farther from the viewer ap
 $$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
 
 where $d$ is the distance from the viewer to the projection plane.
+
+<Diagram
+    src="/images/research/rotation-focal-plane.svg"
+    alt="Viewer at left, projection plane at distance d, a 3D point sending a ray through the plane to a screen point (x-prime, y-prime). The mapping is x over (d minus z)."
+    caption="The plane sits a distance d from the viewer. A point at depth z hits the plane at x′ = x / (d − z)."
+/>
 
 ```typescript
 const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
@@ -193,6 +211,12 @@ Using `translate3d` lets the browser composite vertices on the GPU. For eight ti
 This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
 
 Here's the full chain:
+
+<Diagram
+    src="/images/research/rotation-pipeline.svg"
+    alt="Four-step pipeline: 3D point, then Rx Ry Rz, then project x over (d minus z), then CSS translate3d."
+    caption="Math stays in TypeScript until the last step. The browser only places the dots."
+/>
 
 1. Take a 3D point  
 2. Apply rotation matrices  

@@ -113,6 +113,30 @@
     .source {
         min-width: 0;
 
+        .diagram,
+        :global(figure.diagram) {
+            margin: $s-large 0;
+            padding: 0;
+            max-width: 100%;
+
+            img {
+                display: block;
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+                border: $s-line solid;
+
+                @include themeComponent($themes) {
+                    border-color: t('text');
+                    background-color: t('surface');
+                }
+            }
+
+            figcaption {
+                margin-top: $s-small;
+            }
+        }
+
         blockquote {
             margin: 0;
             padding: 0 0 0 $s-large;

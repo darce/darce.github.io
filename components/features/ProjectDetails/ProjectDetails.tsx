@@ -35,6 +35,21 @@ const MDXCube = () => (
 )
 
 // Custom components available in MDX content
+const Diagram = ({
+    src,
+    alt,
+    caption,
+}: {
+    src: string
+    alt: string
+    caption?: string
+}) => (
+    <figure className={styles.diagram}>
+        <img src={src} alt={alt} />
+        {caption ? <figcaption>{caption}</figcaption> : null}
+    </figure>
+)
+
 const mdxComponents = {
     OrderBook,
     OrderBookProvider,
@@ -43,6 +58,7 @@ const mdxComponents = {
     Spread,
     OrderImbalance,
     Cube: MDXCube,
+    Diagram,
     hr: () => null,
 }
 

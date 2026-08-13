@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 42 805.5 76" width="805.5" height="76">
+  <rect class="canvas-background" x="9.5" y="42" width="805.5" height="76" fill="#e7eaef" />
+  <line class="edge edge-freeform" x1="80" y1="80" x2="280" y2="80" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="180" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">TypeScript</text>
+  <line class="edge edge-freeform" x1="280" y1="80" x2="500" y2="80" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="390" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">still 3D</text>
+  <line class="edge edge-freeform" x1="500" y1="80" x2="720" y2="80" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="610" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">screen</text>
+  <rect class="node node-slice" x="645" y="62" width="150" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="2" />
+  <text x="720" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">4. CSS translate3d</text>
+  <polygon class="node node-decision" points="500,62 578.5,80 500,98 421.5,80" fill="#f2f4f7" stroke="#171920" stroke-width="2" />
+  <text x="500" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">3. project  x/(d−z)</text>
+  <rect class="node node-slice" x="29.5" y="62" width="101" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="2" />
+  <text x="80" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">1. 3D point</text>
+  <rect class="node node-task" x="215.5" y="62" width="129" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="3" />
+  <text x="280" y="80" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">2. Rx · Ry · Rz</text>
+</svg>
