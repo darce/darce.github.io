@@ -216,102 +216,125 @@ def _scale(a, s):
     return (a[0] * s, a[1] * s, a[2] * s)
 
 
+def _rodrigues(p, u, theta):
+    c, s = math.cos(theta), math.sin(theta)
+    return _add(
+        _add(_scale(p, c), _scale(_cross(u, p), s)),
+        _scale(u, _dot(u, p) * (1.0 - c)),
+    )
+
+
+def _eiffel_edges():
+    """Hard-edge tower: 4 legs, two decks, tip. Stands on z = 0, up is +z."""
+
+    def sq(h, z):
+        return [(-h, -h, z), (h, -h, z), (h, h, z), (-h, h, z)]
+
+    base, mid, top = sq(0.56, 0.0), sq(0.22, 0.48), sq(0.08, 1.22)
+    plat1, plat2 = sq(0.28, 0.55), sq(0.11, 1.28)
+    tip = (0.0, 0.0, 1.82)
+    edges = []
+    for ring in (base, plat1, plat2):
+        for i in range(4):
+            edges.append((ring[i], ring[(i + 1) % 4]))
+    for i in range(4):
+        edges.append((base[i], mid[i]))
+        edges.append((mid[i], top[i]))
+        edges.append((top[i], tip))
+    # front arch — gives the tower a facing
+    arch_l, arch_r = (-0.28, -0.50, 0.0), (0.28, -0.50, 0.0)
+    arch_c = (0.0, -0.42, 0.22)
+    edges.extend([(arch_l, arch_c), (arch_c, arch_r)])
+    return edges, tip, base
+
+
 def decomposition() -> str:
-    """Axis stays, the rest swings. Tight crop, labels off the strokes."""
-    S = 210
+    """Eiffel tower on the x–y ground, spun around a vertical axis."""
+    S = 168
+    theta = math.radians(62)
+    u = (0.0, 0.0, 1.0)
 
     def raw(p):
         x, y, z = p
-        return (-0.70 * S * x + S * y, 0.50 * S * x - S * z)
+        return (-0.62 * S * x + S * y, 0.42 * S * x - S * z)
 
-    u = _norm((0.16, 0.18, 1.0))
-    v = (0.42, 1.12, 0.52)
-    pv = _scale(u, _dot(v, u))
-    ipv = _sub(v, pv)
-    theta = math.radians(54)
-    qv = _add(_scale(ipv, math.cos(theta)), _scale(_cross(u, ipv), math.sin(theta)))
-    rv = _add(pv, qv)
+    edges, tip, base = _eiffel_edges()
+    o = (0.0, 0.0, 0.0)
+    axis_top = (0.0, 0.0, 2.15)
+    axis_bot = (0.0, 0.0, -0.12)
+    # ground plane
+    g = 0.95
+    ground = [(-g, -g, 0.0), (g, -g, 0.0), (g, g, 0.0), (-g, g, 0.0)]
+    grid = []
+    for t in (-0.45, 0.0, 0.45):
+        grid.append(((-g, t, 0.0), (g, t, 0.0)))
+        grid.append(((t, -g, 0.0), (t, g, 0.0)))
+    ax = (1.15, 0.0, 0.0)
+    ay = (0.0, 1.15, 0.0)
+    # a base corner that travels — used to label before / after
+    corner = base[1]
+    corner2 = _rodrigues(corner, u, theta)
 
-    o = raw((0, 0, 0))
-    pu = raw(_scale(u, 1.85))
-    pv2 = raw(pv)
-    p_before = raw(v)
-    p_after = raw(rv)
-
-    arc = []
-    for i in range(16):
-        t = theta * i / 15
-        w = _add(
-            pv,
-            _add(_scale(ipv, math.cos(t)), _scale(_cross(u, ipv), math.sin(t))),
-        )
-        arc.append(raw(w))
-    mid = arc[8]
-
-    # labels live in the empty corners — no leaders sitting on the strokes
-    labels = [
-        (pu, "spin axis", BLUE, 14, -8, "start"),
-        (pv2, "stays put", INK, -14, 6, "end"),
-        (p_before, "before", CORAL, 12, 26, "start"),
-        (p_after, "after", CORAL, 16, 4, "start"),
-        (mid, "swings", CORAL, 28, 6, "start"),
-    ]
-
-    def label_extent(tip, name, dx, dy, anchor):
-        lx, ly = tip[0] + dx, tip[1] + dy
-        tw = 9 * len(name)
-        if anchor == "end":
-            return (lx - tw, ly - 16, lx, ly + 8)
-        return (lx, ly - 16, lx + tw, ly + 8)
-
-    xs = [o[0], pu[0], pv2[0], p_before[0], p_after[0]]
-    ys = [o[1], pu[1], pv2[1], p_before[1], p_after[1]]
-    for tip, name, _c, dx, dy, anchor in labels:
-        x0, y0, x1, y1 = label_extent(tip, name, dx, dy, anchor)
-        xs.extend([x0, x1])
-        ys.extend([y0, y1])
-    pad = 28
-    min_x, max_x = min(xs) - pad, max(xs) + pad
-    min_y, max_y = min(ys) - pad, max(ys) + pad
+    pts = [o, axis_top, axis_bot, tip, ax, ay, corner, corner2, *ground]
+    for a, b in edges:
+        pts.extend([a, b, _rodrigues(a, u, theta), _rodrigues(b, u, theta)])
+    pr = [raw(p) for p in pts]
+    pad = 36
+    min_x = min(p[0] for p in pr) - pad
+    max_x = max(p[0] for p in pr) + pad + 70
+    min_y = min(p[1] for p in pr) - pad
+    max_y = max(p[1] for p in pr) + pad + 8
     ox, oy = -min_x, -min_y
 
     def P(p):
-        return (p[0] + ox, p[1] + oy)
-
-    o, pu, pv2, p_before, p_after = P(o), P(pu), P(pv2), P(p_before), P(p_after)
-    arc = [P(p) for p in arc]
-    mid = P(mid)
-    w, h = max_x - min_x, max_y - min_y
+        s = raw(p)
+        return (s[0] + ox, s[1] + oy)
 
     def vline(a, b, **kw):
-        return line(a[0], a[1], b[0], b[1], **kw)
+        pa, pb = P(a), P(b)
+        return line(pa[0], pa[1], pb[0], pb[1], **kw)
 
+    def ring(pts3, **kw):
+        return [vline(pts3[i], pts3[(i + 1) % len(pts3)], **kw) for i in range(len(pts3))]
+
+    Pcor, Pcor2 = P(corner), P(corner2)
+    Pax, Pay = P(ax), P(ay)
+    Pu = P(axis_top)
+    ground_pts = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in ground)
+
+    # turn arc at a moving base corner — the tip sits on the axis and does not travel
+    arc = []
+    for i in range(14):
+        t = theta * i / 13
+        arc.append(P(_rodrigues(corner, u, t)))
     ad = f"M{arc[0][0]:.1f},{arc[0][1]:.1f} " + " ".join(
         f"L{p[0]:.1f},{p[1]:.1f}" for p in arc[1:]
     )
 
-    placed = [
-        (pu, "spin axis", BLUE, 14, -8, "start"),
-        (pv2, "stays put", INK, -14, 6, "end"),
-        (p_before, "before", CORAL, 12, 26, "start"),
-        (p_after, "after", CORAL, 16, 4, "start"),
-        (mid, "swings", CORAL, 28, 6, "start"),
-    ]
-    callouts = [
-        text(tip[0] + dx, tip[1] + dy, name, size=15, fill=color, anchor=anchor)
-        for tip, name, color, dx, dy, anchor in placed
-    ]
+    ghost, solid = [], []
+    for a, b in edges:
+        ghost.append(vline(a, b, stroke=INK2, width=1.15, dash="5 4"))
+        solid.append(
+            vline(_rodrigues(a, u, theta), _rodrigues(b, u, theta), stroke=CORAL, width=1.6)
+        )
 
+    w, h = max_x - min_x, max_y - min_y
     body = [
         defs("rd"),
-        vline(o, pu, stroke=BLUE, width=2.2, end="rd-blue"),
-        vline(o, pv2, width=2.4, end="rd-ink"),
-        vline(o, p_before, stroke=CORAL, width=1.7, dash="6 4", end="rd-coral"),
-        vline(o, p_after, stroke=CORAL, width=2.2, end="rd-coral"),
-        vline(pv2, p_before, stroke=INK2, width=1, dash="3 3"),
-        vline(pv2, p_after, stroke=INK2, width=1, dash="3 3"),
-        f'<path d="{ad}" fill="none" stroke="{CORAL}" stroke-width="1.4"/>',
-        *callouts,
+        f'<polygon points="{ground_pts}" fill="{BLUE}" fill-opacity="0.06" '
+        f'stroke="{BLUE}" stroke-width="1.2"/>',
+        *[vline(a, b, stroke=BLUE, width=0.8) for a, b in grid],
+        vline(o, ax, width=1.4, end="rd-ink"),
+        vline(o, ay, width=1.4, end="rd-ink"),
+        vline(axis_bot, axis_top, stroke=BLUE, width=2.0, end="rd-blue"),
+        *ghost,
+        *solid,
+        f'<path d="{ad}" fill="none" stroke="{CORAL}" stroke-width="1.3"/>',
+        text(Pax[0] + 8, Pax[1] + 4, "x", size=14),
+        text(Pay[0] + 8, Pay[1] + 4, "y", size=14),
+        text(Pu[0] + 10, Pu[1] + 2, "spin axis", fill=BLUE, size=14),
+        text(Pcor[0] - 8, Pcor[1] + 16, "before", fill=INK2, size=13, anchor="end"),
+        text(Pcor2[0] + 14, Pcor2[1] + 22, "after", fill=CORAL, size=14),
     ]
     return svg(round(w), round(h), "\n".join(body))
 
