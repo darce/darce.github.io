@@ -451,6 +451,55 @@ class Brace:
         return parts, [a1, b1, a2, b2, nub_pt, (lx - span / 2, ly), (lx + span / 2, ly)]
 
 
+def _away(a: tuple, b: tuple, t: float = 0.2) -> tuple:
+    """Point a fraction of the way from a to b — keeps rays off the eye."""
+    return tuple(a[i] + t * (b[i] - a[i]) for i in range(len(a)))
+
+
+def _tree(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
+    """Hard-edge tree. s is half-width of the canopy in px. Anchor at canopy base."""
+    canopy = (
+        f"{cx:.1f},{cy - 1.55 * s:.1f} {cx + s:.1f},{cy:.1f} {cx - s:.1f},{cy:.1f}"
+    )
+    tw, th = 0.18 * s, 0.5 * s
+    trunk = (
+        f"{cx - tw:.1f},{cy:.1f} {cx + tw:.1f},{cy:.1f} "
+        f"{cx + tw:.1f},{cy + th:.1f} {cx - tw:.1f},{cy + th:.1f}"
+    )
+    return [
+        f'<polygon points="{canopy}" fill="{fill}" fill-opacity="0.38" '
+        f'stroke="{stroke}" stroke-width="1.5"/>',
+        f'<polygon points="{trunk}" fill="{stroke}" fill-opacity="0.85" '
+        f'stroke="{stroke}" stroke-width="1.2"/>',
+    ]
+
+
+@dataclass
+class Tree:
+    """Same tree in the world or on the screen; `size` is canopy half-width in px."""
+
+    point: tuple
+    size: float
+    color: str = CORAL
+    label: str = ""
+    label_color: str = CORAL
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        cx, cy = cam.project(self.point)
+        s = self.size
+        parts = _tree(cx, cy, s, fill=self.color, stroke=self.color)
+        pts = [
+            (cx - s, cy - 1.55 * s),
+            (cx + s, cy + 0.5 * s),
+        ]
+        if self.label:
+            parts.append(
+                _text(cx + s + 6, cy - 0.8 * s, self.label, size=14, fill=self.label_color)
+            )
+            pts.append((cx + s + 8 * len(self.label), cy - 0.8 * s))
+        return parts, pts
+
+
 @dataclass
 class Eye:
     def draw(self, cam: Camera) -> tuple[list[str], list]:
@@ -462,14 +511,15 @@ class Eye:
         ax0, ay0 = cx + r * math.cos(a1), cy - r * math.sin(a1)
         ax1, ay1 = cx + r * math.cos(a0), cy - r * math.sin(a0)
         parts = [
+            f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="20" fill="{PAPER}" stroke="none"/>',
             f'<path d="M{cx:.1f},{cy:.1f} L{ax0:.1f},{ay0:.1f} '
             f'A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f} Z" fill="{PAPER}" stroke="none"/>',
             f'<path d="M{ux:.1f},{uy:.1f} L{cx:.1f},{cy:.1f} L{lx:.1f},{ly:.1f}" '
-            f'fill="none" stroke="{INK}" stroke-width="1.6" stroke-linejoin="miter"/>',
+            f'fill="none" stroke="{INK}" stroke-width="1.8" stroke-linejoin="miter"/>',
             f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f}" '
-            f'fill="none" stroke="{INK}" stroke-width="1.6"/>',
+            f'fill="none" stroke="{INK}" stroke-width="1.8"/>',
         ]
-        return parts, [(cx, cy), (ux, uy), (lx, ly)]
+        return parts, [(cx, cy), (ux, uy), (lx, ly), (cx - 24, cy - 24)]
 
 
 @dataclass
@@ -806,22 +856,21 @@ def perspective() -> str:
     eye, pt, hit = (0.0, 0.0, 0.0), (Ax, 0.0, Az), (Bx, 0.0, d)
     foot_a, foot_b = (0.0, 0.0, Az), (0.0, 0.0, d)
     screen = Screen(d)
+    world_s, hit_s = 26.0, 26.0 * (Bx / Ax)
     scene = Scene(cam, "pj")
     scene.add(
         Axes(reach=(1.38, 0.95, Az + 0.22), prefix="pj"),
         screen,
-        Seg(eye, pt, CORAL, 1.8, end="pj-coral"),
+        Seg(_away(eye, pt, 0.08), pt, CORAL, 1.8),
         Seg(hit, foot_b, INK2, 1, dash="3 3"),
         Seg(pt, foot_a, INK2, 1, dash="3 3"),
-        Eye(),
-        Dot(hit, INK),
-        Label(hit, "B", INK, 16, dx=10, dy=-4),
-        Dot(pt, CORAL),
-        Label(pt, "A", CORAL, 16, dx=10, dy=-6),
+        Tree(pt, world_s, CORAL),
+        Tree(hit, hit_s, INK),
         Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
         Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
         Brace(foot_a, pt, "h", CORAL, offset=22, size=16, nudge=(-6, 0)),
         Brace(foot_b, hit, "h′", INK, offset=-34, size=16, nudge=(-14, 0)),
+        Eye(),
     )
     parts, pts = scene.gather()
     Pe, Pa, Pfa = cam.project(eye), cam.project(pt), cam.project(foot_a)
@@ -855,32 +904,32 @@ def perspective() -> str:
 
 def f_projection() -> str:
     cam = Camera(70, 250, 142, kind="pinhole")
-    d, h, z_near, z_far = 1.38, 1.08, 0.88, 1.85
+    d, hgt = 1.38, 1.08
+    z_near, z_far = 0.70, 2.35
     eye = (0.0, 0.0, 0.0)
-    near = (h, 0.0, d + z_near)
-    far = (h, 0.0, d + z_far)
-    hit_n = (h * d / (d + z_near), 0.0, d)
-    hit_f = (h * d / (d + z_far), 0.0, d)
+    near = (hgt, 0.0, d + z_near)
+    far = (hgt, 0.0, d + z_far)
+    hit_n = (hgt * d / (d + z_near), 0.0, d)
+    hit_f = (hgt * d / (d + z_far), 0.0, d)
     plane = (0.0, 0.0, d)
     n_z = (0.0, 0.0, d + z_near)
     screen = Screen(d, hx=1.22, hy=0.78)
+    world_s = 24.0
+    near_s = world_s * (hit_n[0] / hgt)
+    far_s = world_s * (hit_f[0] / hgt)
     scene = Scene(cam, "fp")
     scene.add(
         Axes(reach=(1.32, 0.92, d + z_far + 0.18), prefix="fp"),
         screen,
-        Eye(),
-        Seg(eye, near, CORAL, 1.8, end="fp-coral"),
-        Seg(eye, far, CORAL, 1.4, dash="5 3"),
-        Dot(hit_n, INK),
-        Dot(hit_f, INK2, r=4.5),
-        Dot(near, CORAL),
-        Dot(far, CORAL),
-        Label(near, "near", CORAL, 15, dx=10, dy=-8),
-        Label(far, "far", CORAL, 15, dx=10, dy=-8),
-        Label(hit_n, "near mark", INK, 13, dx=-10, dy=-10, anchor="end"),
-        Label(hit_f, "far mark", INK2, 13, dx=10, dy=14),
+        Seg(_away(eye, near, 0.08), near, CORAL, 1.7),
+        Seg(_away(eye, far, 0.08), far, CORAL, 1.3, dash="5 3"),
+        Tree(near, world_s, CORAL, "near"),
+        Tree(far, world_s, CORAL, "far"),
+        Tree(hit_n, near_s, INK),
+        Tree(hit_f, max(far_s, 5.5), INK2),
         Brace(eye, plane, "d", BLUE, offset=30, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
+        Eye(),
     )
     parts, pts = scene.gather()
     left = min(p[0] for p in pts)
@@ -901,8 +950,8 @@ def f_projection() -> str:
         )
     )
     pts.extend([eq, (eq[0] + 180, eq[1] - 8), (eq[0], eq[1] + 10)])
-    x0, y0, w, hgt = _crop(pts, pad=22)
-    return _svg(w, hgt, "\n".join(parts), x=x0, y=y0)
+    x0, y0, w, hgt_box = _crop(pts, pad=22)
+    return _svg(w, hgt_box, "\n".join(parts), x=x0, y=y0)
 
 
 def main() -> None:
