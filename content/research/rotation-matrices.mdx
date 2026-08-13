@@ -206,7 +206,7 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
 Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
-    src="/images/research/rotation-perspective.svg?v=13"
+    src="/images/research/rotation-perspective.svg?v=14"
     alt="An eye in front of a screen. A coral tree in space spans height in space; its projection on the screen spans height on screen. A ray through both tops. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
     caption="Height on screen is a shrink of height in space. Same colors as the braces."
 />
@@ -214,8 +214,8 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
 
 <Diagram
-    src="/images/research/rotation-f-projection.svg?v=13"
-    alt="An eye, a screen, and two same-size coral trees at different depths. Ultramarine rays run from the eye to each tree’s top and base. Solid rays belong to the near tree; dashed rays belong to the far tree. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z."
+    src="/images/research/rotation-f-projection.svg?v=14"
+    alt="An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z."
     caption="Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle."
 />
 
