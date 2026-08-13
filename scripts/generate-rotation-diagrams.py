@@ -249,105 +249,141 @@ def decomposition() -> str:
 
 
 def _iso(p, ox, oy, S):
+    """Isometric pinhole frame: +x up, +y width (right-down), +z depth (right-up).
+
+    Matches the standing image plane: its edges run with x and y; z
+    pierces the plane. Not a 2D side-view triad laid on a 3D plate.
+    """
     x, y, z = p
-    return (ox + S * z + 0.55 * S * x, oy - S * y + 0.32 * S * x)
+    return (
+        ox + 0.88 * S * z + 0.52 * S * y,
+        oy - 0.92 * S * x - 0.38 * S * z + 0.30 * S * y,
+    )
+
+
+def dim_along(a, b, label, *, offset, color=INK2, size=13) -> list[str]:
+    """Measure between two already-projected points, offset in screen-perpendicular."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    length = math.hypot(dx, dy) or 1.0
+    px, py = -dy / length * offset, dx / length * offset
+    a2, b2 = (a[0] + px, a[1] + py), (b[0] + px, b[1] + py)
+    nx, ny = px / offset, py / offset
+    mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
+    lx, ly = mx + nx * 10, my + ny * 10 + 4
+    return [
+        line(a2[0], a2[1], b2[0], b2[1], stroke=color, width=1),
+        line(a2[0] - nx * 4, a2[1] - ny * 4, a2[0] + nx * 4, a2[1] + ny * 4, stroke=color, width=1),
+        line(b2[0] - nx * 4, b2[1] - ny * 4, b2[0] + nx * 4, b2[1] + ny * 4, stroke=color, width=1),
+        text(lx, ly, label, size=size, fill=color, anchor="middle"),
+    ]
 
 
 def perspective() -> str:
-    """One ray: eye → screen hit → point. Similar triangles, no Bx/Az."""
-    ox, oy = 96, 248
-    S = 100
+    """Isometric pinhole: x up, y across the screen, z through the plane."""
+    ox, oy = 120, 300
+    S = 92
 
     def proj(p):
         return _iso(p, ox, oy, S)
 
-    depth_plane, depth_pt, height = 1.55, 3.05, 1.28
-    hit_h = height * depth_plane / depth_pt
+    F, Az, Ax = 1.55, 3.10, 1.28
+    Bx = Ax * F / Az
 
     eye = (0.0, 0.0, 0.0)
-    pt = (0.0, height, depth_pt)
-    hit = (0.0, hit_h, depth_plane)
+    # similar-triangle plane is xz (y = 0)
+    pt = (Ax, 0.0, Az)
+    hit = (Bx, 0.0, F)
+    foot_a = (0.0, 0.0, Az)
+    foot_b = (0.0, 0.0, F)
     plane = [
-        (-1.0, 1.55, depth_plane),
-        (1.0, 1.55, depth_plane),
-        (1.0, -1.05, depth_plane),
-        (-1.0, -1.05, depth_plane),
+        (1.55, -1.05, F),
+        (1.55, 1.05, F),
+        (-1.05, 1.05, F),
+        (-1.05, -1.05, F),
     ]
 
     Pe, Pa, Pb = proj(eye), proj(pt), proj(hit)
+    Pfa, Pfb = proj(foot_a), proj(foot_b)
     Pp = [proj(p) for p in plane]
-    axis = proj((0, 0, depth_pt + 0.4))
-    yup = proj((0, 1.7, 0))
+    Pz = proj((0.0, 0.0, Az + 0.55))
+    Px = proj((1.75, 0.0, 0.0))
+    Py = proj((0.0, 1.35, 0.0))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
-
-    # light similar-triangle wash
-    foot_a = proj((0, 0, depth_pt))
-    foot_b = proj((0, 0, depth_plane))
 
     body = [
         defs("pj"),
-        line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="pj-ink"),
-        line(Pe[0], Pe[1] - 28, yup[0], yup[1], width=1.2, end="pj-ink"),
-        text(axis[0] + 8, axis[1] + 4, "z", size=13),
-        text(yup[0] - 14, yup[1] - 8, "x", size=13),
+        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.3, end="pj-ink"),
+        line(Pe[0], Pe[1], Px[0], Px[1], width=1.3, end="pj-ink"),
+        line(Pe[0], Pe[1], Py[0], Py[1], width=1.3, end="pj-ink"),
+        text(Pz[0] + 8, Pz[1] + 2, "z", size=14),
+        text(Px[0] - 14, Px[1] - 6, "x", size=14),
+        text(Py[0] + 8, Py[1] + 12, "y", size=14),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
         f'stroke="{BLUE}" stroke-width="1.5"/>',
-        text((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 10, "screen", fill=BLUE, size=13, anchor="middle"),
-        f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {foot_a[0]:.1f},{foot_a[1]:.1f}" '
+        text((Pp[0][0] + Pp[1][0]) / 2 - 8, min(Pp[0][1], Pp[1][1]) - 12, "screen", fill=BLUE, size=13, anchor="middle"),
+        f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {Pfa[0]:.1f},{Pfa[1]:.1f}" '
         f'fill="{CORAL}" fill-opacity="0.06" stroke="none"/>',
         line(Pe[0], Pe[1], Pa[0], Pa[1], stroke=CORAL, width=1.7, end="pj-coral"),
-        line(Pb[0], Pb[1], foot_b[0], foot_b[1], stroke=INK2, width=1, dash="3 3"),
-        line(Pa[0], Pa[1], foot_a[0], foot_a[1], stroke=INK2, width=1, dash="3 3"),
+        line(Pb[0], Pb[1], Pfb[0], Pfb[1], stroke=INK2, width=1, dash="3 3"),
+        line(Pa[0], Pa[1], Pfa[0], Pfa[1], stroke=INK2, width=1, dash="3 3"),
         eye_side(Pe[0], Pe[1]),
         circle(Pb[0], Pb[1], 5, fill=INK),
         text(Pb[0] + 10, Pb[1] - 4, "B", size=14),
         circle(Pa[0], Pa[1], 5, fill=CORAL),
         text(Pa[0] + 10, Pa[1] - 6, "A", size=14, fill=CORAL),
-        *dim_h(Pe[0], Pe[1] + 28, foot_b[0], "F"),
-        *dim_h(Pe[0], Pe[1] + 52, foot_a[0], "Az"),
-        *dim_v(Pa[0] + 16, foot_a[1], Pa[1], "Ax", color=CORAL, side=1),
-        *dim_v(Pb[0] - 16, foot_b[1], Pb[1], "Bx", side=-1),
+        *dim_along(Pe, Pfb, "F", offset=30),
+        *dim_along(Pe, Pfa, "Az", offset=50),
+        *dim_along(Pfa, Pa, "Ax", offset=16, color=CORAL),
+        *dim_along(Pfb, Pb, "Bx", offset=-16),
     ]
-    return svg(640, 430, "\n".join(body))
+    return svg(640, 460, "\n".join(body))
 
 
 def f_projection() -> str:
-    """Same height, two depths: farther lands lower on the screen."""
-    ox, oy = 96, 248
-    S = 94
+    """Same isometric frame. Same F, two depths."""
+    ox, oy = 120, 300
+    S = 88
 
     def proj(p):
         return _iso(p, ox, oy, S)
 
-    d = 1.5
-    h = 1.2
-    z_near, z_far = 1.05, 2.25
+    d = 1.55
+    h = 1.20
+    z_near, z_far = 1.10, 2.30
 
     eye = (0.0, 0.0, 0.0)
-    near = (0.0, h, d + z_near)
-    far = (0.0, h, d + z_far)
-    hit_n = (0.0, h * d / (d + z_near), d)
-    hit_f = (0.0, h * d / (d + z_far), d)
+    near = (h, 0.0, d + z_near)
+    far = (h, 0.0, d + z_far)
+    hit_n = (h * d / (d + z_near), 0.0, d)
+    hit_f = (h * d / (d + z_far), 0.0, d)
     plane = [
-        (-0.95, 1.5, d),
-        (0.95, 1.5, d),
-        (0.95, -1.1, d),
-        (-0.95, -1.1, d),
+        (1.50, -1.00, d),
+        (1.50, 1.00, d),
+        (-1.05, 1.00, d),
+        (-1.05, -1.00, d),
     ]
 
     Pe, Pn, Pf = proj(eye), proj(near), proj(far)
     Pbn, Pbf = proj(hit_n), proj(hit_f)
     Pp = [proj(p) for p in plane]
-    axis = proj((0, 0, d + z_far + 0.35))
+    Pz = proj((0.0, 0.0, d + z_far + 0.45))
+    Px = proj((1.70, 0.0, 0.0))
+    Py = proj((0.0, 1.30, 0.0))
+    Pplane = proj((0.0, 0.0, d))
+    Pnz = proj((0.0, 0.0, d + z_near))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
 
     body = [
         defs("fp"),
-        line(Pe[0], Pe[1], axis[0], axis[1], width=1.2, end="fp-ink"),
-        text(axis[0] + 8, axis[1] + 4, "z", size=13),
+        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.3, end="fp-ink"),
+        line(Pe[0], Pe[1], Px[0], Px[1], width=1.3, end="fp-ink"),
+        line(Pe[0], Pe[1], Py[0], Py[1], width=1.3, end="fp-ink"),
+        text(Pz[0] + 8, Pz[1] + 2, "z", size=14),
+        text(Px[0] - 14, Px[1] - 6, "x", size=14),
+        text(Py[0] + 8, Py[1] + 12, "y", size=14),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
         f'stroke="{BLUE}" stroke-width="1.5"/>',
-        text((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 10, "screen", fill=BLUE, size=13, anchor="middle"),
+        text((Pp[0][0] + Pp[1][0]) / 2 - 8, min(Pp[0][1], Pp[1][1]) - 12, "screen", fill=BLUE, size=13, anchor="middle"),
         eye_side(Pe[0], Pe[1]),
         line(Pe[0], Pe[1], Pn[0], Pn[1], stroke=CORAL, width=1.7, end="fp-coral"),
         line(Pe[0], Pe[1], Pf[0], Pf[1], stroke=CORAL, width=1.3, dash="5 3"),
@@ -357,12 +393,12 @@ def f_projection() -> str:
         circle(Pf[0], Pf[1], 5, fill=CORAL),
         text(Pn[0] + 10, Pn[1] - 8, "near", fill=CORAL, size=14),
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=14),
-        text(Pbn[0] - 12, Pbn[1] - 12, "x′", size=14, anchor="end"),
+        text(Pbn[0] - 12, Pbn[1] - 10, "x′", size=14, anchor="end"),
         text(Pbf[0] + 12, Pbf[1] + 4, "x″", size=13, fill=INK2),
-        *dim_h(Pe[0], Pe[1] + 36, proj((0, 0, d))[0], "F", sub="d  =  focal length"),
-        *dim_h(proj((0, 0, d))[0], Pe[1] + 36, proj((0, 0, d + z_near))[0], "d − z", color=CORAL),
+        *dim_along(Pe, Pplane, "F", offset=32),
+        *dim_along(Pplane, Pnz, "d − z", offset=32, color=CORAL),
     ]
-    return svg(640, 420, "\n".join(body))
+    return svg(660, 460, "\n".join(body))
 
 
 def main() -> None:
