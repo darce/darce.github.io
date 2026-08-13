@@ -13,8 +13,8 @@
 <text x="198.0" y="273.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
 <text x="74.0" y="41.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">z</text>
 <text x="82.0" y="17.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">2 · apply Rz</text>
-<path d="M155.7,213.5 L156.6,214.3 L157.4,215.1 L158.0,215.9 L158.5,216.7 L158.9,217.5 L159.1,218.2 L159.3,219.0 L159.3,219.7 L159.2,220.4 L158.9,221.1 L158.5,221.8 L158.0,222.4 L157.4,223.0 L156.7,223.6 L155.8,224.2 L154.8,224.8 L153.7,225.3 L152.5,225.8" fill="none" stroke="#d9253f" stroke-width="1.6" marker-end="url(#s2-coral)"/>
-<text x="274.7" y="242.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">Rz</text>
+<path d="M208.1,212.9 L210.7,214.7 L212.9,216.5 L214.8,218.3 L216.4,220.0 L217.6,221.8 L218.6,223.5 L219.2,225.1 L219.5,226.8 L219.5,228.4 L219.2,229.9 L218.5,231.4 L217.5,232.8 L216.2,234.2 L214.6,235.5 L212.7,236.8 L210.5,238.0 L207.9,239.1 L205.1,240.2" fill="none" stroke="#d9253f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><polygon points="203.2,240.9 217.0,226.2 223.2,243.0" fill="#d9253f"/>
+<text x="282.7" y="240.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#d9253f" text-anchor="start">Rz</text>
 <polygon points="102.3,212.5 268.6,212.5 291.8,226.1 167.7,226.1 236.0,265.8 193.8,265.8" fill="#464c5c" fill-opacity="0.1" stroke="#464c5c" stroke-width="1.2" stroke-dasharray="5 4"/>
 <polygon points="92.0,213.4 245.2,261.6 216.7,267.3 102.4,231.3 18.8,248.1 -20.1,235.9" fill="#d9253f" fill-opacity="0.2" stroke="#d9253f" stroke-width="1.8"/>
 <text x="-28.1" y="225.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="end">after Rz</text>

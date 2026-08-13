@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="18.0 -107.9 487.8 431.9" width="488" height="432" role="img">
-<rect x="18.0" y="-107.9" width="487.8" height="431.9" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="18.0 -126.1 487.8 450.1" width="488" height="450" role="img">
+<rect x="18.0" y="-126.1" width="487.8" height="450.1" fill="#e7eaef"/>
 <defs>
 <marker id="pj-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="pj-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -24,14 +24,14 @@
 <text x="274.0" y="75.2" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">B</text>
 <circle cx="437.8" cy="-73.9" r="5.5" fill="#d9253f"/>
 <text x="447.8" y="-79.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#d9253f" text-anchor="start">A</text>
-<line x1="81.1" y1="275.7" x2="275.1" y2="192.0" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="79.5" y1="272.0" x2="82.7" y2="279.4" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="273.5" y1="188.3" x2="276.6" y2="195.6" stroke="#464c5c" stroke-width="1" fill="none"/>
-<text x="182.0" y="247.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="middle">to the screen</text>
-<line x1="89.8" y1="295.9" x2="457.7" y2="137.1" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="88.2" y1="292.2" x2="91.4" y2="299.6" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="456.1" y1="133.4" x2="459.2" y2="140.7" stroke="#464c5c" stroke-width="1" fill="none"/>
-<text x="277.7" y="229.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#464c5c" text-anchor="middle">depth</text>
+<line x1="81.9" y1="277.5" x2="275.8" y2="193.8" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="80.3" y1="273.9" x2="83.5" y2="281.2" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="274.3" y1="190.1" x2="277.4" y2="197.5" stroke="#464c5c" stroke-width="1" fill="none"/>
+<text x="182.8" y="248.8" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="middle">d  to the screen</text>
+<line x1="90.6" y1="297.7" x2="458.5" y2="138.9" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="89.0" y1="294.1" x2="92.2" y2="301.4" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="456.9" y1="135.2" x2="460.0" y2="142.6" stroke="#464c5c" stroke-width="1" fill="none"/>
+<text x="278.5" y="231.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#464c5c" text-anchor="middle">depth</text>
 <line x1="455.8" y1="91.2" x2="455.8" y2="-73.9" stroke="#d9253f" stroke-width="1" fill="none"/>
 <line x1="451.8" y1="91.2" x2="459.8" y2="91.2" stroke="#d9253f" stroke-width="1" fill="none"/>
 <line x1="451.8" y1="-73.9" x2="459.8" y2="-73.9" stroke="#d9253f" stroke-width="1" fill="none"/>
@@ -40,4 +40,6 @@
 <line x1="238.0" y1="166.2" x2="246.0" y2="166.2" stroke="#464c5c" stroke-width="1" fill="none"/>
 <line x1="238.0" y1="79.2" x2="246.0" y2="79.2" stroke="#464c5c" stroke-width="1" fill="none"/>
 <text x="252.0" y="126.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#464c5c" text-anchor="middle">mark</text>
+<text x="264.0" y="-102.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">height on screen</text>
+<text x="264.0" y="-84.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">= height in space × d / depth</text>
 </svg>

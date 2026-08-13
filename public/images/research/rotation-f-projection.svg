@@ -26,12 +26,13 @@
 <text x="483.6" y="-73.4" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">far</text>
 <text x="232.4" y="79.4" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="end">near mark</text>
 <text x="252.4" y="129.3" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="start">far mark</text>
-<line x1="81.1" y1="275.7" x2="253.5" y2="201.2" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="79.5" y1="272.0" x2="82.7" y2="279.4" stroke="#464c5c" stroke-width="1" fill="none"/>
-<line x1="252.0" y1="197.6" x2="255.1" y2="204.9" stroke="#464c5c" stroke-width="1" fill="none"/>
-<text x="171.3" y="251.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="middle">to the screen</text>
-<line x1="253.5" y1="201.2" x2="363.5" y2="153.8" stroke="#d9253f" stroke-width="1" fill="none"/>
-<line x1="252.0" y1="197.6" x2="255.1" y2="204.9" stroke="#d9253f" stroke-width="1" fill="none"/>
-<line x1="361.9" y1="150.1" x2="365.1" y2="157.4" stroke="#d9253f" stroke-width="1" fill="none"/>
-<text x="312.5" y="190.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="middle">depth</text>
+<line x1="81.9" y1="277.5" x2="254.3" y2="203.1" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="80.3" y1="273.9" x2="83.5" y2="281.2" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="252.8" y1="199.4" x2="255.9" y2="206.7" stroke="#464c5c" stroke-width="1" fill="none"/>
+<text x="172.1" y="253.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="middle">d  to the screen</text>
+<line x1="254.3" y1="203.1" x2="364.3" y2="155.6" stroke="#d9253f" stroke-width="1" fill="none"/>
+<line x1="252.8" y1="199.4" x2="255.9" y2="206.7" stroke="#d9253f" stroke-width="1" fill="none"/>
+<line x1="362.7" y1="151.9" x2="365.9" y2="159.3" stroke="#d9253f" stroke-width="1" fill="none"/>
+<text x="313.3" y="192.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="middle">d − z  depth</text>
+<text x="242.4" y="-53.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="middle">s = 1 / (d − z)</text>
 </svg>
