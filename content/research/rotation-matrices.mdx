@@ -206,16 +206,16 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
 Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
-    src="/images/research/rotation-perspective.svg?v=11"
-    alt="An eye in front of a screen. A coral tree in space is labeled height in space. A smaller ink tree on the screen is labeled height on screen. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
+    src="/images/research/rotation-perspective.svg?v=12"
+    alt="An eye in front of a screen. A coral tree in space spans height in space; its projection on the screen spans height on screen. A ray through both tops. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
     caption="Height on screen is a shrink of height in space. Same colors as the braces."
 />
 
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
 
 <Diagram
-    src="/images/research/rotation-f-projection.svg?v=11"
-    alt="An eye, a screen, and two same-size coral trees at different depths. On the screen the near tree is large and the far tree is small and closer to the middle. Braces mark d and d minus z. The equation perspective scale = 1 over d minus z sits at the top left."
+    src="/images/research/rotation-f-projection.svg?v=12"
+    alt="An eye, a screen, and two same-size coral trees at different depths. Rays through each tree’s top and base hit the screen; the on-screen trees fill those hits. The far image is smaller and closer to the middle. Braces mark d and d minus z. The equation perspective scale = 1 over d minus z sits at the top left."
     caption="Perspective scale = 1/(d − z). Same trees, two depths. Farther away → smaller on the screen, closer to the middle."
 />
 

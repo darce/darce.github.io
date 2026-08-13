@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -148.4 591.7 468.4" width="592" height="468" role="img">
-<rect x="24.0" y="-148.4" width="591.7" height="468.4" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -128.7 511.6 458.9" width="512" height="459" role="img">
+<rect x="24.0" y="-128.7" width="511.6" height="458.9" fill="#ffffff"/>
 <defs>
 <marker id="fp-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="fp-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -7,46 +7,64 @@
 </defs>
 <line x1="70.0" y1="250.0" x2="70.0" y2="77.6" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
 <text x="78.0" y="82.6" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">x</text>
-<line x1="70.0" y1="250.0" x2="137.9" y2="289.2" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
-<text x="147.9" y="303.2" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
-<line x1="70.0" y1="250.0" x2="558.6" y2="39.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
-<text x="542.6" y="35.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
-<polygon points="184.8,-17.1 300.0,49.4 300.0,298.0 184.8,231.6" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
-<text x="242.4" y="-31.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
-<line x1="116.6" y1="215.8" x2="461.5" y2="-37.6" stroke="#d9253f" stroke-width="1.4" fill="none" marker-end="url(#fp-coral)" stroke-dasharray="5 3"/>
-<line x1="96.0" y1="224.7" x2="288.3" y2="37.2" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#fp-coral)"/>
-<rect x="531.3" y="-50.4" width="9.6" height="24.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
-<circle cx="536.1" cy="-71.2" r="24.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<circle cx="522.2" cy="-64.0" r="16.8" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<circle cx="550.0" cy="-64.0" r="16.8" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<text x="569.7" y="-78.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">far</text>
-<rect x="325.1" y="38.7" width="9.6" height="24.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
-<circle cx="329.9" cy="17.8" r="24.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<circle cx="316.0" cy="25.0" r="16.8" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<circle cx="343.8" cy="25.0" r="16.8" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
-<text x="363.5" y="11.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">near</text>
-<rect x="240.7" y="138.9" width="3.6" height="8.9" fill="#464c5c" stroke="#464c5c" stroke-width="1.1"/>
-<circle cx="242.4" cy="131.1" r="8.9" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
-<circle cx="237.3" cy="133.8" r="6.2" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
-<circle cx="247.6" cy="133.8" r="6.2" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
-<rect x="239.3" y="109.8" width="6.4" height="15.9" fill="#171920" stroke="#171920" stroke-width="1.1"/>
-<circle cx="242.4" cy="95.9" r="15.9" fill="#171920" stroke="#171920" stroke-width="1.2"/>
-<circle cx="233.2" cy="100.7" r="11.1" fill="#171920" stroke="#171920" stroke-width="1.2"/>
-<circle cx="251.7" cy="100.7" r="11.1" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<line x1="70.0" y1="250.0" x2="164.5" y2="304.5" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
+<text x="174.5" y="318.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
+<line x1="70.0" y1="250.0" x2="513.6" y2="58.4" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
+<text x="497.6" y="54.4" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
+<polygon points="167.1,-27.3 317.8,59.6 317.8,308.2 167.1,221.3" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
+<text x="242.4" y="-41.3" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
+<line x1="106.3" y1="229.0" x2="396.7" y2="60.7" stroke="#d9253f" stroke-width="1.15" fill="none" stroke-dasharray="5 3"/>
+<line x1="106.3" y1="217.7" x2="374.9" y2="-21.1" stroke="#d9253f" stroke-width="1.4" fill="none" marker-end="url(#fp-coral)" stroke-dasharray="5 3"/>
+<line x1="99.9" y1="244.5" x2="338.9" y2="200.9" stroke="#d9253f" stroke-width="1.45" fill="none"/>
+<line x1="99.9" y1="233.3" x2="321.0" y2="109.8" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#fp-coral)"/>
+<rect x="424.0" y="-14.5" width="18.0" height="54.2" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
+<circle cx="433.0" cy="-41.3" r="31.5" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="414.7" cy="-31.2" r="22.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="451.2" cy="-31.2" r="22.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<text x="481.7" y="-36.8" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">far</text>
+<rect x="359.8" y="141.3" width="18.0" height="54.2" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
+<circle cx="368.8" cy="114.6" r="31.5" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="350.5" cy="124.6" r="22.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="387.0" cy="124.6" r="22.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<text x="417.5" y="119.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">near</text>
+<rect x="216.7" y="140.4" width="7.4" height="22.4" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="220.4" cy="129.3" r="13.0" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="212.9" cy="133.5" r="9.1" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="228.0" cy="133.5" r="9.1" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<rect x="216.7" y="140.4" width="7.4" height="22.4" fill="#464c5c" stroke="#464c5c" stroke-width="1.1"/>
+<circle cx="220.4" cy="129.3" r="13.0" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
+<circle cx="212.9" cy="133.5" r="9.1" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
+<circle cx="228.0" cy="133.5" r="9.1" fill="#464c5c" stroke="#464c5c" stroke-width="1.2"/>
+<rect x="292.2" y="166.7" width="13.8" height="41.5" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="299.1" cy="146.2" r="24.1" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="285.1" cy="153.9" r="16.9" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<circle cx="313.0" cy="153.9" r="16.9" fill="none" stroke="#ffffff" stroke-width="3.2"/>
+<rect x="292.2" y="166.7" width="13.8" height="41.5" fill="#171920" stroke="#171920" stroke-width="1.1"/>
+<circle cx="299.1" cy="146.2" r="24.1" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<circle cx="285.1" cy="153.9" r="16.9" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<circle cx="313.0" cy="153.9" r="16.9" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<circle cx="433.0" cy="-72.7" r="3.0" fill="#d9253f"/>
+<circle cx="433.0" cy="39.6" r="3.0" fill="#d9253f"/>
+<circle cx="368.8" cy="83.1" r="3.0" fill="#d9253f"/>
+<circle cx="368.8" cy="195.5" r="3.0" fill="#d9253f"/>
+<circle cx="220.4" cy="116.3" r="3.0" fill="#464c5c"/>
+<circle cx="220.4" cy="162.8" r="3.0" fill="#464c5c"/>
+<circle cx="299.1" cy="122.1" r="3.4" fill="#171920"/>
+<circle cx="299.1" cy="208.2" r="3.4" fill="#171920"/>
 <line x1="79.9" y1="273.0" x2="83.5" y2="281.2" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <line x1="83.5" y1="281.2" x2="255.9" y2="206.7" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <line x1="255.9" y1="206.7" x2="252.4" y2="198.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <line x1="169.7" y1="244.0" x2="172.5" y2="250.4" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <text x="183.6" y="280.1" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" fill="#3c00f7" text-anchor="middle" font-style="italic">d</text>
 <line x1="251.6" y1="196.7" x2="255.1" y2="204.9" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="255.1" y1="204.9" x2="342.6" y2="167.1" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="342.6" y1="167.1" x2="339.0" y2="158.9" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="298.9" y1="186.0" x2="301.6" y2="192.5" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<text x="312.7" y="222.2" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="14" fill="#464c5c" text-anchor="middle" font-style="italic">d − z</text>
+<line x1="255.1" y1="204.9" x2="307.6" y2="182.2" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<line x1="307.6" y1="182.2" x2="304.0" y2="174.0" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<line x1="281.4" y1="193.6" x2="284.1" y2="200.0" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<text x="295.2" y="229.7" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="14" fill="#464c5c" text-anchor="middle" font-style="italic">d − z</text>
 <circle cx="70.0" cy="250.0" r="20" fill="#ffffff" stroke="none"/>
 <path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#ffffff" stroke="none"/>
 <path d="M85.6,234.4 L70.0,250.0 L85.6,265.6" fill="none" stroke="#171920" stroke-width="1.8" stroke-linejoin="miter"/>
 <path d="M82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7" fill="none" stroke="#171920" stroke-width="1.8"/>
-<text x="46.0" y="-116.4" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">perspective scale</tspan></text>
-<text x="46.0" y="-98.4" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">= 1 / (</tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> − </tspan><tspan fill="#464c5c" font-style="italic">z</tspan><tspan fill="#171920">)</tspan></text>
+<text x="46.0" y="-96.7" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">perspective scale</tspan></text>
+<text x="46.0" y="-78.7" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">= 1 / (</tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> − </tspan><tspan fill="#464c5c" font-style="italic">z</tspan><tspan fill="#171920">)</tspan></text>
 </svg>
