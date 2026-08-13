@@ -65,27 +65,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
             <h2>{project.metaData.title}</h2>
-            {project.metaData.masthead && (
-                <figure className={styles.masthead}>
-                    <Image
-                        src={`/images/${project.metaData.masthead.src}`}
-                        alt={project.metaData.masthead.alt}
-                        width={646}
-                        height={900}
-                        style={{ width: '100%', height: 'auto' }}
-                        sizes="(max-width: 768px) 100vw, 70vw"
-                    />
-                    <figcaption>{project.metaData.masthead.alt}</figcaption>
-                </figure>
-            )}
-            <aside className={styles.metadata}>
-                {project.metaData.links && (
-                    <div className={styles.links}>
-                        <a target="_blank" rel="noopener noreferrer" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
-                    </div>
+            <div className={styles.lede}>
+                {project.metaData.masthead && (
+                    <figure className={styles.masthead}>
+                        <Image
+                            src={`/images/${project.metaData.masthead.src}`}
+                            alt={project.metaData.masthead.alt}
+                            width={646}
+                            height={900}
+                            style={{ width: '100%', height: 'auto' }}
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
+                        <figcaption>{project.metaData.masthead.alt}</figcaption>
+                    </figure>
                 )}
-                <p>{project.metaData.details}</p>
-            </aside>
+                <aside className={styles.metadata}>
+                    {project.metaData.links && (
+                        <div className={styles.links}>
+                            <a target="_blank" rel="noopener noreferrer" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
+                        </div>
+                    )}
+                    <p>{project.metaData.details}</p>
+                </aside>
+            </div>
 
             <div className={styles.post}>
                 {project.metaData.images &&
