@@ -42,14 +42,14 @@ Each axis has its own matrix. In the plane perpendicular to that axis the pictur
 
 <Diagram
     src="/images/research/rotation-ccw.svg"
-    alt="Coordinate plane with y pointing up. A coral vector from the origin is rotated counterclockwise from the positive x-axis by an angle theta."
-    caption="Counterclockwise from +x, y up. This is Rz(θ) in the usual mathematical frame."
+    alt="A coral arrow starting on the x-axis and turning left, with y pointing up."
+    caption="Turn left from +x. This is the usual math picture, with y pointing up."
 />
 
 <Diagram
     src="/images/research/rotation-cw.svg"
-    alt="Coordinate plane with y pointing down. A coral vector from the origin is rotated clockwise from the positive x-axis by an angle theta."
-    caption="Clockwise from +x, y down — the CSS / screen frame the cube actually lives in."
+    alt="A coral arrow starting on the x-axis and turning right, with y pointing down."
+    caption="Turn right from +x. Screens number y downward, so the same matrix looks clockwise."
 />
 
 ### Around X
@@ -134,8 +134,8 @@ A single rotation about an arbitrary axis $\hat{u}$ splits the same way: the par
 
 <Diagram
     src="/images/research/rotation-decomposition.svg"
-    alt="Three-dimensional axes with a unit axis u. Vector v is split into a component P(v) along u and a perpendicular component (I minus P)v. That perpendicular part rotates through theta to Q(v). The rotated vector R(v) is P(v) plus Q(v)."
-    caption="Rodrigues split. P(v) stays put. (I−P)v rotates through θ to Q(v). R(v) = P(v) + Q(v)."
+    alt="A blue spin axis. The part of an arrow along that axis stays put. The rest swings from a dashed before position to a solid after position."
+    caption="Spin around an axis: the piece along the axis stays put. Everything else swings."
 />
 
 ```typescript
@@ -167,16 +167,16 @@ $$B_x = A_x \frac{B_z}{A_z}$$
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="Side view of a perspective projection. Camera C on the left, optical axis to the right, a vertical image plane, and a coral ray from C through point A intersecting the plane at B. Similar-triangle legs mark Ax, Az, Bx, and Bz."
-    caption="Same construction as the usual perspective diagram. Bx / Bz = Ax / Az."
+    alt="An eye on the left, a vertical screen, and a coral ray from the eye through a dot on the screen to a point in space."
+    caption="A ray from the eye through the screen hits the point. The hit is a smaller copy of the point — same shape, closer to the middle."
 />
 
-The demo folds $B_z / A_z$ into a single scale $f = 1/(d - z)$. Two points at the same world $x$ but different depth land at different heights on the plane — the farther one is smaller.
+The demo folds that shrink into a single scale $f = 1/(d - z)$. Two points at the same height but different depth land at different places on the screen — the farther one is smaller.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="Side view with the eye at left and a vertical plane at z equals 0. Two coral rays to a near point and a far point at the same height. The near ray hits the plane farther from the axis. Dimension d from eye to plane, d minus z from plane to the near point. Formula f equals 1 over (d minus z)."
-    caption="f = 1/(d − z). Same x, larger depth → smaller f → smaller x′."
+    alt="An eye, a vertical screen, and two coral rays to a near point and a far point at the same height. The near ray hits the screen higher than the far ray."
+    caption="Same height, two depths. The far ray crosses the screen closer to the middle, so that point looks smaller."
 />
 
 ```typescript
