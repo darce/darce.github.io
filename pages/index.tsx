@@ -1,19 +1,31 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { NextPageWithLayout } from './_app'
 import { getMdxIndexContent } from '../lib/getMdxContent'
-import { ContentIndexData } from '../types'
+import { ContentIndexData, MetaImage } from '../types'
 import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-const FEATURED_SLUGS = ['photoshelter', 'apple', 'msnbc']
+const FEATURED_SLUGS = ['workbay', 'photoshelter', 'apple', 'msnbc']
 
 const FEATURED_METRICS: Record<string, string> = {
+    workbay: 'Open findings and passing tests stay in the repository when you change agents',
     photoshelter: 'Led WCAG remediation protecting $9.2M ARR in institutional contracts',
-    apple: '92% open rate on the marketing department\'s first CSS-animated email campaign',
+    apple: 'Internally reported 92% open rate on the marketing department\'s first CSS-animated email campaign',
     msnbc: 'Shipped live video platform under a six-month litigation deadline',
+}
+
+const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
+
+const cardIconFor = (project: ContentIndexData): MetaImage | undefined => {
+    const { masthead, thumbnail, images } = project.metaData
+    const candidates = [masthead, thumbnail, ...(images ?? [])].filter(
+        (image): image is MetaImage => Boolean(image?.src),
+    )
+    return candidates.find((image) => isStillImage(image.src)) ?? candidates[0]
 }
 
 interface LandingProps {
@@ -75,23 +87,48 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                 <section className={styles.featured}>
                     <h2>Selected work</h2>
                     <ul className={styles.projectList}>
-                        {featuredProjects.map((project) => (
-                            <li key={project.slug} className={styles.projectItem}>
-                                <Link href={`/projects/${project.slug}/`} className={styles.projectLink}>
-                                    <div className={styles.projectItemInner}>
-                                        <h3 className={styles.projectTitle}>
-                                            {project.metaData.title}
-                                        </h3>
-                                        <p className={styles.projectMeta}>
-                                            {project.metaData.subtitle}
-                                        </p>
-                                        <p className={styles.projectDesc}>
-                                            {FEATURED_METRICS[project.slug]}
-                                        </p>
-                                    </div>
-                                </Link>
-                            </li>
-                        ))}
+                        {featuredProjects.map((project) => {
+                            const icon = cardIconFor(project)
+
+                            return (
+                                <li key={project.slug} className={styles.projectItem}>
+                                    <Link href={`/projects/${project.slug}/`} className={styles.projectLink}>
+                                        <div className={styles.projectItemInner}>
+                                            <div className={styles.projectHead}>
+                                                {icon && (
+                                                    <span className={styles.projectIcon} aria-hidden="true">
+                                                        <Image
+                                                            src={`/images/${icon.src}`}
+                                                            alt=""
+                                                            width={48}
+                                                            height={48}
+                                                            sizes="48px"
+                                                            style={{
+                                                                objectFit: 'cover',
+                                                                ...(icon.position
+                                                                    ? { objectPosition: icon.position }
+                                                                    : {}),
+                                                            }}
+                                                        />
+                                                    </span>
+                                                )}
+                                                <div className={styles.projectText}>
+                                                    <h3 className={styles.projectTitle}>
+                                                        {project.metaData.title}
+                                                    </h3>
+                                                    <p className={styles.projectMeta}>
+                                                        {project.metaData.subtitle}
+                                                    </p>
+                                                    <p className={styles.projectDesc}>
+                                                        {FEATURED_METRICS[project.slug]}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </li>
+                            )
+                        })}
                     </ul>
                     <Link href="/work/" className={styles.viewAll}>
                         View all projects &rarr;
