@@ -1,30 +1,37 @@
-$charcoal-black: #333;
-$parchment-white: #f9f7f4;
+// Field + ink hierarchy from agenticlifecycle.ai (cool paper / terminal).
+// Identity accents stay darce.xyz: coral hover, royal-blue links.
+$paper: #e7eaef;
+$paper-raised: #f2f4f7;
+$paper-sunk: #dde1e8;
+$ink: #171920;
+$terminal: #1c1d21;
+$terminal-raised: #2c2e34;
+$terminal-sunk: #2f3137;
+$terminal-ink: #cbcdd2;
 $coral-red: #d9253f;
 $sky-blue: #6ab5db;
-$antiflash-white: #ebebeb;
 $electric-ultramarine: #3c00f7;
 
 $themes: (
     default: (
-        backgroundColor: $parchment-white,
-        surface: white,
-        masthead: $parchment-white,
-        castShadow: black,
-        inactiveBg: $antiflash-white,
-        header: $charcoal-black,
-        text: $charcoal-black,
+        backgroundColor: $paper,
+        surface: $paper-raised,
+        masthead: $paper-sunk,
+        castShadow: $ink,
+        inactiveBg: $paper-sunk,
+        header: $ink,
+        text: $ink,
         link: $electric-ultramarine,
         border: $coral-red,
     ),
     dark: (
-        backgroundColor: #1a1a1a,
-        surface: #222222,
-        masthead: #1a1a1a,
+        backgroundColor: $terminal,
+        surface: $terminal-raised,
+        masthead: $terminal,
         castShadow: black,
-        inactiveBg: #2a2a2a,
-        header: $antiflash-white,
-        text: $antiflash-white,
+        inactiveBg: $terminal-sunk,
+        header: $terminal-ink,
+        text: $terminal-ink,
         link: $sky-blue,
         border: $coral-red,
     ),

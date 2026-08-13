@@ -1,0 +1,715 @@
+{
+  "map_ref": "darce-xyz",
+  "product": "darce.xyz",
+  "goals": [
+    "Inventory every visitor surface before the ADLC colour / hierarchy transplant so token edits have a checklist, not invented IA",
+    "Name jobs, screens, zones, states, and flows a hiring visitor actually walks",
+    "Mark which palette tokens each zone already consumes so light/dark proof is relational, not a swatch strip"
+  ],
+  "jobs": [
+    {
+      "id": "job-evaluate-hire",
+      "label": "Decide whether Daniel is the right hire"
+    },
+    {
+      "id": "job-browse-work",
+      "label": "Scan work and open a case study"
+    },
+    {
+      "id": "job-browse-research",
+      "label": "Scan research and open an exhibit"
+    },
+    {
+      "id": "job-read-about",
+      "label": "Read biography and positioning"
+    },
+    {
+      "id": "job-read-resume",
+      "label": "Read credentials"
+    },
+    {
+      "id": "job-contact",
+      "label": "Start an email"
+    },
+    {
+      "id": "job-toggle-appearance",
+      "label": "Switch light / dark"
+    },
+    {
+      "id": "job-recover-404",
+      "label": "Recover from a dead URL"
+    }
+  ],
+  "screens": [
+    {
+      "id": "site-shell",
+      "kind": "screen",
+      "title": "Site chrome",
+      "purpose": "Fully-connected escape hatch on every page: skip link, masthead, cube, primary nav, theme toggle. Colour change lands here first — page canvas, masthead band, nav ink, focus ring.",
+      "route": "*",
+      "job_entry": false,
+      "deep_link": false,
+      "url_params": [],
+      "code_ref": "components/layout/Layout.tsx",
+      "primary_action_id": "act-goto-home",
+      "states": ["default", "dark", "focus_keyboard", "reduced_motion"],
+      "zones": [
+        {
+          "id": "z-skip",
+          "label": "Skip to main content",
+          "role": "nav",
+          "states": ["default", "focus_keyboard"],
+          "notes": "tokens: link on backgroundColor; only visible on focus"
+        },
+        {
+          "id": "z-masthead",
+          "label": "Masthead wordmark + subtitle → home",
+          "role": "nav",
+          "states": ["default", "dark"],
+          "notes": "tokens: masthead band, header (Roboto Flex title), text (subtitle). ADLC hierarchy candidate: terminal-dark band vs cool paper page."
+        },
+        {
+          "id": "z-cube",
+          "label": "Decorative 3D cube",
+          "role": "other",
+          "states": ["default", "dark", "reduced_motion"],
+          "notes": "tokens: border (coral faces). Pointer-events none on mobile. Not a control."
+        },
+        {
+          "id": "z-primary-nav",
+          "label": "Primary nav: home / work / research / about",
+          "role": "nav",
+          "states": ["default", "dark"],
+          "notes": "tokens: link default, surface selected, border hover, text. DESIGN.md: nav uses no accent fill; weight + selected surface carry place."
+        },
+        {
+          "id": "z-theme-toggle",
+          "label": "2×2 theme swatch",
+          "role": "form",
+          "states": ["default", "dark", "focus_keyboard"],
+          "notes": "tokens: surface, text, link, border cells — live proof of the four identity chips. DitheredCard hover uses border."
+        },
+        {
+          "id": "z-breadcrumb",
+          "label": "Detail breadcrumb prev / title / next",
+          "role": "nav",
+          "states": ["default", "empty"],
+          "notes": "Present only when BreadcrumbContext has a title. tokens: text, link arrows. Disabled arrows aria-hidden."
+        },
+        {
+          "id": "z-page-canvas",
+          "label": "Page canvas + main landmark",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: backgroundColor. Also hardcoded in styles/global.scss body and Radix --color-background — palette-only edits will miss this."
+        }
+      ]
+    },
+    {
+      "id": "landing",
+      "kind": "screen",
+      "title": "Home",
+      "purpose": "Positioning + three featured cases + contact CTA. First viewport of the hire job.",
+      "route": "/",
+      "job_entry": true,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/index.tsx",
+      "primary_action_id": "act-contact",
+      "states": ["default", "dark"],
+      "zones": [
+        {
+          "id": "z-hero-headshot",
+          "label": "Dithered headshot",
+          "role": "content",
+          "states": ["default"],
+          "notes": "Photographic / dithered PNG. COL-02 / COL-10: proof identity hues against this ground, not only on paper."
+        },
+        {
+          "id": "z-hero-positioning",
+          "label": "Positioning paragraph",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text. Inline AltContext link is unclassed → global link / coral hover."
+        },
+        {
+          "id": "z-hero-cta",
+          "label": "Get in touch (mailto DitheredCard)",
+          "role": "job",
+          "states": ["default", "dark", "focus_keyboard"],
+          "notes": "tokens: text, surface inner, border hover. Primary hire action."
+        },
+        {
+          "id": "z-featured",
+          "label": "Selected work list (3 cases)",
+          "role": "queue",
+          "states": ["default", "dark"],
+          "notes": "tokens: text title/meta/desc, surface inner, link, border hover. Not the /work card grid."
+        },
+        {
+          "id": "z-view-all",
+          "label": "View all projects",
+          "role": "nav",
+          "states": ["default", "dark"],
+          "notes": "tokens: link → border hover"
+        }
+      ]
+    },
+    {
+      "id": "work-index",
+      "kind": "screen",
+      "title": "Work",
+      "purpose": "Pyramid hub: equal-size project cards. Tufte small-multiples — content, not card size, is hierarchy.",
+      "route": "/work",
+      "job_entry": true,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/work.tsx",
+      "primary_action_id": "act-open-project",
+      "states": ["default", "empty", "dark"],
+      "zones": [
+        {
+          "id": "z-work-grid",
+          "label": "Project card grid",
+          "role": "queue",
+          "states": ["default", "empty", "dark"],
+          "notes": "tokens: surface inner, text title/subtitle, inactiveBg placeholder, dithered shadow from text, border hover. Empty copy: 'No content found'."
+        }
+      ]
+    },
+    {
+      "id": "research-index",
+      "kind": "screen",
+      "title": "Research",
+      "purpose": "Same card grid as work, different section. Constancy of design so the two exhibits carry the variation.",
+      "route": "/research",
+      "job_entry": true,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/research/index.tsx",
+      "primary_action_id": "act-open-research",
+      "states": ["default", "empty", "dark"],
+      "zones": [
+        {
+          "id": "z-research-grid",
+          "label": "Research card grid",
+          "role": "queue",
+          "states": ["default", "empty", "dark"],
+          "notes": "Same token set as z-work-grid. Two items today: order-book, rotation-matrices."
+        }
+      ]
+    },
+    {
+      "id": "project-detail",
+      "kind": "screen",
+      "title": "Project case",
+      "purpose": "Read one case: sibling menu + article (title, optional masthead image, links, figures, MDX). Swipe + breadcrumb + mobile sub-nav step the pyramid.",
+      "route": "/projects/:slug",
+      "job_entry": false,
+      "deep_link": true,
+      "url_params": ["slug"],
+      "code_ref": "pages/[section]/[slug].tsx",
+      "primary_action_id": "act-open-project-link",
+      "states": ["default", "empty", "dark", "image_error"],
+      "zones": [
+        {
+          "id": "z-sibling-menu",
+          "label": "Section sibling list",
+          "role": "nav",
+          "states": ["default", "dark"],
+          "notes": "tokens: inactiveBg list, surface selected, text, link hover, border selected accent. One accent surface at a time (DESIGN.md)."
+        },
+        {
+          "id": "z-case-title",
+          "label": "Case title",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text. Hierarchy via type, not colour."
+        },
+        {
+          "id": "z-case-masthead",
+          "label": "Optional hero figure",
+          "role": "content",
+          "states": ["default", "empty"],
+          "notes": "Photographic ground. COL-02 proof surface for accents."
+        },
+        {
+          "id": "z-case-meta",
+          "label": "External link + details",
+          "role": "content",
+          "states": ["default", "empty", "dark"],
+          "notes": "tokens: unclassed link + coral hover; text details"
+        },
+        {
+          "id": "z-case-figures",
+          "label": "Inline figures",
+          "role": "content",
+          "states": ["default", "image_error"],
+          "notes": "Failed images drop out. Captions inherit text."
+        },
+        {
+          "id": "z-case-mdx",
+          "label": "MDX article body",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text; #main-content a:not([class]) uses $electric-ultramarine / $sky-blue + $coral-red hover — hardcoded hex, not t()."
+        },
+        {
+          "id": "z-case-divider",
+          "label": "Article divider (replaces MDX hr)",
+          "role": "other",
+          "states": ["default", "dark"],
+          "notes": "tokens: typically text/rule. Hairline — COL-09 thrift."
+        }
+      ]
+    },
+    {
+      "id": "research-detail",
+      "kind": "screen",
+      "title": "Research exhibit",
+      "purpose": "Same SectionView chrome as project-detail; MDX may mount live exhibits (OrderBook, Cube).",
+      "route": "/research/:slug",
+      "job_entry": false,
+      "deep_link": true,
+      "url_params": ["slug"],
+      "code_ref": "pages/[section]/[slug].tsx",
+      "primary_action_id": "act-open-research",
+      "states": ["default", "empty", "dark", "degraded"],
+      "zones": [
+        {
+          "id": "z-research-menu",
+          "label": "Research sibling list",
+          "role": "nav",
+          "states": ["default", "dark"],
+          "notes": "Same Menu tokens as z-sibling-menu"
+        },
+        {
+          "id": "z-research-mdx",
+          "label": "Research MDX + exhibits host",
+          "role": "content",
+          "states": ["default", "dark", "degraded"],
+          "notes": "OrderBook uses Radix --green/--red/--gray, not site tokens. Cube uses border. Colour transplant must not silently recolour bid/ask encoding (VIZ + A11Y-06)."
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "kind": "screen",
+      "title": "About",
+      "purpose": "Headshot + MDX biography.",
+      "route": "/about",
+      "job_entry": true,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/about.tsx",
+      "primary_action_id": "act-goto-resume",
+      "states": ["default", "dark"],
+      "zones": [
+        {
+          "id": "z-about-headshot",
+          "label": "About headshot",
+          "role": "content",
+          "states": ["default"],
+          "notes": "Second photographic ground for COL-02 / COL-10"
+        },
+        {
+          "id": "z-about-mdx",
+          "label": "About article",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text + unclassed links (ultramarine/sky → coral)"
+        }
+      ]
+    },
+    {
+      "id": "resume",
+      "kind": "screen",
+      "title": "Resume",
+      "purpose": "Structured credentials (definition lists from MDX frontmatter). Linked from about; not in primary nav.",
+      "route": "/resume",
+      "job_entry": true,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/resume.tsx",
+      "primary_action_id": "act-contact",
+      "states": ["default", "dark"],
+      "zones": [
+        {
+          "id": "z-resume-body",
+          "label": "Resume sections",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text. Hierarchy is type/weight. Must survive cool-paper retint (COL-04)."
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "kind": "screen",
+      "title": "Privacy",
+      "purpose": "Analytics disclosure. Linked from tests/footer copy; not in primary nav.",
+      "route": "/privacy",
+      "job_entry": false,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/privacy.tsx",
+      "states": ["default", "dark"],
+      "zones": [
+        {
+          "id": "z-privacy-copy",
+          "label": "Privacy policy copy",
+          "role": "content",
+          "states": ["default", "dark"],
+          "notes": "tokens: text + unclassed links. CLM-03: policy is a contract — colour change must not hide this route."
+        }
+      ]
+    },
+    {
+      "id": "mobile-sibling-nav",
+      "kind": "overlay",
+      "title": "Mobile prev / next",
+      "purpose": "Full-bleed DitheredCards under the article + swipe between siblings. Escape remains primary nav.",
+      "route": "/projects/:slug | /research/:slug",
+      "job_entry": false,
+      "deep_link": false,
+      "url_params": [],
+      "code_ref": "components/features/SectionView/SectionView.tsx",
+      "primary_action_id": "act-next-sibling",
+      "states": ["default", "empty", "dark"],
+      "zones": [
+        {
+          "id": "z-prev-next-cards",
+          "label": "Previous / next DitheredCards",
+          "role": "nav",
+          "states": ["default", "empty", "dark"],
+          "notes": "tokens: surface, text, border hover. Empty when first/last sibling. Swipe is A11Y-15 — cards are the single-pointer alternative."
+        }
+      ]
+    },
+    {
+      "id": "crash-fallback",
+      "kind": "overlay",
+      "title": "Error boundary",
+      "purpose": "Render-crash recovery with a home link.",
+      "route": "*",
+      "job_entry": false,
+      "deep_link": false,
+      "url_params": [],
+      "code_ref": "components/common/ErrorBoundary.tsx",
+      "primary_action_id": "act-goto-home",
+      "states": ["error"],
+      "zones": [
+        {
+          "id": "z-crash-copy",
+          "label": "Crash message + home link",
+          "role": "status",
+          "states": ["error"],
+          "notes": "tokens: inherit canvas + unclassed link. RLSE-04 designed error state."
+        }
+      ]
+    },
+    {
+      "id": "exit-404",
+      "kind": "exit",
+      "title": "404",
+      "purpose": "Dead URL. Escape to home / about / research.",
+      "route": "/404",
+      "job_entry": false,
+      "deep_link": true,
+      "url_params": [],
+      "code_ref": "pages/404.tsx",
+      "primary_action_id": "act-goto-home",
+      "states": ["error"],
+      "zones": [
+        {
+          "id": "z-404-links",
+          "label": "Recovery links",
+          "role": "nav",
+          "states": ["error"],
+          "notes": "tokens: unclassed links on canvas. Copy still says 'Back to projects' while href is '/'."
+        }
+      ]
+    },
+    {
+      "id": "exit-mailto",
+      "kind": "exit",
+      "title": "Mail client",
+      "purpose": "Leave the site to compose email.",
+      "route": "mailto:daniel.arce@gmail.com",
+      "job_entry": false,
+      "deep_link": false,
+      "url_params": [],
+      "code_ref": "pages/index.tsx",
+      "states": ["default"],
+      "zones": [
+        {
+          "id": "z-mail-handoff",
+          "label": "OS mail client",
+          "role": "other",
+          "states": ["default"]
+        }
+      ]
+    },
+    {
+      "id": "exit-altcontext",
+      "kind": "exit",
+      "title": "AltContext.com",
+      "purpose": "Current-work external destination from home positioning.",
+      "route": "https://altcontext.com",
+      "job_entry": false,
+      "deep_link": false,
+      "url_params": [],
+      "code_ref": "pages/index.tsx",
+      "states": ["default"],
+      "zones": [
+        {
+          "id": "z-altcontext-handoff",
+          "label": "External site",
+          "role": "other",
+          "states": ["default"]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "act-goto-home",
+      "verb": "Go home",
+      "target": "landing",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell"
+    },
+    {
+      "id": "act-goto-work",
+      "verb": "Open work hub",
+      "target": "work-index",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell"
+    },
+    {
+      "id": "act-goto-research",
+      "verb": "Open research hub",
+      "target": "research-index",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell"
+    },
+    {
+      "id": "act-goto-about",
+      "verb": "Open about",
+      "target": "about",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell"
+    },
+    {
+      "id": "act-goto-resume",
+      "verb": "Open resume",
+      "target": "resume",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "about"
+    },
+    {
+      "id": "act-toggle-theme",
+      "verb": "Toggle light / dark",
+      "target": "appearance",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell"
+    },
+    {
+      "id": "act-contact",
+      "verb": "Get in touch",
+      "target": "exit-mailto",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "landing"
+    },
+    {
+      "id": "act-open-project",
+      "verb": "Open project case",
+      "target": "project-detail",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "work-index"
+    },
+    {
+      "id": "act-open-research",
+      "verb": "Open research exhibit",
+      "target": "research-detail",
+      "hierarchy": "primary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "research-index"
+    },
+    {
+      "id": "act-open-project-link",
+      "verb": "Open case external link",
+      "target": "external",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "project-detail"
+    },
+    {
+      "id": "act-next-sibling",
+      "verb": "Next sibling",
+      "target": "project-detail",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "mobile-sibling-nav"
+    },
+    {
+      "id": "act-prev-sibling",
+      "verb": "Previous sibling",
+      "target": "project-detail",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "mobile-sibling-nav"
+    },
+    {
+      "id": "act-open-altcontext",
+      "verb": "Open AltContext.com",
+      "target": "exit-altcontext",
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "landing"
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow-hire-eval",
+      "job": "job-evaluate-hire",
+      "label": "Land → featured case or contact",
+      "steps": [
+        { "screen_id": "site-shell", "branch_label": "chrome + canvas" },
+        { "screen_id": "landing", "branch_label": "positioning + CTA + 3 cases" },
+        { "screen_id": "project-detail", "branch_label": "optional featured case" },
+        { "screen_id": "exit-mailto", "branch_label": "or get in touch" }
+      ]
+    },
+    {
+      "id": "flow-browse-work",
+      "job": "job-browse-work",
+      "label": "Work hub → case → sibling",
+      "steps": [
+        { "screen_id": "work-index", "branch_label": "card grid" },
+        { "screen_id": "project-detail", "branch_label": "read case" },
+        { "screen_id": "mobile-sibling-nav", "branch_label": "prev/next or swipe" },
+        { "screen_id": "project-detail", "branch_label": "next case" }
+      ]
+    },
+    {
+      "id": "flow-browse-research",
+      "job": "job-browse-research",
+      "label": "Research hub → exhibit",
+      "steps": [
+        { "screen_id": "research-index", "branch_label": "card grid" },
+        { "screen_id": "research-detail", "branch_label": "MDX + live exhibit" }
+      ]
+    },
+    {
+      "id": "flow-about-resume",
+      "job": "job-read-about",
+      "label": "About → resume → contact",
+      "steps": [
+        { "screen_id": "about", "branch_label": "biography" },
+        { "screen_id": "resume", "branch_label": "credentials" },
+        { "screen_id": "exit-mailto", "branch_label": "optional contact" }
+      ]
+    },
+    {
+      "id": "flow-toggle-theme",
+      "job": "job-toggle-appearance",
+      "label": "Any page → flip appearance",
+      "steps": [
+        { "screen_id": "site-shell", "branch_label": "theme toggle" },
+        { "screen_id": "site-shell", "branch_label": "reciprocal ground (COL-16)" }
+      ]
+    },
+    {
+      "id": "flow-404-recover",
+      "job": "job-recover-404",
+      "label": "Dead URL → known page",
+      "steps": [
+        { "screen_id": "exit-404", "branch_label": "not found" },
+        { "screen_id": "landing", "branch_label": "home / about / research" }
+      ]
+    }
+  ],
+  "open_questions": [
+    "Should the masthead band go terminal-dark (#1c1d21) on the light theme to match ADLC hierarchy, or stay a sunk-paper step so the wordmark stays ink-on-paper? ([COL-04][COL-12][IDNT-05])",
+    "Radix Theme is appearance + accentColor cyan + radius medium — it leaks a second palette into OrderBook and any unstyled Radix surface. Freeze it, retune it, or isolate exhibits? ([COL-03][LAY-10])",
+    "global.scss hardcodes parchment / #1a1a1a and $electric-ultramarine / $sky-blue / $coral-red outside t(). Token-only palette edit will desync body + unclassed links. ([UI-01][REF-10])",
+    "Footer.tsx exists and is unused — is a site footer in scope for this colour pass, or still not-doing?",
+    "404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?"
+  ],
+  "not_doing": [
+    "Changing GeistMono / Roboto Flex (operator lock)",
+    "Importing ADLC green / yellow / pass-fail chips onto the marketing surface (COL-09 thrift; keep coral + royal blue as the only accents)",
+    "Recolouring OrderBook bid/ask Radix greens/reds as part of the site palette",
+    "Pixel comps or freeform canvas as map SSOT",
+    "Adding a site footer or resurrecting Footer.tsx unless separately scoped",
+    "New routes, nav items, or card-grid IA"
+  ],
+  "colour_touchpoints": {
+    "identity_accents_keep": {
+      "border_hover": "#d9253f",
+      "link_light": "#3c00f7",
+      "link_dark": "#6ab5db"
+    },
+    "adlc_fields_candidate": {
+      "paper": "#e7eaef",
+      "paper_raised": "#f2f4f7",
+      "paper_sunk": "#dde1e8",
+      "ink": "#171920",
+      "ink_2": "#464c5c",
+      "ink_3": "#5a616f",
+      "terminal": "#1c1d21",
+      "terminal_ink": "#cbcdd2",
+      "terminal_muted": "#9599a6"
+    },
+    "hardcoded_leaks": [
+      "styles/global.scss body + .radix-themes --color-background",
+      "styles/global.scss unclassed #main-content anchors",
+      "pages/_app.tsx Theme accentColor=cyan radius=medium",
+      "test/a11y/wcag.a11y.test.tsx LIGHT_BG / DARK_BG hex pins"
+    ],
+    "proof_grounds": [
+      "z-page-canvas paper / terminal",
+      "z-masthead",
+      "z-hero-headshot",
+      "z-about-headshot",
+      "z-work-grid image cards",
+      "z-case-masthead",
+      "z-theme-toggle 2×2 chips"
+    ]
+  }
+}

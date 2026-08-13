@@ -1,0 +1,52 @@
+{
+  "backend": "codex exec",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "sandbox": "read-only",
+  "verdict": "accept-with-edits",
+  "summary": "The field, masthead, text, and blue-link mappings are sound. Keep GeistMono, Roboto Flex, coral, and royal blue. Refuse coral as hover text or as the sole state boundary on dark surfaces; clarify the identity anchor and require real-ground and non-colour-channel proof.",
+  "applied_edit": "Unclassed MDX links, View all, and breadcrumb arrows no longer recolour to coral on hover. Hover feedback is weight 600. Coral remains border / bar / cube / toggle-chip only.",
+  "findings": [
+    {
+      "id": "HC-COLOUR-01",
+      "severity": "block",
+      "rule_ids": ["A11Y-01"],
+      "applied": true
+    },
+    {
+      "id": "HC-COLOUR-02",
+      "severity": "should",
+      "rule_ids": ["COL-15", "COL-04"],
+      "applied": false,
+      "note": "Surfaces stay atmospheric; existing ink outlines and spacing carry separation."
+    },
+    {
+      "id": "HC-COLOUR-03",
+      "severity": "should",
+      "rule_ids": ["COL-02", "COL-12", "COL-16"],
+      "applied": false,
+      "note": "Needs rendered light/dark proof on photo/dithered grounds — no browser MCP this session."
+    },
+    {
+      "id": "HC-COLOUR-04",
+      "severity": "should",
+      "rule_ids": ["COL-03"],
+      "applied": true,
+      "note": "Identity anchor named as royal-blue link; coral is sparse action/structure accent."
+    },
+    {
+      "id": "HC-COLOUR-05",
+      "severity": "should",
+      "rule_ids": ["A11Y-06"],
+      "applied": false,
+      "note": "OrderBook isolation kept; second-channel audit out of this colour pass."
+    },
+    {
+      "id": "HC-COLOUR-06",
+      "severity": "note",
+      "rule_ids": ["COL-01", "COL-04", "COL-05", "COL-09", "COL-12", "LAY-10"],
+      "applied": true
+    }
+  ],
+  "cited_ids": ["A11Y-01", "A11Y-06", "COL-01", "COL-02", "COL-03", "COL-04", "COL-05", "COL-09", "COL-12", "COL-15", "COL-16", "LAY-10"]
+}

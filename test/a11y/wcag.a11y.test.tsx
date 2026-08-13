@@ -99,14 +99,14 @@ describe('Color contrast (WCAG 1.4.3)', () => {
         return (l1 + 0.05) / (l2 + 0.05)
     }
 
-    const LIGHT_BG = '#f9f7f4'
-    const DARK_BG = '#1a1a1a'
+    const LIGHT_BG = '#e7eaef'
+    const DARK_BG = '#1c1d21'
     const AA_MIN = 4.5
     const AA_LARGE_MIN = 3.0
 
     // Light theme
-    it('light theme: text (#333) on background passes AA', () => {
-        expect(contrastRatio('#333333', LIGHT_BG)).toBeGreaterThanOrEqual(AA_MIN)
+    it('light theme: text (#171920) on background passes AA', () => {
+        expect(contrastRatio('#171920', LIGHT_BG)).toBeGreaterThanOrEqual(AA_MIN)
     })
 
     it('light theme: link (#3c00f7) on background passes AA', () => {
@@ -117,19 +117,17 @@ describe('Color contrast (WCAG 1.4.3)', () => {
         expect(contrastRatio('#004e98', LIGHT_BG)).toBeGreaterThanOrEqual(AA_MIN)
     })
 
-    it('light theme: coral hover (#d9253f) on background passes AA for large text', () => {
+    it('light theme: coral (#d9253f) on background passes AA-large / non-text (border, not body text)', () => {
         expect(contrastRatio('#d9253f', LIGHT_BG)).toBeGreaterThanOrEqual(AA_LARGE_MIN)
     })
 
-    it('light theme: hover token (#6ab5db) unused — coral (#d9253f) used instead', () => {
-        // The palette defines hover: $sky-blue but t('hover') is not referenced anywhere.
-        // Actual hover color in global.scss and components is $coral-red via t('border').
-        expect(contrastRatio('#d9253f', LIGHT_BG)).toBeGreaterThanOrEqual(AA_LARGE_MIN)
+    it('light theme: hover text stays royal blue, not coral', () => {
+        expect(contrastRatio('#3c00f7', LIGHT_BG)).toBeGreaterThanOrEqual(AA_MIN)
     })
 
     // Dark theme
-    it('dark theme: text (#ebebeb) on background passes AA', () => {
-        expect(contrastRatio('#ebebeb', DARK_BG)).toBeGreaterThanOrEqual(AA_MIN)
+    it('dark theme: text (#cbcdd2) on background passes AA', () => {
+        expect(contrastRatio('#cbcdd2', DARK_BG)).toBeGreaterThanOrEqual(AA_MIN)
     })
 
     it('dark theme: link (#6ab5db) on background passes AA', () => {
@@ -208,7 +206,7 @@ describe('DitheredCard accessibility (WCAG 4.1.2)', () => {
     it('card with two-layer DOM is accessible as a single link', async () => {
         const { container } = render(
             <a href="/projects/test" style={{ display: 'block', position: 'relative' }}>
-                <div style={{ overflow: 'hidden', backgroundColor: '#f9f7f4' }}>
+                <div style={{ overflow: 'hidden', backgroundColor: '#e7eaef' }}>
                     <div style={{ aspectRatio: '4/3' }} />
                     <div>
                         <h3>Project Title</h3>

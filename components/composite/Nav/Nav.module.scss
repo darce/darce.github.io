@@ -170,9 +170,7 @@
 
         @media (hover: hover) {
             &:hover {
-                @include themeComponent($themes) {
-                    color: t('border');
-                }
+                font-variation-settings: 'wght' 600;
             }
         }
     }
