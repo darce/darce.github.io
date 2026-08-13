@@ -436,10 +436,24 @@ class Brace:
             else [self.label]
         )
         # Just past the nub — stacked lines stay next to the bar, not on it.
-        gap = 20.0 if len(lines) > 1 else 28.0
-        lx = mx + nx * (nub + gap) + self.nudge[0]
-        ly = my + ny * (nub + gap) + self.nudge[1]
         use_math = self.math if self.math is not None else len(self.label) <= 3
+        gap = 14.0 if len(lines) > 1 else 22.0
+        char_w = 9.0 if use_math else 7.4
+        span = char_w * max(len(line) for line in lines)
+        ly = my + ny * (nub + gap) + self.nudge[1]
+        # Word labels are left-justified. Math stays centered on the nub.
+        if use_math:
+            lx = mx + nx * (nub + gap) + self.nudge[0]
+            anchor = "middle"
+        elif nx < 0:
+            # Label is on the left of the bar: block ends near the nub.
+            lx = nub_pt[0] - 8 - span + self.nudge[0]
+            ly = nub_pt[1] + self.nudge[1]
+            anchor = "start"
+        else:
+            lx = nub_pt[0] + 10 + self.nudge[0]
+            ly = nub_pt[1] + self.nudge[1]
+            anchor = "start"
         parts = [
             _line(a1[0], a1[1], a2[0], a2[1], stroke=self.color, width=SW_BRACE),
             _line(a2[0], a2[1], b2[0], b2[1], stroke=self.color, width=SW_BRACE),
@@ -458,13 +472,15 @@ class Brace:
                     line,
                     size=self.size,
                     fill=self.color,
-                    anchor="middle",
+                    anchor=anchor,
                     italic=use_math,
                     math=use_math,
                 )
             )
-            span = (9 if use_math else 7.4) * len(line)
-            box.extend([(lx - span / 2, yy), (lx + span / 2, yy)])
+            if anchor == "middle":
+                box.extend([(lx - span / 2, yy), (lx + span / 2, yy)])
+            else:
+                box.extend([(lx, yy), (lx + char_w * len(line), yy)])
         return parts, box
 
 
@@ -945,8 +961,8 @@ def perspective() -> str:
         Dot(hit_bot, INK, 3.2),
         Brace(eye, hit_bot, "d", BLUE, offset=34, size=16),
         Brace(eye, bot, "depth", INK2, offset=56, math=False),
-        Brace(bot, top, "height in space", CORAL, offset=86, size=13, math=False, nudge=(6, 4)),
-        Brace(hit_bot, hit_top, "height on screen", INK, offset=-58, size=13, math=False, nudge=(-34, 0)),
+        Brace(bot, top, "height in space", CORAL, offset=86, size=13, math=False, nudge=(4, 4)),
+        Brace(hit_bot, hit_top, "height on screen", INK, offset=-86, size=13, math=False, nudge=(0, 0)),
         Eye(),
     )
     parts, pts = scene.gather()
