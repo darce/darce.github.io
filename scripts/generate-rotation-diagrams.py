@@ -456,34 +456,31 @@ def _away(a: tuple, b: tuple, t: float = 0.2) -> tuple:
     return tuple(a[i] + t * (b[i] - a[i]) for i in range(len(a)))
 
 
-def _cube(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
-    """Hard-edge isometric cube. (cx, cy) is the top-front edge center."""
-    dx, dy, h = 0.55 * s, 0.32 * s, 1.7 * s
-    fl = (cx - s, cy)
-    fr = (cx + s, cy)
-    br = (cx + s + dx, cy - dy)
-    bl = (cx - s + dx, cy - dy)
-    flb = (cx - s, cy + h)
-    frb = (cx + s, cy + h)
-    brb = (cx + s + dx, cy + h - dy)
-
-    def poly(pts, op):
-        d = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in pts)
-        return (
-            f'<polygon points="{d}" fill="{fill}" fill-opacity="{op}" '
-            f'stroke="{stroke}" stroke-width="1.4"/>'
-        )
-
-    return [
-        poly([fl, fr, frb, flb], 0.42),
-        poly([fl, bl, br, fr], 0.22),
-        poly([fr, br, brb, frb], 0.30),
+def _tree(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
+    """Deciduous tree: cloud canopy + thick trunk. (cx, cy) is the canopy top."""
+    r = s
+    discs = (
+        (cx, cy + 0.88 * r, r),
+        (cx - 0.58 * r, cy + 1.18 * r, 0.70 * r),
+        (cx + 0.58 * r, cy + 1.18 * r, 0.70 * r),
+    )
+    tw, top, bot = 0.20 * r, cy + 1.75 * r, cy + 2.75 * r
+    parts = [
+        f'<rect x="{cx - tw:.1f}" y="{top:.1f}" width="{2 * tw:.1f}" height="{bot - top:.1f}" '
+        f'fill="{stroke}" stroke="{stroke}" stroke-width="1.1"/>'
     ]
+    # Opaque fills so the three discs read as one canopy, not a Venn diagram.
+    for x, y, rr in discs:
+        parts.append(
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rr:.1f}" fill="{fill}" '
+            f'stroke="{stroke}" stroke-width="1.2"/>'
+        )
+    return parts
 
 
 @dataclass
-class CubeIcon:
-    """Same cube in the world or on the screen; `size` is half-width in px."""
+class Tree:
+    """Same tree in the world or on the screen; `size` is canopy radius in px."""
 
     point: tuple
     size: float
@@ -494,17 +491,16 @@ class CubeIcon:
     def draw(self, cam: Camera) -> tuple[list[str], list]:
         cx, cy = cam.project(self.point)
         s = self.size
-        parts = _cube(cx, cy, s, fill=self.color, stroke=self.color)
+        parts = _tree(cx, cy, s, fill=self.color, stroke=self.color)
         pts = [
-            (cx - s, cy),
-            (cx + s + 0.55 * s, cy - 0.32 * s),
-            (cx + s, cy + 1.7 * s),
+            (cx - 1.35 * s, cy),
+            (cx + 1.35 * s, cy + 2.45 * s),
         ]
         if self.label:
             parts.append(
-                _text(cx + s + 8, cy + 4, self.label, size=14, fill=self.label_color)
+                _text(cx + 1.4 * s, cy + 0.6 * s, self.label, size=14, fill=self.label_color)
             )
-            pts.append((cx + s + 8 * len(self.label), cy + 4))
+            pts.append((cx + 1.4 * s + 8 * len(self.label), cy + 0.6 * s))
         return parts, pts
 
 
@@ -872,8 +868,8 @@ def perspective() -> str:
         Seg(_away(eye, pt, 0.08), pt, CORAL, 1.8),
         Seg(hit, foot_b, INK2, 1, dash="3 3"),
         Seg(pt, foot_a, INK2, 1, dash="3 3"),
-        CubeIcon(pt, world_s, CORAL),
-        CubeIcon(hit, hit_s, INK),
+        Tree(pt, world_s, CORAL),
+        Tree(hit, hit_s, INK),
         Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
         Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
         Brace(foot_a, pt, "h", CORAL, offset=22, size=16, nudge=(-6, 0)),
@@ -931,10 +927,10 @@ def f_projection() -> str:
         screen,
         Seg(_away(eye, near, 0.08), near, CORAL, 1.7),
         Seg(_away(eye, far, 0.08), far, CORAL, 1.3, dash="5 3"),
-        CubeIcon(near, world_s, CORAL, "near"),
-        CubeIcon(far, world_s, CORAL, "far"),
-        CubeIcon(hit_n, near_s, INK),
-        CubeIcon(hit_f, max(far_s, 5.5), INK2),
+        Tree(near, world_s, CORAL, "near"),
+        Tree(far, world_s, CORAL, "far"),
+        Tree(hit_n, near_s, INK),
+        Tree(hit_f, max(far_s, 6.0), INK2),
         Brace(eye, plane, "d", BLUE, offset=30, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
         Eye(),
