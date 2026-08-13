@@ -205,7 +205,7 @@ def _rot2(p, ang):
     return (x * c - y * s, x * s + y * c)
 
 
-def decomposition() -> str:
+def apply_rotation() -> str:
     """Flat x–y plane. A simple L turns around the origin."""
     ox, oy = 200, 312
     ang = math.radians(50)
@@ -246,6 +246,81 @@ def decomposition() -> str:
         text(mid[0] - 4, mid[1] + 2, "θ", fill=CORAL, size=16, anchor="end"),
     ]
     return svg(460, 360, "\n".join(body))
+
+
+def _rx(p, a):
+    x, y, z = p
+    c, s = math.cos(a), math.sin(a)
+    return (x, y * c - z * s, y * s + z * c)
+
+
+def _rz(p, a):
+    x, y, z = p
+    c, s = math.cos(a), math.sin(a)
+    return (x * c - y * s, x * s + y * c, z)
+
+
+def _iso_zup(p, ox, oy, S):
+    """z up, x right, y receding — world frame for Rx / Rz."""
+    x, y, z = p
+    return (ox + S * x + 0.55 * S * y, oy - S * z + 0.32 * S * y)
+
+
+def combine_rotations() -> str:
+    """Two panels: Rz then Rx vs Rx then Rz. Same L, different order."""
+    ang = math.radians(70)
+    # L on the xy floor — two arms, obvious heading
+    L = [
+        (0.08, 0.08, 0.0),
+        (1.15, 0.08, 0.0),
+        (1.15, 0.32, 0.0),
+        (0.32, 0.32, 0.0),
+        (0.32, 1.15, 0.0),
+        (0.08, 1.15, 0.0),
+    ]
+
+    def seq(pts, ops):
+        out = pts
+        for fn in ops:
+            out = [fn(p, ang) for p in out]
+        return out
+
+    left = seq(L, (_rz, _rx))
+    right = seq(L, (_rx, _rz))
+
+    def panel(ox, oy, result, title, prefix):
+        S = 88
+
+        def P(p):
+            return _iso_zup(p, ox, oy, S)
+
+        def poly(pts, *, fill, stroke, width, dash=None):
+            d = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in pts)
+            extra = f' stroke-dasharray="{dash}"' if dash else ""
+            return (
+                f'<polygon points="{d}" fill="{fill}" fill-opacity="0.14" '
+                f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
+            )
+
+        o, px, py, pz = P((0, 0, 0)), P((1.35, 0, 0)), P((0, 1.35, 0)), P((0, 0, 1.25))
+        return [
+            defs(prefix),
+            line(o[0], o[1], px[0], px[1], width=1.3, end=f"{prefix}-ink"),
+            line(o[0], o[1], py[0], py[1], width=1.3, end=f"{prefix}-ink"),
+            line(o[0], o[1], pz[0], pz[1], width=1.3, end=f"{prefix}-ink"),
+            text(px[0] + 8, px[1] + 4, "x", size=14),
+            text(py[0] + 10, py[1] + 4, "y", size=14),
+            text(pz[0] - 14, pz[1] - 4, "z", size=14),
+            poly(L, fill=INK2, stroke=INK2, width=1.2, dash="5 4"),
+            poly(result, fill=CORAL, stroke=CORAL, width=1.6),
+            text(ox + 20, 28, title, size=14),
+        ]
+
+    body = [
+        *panel(90, 230, left, "Rz then Rx", "c1"),
+        *panel(400, 230, right, "Rx then Rz", "c2"),
+    ]
+    return svg(680, 320, "\n".join(body))
 
 
 def _iso(p, ox, oy, S):
@@ -405,7 +480,8 @@ def main() -> None:
     written = [
         write("rotation-ccw.svg", counterclockwise()),
         write("rotation-cw.svg", clockwise()),
-        write("rotation-decomposition.svg", decomposition()),
+        write("rotation-apply.svg", apply_rotation()),
+        write("rotation-combine.svg", combine_rotations()),
         write("rotation-perspective.svg", perspective()),
         write("rotation-f-projection.svg", f_projection()),
     ]
