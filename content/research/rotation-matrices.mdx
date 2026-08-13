@@ -199,24 +199,24 @@ After rotation the cube is still in 3D. The screen is 2D.
 
 A ray from the eye through the screen hits the point. Where it crosses the screen is what you draw.
 
-The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). Call the height in space $h$ and the height on the screen $h'$. The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of $h$:
+The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). The two triangles — eye to the screen hit, and eye to the point — are the same shape, so **height on screen** is a shrink of **height in space**:
 
-$$h' = h \times \frac{d}{\text{depth}}$$
+$$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
 
-Depth here is $d - z$. Farther away means a larger depth, so a smaller $h'$. Same construction as $B_x = A_x \cdot d / A_z$.
+Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
-    src="/images/research/rotation-perspective.svg?v=9"
-    alt="An eye in front of a screen. A coral tree in space has height h. A smaller ink tree on the screen is h prime. Braces mark d, depth, h, and h prime. The equation h prime = h times d over depth sits at the top left."
-    caption="h is height in space, h′ is height on the screen. Same colors as the braces: h′ = h · d / depth."
+    src="/images/research/rotation-perspective.svg?v=10"
+    alt="An eye in front of a screen. A coral tree in space is labeled height in space. A smaller ink tree on the screen is labeled height on screen. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
+    caption="Height on screen is a shrink of height in space. Same colors as the braces."
 />
 
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
 
 <Diagram
-    src="/images/research/rotation-f-projection.svg?v=9"
-    alt="An eye, a screen, and two same-size coral trees at different depths. On the screen the near tree is large and the far tree is small and closer to the middle. Braces mark d and d minus z. The equation s = 1 over d minus z sits at the top left."
-    caption="s = 1/(d − z). Same trees, two depths. Farther away → smaller h′, closer to the middle."
+    src="/images/research/rotation-f-projection.svg?v=10"
+    alt="An eye, a screen, and two same-size coral trees at different depths. On the screen the near tree is large and the far tree is small and closer to the middle. Braces mark d and d minus z. The equation perspective scale = 1 over d minus z sits at the top left."
+    caption="Perspective scale = 1/(d − z). Same trees, two depths. Farther away → smaller on the screen, closer to the middle."
 />
 
 ```typescript
