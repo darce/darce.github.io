@@ -100,9 +100,9 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                         <Image
                                                             src={`/images/${icon.src}`}
                                                             alt=""
-                                                            width={48}
-                                                            height={48}
-                                                            sizes="48px"
+                                                            width={160}
+                                                            height={160}
+                                                            sizes="160px"
                                                             style={{
                                                                 objectFit: 'cover',
                                                                 ...(icon.position
