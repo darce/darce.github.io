@@ -945,8 +945,8 @@ def perspective() -> str:
         Dot(hit_bot, INK, 3.2),
         Brace(eye, hit_bot, "d", BLUE, offset=34, size=16),
         Brace(eye, bot, "depth", INK2, offset=56, math=False),
-        Brace(bot, top, "height in space", CORAL, offset=56, size=13, math=False, nudge=(10, 8)),
-        Brace(hit_bot, hit_top, "height on screen", INK, offset=-48, size=13, math=False),
+        Brace(bot, top, "height in space", CORAL, offset=86, size=13, math=False, nudge=(6, 4)),
+        Brace(hit_bot, hit_top, "height on screen", INK, offset=-58, size=13, math=False, nudge=(-34, 0)),
         Eye(),
     )
     parts, pts = scene.gather()
