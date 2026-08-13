@@ -1,19 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 460" width="500" height="460" role="img">
-<rect width="500" height="460" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 482 427" width="482" height="427" role="img">
+<rect width="482" height="427" fill="#e7eaef"/>
 <defs>
 <marker id="rd-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="rd-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="rd-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
 </defs>
-<line x1="240.0" y1="300.0" x2="255.1" y2="114.8" stroke="#3c00f7" stroke-width="2.0" fill="none" marker-end="url(#rd-blue)"/>
-<line x1="240.0" y1="300.0" x2="247.2" y2="210.9" stroke="#171920" stroke-width="2.2" fill="none" marker-end="url(#rd-ink)"/>
-<line x1="240.0" y1="300.0" x2="328.5" y2="261.6" stroke="#d9253f" stroke-width="1.6" fill="none" stroke-dasharray="5 4"/>
-<line x1="240.0" y1="300.0" x2="394.8" y2="191.8" stroke="#d9253f" stroke-width="2.0" fill="none" marker-end="url(#rd-coral)"/>
-<line x1="247.2" y1="210.9" x2="328.5" y2="261.6" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
-<line x1="247.2" y1="210.9" x2="394.8" y2="191.8" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
-<path d="M328.5,261.6 L336.1,257.3 L343.4,252.8 L350.2,248.1 L356.7,243.4 L362.8,238.4 L368.4,233.4 L373.5,228.3 L378.1,223.2 L382.3,217.9 L385.9,212.7 L388.9,207.4 L391.5,202.2 L393.4,197.0 L394.8,191.8" fill="none" stroke="#d9253f" stroke-width="1.3"/>
-<text x="265.1" y="112.8" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="start">spin axis</text>
-<text x="169.2" y="212.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="start">stays put</text>
-<text x="338.5" y="279.6" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="start">before</text>
-<text x="406.8" y="185.8" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">after</text>
+<line x1="112.4" y1="399.5" x2="138.0" y2="52.0" stroke="#3c00f7" stroke-width="2.2" fill="none" marker-end="url(#rd-blue)"/>
+<line x1="112.4" y1="399.5" x2="123.0" y2="255.4" stroke="#171920" stroke-width="2.4" fill="none" marker-end="url(#rd-ink)"/>
+<line x1="112.4" y1="399.5" x2="285.8" y2="334.4" stroke="#d9253f" stroke-width="1.7" fill="none" marker-end="url(#rd-coral)" stroke-dasharray="6 4"/>
+<line x1="112.4" y1="399.5" x2="393.0" y2="200.0" stroke="#d9253f" stroke-width="2.2" fill="none" marker-end="url(#rd-coral)"/>
+<line x1="123.0" y1="255.4" x2="285.8" y2="334.4" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<line x1="123.0" y1="255.4" x2="393.0" y2="200.0" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<path d="M285.8,334.4 L299.0,326.3 L311.5,318.0 L323.3,309.4 L334.3,300.6 L344.4,291.6 L353.7,282.5 L362.1,273.3 L369.5,264.0 L375.9,254.6 L381.4,245.3 L385.8,236.0 L389.2,226.8 L391.5,217.7 L392.8,208.7 L393.0,200.0" fill="none" stroke="#d9253f" stroke-width="1.4"/>
+<text x="152.0" y="44.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#3c00f7" text-anchor="start">spin axis</text>
+<text x="109.0" y="261.4" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="end">stays put</text>
+<text x="297.8" y="360.4" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">before</text>
+<text x="409.0" y="204.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">after</text>
+<text x="397.5" y="270.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">swings</text>
 </svg>

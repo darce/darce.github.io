@@ -167,63 +167,103 @@ def _scale(a, s):
 
 
 def decomposition() -> str:
-    """One idea: the axis stays, the rest of the arrow swings."""
-    ox, oy = 240, 300
-    S = 124
+    """Axis stays, the rest swings. Tight crop, labels off the strokes."""
+    S = 210
 
-    def proj(p):
+    def raw(p):
         x, y, z = p
-        return (ox - 0.70 * S * x + S * y, oy + 0.50 * S * x - S * z)
+        return (-0.70 * S * x + S * y, 0.50 * S * x - S * z)
 
-    u = _norm((0.18, 0.20, 1.0))
-    v = (0.48, 1.05, 0.55)
+    u = _norm((0.16, 0.18, 1.0))
+    v = (0.42, 1.12, 0.52)
     pv = _scale(u, _dot(v, u))
     ipv = _sub(v, pv)
-    theta = math.radians(50)
+    theta = math.radians(54)
     qv = _add(_scale(ipv, math.cos(theta)), _scale(_cross(u, ipv), math.sin(theta)))
     rv = _add(pv, qv)
 
-    o = proj((0, 0, 0))
-    Pu = proj(_scale(u, 1.7))
-    Pv = proj(v)
-    Ppv = proj(pv)
-    Prv = proj(rv)
+    o = raw((0, 0, 0))
+    pu = raw(_scale(u, 1.85))
+    pv2 = raw(pv)
+    p_before = raw(v)
+    p_after = raw(rv)
 
-    def vline(a, b, **kw):
-        return line(a[0], a[1], b[0], b[1], **kw)
-
-    # swing arc from v to after
     arc = []
-    for i in range(15):
-        t = theta * i / 14
+    for i in range(16):
+        t = theta * i / 15
         w = _add(
             pv,
             _add(_scale(ipv, math.cos(t)), _scale(_cross(u, ipv), math.sin(t))),
         )
-        arc.append(proj(w))
+        arc.append(raw(w))
+    mid = arc[8]
+
+    # labels live in the empty corners — no leaders sitting on the strokes
+    labels = [
+        (pu, "spin axis", BLUE, 14, -8, "start"),
+        (pv2, "stays put", INK, -14, 6, "end"),
+        (p_before, "before", CORAL, 12, 26, "start"),
+        (p_after, "after", CORAL, 16, 4, "start"),
+        (mid, "swings", CORAL, 28, 6, "start"),
+    ]
+
+    def label_extent(tip, name, dx, dy, anchor):
+        lx, ly = tip[0] + dx, tip[1] + dy
+        tw = 9 * len(name)
+        if anchor == "end":
+            return (lx - tw, ly - 16, lx, ly + 8)
+        return (lx, ly - 16, lx + tw, ly + 8)
+
+    xs = [o[0], pu[0], pv2[0], p_before[0], p_after[0]]
+    ys = [o[1], pu[1], pv2[1], p_before[1], p_after[1]]
+    for tip, name, _c, dx, dy, anchor in labels:
+        x0, y0, x1, y1 = label_extent(tip, name, dx, dy, anchor)
+        xs.extend([x0, x1])
+        ys.extend([y0, y1])
+    pad = 28
+    min_x, max_x = min(xs) - pad, max(xs) + pad
+    min_y, max_y = min(ys) - pad, max(ys) + pad
+    ox, oy = -min_x, -min_y
+
+    def P(p):
+        return (p[0] + ox, p[1] + oy)
+
+    o, pu, pv2, p_before, p_after = P(o), P(pu), P(pv2), P(p_before), P(p_after)
+    arc = [P(p) for p in arc]
+    mid = P(mid)
+    w, h = max_x - min_x, max_y - min_y
+
+    def vline(a, b, **kw):
+        return line(a[0], a[1], b[0], b[1], **kw)
+
     ad = f"M{arc[0][0]:.1f},{arc[0][1]:.1f} " + " ".join(
         f"L{p[0]:.1f},{p[1]:.1f}" for p in arc[1:]
     )
-    mid = arc[8]
+
+    placed = [
+        (pu, "spin axis", BLUE, 14, -8, "start"),
+        (pv2, "stays put", INK, -14, 6, "end"),
+        (p_before, "before", CORAL, 12, 26, "start"),
+        (p_after, "after", CORAL, 16, 4, "start"),
+        (mid, "swings", CORAL, 28, 6, "start"),
+    ]
+    callouts = [
+        text(tip[0] + dx, tip[1] + dy, name, size=15, fill=color, anchor=anchor)
+        for tip, name, color, dx, dy, anchor in placed
+    ]
 
     body = [
         defs("rd"),
-        # spin axis
-        vline(o, Pu, stroke=BLUE, width=2.0, end="rd-blue"),
-        # stays-put segment
-        vline(o, Ppv, width=2.2, end="rd-ink"),
-        # before / after
-        vline(o, Pv, stroke=CORAL, width=1.6, dash="5 4"),
-        vline(o, Prv, stroke=CORAL, width=2.0, end="rd-coral"),
-        vline(Ppv, Pv, stroke=INK2, width=1, dash="3 3"),
-        vline(Ppv, Prv, stroke=INK2, width=1, dash="3 3"),
-        f'<path d="{ad}" fill="none" stroke="{CORAL}" stroke-width="1.3"/>',
-        text(Pu[0] + 10, Pu[1] - 2, "spin axis", fill=BLUE, size=14),
-        text(Ppv[0] - 78, Ppv[1] + 2, "stays put", size=13),
-        text(Pv[0] + 10, Pv[1] + 18, "before", fill=CORAL, size=13),
-        text(Prv[0] + 12, Prv[1] - 6, "after", fill=CORAL, size=14),
+        vline(o, pu, stroke=BLUE, width=2.2, end="rd-blue"),
+        vline(o, pv2, width=2.4, end="rd-ink"),
+        vline(o, p_before, stroke=CORAL, width=1.7, dash="6 4", end="rd-coral"),
+        vline(o, p_after, stroke=CORAL, width=2.2, end="rd-coral"),
+        vline(pv2, p_before, stroke=INK2, width=1, dash="3 3"),
+        vline(pv2, p_after, stroke=INK2, width=1, dash="3 3"),
+        f'<path d="{ad}" fill="none" stroke="{CORAL}" stroke-width="1.4"/>',
+        *callouts,
     ]
-    return svg(500, 460, "\n".join(body))
+    return svg(round(w), round(h), "\n".join(body))
 
 
 def _iso(p, ox, oy, S):

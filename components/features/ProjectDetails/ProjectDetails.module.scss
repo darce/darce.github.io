@@ -137,6 +137,21 @@
             }
         }
 
+        .diagramPair {
+            @media (min-width: #{$tabletMax + 1}) {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: $s-medium;
+                align-items: start;
+                margin: $s-large 0;
+
+                .diagram,
+                :global(figure.diagram) {
+                    margin: 0;
+                }
+            }
+        }
+
         blockquote {
             margin: 0;
             padding: 0 0 0 $s-large;
