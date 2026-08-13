@@ -166,6 +166,12 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 />
 </DiagramPair>
 
+<Diagram
+    src="/images/research/rotation-combine-5.svg"
+    alt="Two coral L poses side by side. Left is Rz then Rx. Right is Rx then Rz. A not-equals sign sits between them."
+    caption="5 · The two finals. Same turns, opposite order — not the same pose."
+/>
+
 A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
 ```typescript
@@ -202,7 +208,7 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
 <Diagram
     src="/images/research/rotation-perspective.svg"
     alt="An eye looking at a screen. A ray through B on the screen hits point A. Marks show d to the screen, depth, height, and the mark. The equation height on screen = height in space times d over depth sits above the screen."
-    caption="A is the point. B is the mark on the screen. Height on screen = height in space × d / depth."
+    caption="A is the point. B is the mark. Same colors as the braces: mark = height × d / depth."
 />
 
 The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Same $d$, two depths: the far point lands closer to the middle.
