@@ -872,8 +872,8 @@ def perspective() -> str:
         Tree(hit, hit_s, INK),
         Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
         Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
-        Brace(foot_a, pt, "h", CORAL, offset=22, size=16, nudge=(-6, 0)),
-        Brace(foot_b, hit, "h′", INK, offset=-34, size=16, nudge=(-14, 0)),
+        Brace(foot_a, pt, "height in space", CORAL, offset=22, size=13, nudge=(8, 0), math=False),
+        Brace(foot_b, hit, "height on screen", INK, offset=-36, size=13, nudge=(-22, 0), math=False),
         Eye(),
     )
     parts, pts = scene.gather()
@@ -885,24 +885,28 @@ def perspective() -> str:
     )
     left = min(p[0] for p in pts)
     top = min(p[1] for p in pts)
-    eq = (left, top - 6)
+    eq1 = (left, top - 22)
+    eq2 = (left, top - 4)
+    parts.append(
+        _eq(eq1[0], eq1[1], [("height on screen", INK)], size=15)
+    )
     parts.append(
         _eq(
-            eq[0],
-            eq[1],
+            eq2[0],
+            eq2[1],
             [
-                ("h", INK, True),
-                ("′", INK),
-                (" = ", INK),
-                ("h", CORAL, True),
-                (" · ", INK),
+                ("= ", INK),
+                ("height in space", CORAL),
+                (" × ", INK),
                 ("d", BLUE, True),
-                (" / depth", INK2),
+                (" / ", INK),
+                ("depth", INK2),
             ],
+            size=15,
         )
     )
-    pts.extend([eq, (eq[0] + 200, eq[1] - 8), (eq[0], eq[1] + 10)])
-    x0, y0, w, h = _crop(pts, pad=22)
+    pts.extend([eq1, eq2, (eq1[0] + 240, eq1[1] - 8), (eq2[0] + 280, eq2[1] + 8)])
+    x0, y0, w, h = _crop(pts, pad=24)
     return _svg(w, h, "\n".join(parts), x=x0, y=y0)
 
 
@@ -942,18 +946,26 @@ def f_projection() -> str:
     parts.append(
         _eq(
             eq[0],
+            eq[1] - 18,
+            [("perspective scale", INK)],
+            size=15,
+        )
+    )
+    parts.append(
+        _eq(
+            eq[0],
             eq[1],
             [
-                ("s", INK, True),
-                (" = 1 / (", INK),
+                ("= 1 / (", INK),
                 ("d", BLUE, True),
                 (" − ", INK2),
                 ("z", INK2, True),
                 (")", INK),
             ],
+            size=15,
         )
     )
-    pts.extend([eq, (eq[0] + 180, eq[1] - 8), (eq[0], eq[1] + 10)])
+    pts.extend([eq, (eq[0] + 200, eq[1] - 28), (eq[0], eq[1] + 10)])
     x0, y0, w, hgt_box = _crop(pts, pad=22)
     return _svg(w, hgt_box, "\n".join(parts), x=x0, y=y0)
 
