@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0.0 0.0 460.0 360.0" width="460" height="360" role="img">
-<rect x="0.0" y="0.0" width="460.0" height="360.0" fill="#e7eaef"/>
+<rect x="0.0" y="0.0" width="460.0" height="360.0" fill="#ffffff"/>
 <defs>
 <marker id="rd-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="rd-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>

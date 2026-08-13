@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -165.6 582.1 485.6" width="582" height="486" role="img">
-<rect x="24.0" y="-165.6" width="582.1" height="485.6" fill="#e7eaef"/>
+<rect x="24.0" y="-165.6" width="582.1" height="485.6" fill="#ffffff"/>
 <defs>
 <marker id="fp-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="fp-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -35,8 +35,8 @@
 <line x1="342.6" y1="167.1" x2="339.0" y2="158.9" stroke="#464c5c" stroke-width="1.8" fill="none"/>
 <line x1="298.9" y1="186.0" x2="301.6" y2="192.5" stroke="#464c5c" stroke-width="1.8" fill="none"/>
 <text x="308.0" y="211.1" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="14" fill="#464c5c" text-anchor="middle" font-style="italic">d − z</text>
-<circle cx="70.0" cy="250.0" r="20" fill="#e7eaef" stroke="none"/>
-<path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#e7eaef" stroke="none"/>
+<circle cx="70.0" cy="250.0" r="20" fill="#ffffff" stroke="none"/>
+<path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#ffffff" stroke="none"/>
 <path d="M85.6,234.4 L70.0,250.0 L85.6,265.6" fill="none" stroke="#171920" stroke-width="1.8" stroke-linejoin="miter"/>
 <path d="M82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7" fill="none" stroke="#171920" stroke-width="1.8"/>
 <text x="46.0" y="-135.6" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" text-anchor="start"><tspan fill="#171920" font-style="italic">s</tspan><tspan fill="#171920"> = 1 / (</tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> − </tspan><tspan fill="#464c5c" font-style="italic">z</tspan><tspan fill="#171920">)</tspan></text>
