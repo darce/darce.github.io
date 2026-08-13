@@ -138,6 +138,7 @@ $project-icon: $s-x-large * 2 + $s-large;
 
 .projectItemInner {
     padding: 0;
+    overflow: hidden;
 
     @include themeComponent($themes) {
         background-color: t('surface');
@@ -147,7 +148,7 @@ $project-icon: $s-x-large * 2 + $s-large;
 .projectHead {
     display: grid;
     grid-template-columns: $project-icon minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     min-height: $project-icon;
 }
 
@@ -155,10 +156,13 @@ $project-icon: $s-x-large * 2 + $s-large;
     position: relative;
     box-sizing: border-box;
     width: $project-icon;
-    height: $project-icon;
+    min-height: $project-icon;
+    align-self: stretch;
     overflow: hidden;
 
     img {
+        position: absolute;
+        inset: 0;
         display: block;
         width: 100%;
         height: 100%;

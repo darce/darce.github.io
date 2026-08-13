@@ -44,7 +44,7 @@
 
             @media (max-width: $tabletMax) {
                 display: block;
-                padding: 0 $s-large;
+                padding: 0 $s-large $s-large;
                 position: relative;
             }
         }
