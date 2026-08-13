@@ -128,7 +128,7 @@
 
                 @include themeComponent($themes) {
                     border-color: t('text');
-                    background-color: t('surface');
+                    background-color: #fff;
                 }
             }
 

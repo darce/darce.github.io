@@ -13,7 +13,7 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[1] / "public" / "images" / "research"
 
-PAPER = "#e7eaef"
+PAPER = "#ffffff"
 INK = "#171920"
 INK2 = "#464c5c"
 CORAL = "#d9253f"
