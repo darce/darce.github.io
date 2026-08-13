@@ -428,27 +428,43 @@ class Brace:
         b1 = (b[0] + nx * (off - tick), b[1] + ny * (off - tick))
         mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
         nub_pt = (mx + nx * nub, my + ny * nub)
-        lx = mx + nx * (nub + 16) + self.nudge[0]
-        ly = my + ny * (nub + 16) + 4 + self.nudge[1]
+        words = self.label.split()
+        lines = (
+            [words[0], " ".join(words[1:])]
+            if len(words) >= 3 and any(len(w) > 2 for w in words)
+            else [self.label]
+        )
+        # Just past the nub — stacked lines stay next to the bar, not on it.
+        gap = 20.0 if len(lines) > 1 else 28.0
+        lx = mx + nx * (nub + gap) + self.nudge[0]
+        ly = my + ny * (nub + gap) + self.nudge[1]
         use_math = self.math if self.math is not None else len(self.label) <= 3
         parts = [
             _line(a1[0], a1[1], a2[0], a2[1], stroke=self.color, width=SW_BRACE),
             _line(a2[0], a2[1], b2[0], b2[1], stroke=self.color, width=SW_BRACE),
             _line(b2[0], b2[1], b1[0], b1[1], stroke=self.color, width=SW_BRACE),
             _line(mx, my, nub_pt[0], nub_pt[1], stroke=self.color, width=SW_BRACE),
-            _text(
-                lx,
-                ly,
-                self.label,
-                size=self.size,
-                fill=self.color,
-                anchor="middle",
-                italic=use_math,
-                math=use_math,
-            ),
         ]
-        span = (9 if use_math else 7.4) * len(self.label)
-        return parts, [a1, b1, a2, b2, nub_pt, (lx - span / 2, ly), (lx + span / 2, ly)]
+        box = [a1, b1, a2, b2, nub_pt]
+        line_h = self.size + 3
+        y0 = ly - (len(lines) - 1) * line_h / 2 + 4
+        for i, line in enumerate(lines):
+            yy = y0 + i * line_h
+            parts.append(
+                _text(
+                    lx,
+                    yy,
+                    line,
+                    size=self.size,
+                    fill=self.color,
+                    anchor="middle",
+                    italic=use_math,
+                    math=use_math,
+                )
+            )
+            span = (9 if use_math else 7.4) * len(line)
+            box.extend([(lx - span / 2, yy), (lx + span / 2, yy)])
+        return parts, box
 
 
 def _away(a: tuple, b: tuple, t: float = 0.2) -> tuple:
@@ -865,15 +881,15 @@ def perspective() -> str:
     scene.add(
         Axes(reach=(1.38, 0.95, Az + 0.22), prefix="pj"),
         screen,
-        Seg(_away(eye, pt, 0.08), pt, CORAL, 1.8),
+        Seg(_away(eye, pt, 0.10), _away(pt, eye, 0.16), CORAL, 1.8, end="pj-coral"),
         Seg(hit, foot_b, INK2, 1, dash="3 3"),
         Seg(pt, foot_a, INK2, 1, dash="3 3"),
         Tree(pt, world_s, CORAL),
         Tree(hit, hit_s, INK),
-        Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
-        Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
-        Brace(foot_a, pt, "height in space", CORAL, offset=22, size=13, nudge=(8, 0), math=False),
-        Brace(foot_b, hit, "height on screen", INK, offset=-36, size=13, nudge=(-22, 0), math=False),
+        Brace(eye, foot_b, "d", BLUE, offset=34, size=16),
+        Brace(eye, foot_a, "depth", INK2, offset=56, math=False),
+        Brace(foot_a, pt, "height in space", CORAL, offset=28, size=13, math=False),
+        Brace(foot_b, hit, "height on screen", INK, offset=-48, size=13, math=False),
         Eye(),
     )
     parts, pts = scene.gather()
@@ -929,13 +945,13 @@ def f_projection() -> str:
     scene.add(
         Axes(reach=(1.32, 0.92, d + z_far + 0.18), prefix="fp"),
         screen,
-        Seg(_away(eye, near, 0.08), near, CORAL, 1.7),
-        Seg(_away(eye, far, 0.08), far, CORAL, 1.3, dash="5 3"),
-        Tree(near, world_s, CORAL, "near"),
+        Seg(_away(eye, far, 0.10), _away(far, eye, 0.16), CORAL, 1.4, dash="5 3", end="fp-coral"),
+        Seg(_away(eye, near, 0.10), _away(near, eye, 0.16), CORAL, 1.8, end="fp-coral"),
         Tree(far, world_s, CORAL, "far"),
-        Tree(hit_n, near_s, INK),
+        Tree(near, world_s, CORAL, "near"),
         Tree(hit_f, max(far_s, 6.0), INK2),
-        Brace(eye, plane, "d", BLUE, offset=30, size=16),
+        Tree(hit_n, near_s, INK),
+        Brace(eye, plane, "d", BLUE, offset=34, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
         Eye(),
     )

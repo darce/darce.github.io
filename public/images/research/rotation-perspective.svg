@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="22.0 -127.9 548.3 455.7" width="548" height="456" role="img">
-<rect x="22.0" y="-127.9" width="548.3" height="455.7" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="22.0 -127.9 524.4 455.7" width="524" height="456" role="img">
+<rect x="22.0" y="-127.9" width="524.4" height="455.7" fill="#ffffff"/>
 <defs>
 <marker id="pj-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="pj-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -14,7 +14,7 @@
 <text x="451.3" y="74.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
 <polygon points="199.1,-50.1 328.8,24.6 328.8,303.9 199.1,229.1" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
 <text x="264.0" y="-64.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
-<line x1="99.4" y1="224.1" x2="437.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
+<line x1="106.8" y1="217.6" x2="379.0" y2="-22.0" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#pj-coral)"/>
 <line x1="264.0" y1="79.2" x2="264.0" y2="166.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
 <line x1="437.8" y1="-73.9" x2="437.8" y2="91.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
 <rect x="432.6" y="-28.4" width="10.4" height="26.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
@@ -25,26 +25,28 @@
 <circle cx="264.0" cy="91.3" r="13.7" fill="#171920" stroke="#171920" stroke-width="1.2"/>
 <circle cx="256.0" cy="95.4" r="9.6" fill="#171920" stroke="#171920" stroke-width="1.2"/>
 <circle cx="271.9" cy="95.4" r="9.6" fill="#171920" stroke="#171920" stroke-width="1.2"/>
-<line x1="78.3" y1="269.3" x2="81.9" y2="277.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
-<line x1="81.9" y1="277.5" x2="275.8" y2="193.8" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
-<line x1="275.8" y1="193.8" x2="272.3" y2="185.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
-<line x1="178.9" y1="235.7" x2="181.6" y2="242.1" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
-<text x="188.0" y="260.8" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" fill="#3c00f7" text-anchor="middle" font-style="italic">d</text>
-<line x1="87.8" y1="291.3" x2="91.4" y2="299.6" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="91.4" y1="299.6" x2="459.2" y2="140.7" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="459.2" y1="140.7" x2="455.7" y2="132.5" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<line x1="275.3" y1="220.2" x2="278.1" y2="226.6" stroke="#464c5c" stroke-width="1.8" fill="none"/>
-<text x="284.4" y="245.3" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#464c5c" text-anchor="middle">depth</text>
-<line x1="450.8" y1="91.2" x2="459.8" y2="91.2" stroke="#d9253f" stroke-width="1.8" fill="none"/>
-<line x1="459.8" y1="91.2" x2="459.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
-<line x1="459.8" y1="-73.9" x2="450.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
-<line x1="459.8" y1="8.7" x2="466.8" y2="8.7" stroke="#d9253f" stroke-width="1.8" fill="none"/>
-<text x="490.8" y="12.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="middle">height in space</text>
-<line x1="237.0" y1="166.2" x2="228.0" y2="166.2" stroke="#171920" stroke-width="1.8" fill="none"/>
-<line x1="228.0" y1="166.2" x2="228.0" y2="79.2" stroke="#171920" stroke-width="1.8" fill="none"/>
-<line x1="228.0" y1="79.2" x2="237.0" y2="79.2" stroke="#171920" stroke-width="1.8" fill="none"/>
-<line x1="228.0" y1="122.7" x2="221.0" y2="122.7" stroke="#171920" stroke-width="1.8" fill="none"/>
-<text x="183.0" y="126.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="middle">height on screen</text>
+<line x1="79.9" y1="273.0" x2="83.5" y2="281.2" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+<line x1="83.5" y1="281.2" x2="277.4" y2="197.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+<line x1="277.4" y1="197.5" x2="273.9" y2="189.2" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+<line x1="180.5" y1="239.3" x2="183.2" y2="245.8" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+<text x="194.3" y="275.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" fill="#3c00f7" text-anchor="middle" font-style="italic">d</text>
+<line x1="88.6" y1="293.1" x2="92.2" y2="301.4" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<line x1="92.2" y1="301.4" x2="460.0" y2="142.6" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<line x1="460.0" y1="142.6" x2="456.5" y2="134.3" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<line x1="276.1" y1="222.0" x2="278.9" y2="228.4" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+<text x="290.0" y="258.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#464c5c" text-anchor="middle">depth</text>
+<line x1="456.8" y1="91.2" x2="465.8" y2="91.2" stroke="#d9253f" stroke-width="1.8" fill="none"/>
+<line x1="465.8" y1="91.2" x2="465.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
+<line x1="465.8" y1="-73.9" x2="456.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
+<line x1="465.8" y1="8.7" x2="472.8" y2="8.7" stroke="#d9253f" stroke-width="1.8" fill="none"/>
+<text x="492.8" y="4.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="middle">height</text>
+<text x="492.8" y="20.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="middle">in space</text>
+<line x1="225.0" y1="166.2" x2="216.0" y2="166.2" stroke="#171920" stroke-width="1.8" fill="none"/>
+<line x1="216.0" y1="166.2" x2="216.0" y2="79.2" stroke="#171920" stroke-width="1.8" fill="none"/>
+<line x1="216.0" y1="79.2" x2="225.0" y2="79.2" stroke="#171920" stroke-width="1.8" fill="none"/>
+<line x1="216.0" y1="122.7" x2="209.0" y2="122.7" stroke="#171920" stroke-width="1.8" fill="none"/>
+<text x="189.0" y="118.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="middle">height</text>
+<text x="189.0" y="134.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="middle">on screen</text>
 <circle cx="70.0" cy="250.0" r="20" fill="#ffffff" stroke="none"/>
 <path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#ffffff" stroke="none"/>
 <path d="M85.6,234.4 L70.0,250.0 L85.6,265.6" fill="none" stroke="#171920" stroke-width="1.8" stroke-linejoin="miter"/>
