@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="25 2 443 236" width="443" height="236">
+  <rect class="canvas-background" x="25" y="2" width="443" height="236" fill="#e7eaef" />
+  <line class="edge edge-freeform" x1="120" y1="40" x2="380" y2="40" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="250" y="40" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">leaves x</text>
+  <line class="edge edge-freeform" x1="120" y1="120" x2="380" y2="120" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="250" y="120" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">leaves y</text>
+  <line class="edge edge-freeform" x1="120" y1="200" x2="380" y2="200" stroke="#464c5c" stroke-width="1.5" />
+  <text class="edge-label edge-label-freeform" x="250" y="200" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="10" fill="#464c5c">leaves z</text>
+  <rect class="node node-task" x="45" y="22" width="150" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="3" />
+  <text x="120" y="40" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">Rx(θ)  x unchanged</text>
+  <rect class="node node-freeform" x="312" y="22" width="136" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="2" stroke-dasharray="4,2" />
+  <text x="380" y="40" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">yz plane rotates</text>
+  <rect class="node node-task" x="45" y="102" width="150" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="3" />
+  <text x="120" y="120" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">Ry(θ)  y unchanged</text>
+  <rect class="node node-freeform" x="312" y="102" width="136" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="2" stroke-dasharray="4,2" />
+  <text x="380" y="120" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">xz plane rotates</text>
+  <rect class="node node-task" x="45" y="182" width="150" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="3" />
+  <text x="120" y="200" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">Rz(θ)  z unchanged</text>
+  <rect class="node node-freeform" x="312" y="182" width="136" height="36" rx="0" fill="#f2f4f7" stroke="#171920" stroke-width="2" stroke-dasharray="4,2" />
+  <text x="380" y="200" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="12" fill="#171920">xy plane rotates</text>
+</svg>
