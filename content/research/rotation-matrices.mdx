@@ -43,14 +43,14 @@ Each axis has its own matrix. In the plane perpendicular to that axis the pictur
 <DiagramPair>
 <Diagram
     src="/images/research/rotation-ccw.svg"
-    alt="A coral arrow starting on the x-axis and turning left, with y pointing up."
-    caption="Turn left from +x. This is the usual math picture, with y pointing up."
+    alt="A coral arrow starting on the x-axis and turning left by an angle theta, with y pointing up."
+    caption="θ measured left from +x. This is the usual math picture, with y pointing up."
 />
 
 <Diagram
     src="/images/research/rotation-cw.svg"
-    alt="A coral arrow starting on the x-axis and turning right, with y pointing down."
-    caption="Turn right from +x. Screens number y downward, so the same matrix looks clockwise."
+    alt="A coral arrow starting on the x-axis and turning right by an angle theta, with y pointing down."
+    caption="θ measured right from +x. Screens number y downward, so the same matrix looks clockwise."
 />
 </DiagramPair>
 
@@ -138,8 +138,8 @@ In the $xy$-plane that looks like this: a shape turns around the origin. The ori
 
 <Diagram
     src="/images/research/rotation-decomposition.svg"
-    alt="A flat x-y plane. A dashed L-shape sits on the x-axis; a coral L-shape is the same figure turned counterclockwise. A small arc is labeled turn."
-    caption="Same L, new heading. Ghost is before, coral is after. The origin does not move."
+    alt="A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow."
+    caption="Same L, turned by θ. Ghost is before, coral is after. The origin does not move."
 />
 
 ```typescript
@@ -169,16 +169,16 @@ Farther away means a larger depth, so a smaller mark. Same construction as $B_x 
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="An eye on the left looking at a vertical screen. A coral ray goes through a hit on the screen to a point in space. A dimension F marks the distance from the eye to the screen."
-    caption="F is the focal length — how far the screen sits from the eye. The ray’s hit is a smaller copy of the point."
+    alt="An eye looking at a vertical screen. A ray through B on the screen hits point A. Dimensions mark F, Ax, Az, and Bx."
+    caption="Bx = Ax · F / Az. F is the focal length. A is the point, B is where the ray hits the screen."
 />
 
 The demo stores $F$ as `distance` and folds the shrink into one scale per vertex, $f = 1/(d - z)$. Same $F$, two depths: the far point lands closer to the middle.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="An eye, a vertical screen a focal length F away, and two coral rays to a near point and a far point at the same height. The near ray hits the screen higher."
-    caption="Same F, same height, two depths. The far ray crosses the screen closer to the middle, so that point looks smaller."
+    alt="An eye, a screen a focal length F away, and two rays to a near point and a far point. Hits are labeled x prime and x double prime. A d minus z mark sits past the screen."
+    caption="f = 1/(d − z). Same F, two depths. The far hit x″ sits closer to the middle than x′."
 />
 
 ```typescript
