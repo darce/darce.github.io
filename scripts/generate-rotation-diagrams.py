@@ -19,6 +19,8 @@ INK2 = "#464c5c"
 CORAL = "#d9253f"
 BLUE = "#3c00f7"
 FONT = "ui-monospace, GeistMonoVariableVF, Helvetica, monospace"
+# Equations: serif + italic variables (ISO 80000 / AMS). Words stay roman.
+MATH = "Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif"
 
 # Stroke hierarchy — subject louder than axes (Manim habit, site tokens).
 SW_AXIS = 1.5
@@ -105,10 +107,12 @@ def _defs(prefix: str) -> str:
     return "<defs>\n" + "\n".join(parts) + "\n</defs>"
 
 
-def _text(x, y, s, *, size=13, fill=INK, anchor="start") -> str:
+def _text(x, y, s, *, size=13, fill=INK, anchor="start", italic=False, math=False) -> str:
+    face = MATH if math else FONT
+    ital = ' font-style="italic"' if italic else ""
     return (
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
-        f'fill="{fill}" text-anchor="{anchor}">{s}</text>'
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{face}" font-size="{size}" '
+        f'fill="{fill}" text-anchor="{anchor}"{ital}>{s}</text>'
     )
 
 
@@ -128,11 +132,17 @@ def _circle(x, y, r, *, fill=INK) -> str:
     return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"/>'
 
 
-def _eq(x, y, parts, *, size=15, anchor="middle") -> str:
-    inner = "".join(f'<tspan fill="{c}">{s}</tspan>' for s, c in parts)
+def _eq(x, y, parts, *, size=16, anchor="start") -> str:
+    """Left-aligned displayed math. parts: (text, color, italic?)."""
+    inner = []
+    for item in parts:
+        s, c = item[0], item[1]
+        italic = item[2] if len(item) > 2 else False
+        st = ' font-style="italic"' if italic else ""
+        inner.append(f'<tspan fill="{c}"{st}>{s}</tspan>')
     return (
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
-        f'text-anchor="{anchor}">{inner}</text>'
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{MATH}" font-size="{size}" '
+        f'text-anchor="{anchor}">{"".join(inner)}</text>'
     )
 
 
@@ -400,6 +410,7 @@ class Brace:
     offset: float = 30
     size: int = 14
     nudge: tuple[float, float] = (0.0, 0.0)
+    math: bool | None = None
 
     def draw(self, cam: Camera) -> tuple[list[str], list]:
         a, b = cam.project(self.a), cam.project(self.b)
@@ -419,14 +430,25 @@ class Brace:
         nub_pt = (mx + nx * nub, my + ny * nub)
         lx = mx + nx * (nub + 16) + self.nudge[0]
         ly = my + ny * (nub + 16) + 4 + self.nudge[1]
+        use_math = self.math if self.math is not None else len(self.label) <= 3
         parts = [
             _line(a1[0], a1[1], a2[0], a2[1], stroke=self.color, width=SW_BRACE),
             _line(a2[0], a2[1], b2[0], b2[1], stroke=self.color, width=SW_BRACE),
             _line(b2[0], b2[1], b1[0], b1[1], stroke=self.color, width=SW_BRACE),
             _line(mx, my, nub_pt[0], nub_pt[1], stroke=self.color, width=SW_BRACE),
-            _text(lx, ly, self.label, size=self.size, fill=self.color, anchor="middle"),
+            _text(
+                lx,
+                ly,
+                self.label,
+                size=self.size,
+                fill=self.color,
+                anchor="middle",
+                italic=use_math,
+                math=use_math,
+            ),
         ]
-        return parts, [a1, b1, a2, b2, nub_pt, (lx, ly)]
+        span = (9 if use_math else 7.4) * len(self.label)
+        return parts, [a1, b1, a2, b2, nub_pt, (lx - span / 2, ly), (lx + span / 2, ly)]
 
 
 @dataclass
@@ -796,10 +818,10 @@ def perspective() -> str:
         Label(hit, "B", INK, 16, dx=10, dy=-4),
         Dot(pt, CORAL),
         Label(pt, "A", CORAL, 16, dx=10, dy=-6),
-        Brace(eye, foot_b, "d", BLUE, offset=30, size=15),
-        Brace(eye, foot_a, "depth", INK2, offset=54),
-        Brace(foot_a, pt, "height", CORAL, offset=20),
-        Brace(foot_b, hit, "mark", INK, offset=-36, nudge=(-18, 0)),
+        Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
+        Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
+        Brace(foot_a, pt, "h", CORAL, offset=22, size=16, nudge=(-6, 0)),
+        Brace(foot_b, hit, "h′", INK, offset=-34, size=16, nudge=(-14, 0)),
     )
     parts, pts = scene.gather()
     Pe, Pa, Pfa = cam.project(eye), cam.project(pt), cam.project(foot_a)
@@ -808,25 +830,26 @@ def perspective() -> str:
         f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {Pfa[0]:.1f},{Pfa[1]:.1f}" '
         f'fill="{CORAL}" fill-opacity="0.06" stroke="none"/>',
     )
-    tx, ty = screen.top(cam)
-    eq = (tx, ty - 38)
+    left = min(p[0] for p in pts)
+    top = min(p[1] for p in pts)
+    eq = (left, top - 6)
     parts.append(
         _eq(
             eq[0],
             eq[1],
             [
-                ("mark", INK),
+                ("h", INK, True),
+                ("′", INK),
                 (" = ", INK),
-                ("height", CORAL),
-                (" × ", INK),
-                ("d", BLUE),
-                (" / ", INK),
-                ("depth", INK2),
+                ("h", CORAL, True),
+                (" · ", INK),
+                ("d", BLUE, True),
+                (" / depth", INK2),
             ],
         )
     )
-    pts.extend([eq, (eq[0] - 130, eq[1] - 8), (eq[0] + 130, eq[1] + 8)])
-    x0, y0, w, h = _crop(pts, pad=16)
+    pts.extend([eq, (eq[0] + 200, eq[1] - 8), (eq[0], eq[1] + 10)])
+    x0, y0, w, h = _crop(pts, pad=22)
     return _svg(w, h, "\n".join(parts), x=x0, y=y0)
 
 
@@ -856,17 +879,29 @@ def f_projection() -> str:
         Label(far, "far", CORAL, 15, dx=10, dy=-8),
         Label(hit_n, "near mark", INK, 13, dx=-10, dy=-10, anchor="end"),
         Label(hit_f, "far mark", INK2, 13, dx=10, dy=14),
-        Brace(eye, plane, "d", BLUE, offset=30, size=15),
-        Brace(plane, n_z, "d − z", INK2, offset=32),
+        Brace(eye, plane, "d", BLUE, offset=30, size=16),
+        Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
     )
     parts, pts = scene.gather()
-    tx, ty = screen.top(cam)
-    eq = (tx, ty - 38)
+    left = min(p[0] for p in pts)
+    top = min(p[1] for p in pts)
+    eq = (left, top - 6)
     parts.append(
-        _eq(eq[0], eq[1], [("s = 1 / (", INK), ("d − z", INK2), (")", INK)])
+        _eq(
+            eq[0],
+            eq[1],
+            [
+                ("s", INK, True),
+                (" = 1 / (", INK),
+                ("d", BLUE, True),
+                (" − ", INK2),
+                ("z", INK2, True),
+                (")", INK),
+            ],
+        )
     )
-    pts.extend([eq, (eq[0] - 90, eq[1] - 8), (eq[0] + 90, eq[1] + 8)])
-    x0, y0, w, hgt = _crop(pts, pad=16)
+    pts.extend([eq, (eq[0] + 180, eq[1] - 8), (eq[0], eq[1] + 10)])
+    x0, y0, w, hgt = _crop(pts, pad=22)
     return _svg(w, hgt, "\n".join(parts), x=x0, y=y0)
 
 
