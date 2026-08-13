@@ -187,156 +187,53 @@ def clockwise() -> str:
     return svg(360, 348, "\n".join(body))
 
 
-def _dot(a, b):
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
-
-
-def _cross(a, b):
-    return (
-        a[1] * b[2] - a[2] * b[1],
-        a[2] * b[0] - a[0] * b[2],
-        a[0] * b[1] - a[1] * b[0],
-    )
-
-
-def _norm(a):
-    n = math.sqrt(_dot(a, a)) or 1.0
-    return (a[0] / n, a[1] / n, a[2] / n)
-
-
-def _add(a, b):
-    return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
-
-
-def _sub(a, b):
-    return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
-
-
-def _scale(a, s):
-    return (a[0] * s, a[1] * s, a[2] * s)
-
-
-def _rodrigues(p, u, theta):
-    c, s = math.cos(theta), math.sin(theta)
-    return _add(
-        _add(_scale(p, c), _scale(_cross(u, p), s)),
-        _scale(u, _dot(u, p) * (1.0 - c)),
-    )
-
-
-def _eiffel_edges():
-    """Hard-edge tower: 4 legs, two decks, tip. Stands on z = 0, up is +z."""
-
-    def sq(h, z):
-        return [(-h, -h, z), (h, -h, z), (h, h, z), (-h, h, z)]
-
-    base, mid, top = sq(0.56, 0.0), sq(0.22, 0.48), sq(0.08, 1.22)
-    plat1, plat2 = sq(0.28, 0.55), sq(0.11, 1.28)
-    tip = (0.0, 0.0, 1.82)
-    edges = []
-    for ring in (base, plat1, plat2):
-        for i in range(4):
-            edges.append((ring[i], ring[(i + 1) % 4]))
-    for i in range(4):
-        edges.append((base[i], mid[i]))
-        edges.append((mid[i], top[i]))
-        edges.append((top[i], tip))
-    # front arch — gives the tower a facing
-    arch_l, arch_r = (-0.28, -0.50, 0.0), (0.28, -0.50, 0.0)
-    arch_c = (0.0, -0.42, 0.22)
-    edges.extend([(arch_l, arch_c), (arch_c, arch_r)])
-    return edges, tip, base
+def _rot2(p, ang):
+    x, y = p
+    c, s = math.cos(ang), math.sin(ang)
+    return (x * c - y * s, x * s + y * c)
 
 
 def decomposition() -> str:
-    """Eiffel tower on the x–y ground, spun around a vertical axis."""
-    S = 168
-    theta = math.radians(62)
-    u = (0.0, 0.0, 1.0)
+    """Flat x–y plane. A simple L turns around the origin."""
+    ox, oy = 200, 312
+    ang = math.radians(50)
+    # L in the first quadrant — any rigid shape; orientation is obvious
+    L = [(36, 0), (168, 0), (168, 40), (76, 40), (76, 168), (36, 168)]
+    L2 = [_rot2(p, ang) for p in L]
 
-    def raw(p):
-        x, y, z = p
-        return (-0.62 * S * x + S * y, 0.42 * S * x - S * z)
+    def S(p):
+        return (ox + p[0], oy - p[1])
 
-    edges, tip, base = _eiffel_edges()
-    o = (0.0, 0.0, 0.0)
-    axis_top = (0.0, 0.0, 2.15)
-    axis_bot = (0.0, 0.0, -0.12)
-    # ground plane
-    g = 0.95
-    ground = [(-g, -g, 0.0), (g, -g, 0.0), (g, g, 0.0), (-g, g, 0.0)]
-    grid = []
-    for t in (-0.45, 0.0, 0.45):
-        grid.append(((-g, t, 0.0), (g, t, 0.0)))
-        grid.append(((t, -g, 0.0), (t, g, 0.0)))
-    ax = (1.15, 0.0, 0.0)
-    ay = (0.0, 1.15, 0.0)
-    # a base corner that travels — used to label before / after
-    corner = base[1]
-    corner2 = _rodrigues(corner, u, theta)
-
-    pts = [o, axis_top, axis_bot, tip, ax, ay, corner, corner2, *ground]
-    for a, b in edges:
-        pts.extend([a, b, _rodrigues(a, u, theta), _rodrigues(b, u, theta)])
-    pr = [raw(p) for p in pts]
-    pad = 36
-    min_x = min(p[0] for p in pr) - pad
-    max_x = max(p[0] for p in pr) + pad + 70
-    min_y = min(p[1] for p in pr) - pad
-    max_y = max(p[1] for p in pr) + pad + 8
-    ox, oy = -min_x, -min_y
-
-    def P(p):
-        s = raw(p)
-        return (s[0] + ox, s[1] + oy)
-
-    def vline(a, b, **kw):
-        pa, pb = P(a), P(b)
-        return line(pa[0], pa[1], pb[0], pb[1], **kw)
-
-    def ring(pts3, **kw):
-        return [vline(pts3[i], pts3[(i + 1) % len(pts3)], **kw) for i in range(len(pts3))]
-
-    Pcor, Pcor2 = P(corner), P(corner2)
-    Pax, Pay = P(ax), P(ay)
-    Pu = P(axis_top)
-    ground_pts = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in ground)
-
-    # turn arc at a moving base corner — the tip sits on the axis and does not travel
-    arc = []
-    for i in range(14):
-        t = theta * i / 13
-        arc.append(P(_rodrigues(corner, u, t)))
-    ad = f"M{arc[0][0]:.1f},{arc[0][1]:.1f} " + " ".join(
-        f"L{p[0]:.1f},{p[1]:.1f}" for p in arc[1:]
-    )
-
-    ghost, solid = [], []
-    for a, b in edges:
-        ghost.append(vline(a, b, stroke=INK2, width=1.15, dash="5 4"))
-        solid.append(
-            vline(_rodrigues(a, u, theta), _rodrigues(b, u, theta), stroke=CORAL, width=1.6)
+    def poly(pts, *, fill, stroke, width, dash=None):
+        d = " ".join(f"{S(p)[0]:.1f},{S(p)[1]:.1f}" for p in pts)
+        extra = f' stroke-dasharray="{dash}"' if dash else ""
+        return (
+            f'<polygon points="{d}" fill="{fill}" fill-opacity="0.12" '
+            f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
         )
 
-    w, h = max_x - min_x, max_y - min_y
+    r = 56
+    ax0, ay0 = S((r, 0))
+    ax1 = ox + r * math.cos(ang)
+    ay1 = oy - r * math.sin(ang)
+    mid = S(_rot2((r + 22, 0), ang * 0.55))
+
     body = [
         defs("rd"),
-        f'<polygon points="{ground_pts}" fill="{BLUE}" fill-opacity="0.06" '
-        f'stroke="{BLUE}" stroke-width="1.2"/>',
-        *[vline(a, b, stroke=BLUE, width=0.8) for a, b in grid],
-        vline(o, ax, width=1.4, end="rd-ink"),
-        vline(o, ay, width=1.4, end="rd-ink"),
-        vline(axis_bot, axis_top, stroke=BLUE, width=2.0, end="rd-blue"),
-        *ghost,
-        *solid,
-        f'<path d="{ad}" fill="none" stroke="{CORAL}" stroke-width="1.3"/>',
-        text(Pax[0] + 8, Pax[1] + 4, "x", size=14),
-        text(Pay[0] + 8, Pay[1] + 4, "y", size=14),
-        text(Pu[0] + 10, Pu[1] + 2, "spin axis", fill=BLUE, size=14),
-        text(Pcor[0] - 8, Pcor[1] + 16, "before", fill=INK2, size=13, anchor="end"),
-        text(Pcor2[0] + 14, Pcor2[1] + 22, "after", fill=CORAL, size=14),
+        line(ox - 160, oy, ox + 220, oy, width=1.5, end="rd-ink"),
+        line(ox, oy + 20, ox, oy - 250, width=1.5, end="rd-ink"),
+        poly(L, fill=INK2, stroke=INK2, width=1.4, dash="6 4"),
+        poly(L2, fill=CORAL, stroke=CORAL, width=1.7),
+        f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 0 {ax1:.1f},{ay1:.1f}" '
+        f'fill="none" stroke="{CORAL}" stroke-width="1.3"/>',
+        circle(ox, oy, 3.5, fill=INK),
+        text(ox + 228, oy + 5, "x", size=16),
+        text(ox - 18, oy - 256, "y", size=16),
+        text(S((168, 0))[0] + 8, S((168, 0))[1] + 20, "before", fill=INK2, size=13),
+        text(S(L2[1])[0] + 10, S(L2[1])[1] - 6, "after", fill=CORAL, size=14),
+        text(mid[0] + 6, mid[1] + 4, "turn", fill=CORAL, size=13),
     ]
-    return svg(round(w), round(h), "\n".join(body))
+    return svg(460, 360, "\n".join(body))
 
 
 def _iso(p, ox, oy, S):
