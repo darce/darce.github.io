@@ -135,7 +135,8 @@
 }
 
 .projectItemInner {
-    padding: $s-medium;
+    padding: 0;
+    overflow: hidden;
 
     @include themeComponent($themes) {
         background-color: t('surface');
@@ -143,24 +144,23 @@
 }
 
 .projectHead {
-    display: flex;
-    align-items: flex-start;
-    gap: $s-medium;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: stretch;
+    overflow: hidden;
 }
 
 .projectIcon {
+    position: relative;
+    z-index: 0;
     box-sizing: border-box;
-    flex: 0 0 $s-x-large;
-    width: $s-x-large;
-    height: $s-x-large;
+    height: 100%;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-    border: $s-line solid;
-
-    @include themeComponent($themes) {
-        border-color: t('text');
-    }
 
     img {
+        position: absolute;
+        inset: 0;
         display: block;
         width: 100%;
         height: 100%;
@@ -170,8 +170,14 @@
 }
 
 .projectText {
-    flex: 1;
+    position: relative;
+    z-index: 1;
     min-width: 0;
+    padding: $s-medium;
+
+    @include themeComponent($themes) {
+        background-color: t('surface');
+    }
 }
 
 .projectTitle {
