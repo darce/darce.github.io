@@ -137,6 +137,8 @@ const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
 
 The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
 
+This demo uses **column vectors** and $v' = Mv$ (matrix on the left). Composition is right-to-left: apply $R_x$, then $R_y$, then $R_z$. Rotations are **active** (they move the cube; the axes stay put) and **right-handed**: a positive angle is counterclockwise when you look along the axis toward the origin. Screens flip $y$, so the same $R_z$ looks clockwise on the page. The view step later is not a rotation — it is a projective scale.
+
 Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative.
 
 <Diagram
@@ -148,13 +150,19 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
 ```typescript
-export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
+export const transformPoints = (
+    vertexArray: Vertex[],
+    angleX: number,
+    angleY: number,
+    angleZ: number,
+    scale: number,
+    eyeDistance: number,
+) => {
     let rotatedPoints = rotationX(vertexArray, angleX)
     rotatedPoints = rotationY(rotatedPoints, angleY)
     rotatedPoints = rotationZ(rotatedPoints, angleZ)
     const scaledPoints = scaleXYZ(rotatedPoints, scale)
-    const projectedPoints = projectPoints(scaledPoints, distance)
-    return projectedPoints
+    return projectPoints(scaledPoints, eyeDistance)
 }
 ```
 
@@ -166,34 +174,34 @@ After rotation the cube is still in 3D. The screen is 2D.
 
 A ray from the eye through the screen hits the point. Where it crosses the screen is what you draw.
 
-The gap from the eye to the screen is the **focal length** $F$. The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of the point:
+The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). In that setup $d$ is also the **focal length**. The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of the point:
 
-$$\text{height on screen} = \text{height in space} \times \frac{F}{\text{depth}}$$
+$$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
 
-Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot F / A_z$, with $F$ for the usual $B_z$.
+Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="An eye looking at a vertical screen. A ray through B on the screen hits point A. Dimensions mark F, Ax, Az, and Bx."
-    caption="Bx = Ax · F / Az. F is the focal length. A is the point, B is where the ray hits the screen."
+    alt="An eye looking at a vertical screen. A ray through B on the screen hits point A. Dimensions mark d, Ax, Az, and Bx."
+    caption="Bx = Ax · d / Az. d is the eye–plane distance (focal length in this setup). A is the point, B is where the ray hits the screen."
 />
 
-The demo stores $F$ as `distance` and folds the shrink into one scale per vertex, $f = 1/(d - z)$. Same $F$, two depths: the far point lands closer to the middle.
+The demo stores that constant as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Focal length is baked to $1$ in these units, so $s$ is $1/w$ after a homogeneous multiply — not a second focal length. Same $d$, two depths: the far point lands closer to the middle.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="An eye, a screen a focal length F away, and two rays to a near point and a far point. Hits are labeled x prime and x double prime. A d minus z mark sits past the screen."
-    caption="f = 1/(d − z). Same F, two depths. The far hit x″ sits closer to the middle than x′."
+    alt="An eye, a screen an eye-distance d away, and two rays to a near point and a far point. Hits are labeled x prime and x double prime. A d minus z mark sits past the screen."
+    caption="s = 1/(d − z). Same eye distance d, two depths. The far hit x″ sits closer to the middle than x′."
 />
 
 ```typescript
-const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
     const result: Vertex[] = []
     vertexArray.forEach(vertex => {
-        const f = 1 / (distance - vertex.z)
+        const perspectiveScale = 1 / (eyeDistance - vertex.z)
         const projectionMatrix = [
-            [f, 0, 0],
-            [0, f, 0],
+            [perspectiveScale, 0, 0],
+            [0, perspectiveScale, 0],
             [0, 0, 1]
         ]
         result.push(matrixMultiplyVertex(projectionMatrix, vertex))

@@ -43,7 +43,15 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
 
     const updateVertices = useCallback(() => {
         rafPending.current = false
-        const transformedVertices = MatrixTransforms.transformPoints(verticesRef.current, angleXRef.current, angleYRef.current, angleZRef.current, 500, 10)
+        const eyeDistance = 10
+        const transformedVertices = MatrixTransforms.transformPoints(
+            verticesRef.current,
+            angleXRef.current,
+            angleYRef.current,
+            angleZRef.current,
+            500,
+            eyeDistance,
+        )
         setVertices(transformedVertices)
     }, [])
 
