@@ -1,27 +1,72 @@
 #!/usr/bin/env python3
-"""Beginner geometry plates for the rotation-matrices article.
+"""Geometry plates for the rotation-matrices article.
 
-Physics, not node graphs. Labels match the article: d, s = 1/(d − z),
-Ax / Az / Bx. No focal-length F. Tokens from styles/palettes.scss.
+Manim-shaped architecture (Scene / Mobject / Camera / copy+rotate), not
+the Manim library. Site tokens, hard-edge SVG. No focal-length F.
 """
 
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass, field
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[1] / "public" / "images" / "research"
 
 PAPER = "#e7eaef"
-SURFACE = "#f2f4f7"
 INK = "#171920"
 INK2 = "#464c5c"
 CORAL = "#d9253f"
 BLUE = "#3c00f7"
 FONT = "ui-monospace, GeistMonoVariableVF, Helvetica, monospace"
 
+# Stroke hierarchy — Manim-like: axes quieter than the subject.
+SW_AXIS = 1.6
+SW_SHAPE = 1.9
+SW_ARC = 2.6
+SW_BRACE = 1.4
 
-def svg(w: float, h: float, body: str, *, x: float = 0, y: float = 0) -> str:
+
+# ---------------------------------------------------------------------------
+# Camera
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class Camera:
+    """Projects world points to SVG. One camera per scene; frames share it."""
+
+    ox: float
+    oy: float
+    scale: float
+    kind: str = "zup"  # zup | pinhole | flat
+
+    def project(self, p: tuple) -> tuple[float, float]:
+        if self.kind == "flat":
+            x, y = p[0], p[1]
+            return (self.ox + x, self.oy - y)
+        if self.kind == "pinhole":
+            x, y, z = p
+            return (
+                self.ox + 0.88 * self.scale * z + 0.52 * self.scale * y,
+                self.oy - 0.92 * self.scale * x - 0.38 * self.scale * z + 0.30 * self.scale * y,
+            )
+        x, y, z = p
+        return (
+            self.ox + self.scale * x + 0.55 * self.scale * y,
+            self.oy - self.scale * z + 0.32 * self.scale * y,
+        )
+
+    def shifted(self, dx: float) -> Camera:
+        return Camera(self.ox + dx, self.oy, self.scale, self.kind)
+
+
+# ---------------------------------------------------------------------------
+# SVG primitives
+# ---------------------------------------------------------------------------
+
+
+def _svg(w: float, h: float, body: str, *, x: float = 0, y: float = 0) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x:.1f} {y:.1f} {w:.1f} {h:.1f}" '
         f'width="{w:.0f}" height="{h:.0f}" role="img">\n'
@@ -30,14 +75,14 @@ def svg(w: float, h: float, body: str, *, x: float = 0, y: float = 0) -> str:
     )
 
 
-def crop(pts: list, pad: float = 28) -> tuple[float, float, float, float]:
+def _crop(pts: list, pad: float = 22) -> tuple[float, float, float, float]:
     xs = [p[0] for p in pts]
     ys = [p[1] for p in pts]
     x0, y0 = min(xs) - pad, min(ys) - pad
     return x0, y0, max(xs) - x0 + pad, max(ys) - y0 + pad
 
 
-def defs(prefix: str) -> str:
+def _defs(prefix: str) -> str:
     parts = []
     for name, color in (("ink", INK), ("coral", CORAL), ("blue", BLUE)):
         parts.append(
@@ -49,14 +94,14 @@ def defs(prefix: str) -> str:
     return "<defs>\n" + "\n".join(parts) + "\n</defs>"
 
 
-def text(x, y, s, *, size=13, fill=INK, anchor="start") -> str:
+def _text(x, y, s, *, size=13, fill=INK, anchor="start") -> str:
     return (
         f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
         f'fill="{fill}" text-anchor="{anchor}">{s}</text>'
     )
 
 
-def line(x1, y1, x2, y2, *, stroke=INK, width=1.2, end=None, dash=None) -> str:
+def _line(x1, y1, x2, y2, *, stroke=INK, width=1.2, end=None, dash=None) -> str:
     extra = ""
     if end:
         extra += f' marker-end="url(#{end})"'
@@ -68,87 +113,445 @@ def line(x1, y1, x2, y2, *, stroke=INK, width=1.2, end=None, dash=None) -> str:
     )
 
 
-def dim_h(x1, y, x2, label, *, color=INK2, sub=None) -> list[str]:
-    """Horizontal measure with end ticks."""
-    mid = (x1 + x2) / 2
-    out = [
-        line(x1, y, x2, y, stroke=color, width=1),
-        line(x1, y - 4, x1, y + 4, stroke=color, width=1),
-        line(x2, y - 4, x2, y + 4, stroke=color, width=1),
-        text(mid, y + 16, label, size=15, fill=color, anchor="middle"),
-    ]
-    if sub:
-        out.append(text(mid, y + 32, sub, size=11, fill=color, anchor="middle"))
-    return out
+def _circle(x, y, r, *, fill=INK) -> str:
+    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"/>'
 
 
-def dim_v(x, y1, y2, label, *, color=INK2, side=-1) -> list[str]:
-    """Vertical measure with end ticks. side −1 = label to the left."""
-    mid = (y1 + y2) / 2
-    lx = x + 12 * side
-    return [
-        line(x, y1, x, y2, stroke=color, width=1),
-        line(x - 4, y1, x + 4, y1, stroke=color, width=1),
-        line(x - 4, y2, x + 4, y2, stroke=color, width=1),
-        text(lx, mid + 4, label, size=13, fill=color, anchor="end" if side < 0 else "start"),
-    ]
-
-
-def circle(x, y, r, *, fill=INK, stroke=None, sw=0) -> str:
-    extra = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ""
-    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"{extra}/>'
-
-
-def eye_side(cx: float, cy: float) -> str:
-    """Wiki-style side view: two rays + quarter-circle, opening toward the screen.
-
-    Same mark as Perspective_transform_diagram.svg (axes + arc at the camera).
-    (cx, cy) is the ray origin.
-    """
-    r = 18.0
-    arm = 22.0
-    # 90° opening, looking right — same as the wiki triad, aimed down the axis
-    a0, a1 = math.radians(-45), math.radians(45)
-    ux = cx + arm * math.cos(a1)
-    uy = cy - arm * math.sin(a1)
-    lx = cx + arm * math.cos(a0)
-    ly = cy - arm * math.sin(a0)
-    ax0 = cx + r * math.cos(a1)
-    ay0 = cy - r * math.sin(a1)
-    ax1 = cx + r * math.cos(a0)
-    ay1 = cy - r * math.sin(a0)
-    fill = (
-        f'<path d="M{cx:.1f},{cy:.1f} L{ax0:.1f},{ay0:.1f} '
-        f'A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f} Z" '
-        f'fill="{PAPER}" stroke="none"/>'
+def _eq(x, y, parts, *, size=15, anchor="middle") -> str:
+    inner = "".join(f'<tspan fill="{c}">{s}</tspan>' for s, c in parts)
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
+        f'text-anchor="{anchor}">{inner}</text>'
     )
-    lids = (
-        f'<path d="M{ux:.1f},{uy:.1f} L{cx:.1f},{cy:.1f} L{lx:.1f},{ly:.1f}" '
-        f'fill="none" stroke="{INK}" stroke-width="1.6" stroke-linejoin="miter"/>'
-    )
-    arc = (
-        f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f}" '
-        f'fill="none" stroke="{INK}" stroke-width="1.6"/>'
-    )
-    return "\n".join([fill, lids, arc])
 
 
-def write(name: str, content: str) -> Path:
+def _write(name: str, content: str) -> Path:
     path = OUT / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
     return path
 
 
-def _arc_arrow(ox, oy, r, a0, a1, *, color=CORAL, ccw=True) -> str:
+# ---------------------------------------------------------------------------
+# Transforms (active, right-handed, column-vector)
+# ---------------------------------------------------------------------------
+
+
+def rx(p, a):
+    x, y, z = p
+    c, s = math.cos(a), math.sin(a)
+    return (x, y * c - z * s, y * s + z * c)
+
+
+def ry(p, a):
+    x, y, z = p
+    c, s = math.cos(a), math.sin(a)
+    return (x * c + z * s, y, -x * s + z * c)
+
+
+def rz(p, a):
+    x, y, z = p
+    c, s = math.cos(a), math.sin(a)
+    return (x * c - y * s, x * s + y * c, z)
+
+
+def rot2(p, a):
+    x, y = p[0], p[1]
+    c, s = math.cos(a), math.sin(a)
+    return (x * c - y * s, x * s + y * c)
+
+
+_AXIS_FN = {"x": rx, "y": ry, "z": rz}
+
+
+# ---------------------------------------------------------------------------
+# Mobjects
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class Poly:
+    """Closed polygon in world space. copy() + rotate() is the Manim habit."""
+
+    points: list
+    stroke: str = CORAL
+    fill: str = CORAL
+    width: float = SW_SHAPE
+    opacity: float = 0.20
+    dash: str | None = None
+
+    def copy(self) -> Poly:
+        return Poly(list(self.points), self.stroke, self.fill, self.width, self.opacity, self.dash)
+
+    def faded(self) -> Poly:
+        g = self.copy()
+        g.stroke, g.fill, g.width, g.opacity, g.dash = INK2, INK2, 1.2, 0.10, "5 4"
+        return g
+
+    def rotate(self, axis: str, angle: float) -> Poly:
+        fn = _AXIS_FN[axis]
+        self.points = [fn(p, angle) for p in self.points]
+        return self
+
+    def rotate2(self, angle: float) -> Poly:
+        self.points = [rot2(p, angle) for p in self.points]
+        return self
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        q = [cam.project(p) for p in self.points]
+        d = " ".join(f"{x:.1f},{y:.1f}" for x, y in q)
+        extra = f' stroke-dasharray="{self.dash}"' if self.dash else ""
+        part = (
+            f'<polygon points="{d}" fill="{self.fill}" fill-opacity="{self.opacity}" '
+            f'stroke="{self.stroke}" stroke-width="{self.width}"{extra}/>'
+        )
+        return [part], q
+
+
+def L_floor() -> Poly:
+    return Poly(
+        [
+            (0.06, 0.06, 0.0),
+            (1.32, 0.06, 0.0),
+            (1.32, 0.38, 0.0),
+            (0.38, 0.38, 0.0),
+            (0.38, 1.32, 0.0),
+            (0.06, 1.32, 0.0),
+        ]
+    )
+
+
+def L_flat() -> Poly:
+    """2D L in the first quadrant, pixel units for the apply plate."""
+    return Poly(
+        [(36, 0), (168, 0), (168, 40), (76, 40), (76, 168), (36, 168)],
+        width=1.7,
+        opacity=0.12,
+    )
+
+
+@dataclass
+class Axes:
+    """Always-on basis. Highlight the axis that is changing this beat."""
+
+    reach: tuple = (1.35, 1.35, 1.25)
+    highlight: str | None = None
+    prefix: str = "ax"
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        o = cam.project((0, 0, 0) if cam.kind != "flat" else (0, 0))
+        tips = {
+            "x": cam.project((self.reach[0], 0, 0) if cam.kind != "flat" else (self.reach[0], 0)),
+            "y": cam.project((0, self.reach[1], 0) if cam.kind != "flat" else (0, self.reach[1])),
+            "z": cam.project((0, 0, self.reach[2])) if cam.kind != "flat" else None,
+        }
+        parts = [_defs(self.prefix)]
+        pts = [o]
+        for name, tip in tips.items():
+            if tip is None:
+                continue
+            color = CORAL if self.highlight == name else INK
+            end = f"{self.prefix}-coral" if self.highlight == name else f"{self.prefix}-ink"
+            parts.append(_line(o[0], o[1], tip[0], tip[1], stroke=color, width=SW_AXIS, end=end))
+            if name == "x":
+                parts.append(_text(tip[0] + 8, tip[1] + 5, "x", size=15, fill=color))
+            elif name == "y":
+                dy = 14 if cam.kind == "pinhole" else 6
+                parts.append(_text(tip[0] + 10, tip[1] + dy, "y", size=15, fill=color))
+            else:
+                parts.append(_text(tip[0] - 16, tip[1] - 4, "z", size=15, fill=color))
+            pts.append(tip)
+        return parts, pts
+
+
+@dataclass
+class Floor:
+    size: float = 1.35
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        s = self.size
+        poly = Poly(
+            [(0, 0, 0), (s, 0, 0), (s, s, 0), (0, s, 0)],
+            stroke=INK2,
+            fill=INK2,
+            width=0.9,
+            opacity=0.07,
+        )
+        return poly.draw(cam)
+
+
+@dataclass
+class Arc:
+    """Turn arrow in the plane perpendicular to `axis`."""
+
+    axis: str
+    r: float = 0.86
+    a0: float = 0.08
+    a1: float = 0.98
+    color: str = CORAL
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        world = []
+        for i in range(19):
+            t = self.a0 + (self.a1 - self.a0) * i / 18
+            c, s = math.cos(t), math.sin(t)
+            if self.axis == "z":
+                world.append((self.r * c, self.r * s, 0.0))
+            else:
+                world.append((0.0, self.r * c, self.r * s))
+        q = [cam.project(p) for p in world]
+        d = f"M{q[0][0]:.1f},{q[0][1]:.1f}" + "".join(f" L{p[0]:.1f},{p[1]:.1f}" for p in q[1:])
+        a, b = q[-2], q[-1]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        length = math.hypot(dx, dy) or 1.0
+        ux, uy = dx / length, dy / length
+        nx, ny = -uy, ux
+        ah, aw = 16, 9
+        p1 = (b[0] + ux * 2, b[1] + uy * 2)
+        p2 = (b[0] - ah * ux + aw * nx, b[1] - ah * uy + aw * ny)
+        p3 = (b[0] - ah * ux - aw * nx, b[1] - ah * uy - aw * ny)
+        parts = [
+            f'<path d="{d}" fill="none" stroke="{self.color}" stroke-width="{SW_ARC}" '
+            f'stroke-linecap="round" stroke-linejoin="round"/>',
+            f'<polygon points="{p1[0]:.1f},{p1[1]:.1f} {p2[0]:.1f},{p2[1]:.1f} '
+            f'{p3[0]:.1f},{p3[1]:.1f}" fill="{self.color}"/>',
+        ]
+        return parts, q
+
+
+@dataclass
+class Label:
+    """next_to a world point — Manim attachment, not a free-floating string."""
+
+    point: tuple
+    text: str
+    color: str = INK
+    size: int = 13
+    dx: float = 8
+    dy: float = -8
+    anchor: str = "start"
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        x, y = cam.project(self.point)
+        px, py = x + self.dx, y + self.dy
+        span = 7.4 * len(self.text)
+        if self.anchor == "end":
+            box = [(px - span, py), (px, py)]
+        elif self.anchor == "middle":
+            box = [(px - span / 2, py), (px + span / 2, py)]
+        else:
+            box = [(px, py), (px + span, py)]
+        return [_text(px, py, self.text, size=self.size, fill=self.color, anchor=self.anchor)], box
+
+
+@dataclass
+class Title:
+    text: str
+    size: int = 16
+    color: str = INK
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        # Sit above the z-tip of the shared basis.
+        if cam.kind == "flat":
+            p = cam.project((0, cam.scale if False else 0))
+            pt = (cam.ox - 8, 28)
+        else:
+            z = cam.project((0, 0, 1.25))
+            pt = (cam.ox - 8, z[1] - 28)
+        return [_text(pt[0], pt[1], self.text, size=self.size, fill=self.color)], [pt]
+
+
+@dataclass
+class Note:
+    text: str
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        # Below the floor far corner.
+        if cam.kind == "zup":
+            far = cam.project((0.0, 1.35, 0.0))
+            pt = (cam.ox - 8, far[1] + 28)
+        else:
+            pt = (cam.ox - 8, cam.oy + 36)
+        return [_text(pt[0], pt[1], self.text, size=13, fill=INK2)], [
+            pt,
+            (pt[0] + 7.2 * len(self.text), pt[1]),
+        ]
+
+
+@dataclass
+class Brace:
+    """Hard-edge brace attached to a world-space segment."""
+
+    a: tuple
+    b: tuple
+    label: str
+    color: str = INK2
+    offset: float = 30
+    size: int = 14
+    nudge: tuple[float, float] = (0.0, 0.0)
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        a, b = cam.project(self.a), cam.project(self.b)
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        length = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / length, dx / length
+        off = self.offset
+        if off < 0:
+            nx, ny = -nx, -ny
+            off = abs(off)
+        tick, nub = 9.0, 7.0
+        a2 = (a[0] + nx * off, a[1] + ny * off)
+        b2 = (b[0] + nx * off, b[1] + ny * off)
+        a1 = (a[0] + nx * (off - tick), a[1] + ny * (off - tick))
+        b1 = (b[0] + nx * (off - tick), b[1] + ny * (off - tick))
+        mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
+        nub_pt = (mx + nx * nub, my + ny * nub)
+        lx = mx + nx * (nub + 16) + self.nudge[0]
+        ly = my + ny * (nub + 16) + 4 + self.nudge[1]
+        parts = [
+            _line(a1[0], a1[1], a2[0], a2[1], stroke=self.color, width=SW_BRACE),
+            _line(a2[0], a2[1], b2[0], b2[1], stroke=self.color, width=SW_BRACE),
+            _line(b2[0], b2[1], b1[0], b1[1], stroke=self.color, width=SW_BRACE),
+            _line(mx, my, nub_pt[0], nub_pt[1], stroke=self.color, width=SW_BRACE),
+            _text(lx, ly, self.label, size=self.size, fill=self.color, anchor="middle"),
+        ]
+        return parts, [a1, b1, a2, b2, nub_pt, (lx, ly)]
+
+
+@dataclass
+class Eye:
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        cx, cy = cam.project((0.0, 0.0, 0.0))
+        r, arm = 18.0, 22.0
+        a0, a1 = math.radians(-45), math.radians(45)
+        ux, uy = cx + arm * math.cos(a1), cy - arm * math.sin(a1)
+        lx, ly = cx + arm * math.cos(a0), cy - arm * math.sin(a0)
+        ax0, ay0 = cx + r * math.cos(a1), cy - r * math.sin(a1)
+        ax1, ay1 = cx + r * math.cos(a0), cy - r * math.sin(a0)
+        parts = [
+            f'<path d="M{cx:.1f},{cy:.1f} L{ax0:.1f},{ay0:.1f} '
+            f'A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f} Z" fill="{PAPER}" stroke="none"/>',
+            f'<path d="M{ux:.1f},{uy:.1f} L{cx:.1f},{cy:.1f} L{lx:.1f},{ly:.1f}" '
+            f'fill="none" stroke="{INK}" stroke-width="1.6" stroke-linejoin="miter"/>',
+            f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 1 {ax1:.1f},{ay1:.1f}" '
+            f'fill="none" stroke="{INK}" stroke-width="1.6"/>',
+        ]
+        return parts, [(cx, cy), (ux, uy), (lx, ly)]
+
+
+@dataclass
+class Dot:
+    point: tuple
+    color: str = INK
+    r: float = 5.5
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        x, y = cam.project(self.point)
+        return [_circle(x, y, self.r, fill=self.color)], [(x, y)]
+
+
+@dataclass
+class Seg:
+    a: tuple
+    b: tuple
+    color: str = INK
+    width: float = 1.4
+    dash: str | None = None
+    end: str | None = None
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        a, b = cam.project(self.a), cam.project(self.b)
+        return [_line(a[0], a[1], b[0], b[1], stroke=self.color, width=self.width, end=self.end, dash=self.dash)], [
+            a,
+            b,
+        ]
+
+
+@dataclass
+class Screen:
+    d: float
+    hx: float = 1.28
+    hy: float = 0.82
+
+    def corners(self) -> list:
+        return [
+            (self.hx, -self.hy, self.d),
+            (self.hx, self.hy, self.d),
+            (-self.hx * 0.56, self.hy, self.d),
+            (-self.hx * 0.56, -self.hy, self.d),
+        ]
+
+    def top(self, cam: Camera) -> tuple[float, float]:
+        q = [cam.project(p) for p in self.corners()[:2]]
+        return ((q[0][0] + q[1][0]) / 2, min(q[0][1], q[1][1]))
+
+    def draw(self, cam: Camera) -> tuple[list[str], list]:
+        q = [cam.project(p) for p in self.corners()]
+        d = " ".join(f"{x:.1f},{y:.1f}" for x, y in q)
+        tx, ty = self.top(cam)
+        lab = (tx, ty - 14)
+        parts = [
+            f'<polygon points="{d}" fill="{BLUE}" fill-opacity="0.10" '
+            f'stroke="{BLUE}" stroke-width="1.6"/>',
+            _text(lab[0], lab[1], "screen", size=14, fill=BLUE, anchor="middle"),
+        ]
+        return parts, [*q, lab]
+
+
+# ---------------------------------------------------------------------------
+# Scene
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class Scene:
+    camera: Camera
+    prefix: str = "sc"
+    items: list = field(default_factory=list)
+
+    def add(self, *mobs) -> Scene:
+        self.items.extend(mobs)
+        return self
+
+    def render(self, *, pad: float = 22, min_w: float = 0, min_h: float = 0) -> str:
+        parts: list[str] = []
+        pts: list = []
+        for mob in self.items:
+            p, q = mob.draw(self.camera)
+            parts.extend(p)
+            pts.extend(q)
+        x0, y0, w, h = _crop(pts, pad=pad)
+        if w < min_w:
+            x0 -= (min_w - w) / 2
+            w = min_w
+        if h < min_h:
+            y0 -= (min_h - h) / 2
+            h = min_h
+        return _svg(w, h, "\n".join(parts), x=x0, y=y0)
+
+    def gather(self) -> tuple[list[str], list]:
+        parts: list[str] = []
+        pts: list = []
+        for mob in self.items:
+            p, q = mob.draw(self.camera)
+            parts.extend(p)
+            pts.extend(q)
+        return parts, pts
+
+
+# ---------------------------------------------------------------------------
+# 2D plates
+# ---------------------------------------------------------------------------
+
+
+def _arc2(ox, oy, r, a0, a1, *, color=CORAL, ccw=True) -> str:
     x0 = ox + r * math.cos(a0)
     y0 = oy - r * math.sin(a0)
     x1 = ox + r * math.cos(a1)
     y1 = oy - r * math.sin(a1)
     sweep = 0 if ccw else 1
     am = a0 + 0.72 * (a1 - a0)
-    mx = ox + r * math.cos(am)
-    my = oy - r * math.sin(am)
+    mx, my = ox + r * math.cos(am), oy - r * math.sin(am)
     tang = am + (math.pi / 2 if ccw else -math.pi / 2)
     ah, aw = 9, 5
     tx, ty = math.cos(tang), -math.sin(tang)
@@ -165,454 +568,241 @@ def _arc_arrow(ox, oy, r, a0, a1, *, color=CORAL, ccw=True) -> str:
 
 
 def counterclockwise() -> str:
-    """Math frame: y up, turn left from +x."""
-    ox, oy = 78, 292
-    reach = 230
-    ang = math.radians(32)
-    px = ox + reach * math.cos(ang)
-    py = oy - reach * math.sin(ang)
+    ox, oy, reach, ang = 78, 292, 230, math.radians(32)
+    px, py = ox + reach * math.cos(ang), oy - reach * math.sin(ang)
     body = [
-        defs("ccw"),
-        line(ox, oy, ox + reach + 8, oy, width=1.6, end="ccw-ink"),
-        line(ox, oy, ox, oy - reach - 8, width=1.6, end="ccw-ink"),
-        line(ox, oy, px, py, stroke=CORAL, width=2, end="ccw-coral"),
-        _arc_arrow(ox, oy, 72, 0, ang, ccw=True),
-        text(ox + reach + 16, oy + 5, "x", size=16),
-        text(ox - 20, oy - reach - 14, "y", size=16),
-        text(ox + 88, oy - 18, "θ", size=16, fill=CORAL),
-        text(24, 328, "y points up — the usual math picture", size=12, fill=INK2),
+        _defs("ccw"),
+        _line(ox, oy, ox + reach + 8, oy, width=SW_AXIS, end="ccw-ink"),
+        _line(ox, oy, ox, oy - reach - 8, width=SW_AXIS, end="ccw-ink"),
+        _line(ox, oy, px, py, stroke=CORAL, width=2, end="ccw-coral"),
+        _arc2(ox, oy, 72, 0, ang, ccw=True),
+        _text(ox + reach + 16, oy + 5, "x", size=16),
+        _text(ox - 20, oy - reach - 14, "y", size=16),
+        _text(ox + 88, oy - 18, "θ", size=16, fill=CORAL),
+        _text(24, 328, "y points up — the usual math picture", size=12, fill=INK2),
     ]
-    return svg(360, 348, "\n".join(body))
+    return _svg(360, 348, "\n".join(body))
 
 
 def clockwise() -> str:
-    """Screen frame: y down, turn right from +x."""
-    ox, oy = 78, 48
-    reach = 230
-    ang = math.radians(32)
-    px = ox + reach * math.cos(ang)
-    py = oy + reach * math.sin(ang)
+    ox, oy, reach, ang = 78, 48, 230, math.radians(32)
+    px, py = ox + reach * math.cos(ang), oy + reach * math.sin(ang)
     body = [
-        defs("cw"),
-        line(ox, oy, ox + reach + 8, oy, width=1.6, end="cw-ink"),
-        line(ox, oy, ox, oy + reach + 8, width=1.6, end="cw-ink"),
-        line(ox, oy, px, py, stroke=CORAL, width=2, end="cw-coral"),
-        _arc_arrow(ox, oy, 72, 0, -ang, ccw=False),
-        text(ox + reach + 16, oy + 5, "x", size=16),
-        text(ox - 20, oy + reach + 22, "y", size=16),
-        text(ox + 88, oy + 32, "θ", size=16, fill=CORAL),
-        text(24, 328, "y points down — how a screen is numbered", size=12, fill=INK2),
+        _defs("cw"),
+        _line(ox, oy, ox + reach + 8, oy, width=SW_AXIS, end="cw-ink"),
+        _line(ox, oy, ox, oy + reach + 8, width=SW_AXIS, end="cw-ink"),
+        _line(ox, oy, px, py, stroke=CORAL, width=2, end="cw-coral"),
+        _arc2(ox, oy, 72, 0, -ang, ccw=False),
+        _text(ox + reach + 16, oy + 5, "x", size=16),
+        _text(ox - 20, oy + reach + 22, "y", size=16),
+        _text(ox + 88, oy + 32, "θ", size=16, fill=CORAL),
+        _text(24, 328, "y points down — how a screen is numbered", size=12, fill=INK2),
     ]
-    return svg(360, 348, "\n".join(body))
-
-
-def _rot2(p, ang):
-    x, y = p
-    c, s = math.cos(ang), math.sin(ang)
-    return (x * c - y * s, x * s + y * c)
+    return _svg(360, 348, "\n".join(body))
 
 
 def apply_rotation() -> str:
-    """Flat x–y plane. A simple L turns around the origin."""
-    ox, oy = 200, 312
+    cam = Camera(200, 312, 1, kind="flat")
     ang = math.radians(50)
-    # L in the first quadrant — any rigid shape; orientation is obvious
-    L = [(36, 0), (168, 0), (168, 40), (76, 40), (76, 168), (36, 168)]
-    L2 = [_rot2(p, ang) for p in L]
-
-    def S(p):
-        return (ox + p[0], oy - p[1])
-
-    def poly(pts, *, fill, stroke, width, dash=None):
-        d = " ".join(f"{S(p)[0]:.1f},{S(p)[1]:.1f}" for p in pts)
-        extra = f' stroke-dasharray="{dash}"' if dash else ""
-        return (
-            f'<polygon points="{d}" fill="{fill}" fill-opacity="0.12" '
-            f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
-        )
-
+    before = L_flat().faded()
+    after = L_flat().rotate2(ang)
+    before.opacity = 0.12
+    after.opacity = 0.12
     r = 56
-    ax0, ay0 = S((r, 0))
-    ax1 = ox + r * math.cos(ang)
-    ay1 = oy - r * math.sin(ang)
-    mid = S(_rot2((r - 10, 0), ang * 0.42))
-
-    body = [
-        defs("rd"),
-        line(ox - 160, oy, ox + 220, oy, width=1.5, end="rd-ink"),
-        line(ox, oy + 20, ox, oy - 250, width=1.5, end="rd-ink"),
-        poly(L, fill=INK2, stroke=INK2, width=1.4, dash="6 4"),
-        poly(L2, fill=CORAL, stroke=CORAL, width=1.7),
+    ax0, ay0 = cam.project((r, 0))
+    ax1, ay1 = cam.ox + r * math.cos(ang), cam.oy - r * math.sin(ang)
+    mid = cam.project(rot2((r - 10, 0), ang * 0.42))
+    scene = Scene(cam, "rd")
+    # axes drawn by hand so the 2D frame can extend past the L
+    parts, pts = [], []
+    parts.append(_defs("rd"))
+    parts.append(_line(cam.ox - 160, cam.oy, cam.ox + 220, cam.oy, width=SW_AXIS, end="rd-ink"))
+    parts.append(_line(cam.ox, cam.oy + 20, cam.ox, cam.oy - 250, width=SW_AXIS, end="rd-ink"))
+    for mob in (before, after):
+        p, q = mob.draw(cam)
+        parts.extend(p)
+        pts.extend(q)
+    parts.append(
         f'<path d="M{ax0:.1f},{ay0:.1f} A{r:.1f},{r:.1f} 0 0 0 {ax1:.1f},{ay1:.1f}" '
-        f'fill="none" stroke="{CORAL}" stroke-width="1.4" marker-end="url(#rd-coral)"/>',
-        circle(ox, oy, 3.5, fill=INK),
-        text(ox + 228, oy + 5, "x", size=16),
-        text(ox - 18, oy - 256, "y", size=16),
-        text(S((168, 0))[0] + 8, S((168, 0))[1] + 20, "before", fill=INK2, size=13),
-        text(S(L2[1])[0] + 10, S(L2[1])[1] - 6, "after", fill=CORAL, size=14),
-        text(mid[0] - 4, mid[1] + 2, "θ", fill=CORAL, size=16, anchor="end"),
-    ]
-    return svg(460, 360, "\n".join(body))
-
-
-def _rx(p, a):
-    x, y, z = p
-    c, s = math.cos(a), math.sin(a)
-    return (x, y * c - z * s, y * s + z * c)
-
-
-def _rz(p, a):
-    x, y, z = p
-    c, s = math.cos(a), math.sin(a)
-    return (x * c - y * s, x * s + y * c, z)
-
-
-def _iso_zup(p, ox, oy, S):
-    """z up, x right, y receding — world frame for Rx / Rz."""
-    x, y, z = p
-    return (ox + S * x + 0.55 * S * y, oy - S * z + 0.32 * S * y)
-
-
-def _l_floor():
-    return [
-        (0.06, 0.06, 0.0),
-        (1.32, 0.06, 0.0),
-        (1.32, 0.38, 0.0),
-        (0.38, 0.38, 0.0),
-        (0.38, 1.32, 0.0),
-        (0.06, 1.32, 0.0),
-    ]
-
-
-def _apply_ops(pts, ops, ang):
-    out = pts
-    for fn in ops:
-        out = [fn(p, ang) for p in out]
-    return out
-
-
-def _iso_arc(P, pts3, *, color, width=2.4) -> str:
-    q = [P(p) for p in pts3]
-    d = f"M{q[0][0]:.1f},{q[0][1]:.1f}" + "".join(f" L{p[0]:.1f},{p[1]:.1f}" for p in q[1:])
-    a, b = q[-2], q[-1]
-    dx, dy = b[0] - a[0], b[1] - a[1]
-    length = math.hypot(dx, dy) or 1.0
-    ux, uy = dx / length, dy / length
-    nx, ny = -uy, ux
-    ah, aw = 16, 9
-    p1 = (b[0] + ux * 2, b[1] + uy * 2)
-    p2 = (b[0] - ah * ux + aw * nx, b[1] - ah * uy + aw * ny)
-    p3 = (b[0] - ah * ux - aw * nx, b[1] - ah * uy - aw * ny)
-    return (
-        f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{width}" '
-        f'stroke-linecap="round" stroke-linejoin="round"/>'
-        f'<polygon points="{p1[0]:.1f},{p1[1]:.1f} {p2[0]:.1f},{p2[1]:.1f} '
-        f'{p3[0]:.1f},{p3[1]:.1f}" fill="{color}"/>'
+        f'fill="none" stroke="{CORAL}" stroke-width="1.4" marker-end="url(#rd-coral)"/>'
     )
+    parts.append(_circle(cam.ox, cam.oy, 3.5, fill=INK))
+    parts.append(_text(cam.ox + 228, cam.oy + 5, "x", size=16))
+    parts.append(_text(cam.ox - 18, cam.oy - 256, "y", size=16))
+    tip_b = cam.project(before.points[1])
+    tip_a = cam.project(after.points[1])
+    parts.append(_text(tip_b[0] + 8, tip_b[1] + 20, "before", fill=INK2, size=13))
+    parts.append(_text(tip_a[0] + 10, tip_a[1] - 6, "after", fill=CORAL, size=14))
+    parts.append(_text(mid[0] - 4, mid[1] + 2, "θ", fill=CORAL, size=16, anchor="end"))
+    return _svg(460, 360, "\n".join(parts))
 
 
-def _arc_pts(axis: str, r: float, a0: float, a1: float, n: int = 18):
-    out = []
-    for i in range(n + 1):
-        t = a0 + (a1 - a0) * i / n
-        c, s = math.cos(t), math.sin(t)
-        if axis == "z":
-            out.append((r * c, r * s, 0.0))
-        else:
-            out.append((0.0, r * c, r * s))
-    return out
+# ---------------------------------------------------------------------------
+# Combining — same L, successive rotate()
+# ---------------------------------------------------------------------------
 
 
-def combine_frame(
+COMBINE_CAM = Camera(90, 210, 132, kind="zup")
+COMBINE_SIZE = (490.0, 320.0)
+
+
+def _combine_scene(
     prefix: str,
     title: str,
-    current,
-    ghost=None,
+    current: Poly,
+    ghost: Poly | None = None,
     *,
     change: str | None = None,
     ghost_label: str = "",
-    ghost_at: int = 2,
+    ghost_at: int = 5,
     now_label: str = "",
-    now_at: int = 2,
+    now_at: int = 5,
     note: str = "",
-    ox: float | None = None,
-) -> tuple[list, str]:
-    """One isometric step. Returns (crop points, svg body) for a shared camera."""
-    S, ox0, oy = 132, 90, 210
-    if ox is None:
-        ox = ox0
-
-    def P(p):
-        return _iso_zup(p, ox, oy, S)
-
-    def poly(pts, *, fill, stroke, width, dash=None, opacity=0.18):
-        d = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in pts)
-        extra = f' stroke-dasharray="{dash}"' if dash else ""
-        return (
-            f'<polygon points="{d}" fill="{fill}" fill-opacity="{opacity}" '
-            f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
-        )
-
-    o, px, py, pz = P((0, 0, 0)), P((1.35, 0, 0)), P((0, 1.35, 0)), P((0, 0, 1.25))
-    floor = [(0.0, 0.0, 0.0), (1.35, 0.0, 0.0), (1.35, 1.35, 0.0), (0.0, 1.35, 0.0)]
-    geom = [o, px, py, pz, *(P(p) for p in current), *(P(p) for p in floor)]
-    if ghost:
-        geom.extend(P(p) for p in ghost)
-
-    title_pt = (o[0] - 8, pz[1] - 28)
-    note_pt = (o[0] - 8, max(p[1] for p in geom) + 24)
-
-    def axis_ink(name: str) -> tuple[str, str]:
-        if change == name:
-            return CORAL, f"{prefix}-coral"
-        return INK, f"{prefix}-ink"
-
-    x_stroke, x_end = axis_ink("x")
-    z_stroke, z_end = axis_ink("z")
-
-    body = [
-        defs(prefix),
-        poly(floor, fill=INK2, stroke=INK2, width=0.9, opacity=0.07),
-        line(o[0], o[1], px[0], px[1], stroke=x_stroke, width=1.5, end=x_end),
-        line(o[0], o[1], py[0], py[1], width=1.4, end=f"{prefix}-ink"),
-        line(o[0], o[1], pz[0], pz[1], stroke=z_stroke, width=1.5, end=z_end),
-        text(px[0] + 8, px[1] + 5, "x", size=15, fill=x_stroke),
-        text(py[0] + 10, py[1] + 6, "y", size=15),
-        text(pz[0] - 16, pz[1] - 4, "z", size=15, fill=z_stroke),
-        text(title_pt[0], title_pt[1], title, size=16),
-    ]
-    geom.append(title_pt)
+    camera: Camera | None = None,
+) -> Scene:
+    cam = camera or COMBINE_CAM
+    scene = Scene(cam, prefix)
+    scene.add(Axes(highlight=change, prefix=prefix), Floor(), Title(title))
     if change == "z":
-        body.append(_iso_arc(P, _arc_pts("z", 0.86, 0.08, 0.98), color=CORAL, width=2.6))
-        rz = P((1.08, 0.58, 0.0))
-        body.append(text(rz[0] + 8, rz[1] + 6, "Rz", size=16, fill=CORAL))
-        geom.append((rz[0] + 32, rz[1] + 6))
+        scene.add(Arc("z"), Label((1.08, 0.58, 0.0), "Rz", CORAL, 16, dx=8, dy=6))
     elif change == "x":
-        body.append(_iso_arc(P, _arc_pts("x", 0.62, 0.12, 1.05), color=CORAL, width=2.2))
-        rx = ((o[0] + px[0]) / 2, px[1] - 16)
-        body.append(text(rx[0], rx[1], "Rx", size=14, fill=CORAL, anchor="middle"))
-        geom.append(rx)
-    if ghost:
-        body.append(poly(ghost, fill=INK2, stroke=INK2, width=1.2, dash="5 4", opacity=0.10))
+        scene.add(Arc("x", r=0.62, a0=0.12, a1=1.05), Label((0.68, 0.0, 0.0), "Rx", CORAL, 14, dx=0, dy=-16, anchor="middle"))
+    if ghost is not None:
+        scene.add(ghost)
         if ghost_label:
-            g = P(ghost[ghost_at])
-            body.append(text(g[0] + 8, g[1] - 10, ghost_label, size=12, fill=INK2))
-            geom.append((g[0] + 52, g[1] - 10))
-    body.append(poly(current, fill=CORAL, stroke=CORAL, width=1.8, opacity=0.20))
+            scene.add(Label(ghost.points[ghost_at], ghost_label, INK2, 12, dx=8, dy=-10))
+    scene.add(current)
     if now_label:
-        c = P(current[now_at])
-        body.append(text(c[0] - 8, c[1] - 10, now_label, size=13, fill=CORAL, anchor="end"))
-        geom.append((c[0] - 8 * len(now_label), c[1] - 10))
+        scene.add(Label(current.points[now_at], now_label, CORAL, 13, dx=-8, dy=-10, anchor="end"))
     if note:
-        body.append(text(note_pt[0], note_pt[1], note, size=13, fill=INK2))
-        geom.extend([note_pt, (note_pt[0] + 7.2 * len(note), note_pt[1])])
-    return geom, "\n".join(body)
+        scene.add(Note(note))
+    return scene
 
 
 def combine_steps() -> list[tuple[str, str]]:
     ang = math.radians(65)
-    start = _l_floor()
-    after_z = _apply_ops(start, (_rz,), ang)
-    after_zx = _apply_ops(start, (_rz, _rx), ang)
-    after_x = _apply_ops(start, (_rx,), ang)
-    after_xz = _apply_ops(start, (_rx, _rz), ang)
-    specs = [
-        dict(name="rotation-combine-1.svg", prefix="s1", title="1 · start", current=start, note="on the xy floor"),
-        dict(
-            name="rotation-combine-2.svg",
-            prefix="s2",
-            title="2 · apply Rz",
-            current=after_z,
-            ghost=start,
-            change="z",
-            now_label="after Rz",
-            now_at=5,
-            note="changing: turn around z — still flat",
+    start = L_floor()
+    after_z = start.copy().rotate("z", ang)
+    after_zx = after_z.copy().rotate("x", ang)
+    after_x = start.copy().rotate("x", ang)
+    after_xz = after_x.copy().rotate("z", ang)
+
+    beats = [
+        ("rotation-combine-1.svg", _combine_scene("s1", "1 · start", start.copy(), note="on the xy floor")),
+        (
+            "rotation-combine-2.svg",
+            _combine_scene(
+                "s2",
+                "2 · apply Rz",
+                after_z,
+                start.copy().faded(),
+                change="z",
+                now_label="after Rz",
+                note="changing: turn around z — still flat",
+            ),
         ),
-        dict(
-            name="rotation-combine-3.svg",
-            prefix="s3",
-            title="3 · then Rx",
-            current=after_zx,
-            ghost=after_z,
-            change="x",
-            ghost_label="after Rz",
-            ghost_at=5,
-            now_label="tipped",
-            now_at=2,
-            note="changing: that pose tips around x",
+        (
+            "rotation-combine-3.svg",
+            _combine_scene(
+                "s3",
+                "3 · then Rx",
+                after_zx,
+                after_z.copy().faded(),
+                change="x",
+                ghost_label="after Rz",
+                now_label="tipped",
+                now_at=2,
+                note="changing: that pose tips around x",
+            ),
         ),
-        dict(
-            name="rotation-combine-4.svg",
-            prefix="s4",
-            title="4 · other order",
-            current=after_xz,
-            ghost=after_x,
-            change="z",
-            ghost_label="after Rx",
-            ghost_at=5,
-            now_label="then Rz",
-            now_at=5,
-            note="same two turns, reverse order ≠ step 3",
+        (
+            "rotation-combine-4.svg",
+            _combine_scene(
+                "s4",
+                "4 · other order",
+                after_xz,
+                after_x.copy().faded(),
+                change="z",
+                ghost_label="after Rx",
+                now_label="then Rz",
+                note="same two turns, reverse order ≠ step 3",
+            ),
         ),
     ]
-    frames = []
-    all_pts: list = []
-    for spec in specs:
-        name = spec.pop("name")
-        pts, body = combine_frame(**spec)
-        frames.append((name, body))
-        all_pts.extend(pts)
-    x0, y0, w, h = crop(all_pts, pad=20)
-    W, H = max(w, 460.0), max(h, 320.0)
+    gathered = [(name, scene.gather()) for name, scene in beats]
+    all_pts = [p for _, (_, pts) in gathered for p in pts]
+    x0, y0, w, h = _crop(all_pts, pad=20)
+    W, H = max(w, COMBINE_SIZE[0]), max(h, COMBINE_SIZE[1])
     x0 -= (W - w) / 2
     y0 -= (H - h) / 2
-    return [(name, svg(W, H, body, x=x0, y=y0)) for name, body in frames]
+    return [(name, _svg(W, H, "\n".join(parts), x=x0, y=y0)) for name, (parts, _) in gathered]
 
 
 def combine_compare() -> str:
-    """Punchline plate: two finals only, no ghosts, one glance."""
     ang = math.radians(65)
-    start = _l_floor()
-    after_zx = _apply_ops(start, (_rz, _rx), ang)
-    after_xz = _apply_ops(start, (_rx, _rz), ang)
+    start = L_floor()
+    left = start.copy().rotate("z", ang).rotate("x", ang)
+    right = start.copy().rotate("x", ang).rotate("z", ang)
     gap = 340
-    pts_a, body_a = combine_frame("c5a", "Rz then Rx", after_zx)
-    pts_b, body_b = combine_frame("c5b", "Rx then Rz", after_xz, ox=90 + gap)
-    left_o = _iso_zup((0, 0, 0), 90, 210, 132)
-    right_o = _iso_zup((0, 0, 0), 90 + gap, 210, 132)
-    left_x = _iso_zup((1.35, 0, 0), 90, 210, 132)
+    a = _combine_scene("c5a", "Rz then Rx", left)
+    b = _combine_scene("c5b", "Rx then Rz", right, camera=COMBINE_CAM.shifted(gap))
+    pa, qa = a.gather()
+    pb, qb = b.gather()
+    left_x = COMBINE_CAM.project((1.35, 0, 0))
+    right_o = COMBINE_CAM.shifted(gap).project((0, 0, 0))
+    left_o = COMBINE_CAM.project((0, 0, 0))
     neq = ((left_x[0] + right_o[0]) / 2, left_o[1] - 18)
-    mark = text(neq[0], neq[1], "≠", size=28, fill=CORAL, anchor="middle")
-    geom = [*pts_a, *pts_b, neq, (neq[0] - 16, neq[1] - 16), (neq[0] + 16, neq[1] + 16)]
-    x0, y0, w, h = crop(geom, pad=22)
-    H = 320.0
-    if h < H:
-        y0 -= (H - h) / 2
-        h = H
-    return svg(w, h, "\n".join([body_a, body_b, mark]), x=x0, y=y0)
+    parts = pa + pb + [_text(neq[0], neq[1], "≠", size=28, fill=CORAL, anchor="middle")]
+    pts = [*qa, *qb, neq, (neq[0] - 16, neq[1] - 16), (neq[0] + 16, neq[1] + 16)]
+    x0, y0, w, h = _crop(pts, pad=22)
+    if h < COMBINE_SIZE[1]:
+        y0 -= (COMBINE_SIZE[1] - h) / 2
+        h = COMBINE_SIZE[1]
+    return _svg(w, h, "\n".join(parts), x=x0, y=y0)
 
 
-def _iso(p, ox, oy, S):
-    """Isometric pinhole frame: +x up, +y width (right-down), +z depth (right-up).
-
-    Matches the standing image plane: its edges run with x and y; z
-    pierces the plane. Not a 2D side-view triad laid on a 3D plate.
-    """
-    x, y, z = p
-    return (
-        ox + 0.88 * S * z + 0.52 * S * y,
-        oy - 0.92 * S * x - 0.38 * S * z + 0.30 * S * y,
-    )
-
-
-def eq_line(x, y, parts, *, size=14, anchor="middle") -> str:
-    """Colored tspan run so equation tokens match their braces."""
-    inner = "".join(f'<tspan fill="{c}">{s}</tspan>' for s, c in parts)
-    return (
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
-        f'text-anchor="{anchor}">{inner}</text>'
-    )
-
-
-def brace_along(
-    a, b, label, *, offset, color=INK2, size=13, nudge=(0.0, 0.0)
-) -> tuple[list[str], list]:
-    """Hard-edge brace (square C + nub) offset from already-projected a→b."""
-    dx, dy = b[0] - a[0], b[1] - a[1]
-    length = math.hypot(dx, dy) or 1.0
-    nx, ny = -dy / length, dx / length
-    if offset < 0:
-        nx, ny = -nx, -ny
-        off = abs(offset)
-    else:
-        off = offset
-    tick, nub = 9.0, 7.0
-    a2 = (a[0] + nx * off, a[1] + ny * off)
-    b2 = (b[0] + nx * off, b[1] + ny * off)
-    a1 = (a[0] + nx * (off - tick), a[1] + ny * (off - tick))
-    b1 = (b[0] + nx * (off - tick), b[1] + ny * (off - tick))
-    mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
-    nub_pt = (mx + nx * nub, my + ny * nub)
-    lx, ly = mx + nx * (nub + 16) + nudge[0], my + ny * (nub + 16) + 4 + nudge[1]
-    parts = [
-        line(a1[0], a1[1], a2[0], a2[1], stroke=color, width=1.4),
-        line(a2[0], a2[1], b2[0], b2[1], stroke=color, width=1.4),
-        line(b2[0], b2[1], b1[0], b1[1], stroke=color, width=1.4),
-        line(mx, my, nub_pt[0], nub_pt[1], stroke=color, width=1.4),
-        text(lx, ly, label, size=size, fill=color, anchor="middle"),
-    ]
-    return parts, [a1, b1, a2, b2, nub_pt, (lx, ly)]
+# ---------------------------------------------------------------------------
+# Pinhole
+# ---------------------------------------------------------------------------
 
 
 def perspective() -> str:
-    """Isometric pinhole: x up, y across the screen, z through the plane."""
-    ox, oy = 70, 250
-    S = 152
-
-    def proj(p):
-        return _iso(p, ox, oy, S)
-
+    cam = Camera(70, 250, 152, kind="pinhole")
     d, Az, Ax = 1.45, 2.75, 1.18
     Bx = Ax * d / Az
-
-    eye = (0.0, 0.0, 0.0)
-    pt = (Ax, 0.0, Az)
-    hit = (Bx, 0.0, d)
-    foot_a = (0.0, 0.0, Az)
-    foot_b = (0.0, 0.0, d)
-    plane = [
-        (1.28, -0.82, d),
-        (1.28, 0.82, d),
-        (-0.72, 0.82, d),
-        (-0.72, -0.82, d),
-    ]
-
-    Pe, Pa, Pb = proj(eye), proj(pt), proj(hit)
-    Pfa, Pfb = proj(foot_a), proj(foot_b)
-    Pp = [proj(p) for p in plane]
-    Pz = proj((0.0, 0.0, Az + 0.22))
-    Px = proj((1.38, 0.0, 0.0))
-    Py = proj((0.0, 0.95, 0.0))
-    plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
-    screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
-    eq = (screen_lab[0], screen_lab[1] - 38)
-    eq2 = (screen_lab[0], screen_lab[1] - 20)
-
-    body = [
-        defs("pj"),
-        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.4, end="pj-ink"),
-        line(Pe[0], Pe[1], Px[0], Px[1], width=1.4, end="pj-ink"),
-        line(Pe[0], Pe[1], Py[0], Py[1], width=1.4, end="pj-ink"),
-        text(Pz[0] + 8, Pz[1] + 2, "z", size=16),
-        text(Px[0] - 16, Px[1] - 4, "x", size=16),
-        text(Py[0] + 8, Py[1] + 14, "y", size=16),
-        f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
-        f'stroke="{BLUE}" stroke-width="1.6"/>',
-        text(screen_lab[0], screen_lab[1], "screen", fill=BLUE, size=14, anchor="middle"),
+    eye, pt, hit = (0.0, 0.0, 0.0), (Ax, 0.0, Az), (Bx, 0.0, d)
+    foot_a, foot_b = (0.0, 0.0, Az), (0.0, 0.0, d)
+    screen = Screen(d)
+    scene = Scene(cam, "pj")
+    scene.add(
+        Axes(reach=(1.38, 0.95, Az + 0.22), prefix="pj"),
+        screen,
+        Seg(eye, pt, CORAL, 1.8, end="pj-coral"),
+        Seg(hit, foot_b, INK2, 1, dash="3 3"),
+        Seg(pt, foot_a, INK2, 1, dash="3 3"),
+        Eye(),
+        Dot(hit, INK),
+        Label(hit, "B", INK, 16, dx=10, dy=-4),
+        Dot(pt, CORAL),
+        Label(pt, "A", CORAL, 16, dx=10, dy=-6),
+        Brace(eye, foot_b, "d", BLUE, offset=30, size=15),
+        Brace(eye, foot_a, "depth", INK2, offset=54),
+        Brace(foot_a, pt, "height", CORAL, offset=20),
+        Brace(foot_b, hit, "mark", INK, offset=-36, nudge=(-18, 0)),
+    )
+    parts, pts = scene.gather()
+    Pe, Pa, Pfa = cam.project(eye), cam.project(pt), cam.project(foot_a)
+    parts.insert(
+        2,
         f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {Pfa[0]:.1f},{Pfa[1]:.1f}" '
         f'fill="{CORAL}" fill-opacity="0.06" stroke="none"/>',
-        line(Pe[0], Pe[1], Pa[0], Pa[1], stroke=CORAL, width=1.8, end="pj-coral"),
-        line(Pb[0], Pb[1], Pfb[0], Pfb[1], stroke=INK2, width=1, dash="3 3"),
-        line(Pa[0], Pa[1], Pfa[0], Pfa[1], stroke=INK2, width=1, dash="3 3"),
-        eye_side(Pe[0], Pe[1]),
-        circle(Pb[0], Pb[1], 5.5, fill=INK),
-        text(Pb[0] + 10, Pb[1] - 4, "B", size=16),
-        circle(Pa[0], Pa[1], 5.5, fill=CORAL),
-        text(Pa[0] + 10, Pa[1] - 6, "A", size=16, fill=CORAL),
-    ]
-    b_d, p_d = brace_along(Pe, Pfb, "d", offset=30, color=BLUE, size=15)
-    b_depth, p_depth = brace_along(Pe, Pfa, "depth", offset=54, color=INK2, size=14)
-    b_h, p_h = brace_along(Pfa, Pa, "height", offset=20, color=CORAL, size=14)
-    b_m, p_m = brace_along(Pfb, Pb, "mark", offset=-36, color=INK, size=14, nudge=(-18, 0))
-    body += [
-        *b_d,
-        *b_depth,
-        *b_h,
-        *b_m,
-        eq_line(
-            eq2[0],
-            eq2[1],
+    )
+    tx, ty = screen.top(cam)
+    eq = (tx, ty - 38)
+    parts.append(
+        _eq(
+            eq[0],
+            eq[1],
             [
                 ("mark", INK),
                 (" = ", INK),
@@ -622,119 +812,66 @@ def perspective() -> str:
                 (" / ", INK),
                 ("depth", INK2),
             ],
-            size=15,
-        ),
-    ]
-    pts = [
-        Pe, Pa, Pb, Pfa, Pfb, Pz, Px, Py, *Pp, screen_lab, eq, eq2,
-        *p_d, *p_depth, *p_h, *p_m,
-        (Pe[0] - 36, Pe[1] + 58), (Pa[0] + 52, Pa[1] - 18),
-        (Px[0] - 20, Px[1] - 12), (eq2[0] - 120, eq[1] - 8), (eq2[0] + 120, eq2[1] + 8),
-    ]
-    x0, y0, w, h = crop(pts, pad=16)
-    return svg(w, h, "\n".join(body), x=x0, y=y0)
+        )
+    )
+    pts.extend([eq, (eq[0] - 130, eq[1] - 8), (eq[0] + 130, eq[1] + 8)])
+    x0, y0, w, h = _crop(pts, pad=16)
+    return _svg(w, h, "\n".join(parts), x=x0, y=y0)
 
 
 def f_projection() -> str:
-    """Same isometric frame. Same eye distance d, two depths."""
-    ox, oy = 70, 250
-    S = 142
-
-    def proj(p):
-        return _iso(p, ox, oy, S)
-
-    d = 1.38
-    h = 1.08
-    z_near, z_far = 0.88, 1.85
-
+    cam = Camera(70, 250, 142, kind="pinhole")
+    d, h, z_near, z_far = 1.38, 1.08, 0.88, 1.85
     eye = (0.0, 0.0, 0.0)
     near = (h, 0.0, d + z_near)
     far = (h, 0.0, d + z_far)
     hit_n = (h * d / (d + z_near), 0.0, d)
     hit_f = (h * d / (d + z_far), 0.0, d)
-    plane = [
-        (1.22, -0.78, d),
-        (1.22, 0.78, d),
-        (-0.70, 0.78, d),
-        (-0.70, -0.78, d),
-    ]
-
-    Pe, Pn, Pf = proj(eye), proj(near), proj(far)
-    Pbn, Pbf = proj(hit_n), proj(hit_f)
-    Pp = [proj(p) for p in plane]
-    Pz = proj((0.0, 0.0, d + z_far + 0.18))
-    Px = proj((1.32, 0.0, 0.0))
-    Py = proj((0.0, 0.92, 0.0))
-    Pplane = proj((0.0, 0.0, d))
-    Pnz = proj((0.0, 0.0, d + z_near))
-    plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
-    screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
-    eq = (screen_lab[0], screen_lab[1] - 22)
-
-    body = [
-        defs("fp"),
-        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.4, end="fp-ink"),
-        line(Pe[0], Pe[1], Px[0], Px[1], width=1.4, end="fp-ink"),
-        line(Pe[0], Pe[1], Py[0], Py[1], width=1.4, end="fp-ink"),
-        text(Pz[0] + 8, Pz[1] + 2, "z", size=16),
-        text(Px[0] - 16, Px[1] - 4, "x", size=16),
-        text(Py[0] + 8, Py[1] + 14, "y", size=16),
-        f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
-        f'stroke="{BLUE}" stroke-width="1.6"/>',
-        text(screen_lab[0], screen_lab[1], "screen", fill=BLUE, size=14, anchor="middle"),
-        eye_side(Pe[0], Pe[1]),
-        line(Pe[0], Pe[1], Pn[0], Pn[1], stroke=CORAL, width=1.8, end="fp-coral"),
-        line(Pe[0], Pe[1], Pf[0], Pf[1], stroke=CORAL, width=1.4, dash="5 3"),
-        circle(Pbn[0], Pbn[1], 5.5, fill=INK),
-        circle(Pbf[0], Pbf[1], 4.5, fill=INK2),
-        circle(Pn[0], Pn[1], 5.5, fill=CORAL),
-        circle(Pf[0], Pf[1], 5.5, fill=CORAL),
-        text(Pn[0] + 10, Pn[1] - 8, "near", fill=CORAL, size=15),
-        text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=15),
-        text(Pbn[0] - 10, Pbn[1] - 10, "near mark", size=13, anchor="end"),
-        text(Pbf[0] + 10, Pbf[1] + 14, "far mark", size=13, fill=INK2),
-    ]
-    b_d, p_d = brace_along(Pe, Pplane, "d", offset=30, color=BLUE, size=15)
-    b_z, p_z = brace_along(Pplane, Pnz, "d − z", offset=32, color=INK2, size=14)
-    body += [
-        *b_d,
-        *b_z,
-        eq_line(
-            eq[0],
-            eq[1],
-            [
-                ("s = 1 / (", INK),
-                ("d − z", INK2),
-                (")", INK),
-            ],
-            size=15,
-        ),
-    ]
-    pts = [
-        Pe, Pn, Pf, Pbn, Pbf, Pz, Px, Py, Pplane, Pnz, *Pp, screen_lab, eq,
-        *p_d, *p_z,
-        (Pe[0] - 40, Pe[1] + 52), (Pf[0] + 40, Pf[1] - 16),
-        (Pn[0] + 48, Pn[1] - 10), (Pbn[0] - 72, Pbn[1] - 12),
-        (Pbf[0] + 64, Pbf[1] + 16), (eq[0] - 90, eq[1] - 8), (eq[0] + 90, eq[1] + 8),
-    ]
-    x0, y0, w, hgt = crop(pts, pad=16)
-    return svg(w, hgt, "\n".join(body), x=x0, y=y0)
+    plane = (0.0, 0.0, d)
+    n_z = (0.0, 0.0, d + z_near)
+    screen = Screen(d, hx=1.22, hy=0.78)
+    scene = Scene(cam, "fp")
+    scene.add(
+        Axes(reach=(1.32, 0.92, d + z_far + 0.18), prefix="fp"),
+        screen,
+        Eye(),
+        Seg(eye, near, CORAL, 1.8, end="fp-coral"),
+        Seg(eye, far, CORAL, 1.4, dash="5 3"),
+        Dot(hit_n, INK),
+        Dot(hit_f, INK2, r=4.5),
+        Dot(near, CORAL),
+        Dot(far, CORAL),
+        Label(near, "near", CORAL, 15, dx=10, dy=-8),
+        Label(far, "far", CORAL, 15, dx=10, dy=-8),
+        Label(hit_n, "near mark", INK, 13, dx=-10, dy=-10, anchor="end"),
+        Label(hit_f, "far mark", INK2, 13, dx=10, dy=14),
+        Brace(eye, plane, "d", BLUE, offset=30, size=15),
+        Brace(plane, n_z, "d − z", INK2, offset=32),
+    )
+    parts, pts = scene.gather()
+    tx, ty = screen.top(cam)
+    eq = (tx, ty - 38)
+    parts.append(
+        _eq(eq[0], eq[1], [("s = 1 / (", INK), ("d − z", INK2), (")", INK)])
+    )
+    pts.extend([eq, (eq[0] - 90, eq[1] - 8), (eq[0] + 90, eq[1] + 8)])
+    x0, y0, w, hgt = _crop(pts, pad=16)
+    return _svg(w, hgt, "\n".join(parts), x=x0, y=y0)
 
 
 def main() -> None:
     written = [
-        write("rotation-ccw.svg", counterclockwise()),
-        write("rotation-cw.svg", clockwise()),
-        write("rotation-apply.svg", apply_rotation()),
-        write("rotation-perspective.svg", perspective()),
-        write("rotation-f-projection.svg", f_projection()),
+        _write("rotation-ccw.svg", counterclockwise()),
+        _write("rotation-cw.svg", clockwise()),
+        _write("rotation-apply.svg", apply_rotation()),
+        _write("rotation-perspective.svg", perspective()),
+        _write("rotation-f-projection.svg", f_projection()),
     ]
-    written += [write(name, content) for name, content in combine_steps()]
-    written.append(write("rotation-combine-5.svg", combine_compare()))
+    written += [_write(name, content) for name, content in combine_steps()]
+    written.append(_write("rotation-combine-5.svg", combine_compare()))
     stale = OUT / "rotation-combine.svg"
     if stale.exists():
         stale.unlink()
-        print(f"removed {stale.relative_to(Path(__file__).resolve().parents[1])}")
     root = Path(__file__).resolve().parents[1]
     for p in written:
         print(p.relative_to(root))

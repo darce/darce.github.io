@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="18.0 -126.1 487.8 450.1" width="488" height="450" role="img">
-<rect x="18.0" y="-126.1" width="487.8" height="450.1" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="54.0 -112.1 442.8 432.0" width="443" height="432" role="img">
+<rect x="54.0" y="-112.1" width="442.8" height="432.0" fill="#e7eaef"/>
 <defs>
 <marker id="pj-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="pj-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="pj-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
 </defs>
-<line x1="70.0" y1="250.0" x2="467.3" y2="78.5" stroke="#171920" stroke-width="1.4" fill="none" marker-end="url(#pj-ink)"/>
-<line x1="70.0" y1="250.0" x2="70.0" y2="57.0" stroke="#171920" stroke-width="1.4" fill="none" marker-end="url(#pj-ink)"/>
-<line x1="70.0" y1="250.0" x2="145.1" y2="293.3" stroke="#171920" stroke-width="1.4" fill="none" marker-end="url(#pj-ink)"/>
-<text x="475.3" y="80.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">z</text>
-<text x="54.0" y="53.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">x</text>
-<text x="153.1" y="307.3" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">y</text>
-<polygon points="199.1,-50.1 328.8,24.6 328.8,304.3 199.1,229.5" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
-<text x="264.0" y="-64.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
+<line x1="70.0" y1="250.0" x2="70.0" y2="57.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#pj-ink)"/>
 <polygon points="70.0,250.0 437.8,-73.9 437.8,91.2" fill="#d9253f" fill-opacity="0.06" stroke="none"/>
+<text x="78.0" y="62.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">x</text>
+<line x1="70.0" y1="250.0" x2="145.1" y2="293.3" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#pj-ink)"/>
+<text x="155.1" y="307.3" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
+<line x1="70.0" y1="250.0" x2="467.3" y2="78.5" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#pj-ink)"/>
+<text x="451.3" y="74.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
+<polygon points="199.1,-50.1 328.8,24.6 328.8,303.9 199.1,229.1" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
+<text x="264.0" y="-64.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
 <line x1="70.0" y1="250.0" x2="437.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#pj-coral)"/>
 <line x1="264.0" y1="79.2" x2="264.0" y2="166.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
 <line x1="437.8" y1="-73.9" x2="437.8" y2="91.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
@@ -44,5 +44,5 @@
 <line x1="228.0" y1="79.2" x2="237.0" y2="79.2" stroke="#171920" stroke-width="1.4" fill="none"/>
 <line x1="228.0" y1="122.7" x2="221.0" y2="122.7" stroke="#171920" stroke-width="1.4" fill="none"/>
 <text x="187.0" y="126.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">mark</text>
-<text x="264.0" y="-84.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" text-anchor="middle"><tspan fill="#171920">mark</tspan><tspan fill="#171920"> = </tspan><tspan fill="#d9253f">height</tspan><tspan fill="#171920"> × </tspan><tspan fill="#3c00f7">d</tspan><tspan fill="#171920"> / </tspan><tspan fill="#464c5c">depth</tspan></text>
+<text x="264.0" y="-88.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" text-anchor="middle"><tspan fill="#171920">mark</tspan><tspan fill="#171920"> = </tspan><tspan fill="#d9253f">height</tspan><tspan fill="#171920"> × </tspan><tspan fill="#3c00f7">d</tspan><tspan fill="#171920"> / </tspan><tspan fill="#464c5c">depth</tspan></text>
 </svg>
