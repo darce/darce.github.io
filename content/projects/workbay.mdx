@@ -3,15 +3,18 @@ index: 5
 year: 2026
 title: 'WorkBay: Durable State for Coding Agents'
 subtitle: Open-source developer tooling
-description: A local SQLite record that any coding agent reads over MCP. The active task, decisions, review findings, and tests stay in the repository. A task can move between Claude Code, Codex, Cursor, Grok, and Copilot.
-details: 'WorkBay keeps the working record in the repository, not in the agent transcript: the active task and branch, the open decisions and blockers, the review findings, and the tests that passed. I built it because a session summary is not evidence. The next model needs a record it can check.'
+description: 'A coding agent starts every session cold. WorkBay saves the workflow in a local SQLite database that any coding agent reads over MCP: the active task, branch, worktree, open findings, and test evidence.'
+details: 'A coding agent starts every session cold. It does not remember what it shipped yesterday, who reviewed it, or why the last attempt was rejected. Most tools answer that by saving conversation summaries. WorkBay saves the workflow instead: the active task, its branch and worktree, which slices closed and at which commit, the review findings still open against it, and the test evidence behind them.'
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
 thumbnail:
   src: klee-highway-and-byways-1929.jpg
-  alt: "Paul Klee, Highway and Byways (Hauptweg und Nebenwege), 1929. Oil on canvas. A thick vertical band of pale earth colors runs down the center of a field of narrower colored stripes. Museum Ludwig, Cologne."
+  alt: "Paul Klee, Highway and Byways (Hauptweg und Nebenwege), 1929. Oil on canvas. Museum Ludwig, Cologne. Photograph © Raimond Spekking / CC BY-SA 4.0 (via Wikimedia Commons)."
   position: center
+masthead:
+  src: klee-highway-and-byways-1929.jpg
+  alt: "Paul Klee, Highway and Byways (Hauptweg und Nebenwege), 1929. Oil on canvas. Museum Ludwig, Cologne. Photograph © Raimond Spekking / CC BY-SA 4.0 (via Wikimedia Commons)."
 tags:
 - Developer Tooling
 - AI-assisted Engineering
@@ -20,41 +23,46 @@ tags:
 - Git
 - Python
 ---
-## The problem
+That state lives in a SQLite database in the repository and is exposed over MCP. A session that ends in Claude Code can continue in Codex, Cursor, Grok, or VS Code Copilot without losing the thread. Git hooks block the default paths while they are installed and `core.hooksPath` is intact. An unrestricted shell can still disable or skip them.
 
-A coding agent starts each session cold. Yesterday's plan, the open review finding, and the reason a change was refused stay behind.
+WorkBay is for git-backed coding agents that install hooks into a repository. Memory plugins store what was said. Orchestration engines decide what runs next. WorkBay stores what was done and what is still owed, and it can refuse a merge.
 
-Conversation tools save a summary of the chat. A summary does not carry the open finding, the test that passed, or the decision you must keep.
+## What WorkBay enforces
 
-When that history lives in one agent transcript, the project depends on that agent. Change the tool and the record stays behind.
+Skills are advice a model can decline. These six hold whether or not the model cooperates.
 
-I moved the record into the repository.
+| Claim | Mechanism |
+| --- | --- |
+| Closed findings are checkable | Each finding carries two commit anchors: the commit that fixed it on the branch, and the commit that merged it. |
+| Enforcement survives the agent | Hooks installed through `core.hooksPath` refuse edits on `main`, require a valid branch name, and block close when a slice has no recorded decision. |
+| No vendor owns project history | The ledger is harness-neutral. The task state was never in the transcript. |
+| Author and reviewer are decoupled | A reviewing agent writes findings into the database. The authoring agent reads them on the next `load_session`. Neither agent reads the other transcript. |
+| Bookkeeping does not spend tokens | Worktree create, slice close, merge gate, and archive run as make targets, not model turns. |
+| Cheap work can go to a cheap backend | `/offload` sends one slice to a bounded lane under a token cap. The lane never merges its own work. |
 
-The earlier name for this project was Workstate. The product is now WorkBay. The old URL `/projects/workstate/` redirects here.
+High and medium findings must reach zero before `make review-ready` passes. Deferred, wontfix, and superseded are valid exits.
 
-## What WorkBay is
+## How a task moves
 
-WorkBay is a durable agent-state engine for a Git repository. It keeps a local SQLite database at `.task-state/handoff.db`. Agents read and write that database over MCP.
+Fifteen portable commands come from one manifest. Each agent gets a native surface. The meaning stays the same.
 
-WorkBay records the work:
+1. Define the scope with `/scope`.
+2. Check a draft plan with `/plan-analyze`.
+3. Record a formal review with `/planning-review`.
+4. Open a branch and a worktree with `make task-start`.
+5. Start each slice from a failing test with `/tdd`.
+6. Make the tests pass with `/incremental-implementation`.
+7. Record a pre-merge review with `/branch-review`.
+8. Run the merge gate with `make close-check`.
+9. Close and archive with `make task-finish`.
 
-- the active task, branch, and worktree
-- decisions and blockers
-- review findings and review runs
-- test commands and exit codes
-- files that a slice touched
+`make help` lists every target. `make wb VERB=start` is the short form of the same lifecycle.
 
-The next agent does not need a long prompt. It asks the project. Claude Code, Codex, Cursor, Grok, and VS Code Copilot read the same rows.
+A reviewing agent, usually a different model family, writes findings into `review_findings`. The authoring agent must close them before the review gate passes.
 
-WorkBay stores what the work still owes: what was done, what is still open, and what a merge must refuse. Memory plugins store what was said. WorkBay does not replace them. You can use both.
+## What persists
 
-Paul Klee painted *Highway and Byways* (*Hauptweg und Nebenwege*) in 1929, after a trip to Egypt. The canvas is a field of vertical stripes with one thicker band down the center. I use that painting here because WorkBay keeps the same split. The main path is the task record. The side paths are indexes and generated views. You can delete the side paths and the engine still works.
-
-![Paul Klee, Highway and Byways (Hauptweg und Nebenwege), 1929. Oil on canvas. A thick vertical band of pale earth colors runs down the center of a field of narrower colored stripes. Museum Ludwig, Cologne.](/images/klee-highway-and-byways-1929.jpg)*Paul Klee, Highway and Byways, 1929. Oil on canvas. Museum Ludwig, Cologne. Photograph © Raimond Spekking / [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (via Wikimedia Commons).*
-
-## How the record works
-
-`handoff.db` is the source of truth. Typed tables hold the state.
+State lives in `.task-state/handoff.db`. That file is the source of truth.
 
 | Table | Holds |
 | --- | --- |
@@ -73,36 +81,6 @@ Optional embeddings sit on selected concept prose. Cosine rank is for reinjectio
 `CURRENT_TASK.json` and `DASHBOARD.txt` are generated views. Do not edit them by hand. Regenerate them from the database.
 
 Do not store chain-of-thought or encrypted provider blobs in `handoff.db`. Record typed decisions at the MCP write boundary. Treat provider thought signatures as secrets. Strip them before you index, search, or export.
-
-## How a task moves
-
-A typical task follows this path:
-
-1. Define the scope with `/scope`.
-2. Check a draft plan with `/plan-analyze`.
-3. Record a formal review with `/planning-review`.
-4. Open a branch and a worktree with `make task-start`.
-5. Start each slice from a failing test with `/tdd`.
-6. Make the tests pass with `/incremental-implementation`.
-7. Record a pre-merge review with `/branch-review`.
-8. Run the merge gate with `make close-check`.
-9. Close and archive with `make task-finish`.
-
-Work lands in small slices. Each slice starts from a failing test. Review findings attach to the branch. High and medium findings must reach zero before `make review-ready` passes. Deferred, wontfix, and superseded are valid exits.
-
-A reviewing agent, usually a different model family, writes findings into the database. The authoring agent reads them on the next `load_session`. Neither agent reads the other transcript.
-
-Git hooks enforce the path while `core.hooksPath` is intact:
-
-- Edits on `main` are refused outside a small allowlist.
-- Branch names must match a grammar tied to a task reference.
-- `make review-ready` fails while findings are open.
-- `make close-check` fails when a slice has no recorded decision.
-- Findings and decisions attach to commit SHAs.
-
-An unrestricted shell can still skip hooks. The hooks block the default path. They do not make the repository a sealed box.
-
-For independent work, `/offload` sends one slice to a bounded lane. Each lane owns a worktree and a token budget. The lane never merges. Useful width is the set of ready tasks that do not depend on each other. Those tasks must not touch the same files. The default wave cap is 20. Typical plans use 2 to 6 lanes. Do not raise the cap to force more width.
 
 ## How to start
 
@@ -144,6 +122,14 @@ Use `--no-embeddings` if the repository is new or the host cannot provision the 
 After an upgrade, run `workbay doctor --target .`. If the doctor reports drift, run `workbay repair`.
 
 The full install notes live in [`docs/CONSUMER.md`](https://github.com/darce/workbay/blob/main/docs/CONSUMER.md) on the WorkBay repository.
+
+## Parallel work
+
+`/offload` sends one self-contained slice to a bounded lane. Each lane owns a worktree and a token budget. The lane never merges. Review the diff first.
+
+Use lanes when the work is independent. Do not fan out when the second agent needs most of the first agent's raw evidence. Pass artifacts: diffs, failing test output, schemas. Do not pass a summary of a summary.
+
+Useful width is the set of ready tasks that do not depend on each other. Those tasks must not touch the same files. The default wave cap is 20. Typical plans use 2 to 6 lanes. Do not raise the cap to force more width.
 
 ## What to keep small
 

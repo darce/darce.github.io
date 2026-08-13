@@ -23,6 +23,7 @@ export const baseMetaSchema = z.object({
     details: z.string().trim().min(1).optional(),
     links: z.array(metaLinkSchema).min(1).optional(),
     thumbnail: metaImageSchema.optional(),
+    masthead: metaImageSchema.optional(),
     images: z.array(metaImageSchema).min(1).optional(),
     tags: z.array(z.string().trim().min(1)).min(1).optional(),
 })

@@ -123,6 +123,7 @@ const normalizeMetaData = (rawData: unknown, filePath: string): MetaData => {
         ['details', asOptionalString],
         ['links', asMetaLinks],
         ['thumbnail', asMetaThumbnail],
+        ['masthead', asMetaThumbnail],
         ['images', asMetaImages],
         ['tags', asOptionalStringArray],
     ]

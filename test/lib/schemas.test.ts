@@ -51,6 +51,7 @@ describe('contentItemSchema', () => {
             tags: ['React', 'TypeScript'],
             links: [{ url: 'https://example.com', label: 'Example' }],
             images: [{ src: 'image.png', alt: 'Alt text' }],
+            masthead: { src: 'masthead.jpg', alt: 'Masthead' },
         })
         expect(result.success).toBe(true)
     })
