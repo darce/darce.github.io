@@ -1,18 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-107.3 -4.0 493.5 320.0" width="494" height="320" role="img">
-<rect x="-107.3" y="-4.0" width="493.5" height="320.0" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-120.7 -23.0 540.4 344.9" width="540" height="345" role="img">
+<rect x="-120.7" y="-23.0" width="540.4" height="344.9" fill="#e7eaef"/>
 <defs>
 <marker id="s1-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="s1-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="s1-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
 </defs>
-<line x1="90.0" y1="210.0" x2="268.2" y2="210.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#s1-ink)"/>
-<text x="276.2" y="215.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">x</text>
-<line x1="90.0" y1="210.0" x2="188.0" y2="267.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#s1-ink)"/>
-<text x="198.0" y="273.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
-<line x1="90.0" y1="210.0" x2="90.0" y2="45.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#s1-ink)"/>
-<text x="74.0" y="41.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
-<polygon points="90.0,210.0 268.2,210.0 366.2,267.0 188.0,267.0" fill="#464c5c" fill-opacity="0.07" stroke="#464c5c" stroke-width="0.9"/>
-<text x="82.0" y="17.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">1 · start</text>
-<polygon points="102.3,212.5 268.6,212.5 291.8,226.1 167.7,226.1 236.0,265.8 193.8,265.8" fill="#d9253f" fill-opacity="0.2" stroke="#d9253f" stroke-width="1.9"/>
-<text x="82.0" y="295.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="start">on the xy floor</text>
+<line x1="90.0" y1="210.0" x2="289.8" y2="210.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s1-ink)"/>
+<text x="297.8" y="215.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">x</text>
+<line x1="90.0" y1="210.0" x2="199.9" y2="273.9" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s1-ink)"/>
+<text x="209.9" y="279.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
+<line x1="90.0" y1="210.0" x2="90.0" y2="25.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s1-ink)"/>
+<text x="74.0" y="21.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
+<polygon points="90.0,210.0 289.8,210.0 399.7,273.9 199.9,273.9" fill="#464c5c" fill-opacity="0.07" stroke="#464c5c" stroke-width="0.9"/>
+<text x="82.0" y="-3.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">1 · start</text>
+<polygon points="103.8,212.8 290.2,212.8 316.3,228.0 177.2,228.0 253.7,272.5 206.3,272.5" fill="#d9253f" fill-opacity="0.28" stroke="#d9253f" stroke-width="2.3"/>
+<text x="82.0" y="301.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="start">on the xy floor</text>
 </svg>

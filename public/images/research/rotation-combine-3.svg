@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-107.3 -4.0 493.5 320.0" width="494" height="320" role="img">
-<rect x="-107.3" y="-4.0" width="493.5" height="320.0" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-120.7 -23.0 540.4 344.9" width="540" height="345" role="img">
+<rect x="-120.7" y="-23.0" width="540.4" height="344.9" fill="#e7eaef"/>
 <defs>
 <marker id="s3-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="s3-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="s3-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
 </defs>
-<line x1="90.0" y1="210.0" x2="268.2" y2="210.0" stroke="#d9253f" stroke-width="1.6" fill="none" marker-end="url(#s3-coral)"/>
-<text x="276.2" y="215.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">x</text>
-<line x1="90.0" y1="210.0" x2="188.0" y2="267.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#s3-ink)"/>
-<text x="198.0" y="273.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
-<line x1="90.0" y1="210.0" x2="90.0" y2="45.0" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#s3-ink)"/>
-<text x="74.0" y="41.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
-<polygon points="90.0,210.0 268.2,210.0 366.2,267.0 188.0,267.0" fill="#464c5c" fill-opacity="0.07" stroke="#464c5c" stroke-width="0.9"/>
-<text x="82.0" y="17.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">3 · then Rx</text>
-<path d="M134.7,226.2 L134.4,221.8 L133.9,217.4 L133.3,213.0 L132.6,208.5 L131.8,204.1 L130.9,199.7 L129.9,195.3 L128.8,190.9 L127.5,186.6 L126.2,182.4 L124.8,178.2 L123.2,174.2 L121.6,170.2 L119.9,166.3 L118.2,162.5 L116.3,158.9 L114.4,155.4 L112.4,152.0" fill="none" stroke="#d9253f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<polygon points="111.4,150.3 128.3,161.2 112.8,170.4" fill="#d9253f"/>
-<text x="179.8" y="194.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="middle">Rx</text>
-<polygon points="92.0,213.4 245.2,261.6 216.7,267.3 102.4,231.3 18.8,248.1 -20.1,235.9" fill="#464c5c" fill-opacity="0.1" stroke="#464c5c" stroke-width="1.2" stroke-dasharray="5 4"/>
-<text x="-12.1" y="225.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#464c5c" text-anchor="start">after Rz</text>
-<polygon points="88.6,201.9 193.9,85.7 159.8,71.9 81.2,158.6 -19.0,118.2 -45.8,147.7" fill="#d9253f" fill-opacity="0.2" stroke="#d9253f" stroke-width="1.9"/>
-<text x="151.8" y="61.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="end">tipped</text>
-<text x="82.0" y="295.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="start">changing: that pose tips around x</text>
+<line x1="90.0" y1="210.0" x2="289.8" y2="210.0" stroke="#d9253f" stroke-width="1.5" fill="none" marker-end="url(#s3-coral)"/>
+<text x="297.8" y="215.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#d9253f" text-anchor="start">x</text>
+<line x1="90.0" y1="210.0" x2="199.9" y2="273.9" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s3-ink)"/>
+<text x="209.9" y="279.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
+<line x1="90.0" y1="210.0" x2="90.0" y2="25.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s3-ink)"/>
+<text x="74.0" y="21.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
+<polygon points="90.0,210.0 289.8,210.0 399.7,273.9 199.9,273.9" fill="#464c5c" fill-opacity="0.07" stroke="#464c5c" stroke-width="0.9"/>
+<text x="82.0" y="-3.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="start">3 · then Rx</text>
+<path d="M140.1,228.2 L139.7,223.3 L139.2,218.3 L138.6,213.3 L137.8,208.4 L136.9,203.4 L135.9,198.4 L134.7,193.5 L133.5,188.6 L132.1,183.8 L130.6,179.1 L129.0,174.4 L127.3,169.8 L125.5,165.3 L123.6,161.0 L121.6,156.8 L119.5,152.7 L117.3,148.8 L115.1,145.0" fill="none" stroke="#d9253f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="114.1,143.3 131.0,154.2 115.5,163.4" fill="#d9253f"/>
+<text x="190.6" y="194.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="middle">Rx</text>
+<polygon points="92.2,213.8 264.0,267.9 232.0,274.3 103.9,233.9 10.2,252.7 -33.5,239.0" fill="#464c5c" fill-opacity="0.1" stroke="#464c5c" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="-25.5" y="229.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#464c5c" text-anchor="start">after Rz</text>
+<polygon points="88.4,200.9 206.5,70.6 168.3,55.2 80.2,152.4 -32.2,107.0 -62.2,140.1" fill="#d9253f" fill-opacity="0.28" stroke="#d9253f" stroke-width="2.3"/>
+<text x="160.3" y="45.2" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="end">tipped</text>
+<text x="82.0" y="301.9" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#464c5c" text-anchor="start">changing: that pose tips around x</text>
 </svg>

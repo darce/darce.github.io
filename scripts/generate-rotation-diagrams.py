@@ -20,11 +20,11 @@ CORAL = "#d9253f"
 BLUE = "#3c00f7"
 FONT = "ui-monospace, GeistMonoVariableVF, Helvetica, monospace"
 
-# Stroke hierarchy — Manim-like: axes quieter than the subject.
-SW_AXIS = 1.6
-SW_SHAPE = 1.9
-SW_ARC = 2.6
-SW_BRACE = 1.4
+# Stroke hierarchy — subject louder than axes (Manim habit, site tokens).
+SW_AXIS = 1.5
+SW_SHAPE = 2.3
+SW_ARC = 2.8
+SW_BRACE = 1.8
 
 
 # ---------------------------------------------------------------------------
@@ -177,7 +177,7 @@ class Poly:
     stroke: str = CORAL
     fill: str = CORAL
     width: float = SW_SHAPE
-    opacity: float = 0.20
+    opacity: float = 0.28
     dash: str | None = None
 
     def copy(self) -> Poly:
@@ -642,7 +642,7 @@ def apply_rotation() -> str:
 # ---------------------------------------------------------------------------
 
 
-COMBINE_CAM = Camera(90, 210, 132, kind="zup")
+COMBINE_CAM = Camera(90, 210, 148, kind="zup")
 COMBINE_SIZE = (490.0, 320.0)
 
 
@@ -754,7 +754,7 @@ def combine_compare() -> str:
     neq = ((left_x[0] + right_o[0]) / 2, left_o[1] - 18)
     parts = pa + pb + [_text(neq[0], neq[1], "≠", size=28, fill=CORAL, anchor="middle")]
     pts = [*qa, *qb, neq, (neq[0] - 16, neq[1] - 16), (neq[0] + 16, neq[1] + 16)]
-    x0, y0, w, h = _crop(pts, pad=22)
+    x0, y0, w, h = _crop(pts, pad=32)
     if h < COMBINE_SIZE[1]:
         y0 -= (COMBINE_SIZE[1] - h) / 2
         h = COMBINE_SIZE[1]
