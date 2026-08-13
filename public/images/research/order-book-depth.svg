@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img">
+<rect width="600" height="450" fill="#ffffff"/>
+<!--
+  Schematic depth: bids grow left of the spread, asks grow right.
+  Site tokens. No live prices — readable at card size.
+-->
+<text x="156" y="48" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#3c00f7" text-anchor="middle">bid</text>
+<text x="300" y="48" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#171920" text-anchor="middle">spread</text>
+<text x="444" y="48" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="16" fill="#d9253f" text-anchor="middle">ask</text>
+<line x1="300" y1="64" x2="300" y2="418" stroke="#171920" stroke-width="1.5"/>
+<!-- 8 levels. Best at top. One wall on each side. -->
+<rect x="199.2" y="76" width="88.8" height="32" fill="#3c00f7"/>
+<rect x="312" y="76" width="76.8" height="32" fill="#d9253f"/>
+<rect x="168" y="118" width="120" height="32" fill="#3c00f7"/>
+<rect x="312" y="118" width="108" height="32" fill="#d9253f"/>
+<rect x="208.8" y="160" width="79.2" height="32" fill="#3c00f7"/>
+<rect x="312" y="160" width="148.8" height="32" fill="#d9253f"/>
+<rect x="79.2" y="202" width="208.8" height="32" fill="#3c00f7"/>
+<rect x="312" y="202" width="96" height="32" fill="#d9253f"/>
+<rect x="184.8" y="244" width="103.2" height="32" fill="#3c00f7"/>
+<rect x="312" y="244" width="201.6" height="32" fill="#d9253f"/>
+<rect x="132" y="286" width="156" height="32" fill="#3c00f7"/>
+<rect x="312" y="286" width="86.4" height="32" fill="#d9253f"/>
+<rect x="216" y="328" width="72" height="32" fill="#3c00f7"/>
+<rect x="312" y="328" width="115.2" height="32" fill="#d9253f"/>
+<rect x="160.8" y="370" width="127.2" height="32" fill="#3c00f7"/>
+<rect x="312" y="370" width="64.8" height="32" fill="#d9253f"/>
+</svg>
