@@ -38,12 +38,18 @@ Rotation matrices perform that transformation. In this demo, the math is done di
 
 Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
 
-Each axis has its own matrix.
+Each axis has its own matrix. In the plane perpendicular to that axis the picture is a 2D rotation: counterclockwise when $y$ points up (the math convention), clockwise when $y$ points down (the screen).
 
 <Diagram
-    src="/images/research/rotation-axes.svg"
-    alt="Three rows: Rx leaves x unchanged and rotates the yz plane; Ry leaves y and rotates xz; Rz leaves z and rotates xy."
-    caption="Each matrix is the identity on its own axis. The other two coordinates rotate together."
+    src="/images/research/rotation-ccw.svg"
+    alt="Coordinate plane with y pointing up. A coral vector from the origin is rotated counterclockwise from the positive x-axis by an angle theta."
+    caption="Counterclockwise from +x, y up. This is Rz(θ) in the usual mathematical frame."
+/>
+
+<Diagram
+    src="/images/research/rotation-cw.svg"
+    alt="Coordinate plane with y pointing down. A coral vector from the origin is rotated clockwise from the positive x-axis by an angle theta."
+    caption="Clockwise from +x, y down — the CSS / screen frame the cube actually lives in."
 />
 
 ### Around X
@@ -124,10 +130,12 @@ The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z
 
 Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
 
+A single rotation about an arbitrary axis $\hat{u}$ splits the same way: the part of $\vec{v}$ along $\hat{u}$ is fixed; the perpendicular part spins in the plane of $\theta$.
+
 <Diagram
-    src="/images/research/rotation-compose.svg"
-    alt="Two paths from the same point: Rx then Ry yields Pxy; Ry then Rx yields Pyx. The two results are not equal."
-    caption="Same start, opposite order — two different points. Rx Ry ≠ Ry Rx."
+    src="/images/research/rotation-decomposition.svg"
+    alt="Three-dimensional axes with a unit axis u. Vector v is split into a component P(v) along u and a perpendicular component (I minus P)v. That perpendicular part rotates through theta to Q(v). The rotated vector R(v) is P(v) plus Q(v)."
+    caption="Rodrigues split. P(v) stays put. (I−P)v rotates through θ to Q(v). R(v) = P(v) + Q(v)."
 />
 
 ```typescript
@@ -153,10 +161,22 @@ $$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
 
 where $d$ is the distance from the viewer to the projection plane.
 
+A ray from the camera through $A$ hits the image plane at $B$. Similar triangles give the screen coordinate:
+
+$$B_x = A_x \frac{B_z}{A_z}$$
+
 <Diagram
-    src="/images/research/rotation-focal-plane.svg"
-    alt="Viewer at left, projection plane at distance d, a 3D point sending a ray through the plane to a screen point (x-prime, y-prime). The mapping is x over (d minus z)."
-    caption="The plane sits a distance d from the viewer. A point at depth z hits the plane at x′ = x / (d − z)."
+    src="/images/research/rotation-perspective.svg"
+    alt="Side view of a perspective projection. Camera C on the left, optical axis to the right, a vertical image plane, and a coral ray from C through point A intersecting the plane at B. Similar-triangle legs mark Ax, Az, Bx, and Bz."
+    caption="Same construction as the usual perspective diagram. Bx / Bz = Ax / Az."
+/>
+
+The demo folds $B_z / A_z$ into a single scale $f = 1/(d - z)$. Two points at the same world $x$ but different depth land at different heights on the plane — the farther one is smaller.
+
+<Diagram
+    src="/images/research/rotation-f-projection.svg"
+    alt="Side view with the eye at left and a vertical plane at z equals 0. Two coral rays to a near point and a far point at the same height. The near ray hits the plane farther from the axis. Dimension d from eye to plane, d minus z from plane to the near point. Formula f equals 1 over (d minus z)."
+    caption="f = 1/(d − z). Same x, larger depth → smaller f → smaller x′."
 />
 
 ```typescript
@@ -211,12 +231,6 @@ Using `translate3d` lets the browser composite vertices on the GPU. For eight ti
 This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
 
 Here's the full chain:
-
-<Diagram
-    src="/images/research/rotation-pipeline.svg"
-    alt="Four-step pipeline: 3D point, then Rx Ry Rz, then project x over (d minus z), then CSS translate3d."
-    caption="Math stays in TypeScript until the last step. The browser only places the dots."
-/>
 
 1. Take a 3D point  
 2. Apply rotation matrices  

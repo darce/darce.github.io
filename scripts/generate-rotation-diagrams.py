@@ -1,166 +1,359 @@
 #!/usr/bin/env python3
-"""Generate rotation-matrix article diagrams via workbay-canvas first-party SVG.
+"""Geometric SVGs for the rotation-matrices article.
 
-Uses ``workbay_canvas_mcp.models.Canvas`` + ``to_svg`` (the same emitter as
-``export_canvas(format=svg)``). Tokens are remapped to darce.xyz after export
-so the diagrams share the site field (cool paper / ink) and drop the canvas
-default radius.
+Not WorkBay canvas node graphs. These are constructions in the same
+family as the Wikipedia figures:
 
-Run from the repo root:
+- Counterclockwise_rotation.png  (math: y up)
+- Clockwise_rotation.png         (screen: y down)
+- Rotation_decomposition.png     (Rodrigues: P(v), (I-P)v, Q(v), R(v))
+- Perspective_transform_diagram.svg
+- plus the article's f = 1/(d − z) similar-triangles plate
 
-    PYTHONPATH=../agentic-protocol-monorepo/packages/mcp-workbay-canvas/src \\
-      python3 scripts/generate-rotation-diagrams.py
+Tokens match styles/palettes.scss (paper / ink / coral / ultramarine).
 """
 
 from __future__ import annotations
 
-import sys
+import math
 from pathlib import Path
 
-CANVAS_SRC = (
-    Path(__file__).resolve().parents[2]
-    / "agentic-protocol-monorepo"
-    / "packages"
-    / "mcp-workbay-canvas"
-    / "src"
-)
-if CANVAS_SRC.is_dir():
-    sys.path.insert(0, str(CANVAS_SRC))
+OUT = Path(__file__).resolve().parents[1] / "public" / "images" / "research"
 
-from workbay_canvas_mcp.export_svg import to_svg  # noqa: E402
-from workbay_canvas_mcp.models import Canvas, Edge, EdgeKind, Node, NodeKind  # noqa: E402
-
-OUT_DIR = Path(__file__).resolve().parents[1] / "public" / "images" / "research"
-
-# Site tokens (styles/palettes.scss after the ADLC transplant).
-_RESTYLE = (
-    ("#ffffff", "#e7eaef"),
-    ("#f7f7f7", "#f2f4f7"),
-    ("#1a1a1a", "#171920"),
-    ("#666666", "#464c5c"),
-    ("#cccccc", "#171920"),
-    ('rx="8"', 'rx="0"'),
-    ('rx="18"', 'rx="0"'),
-    ('font-family="sans-serif"', 'font-family="ui-monospace, GeistMonoVariableVF, monospace"'),
-)
+PAPER = "#e7eaef"
+SURFACE = "#f2f4f7"
+INK = "#171920"
+INK2 = "#464c5c"
+CORAL = "#d9253f"
+BLUE = "#3c00f7"
+FONT = "ui-monospace, GeistMonoVariableVF, monospace"
 
 
-def _n(id: str, kind: NodeKind, label: str, x: float, y: float) -> Node:
-    return Node(id=id, kind=kind, label=label, x=x, y=y)
+def svg(w: float, h: float, body: str) -> str:
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
+        f'width="{w}" height="{h}" role="img">\n'
+        f'<rect width="{w}" height="{h}" fill="{PAPER}"/>\n'
+        f"{body}\n</svg>\n"
+    )
 
 
-def _e(id: str, source: str, target: str, label: str | None = None) -> Edge:
-    return Edge(id=id, kind=EdgeKind.FREEFORM, source=source, target=target, label=label)
+def arrow_defs() -> str:
+    return f"""<defs>
+  <marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="{INK}"/>
+  </marker>
+  <marker id="ah-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="{CORAL}"/>
+  </marker>
+  <marker id="ah-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="{BLUE}"/>
+  </marker>
+</defs>"""
 
 
-def restyle(svg: str) -> str:
-    for old, new in _RESTYLE:
-        svg = svg.replace(old, new)
-    return svg
+def text(x: float, y: float, s: str, *, size: int = 13, fill: str = INK, anchor: str = "start") -> str:
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
+        f'fill="{fill}" text-anchor="{anchor}">{s}</text>'
+    )
 
 
-def write(canvas: Canvas, name: str) -> Path:
-    path = OUT_DIR / name
+def line(x1, y1, x2, y2, *, stroke=INK, width=1.2, marker=None, dash=None) -> str:
+    extra = ""
+    if marker:
+        extra += f' marker-end="url(#{marker})"'
+    if dash:
+        extra += f' stroke-dasharray="{dash}"'
+    return (
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
+        f'stroke="{stroke}" stroke-width="{width}" fill="none"{extra}/>'
+    )
+
+
+def write(name: str, content: str) -> Path:
+    path = OUT / name
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(restyle(to_svg(canvas)), encoding="utf-8")
+    path.write_text(content, encoding="utf-8")
     return path
 
 
-def canvas_axes() -> Canvas:
-    """One axis at a time: each rotation preserves its axis."""
-    return Canvas(
-        canvas_ref="diagram:rotation-axes",
-        nodes=[
-            _n("rx", NodeKind.TASK, "Rx(θ)  x unchanged", 120, 40),
-            _n("rxp", NodeKind.FREEFORM, "yz plane rotates", 380, 40),
-            _n("ry", NodeKind.TASK, "Ry(θ)  y unchanged", 120, 120),
-            _n("ryp", NodeKind.FREEFORM, "xz plane rotates", 380, 120),
-            _n("rz", NodeKind.TASK, "Rz(θ)  z unchanged", 120, 200),
-            _n("rzp", NodeKind.FREEFORM, "xy plane rotates", 380, 200),
-        ],
-        edges=[
-            _e("e-rx", "rx", "rxp", "leaves x"),
-            _e("e-ry", "ry", "ryp", "leaves y"),
-            _e("e-rz", "rz", "rzp", "leaves z"),
-        ],
+def counterclockwise() -> str:
+    """Math convention: y up, θ measured CCW from +x. Matches wiki CCW figure."""
+    ox, oy = 80, 280
+    ax, ay = 280, 280
+    # 32° CCW
+    ang = math.radians(32)
+    r = 200
+    px = ox + r * math.cos(ang)
+    py = oy - r * math.sin(ang)
+    # arc from +x to vector
+    arc_r = 56
+    ax1, ay1 = ox + arc_r, oy
+    ax2 = ox + arc_r * math.cos(ang)
+    ay2 = oy - arc_r * math.sin(ang)
+    body = [
+        arrow_defs(),
+        line(ox, oy, ax, ay, width=1.5, marker="ah-ink"),
+        line(ox, oy, ox, 48, width=1.5, marker="ah-ink"),
+        line(ox, oy, px, py, stroke=CORAL, width=1.8, marker="ah-coral"),
+        f'<path d="M{ax1:.1f},{ay1:.1f} A{arc_r},{arc_r} 0 0 0 {ax2:.1f},{ay2:.1f}" '
+        f'fill="none" stroke="{CORAL}" stroke-width="1.2"/>',
+        # small arrow on the arc
+        f'<polygon points="{ax2-6:.1f},{ay2+2:.1f} {ax2+2:.1f},{ay2-6:.1f} {ax2+7:.1f},{ay2+5:.1f}" fill="{CORAL}"/>',
+        text(ax + 8, oy + 5, "x"),
+        text(ox - 18, 58, "y"),
+        text((ox + px) / 2 + 10, (oy + py) / 2 - 8, "θ", fill=CORAL),
+    ]
+    return svg(360, 320, "\n".join(body))
+
+
+def clockwise() -> str:
+    """Screen convention: y down, θ measured CW from +x. Matches wiki CW figure."""
+    ox, oy = 80, 48
+    ax, ay = 280, 48
+    ang = math.radians(28)
+    r = 200
+    px = ox + r * math.cos(ang)
+    py = oy + r * math.sin(ang)
+    arc_r = 56
+    ax1, ay1 = ox + arc_r, oy
+    ax2 = ox + arc_r * math.cos(ang)
+    ay2 = oy + arc_r * math.sin(ang)
+    body = [
+        arrow_defs(),
+        line(ox, oy, ax, ay, width=1.5, marker="ah-ink"),
+        line(ox, oy, ox, 280, width=1.5, marker="ah-ink"),
+        line(ox, oy, px, py, stroke=CORAL, width=1.8, marker="ah-coral"),
+        f'<path d="M{ax1:.1f},{ay1:.1f} A{arc_r},{arc_r} 0 0 1 {ax2:.1f},{ay2:.1f}" '
+        f'fill="none" stroke="{CORAL}" stroke-width="1.2"/>',
+        f'<polygon points="{ax2-6:.1f},{ay2-2:.1f} {ax2+2:.1f},{ay2+6:.1f} {ax2+7:.1f},{ay2-5:.1f}" fill="{CORAL}"/>',
+        text(ax + 8, oy + 5, "x"),
+        text(ox - 18, 292, "y"),
+        text((ox + px) / 2 + 8, (oy + py) / 2 - 10, "θ", fill=CORAL),
+    ]
+    return svg(360, 320, "\n".join(body))
+
+
+def _v3(a, b, s=1.0):
+    return (s * a[0] + b[0], s * a[1] + b[1], s * a[2] + b[2]) if isinstance(b, tuple) else (a[0] * b, a[1] * b, a[2] * b)
+
+
+def _dot(a, b):
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+
+def _cross(a, b):
+    return (
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
     )
 
 
-def canvas_compose() -> Canvas:
-    """Order matters: Rx then Ry ≠ Ry then Rx."""
-    return Canvas(
-        canvas_ref="diagram:rotation-compose",
-        nodes=[
-            _n("p", NodeKind.SLICE, "(x, y, z)", 80, 120),
-            _n("rx1", NodeKind.TASK, "Rx", 220, 50),
-            _n("ry1", NodeKind.TASK, "Ry", 360, 50),
-            _n("pxy", NodeKind.FINDING, "Pxy  Rx then Ry", 520, 50),
-            _n("ry2", NodeKind.TASK, "Ry", 220, 190),
-            _n("rx2", NodeKind.TASK, "Rx", 360, 190),
-            _n("pyx", NodeKind.FINDING, "Pyx  Ry then Rx", 520, 190),
-            _n("note", NodeKind.DECISION, "not commutative", 360, 120),
-        ],
-        edges=[
-            _e("a1", "p", "rx1"),
-            _e("a2", "rx1", "ry1"),
-            _e("a3", "ry1", "pxy"),
-            _e("b1", "p", "ry2"),
-            _e("b2", "ry2", "rx2"),
-            _e("b3", "rx2", "pyx"),
-            _e("neq", "pxy", "pyx", "≠"),
-        ],
+def _norm(a):
+    n = math.sqrt(_dot(a, a)) or 1.0
+    return (a[0] / n, a[1] / n, a[2] / n)
+
+
+def _add(a, b):
+    return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
+
+
+def _sub(a, b):
+    return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
+
+
+def _scale(a, s):
+    return (a[0] * s, a[1] * s, a[2] * s)
+
+
+def decomposition() -> str:
+    """Rodrigues split projected from real 3D vectors (wiki Rotation_decomposition)."""
+    ox, oy = 220, 300
+
+    def proj(p):
+        # cabinet: +x right, +y toward camera-left, +z up
+        return (ox + 118 * p[0] + 72 * p[1], oy - 118 * p[2] + 40 * p[1])
+
+    i, j, k = (1.55, 0, 0), (0, 1.55, 0), (0, 0, 1.7)
+    u = _norm((0.18, 0.12, 1.0))
+    v = (0.95, 0.35, 0.42)
+    pv = _scale(u, _dot(v, u))
+    ipv = _sub(v, pv)
+    theta = math.radians(55)
+    qv = _add(_scale(ipv, math.cos(theta)), _scale(_cross(u, ipv), math.sin(theta)))
+    rv = _add(pv, qv)
+    u_draw = _scale(u, 1.65)
+
+    def P(p):
+        return proj(p)
+
+    o = (ox, oy)
+    Pi, Pj, Pk = P(i), P(j), P(k)
+    Pu, Pv, Ppv, Pipv, Pqv, Prv = P(u_draw), P(v), P(pv), P(ipv), P(qv), P(rv)
+
+    def vline(a, b, **kw):
+        return line(a[0], a[1], b[0], b[1], **kw)
+
+    # sector in the plane of ipv → qv
+    sector = (
+        f'<path d="M{o[0]:.1f},{o[1]:.1f} L{Pipv[0]:.1f},{Pipv[1]:.1f} '
+        f'L{Pqv[0]:.1f},{Pqv[1]:.1f} Z" fill="{BLUE}" fill-opacity="0.08"/>'
     )
+    body = [
+        arrow_defs(),
+        sector,
+        vline(o, Pi, width=1.5, marker="ah-blue", stroke=BLUE),
+        vline(o, Pj, width=1.5, marker="ah-blue", stroke=BLUE),
+        vline(o, Pk, width=1.5, marker="ah-blue", stroke=BLUE),
+        vline(o, Pu, width=1.6, marker="ah-ink"),
+        vline(o, Pv, stroke=CORAL, width=1.8, marker="ah-coral"),
+        vline(o, Ppv, width=1.4, marker="ah-ink"),
+        vline(o, Pipv, width=1.4, marker="ah-ink"),
+        vline(o, Pqv, stroke=CORAL, width=1.4, marker="ah-coral"),
+        vline(o, Prv, stroke=CORAL, width=1.8, marker="ah-coral"),
+        vline(Ppv, Prv, stroke=INK2, width=1, dash="3 3"),
+        vline(Pqv, Prv, stroke=INK2, width=1, dash="3 3"),
+        vline(Pipv, Pv, stroke=INK2, width=1, dash="3 3"),
+        vline(Ppv, Pv, stroke=INK2, width=1, dash="3 3"),
+        f'<path d="M{Pipv[0]:.1f},{Pipv[1]:.1f} Q{(Pipv[0]+Pqv[0])/2 + 24:.1f},{(Pipv[1]+Pqv[1])/2 - 10:.1f} {Pqv[0]:.1f},{Pqv[1]:.1f}" '
+        f'fill="none" stroke="{CORAL}" stroke-width="1.2"/>',
+        text(Pi[0] + 8, Pi[1] + 4, "ĵ", fill=BLUE),
+        text(Pj[0] - 18, Pj[1] + 14, "î", fill=BLUE),
+        text(Pk[0] - 16, Pk[1] - 6, "k̂", fill=BLUE),
+        text(Pu[0] + 8, Pu[1] - 4, "û"),
+        text(Pv[0] + 8, Pv[1] + 4, "v⃗", fill=CORAL),
+        text(Ppv[0] - 48, Ppv[1] + 4, "P(v)"),
+        text(Pipv[0] - 6, Pipv[1] + 22, "(I−P)v"),
+        text(Pqv[0] + 8, Pqv[1] + 4, "Q(v)", fill=CORAL),
+        text(Prv[0] + 8, Prv[1] + 2, "R(v)", fill=CORAL),
+        text(o[0] + 22, o[1] + 6, "θ", fill=CORAL, size=14),
+    ]
+    return svg(460, 470, "\n".join(body))
 
 
-def canvas_pipeline() -> Canvas:
-    """Visible pipeline from the article's closing list."""
-    return Canvas(
-        canvas_ref="diagram:rotation-pipeline",
-        nodes=[
-            _n("pt", NodeKind.SLICE, "1. 3D point", 80, 80),
-            _n("rot", NodeKind.TASK, "2. Rx · Ry · Rz", 280, 80),
-            _n("proj", NodeKind.DECISION, "3. project  x/(d−z)", 500, 80),
-            _n("css", NodeKind.SLICE, "4. CSS translate3d", 720, 80),
-        ],
-        edges=[
-            _e("e1", "pt", "rot", "TypeScript"),
-            _e("e2", "rot", "proj", "still 3D"),
-            _e("e3", "proj", "css", "screen"),
-        ],
-    )
+def perspective() -> str:
+    """Side-view similar triangles, Wikipedia Bx = Ax · Bz / Az."""
+    # Camera C at left. z to the right, x up.
+    c = (70, 210)
+    # image plane at x = 250 (Bz)
+    plane_x = 250
+    # point A
+    a = (430, 78)
+    # intersection B of CA with the plane
+    # line C→A: parametrize
+    t = (plane_x - c[0]) / (a[0] - c[0])
+    b = (plane_x, c[1] + t * (a[1] - c[1]))
+    # drop perpendiculars to the optical axis (horizontal through C)
+    axis_y = c[1]
+    # Az is horizontal from C to A's x; Ax is vertical from axis to A
+    body = [
+        arrow_defs(),
+        # optical axis
+        line(c[0], axis_y, 520, axis_y, width=1.2, marker="ah-ink"),
+        text(528, axis_y + 4, "z"),
+        # x axis up at camera
+        line(c[0], axis_y, c[0], 36, width=1.2, marker="ah-ink"),
+        text(c[0] - 14, 42, "x"),
+        # image plane
+        line(plane_x, 40, plane_x, 300, width=1.6, stroke=BLUE),
+        f'<rect x="{plane_x - 5}" y="40" width="10" height="260" fill="{BLUE}" fill-opacity="0.06" stroke="none"/>',
+        text(plane_x + 10, 54, "image plane", fill=BLUE, size=12),
+        # camera
+        f'<rect x="{c[0] - 7}" y="{c[1] - 7}" width="14" height="14" fill="{INK}"/>',
+        text(c[0] - 28, c[1] + 28, "C", size=14),
+        # ray
+        line(c[0], c[1], a[0], a[1], stroke=CORAL, width=1.6, marker="ah-coral"),
+        # point A
+        f'<circle cx="{a[0]}" cy="{a[1]}" r="4" fill="{CORAL}"/>',
+        text(a[0] + 8, a[1] - 6, "A (Ax, Az)", fill=CORAL),
+        # point B
+        f'<circle cx="{b[0]}" cy="{b[1]}" r="4" fill="{INK}"/>',
+        text(b[0] - 72, b[1] - 8, "B (Bx, Bz)"),
+        # similar-triangle legs
+        line(a[0], a[1], a[0], axis_y, stroke=INK2, width=1, dash="3 3"),
+        line(b[0], b[1], b[0], axis_y, stroke=INK2, width=1, dash="3 3"),
+        # dimension ticks
+        line(c[0], axis_y + 28, plane_x, axis_y + 28, stroke=INK2, width=1),
+        line(c[0], axis_y + 24, c[0], axis_y + 32, stroke=INK2, width=1),
+        line(plane_x, axis_y + 24, plane_x, axis_y + 32, stroke=INK2, width=1),
+        text((c[0] + plane_x) / 2, axis_y + 44, "Bz", fill=INK2, anchor="middle"),
+        line(c[0], axis_y + 52, a[0], axis_y + 52, stroke=INK2, width=1),
+        line(a[0], axis_y + 48, a[0], axis_y + 56, stroke=INK2, width=1),
+        text((c[0] + a[0]) / 2, axis_y + 68, "Az", fill=INK2, anchor="middle"),
+        # vertical measures
+        line(a[0] + 18, axis_y, a[0] + 18, a[1], stroke=INK2, width=1),
+        text(a[0] + 24, (axis_y + a[1]) / 2 + 4, "Ax", fill=INK2),
+        line(plane_x - 18, axis_y, plane_x - 18, b[1], stroke=BLUE, width=1),
+        text(plane_x - 48, (axis_y + b[1]) / 2 + 4, "Bx", fill=BLUE),
+        # formula
+        text(70, 330, "Bx = Ax · Bz / Az", size=14),
+        text(70, 350, "similar triangles:  Bx / Bz  =  Ax / Az", size=12, fill=INK2),
+    ]
+    return svg(560, 380, "\n".join(body))
 
 
-def canvas_focal() -> Canvas:
-    """Perspective: viewer, distance d, plane, and the divide by (d − z)."""
-    return Canvas(
-        canvas_ref="diagram:focal-plane",
-        nodes=[
-            _n("eye", NodeKind.WORKER, "viewer", 80, 140),
-            _n("d", NodeKind.FREEFORM, "distance d", 260, 60),
-            _n("plane", NodeKind.TASK, "projection plane", 260, 140),
-            _n("pt", NodeKind.SLICE, "point (x, y, z)", 480, 60),
-            _n("screen", NodeKind.FINDING, "screen (x′, y′)", 480, 220),
-            _n("formula", NodeKind.DECISION, "x′ = x / (d − z)", 260, 260),
-        ],
-        edges=[
-            _e("e-d", "eye", "plane", "d"),
-            _e("e-ray", "pt", "plane", "ray"),
-            _e("e-hit", "plane", "screen", "hits plane"),
-            _e("e-f", "pt", "formula", "farther → smaller"),
-            _e("e-out", "formula", "screen"),
-        ],
-    )
+def f_projection() -> str:
+    """Article convention: viewer at z = d, plane at z = 0, f = 1/(d − z)."""
+    c = (70, 200)
+    plane_x = 230
+    # two points at different depths, same world-x (same height off axis)
+    a1 = (360, 90)   # closer (larger z, smaller d-z)
+    a2 = (500, 90)   # farther
+    t1 = (plane_x - c[0]) / (a1[0] - c[0])
+    t2 = (plane_x - c[0]) / (a2[0] - c[0])
+    b1 = (plane_x, c[1] + t1 * (a1[1] - c[1]))
+    b2 = (plane_x, c[1] + t2 * (a2[1] - c[1]))
+    axis_y = c[1]
+    body = [
+        arrow_defs(),
+        line(c[0], axis_y, 540, axis_y, width=1.2, marker="ah-ink"),
+        text(548, axis_y + 4, "z"),
+        line(c[0], axis_y, c[0], 40, width=1.2, marker="ah-ink"),
+        text(c[0] - 14, 48, "x"),
+        line(plane_x, 48, plane_x, 300, width=1.6, stroke=BLUE),
+        f'<rect x="{plane_x - 5}" y="48" width="10" height="252" fill="{BLUE}" fill-opacity="0.06"/>',
+        text(plane_x + 10, 62, "plane  z = 0", fill=BLUE, size=12),
+        f'<rect x="{c[0] - 7}" y="{c[1] - 7}" width="14" height="14" fill="{INK}"/>',
+        text(c[0] - 36, c[1] + 28, "eye", size=13),
+        # d
+        line(c[0], axis_y + 36, plane_x, axis_y + 36, stroke=INK2, width=1),
+        line(c[0], axis_y + 32, c[0], axis_y + 40, stroke=INK2),
+        line(plane_x, axis_y + 32, plane_x, axis_y + 40, stroke=INK2),
+        text((c[0] + plane_x) / 2, axis_y + 52, "d", fill=INK2, anchor="middle"),
+        # rays
+        line(c[0], c[1], a1[0], a1[1], stroke=CORAL, width=1.5, marker="ah-coral"),
+        line(c[0], c[1], a2[0], a2[1], stroke=CORAL, width=1.2, dash="4 3"),
+        f'<circle cx="{a1[0]}" cy="{a1[1]}" r="4" fill="{CORAL}"/>',
+        f'<circle cx="{a2[0]}" cy="{a2[1]}" r="4" fill="{CORAL}" fill-opacity="0.55"/>',
+        f'<circle cx="{b1[0]}" cy="{b1[1]}" r="4" fill="{INK}"/>',
+        f'<circle cx="{b2[0]}" cy="{b2[1]}" r="3.5" fill="{INK}" fill-opacity="0.55"/>',
+        text(a1[0] + 8, a1[1] - 6, "near  (x, z)", fill=CORAL, size=12),
+        text(a2[0] - 10, a2[1] - 8, "far  (x, z′)", fill=CORAL, size=12, anchor="end"),
+        text(plane_x - 8, b1[1] - 8, "x′", fill=INK, anchor="end"),
+        text(plane_x - 8, b2[1] + 16, "x″", fill=INK2, anchor="end"),
+        # d − z on the near point
+        line(plane_x, axis_y + 70, a1[0], axis_y + 70, stroke=CORAL, width=1),
+        line(plane_x, axis_y + 66, plane_x, axis_y + 74, stroke=CORAL),
+        line(a1[0], axis_y + 66, a1[0], axis_y + 74, stroke=CORAL),
+        text((plane_x + a1[0]) / 2, axis_y + 86, "d − z", fill=CORAL, anchor="middle", size=12),
+        text(70, 340, "f = 1 / (d − z)", size=14),
+        text(70, 360, "x′ = f x     y′ = f y     — farther ⇒ smaller f", size=12, fill=INK2),
+    ]
+    return svg(580, 390, "\n".join(body))
 
 
 def main() -> None:
     written = [
-        write(canvas_axes(), "rotation-axes.svg"),
-        write(canvas_compose(), "rotation-compose.svg"),
-        write(canvas_pipeline(), "rotation-pipeline.svg"),
-        write(canvas_focal(), "rotation-focal-plane.svg"),
+        write("rotation-ccw.svg", counterclockwise()),
+        write("rotation-cw.svg", clockwise()),
+        write("rotation-decomposition.svg", decomposition()),
+        write("rotation-perspective.svg", perspective()),
+        write("rotation-f-projection.svg", f_projection()),
     ]
-    for path in written:
-        print(path.relative_to(Path(__file__).resolve().parents[1]))
+    for p in written:
+        print(p.relative_to(Path(__file__).resolve().parents[1]))
 
 
 if __name__ == "__main__":

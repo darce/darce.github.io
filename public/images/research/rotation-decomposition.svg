@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 470" width="460" height="470" role="img">
+<rect width="460" height="470" fill="#e7eaef"/>
+<defs>
+  <marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#171920"/>
+  </marker>
+  <marker id="ah-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/>
+  </marker>
+  <marker id="ah-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/>
+  </marker>
+</defs>
+<path d="M220.0,300.0 L339.2,332.9 L310.5,351.7 Z" fill="#3c00f7" fill-opacity="0.08"/>
+<line x1="220.0" y1="300.0" x2="402.9" y2="300.0" stroke="#3c00f7" stroke-width="1.5" fill="none" marker-end="url(#ah-blue)"/>
+<line x1="220.0" y1="300.0" x2="331.6" y2="362.0" stroke="#3c00f7" stroke-width="1.5" fill="none" marker-end="url(#ah-blue)"/>
+<line x1="220.0" y1="300.0" x2="220.0" y2="99.4" stroke="#3c00f7" stroke-width="1.5" fill="none" marker-end="url(#ah-blue)"/>
+<line x1="220.0" y1="300.0" x2="268.2" y2="117.4" stroke="#171920" stroke-width="1.6" fill="none" marker-end="url(#ah-ink)"/>
+<line x1="220.0" y1="300.0" x2="357.3" y2="264.4" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#ah-coral)"/>
+<line x1="220.0" y1="300.0" x2="238.1" y2="231.5" stroke="#171920" stroke-width="1.4" fill="none" marker-end="url(#ah-ink)"/>
+<line x1="220.0" y1="300.0" x2="339.2" y2="332.9" stroke="#171920" stroke-width="1.4" fill="none" marker-end="url(#ah-ink)"/>
+<line x1="220.0" y1="300.0" x2="310.5" y2="351.7" stroke="#d9253f" stroke-width="1.4" fill="none" marker-end="url(#ah-coral)"/>
+<line x1="220.0" y1="300.0" x2="328.6" y2="283.2" stroke="#d9253f" stroke-width="1.8" fill="none" marker-end="url(#ah-coral)"/>
+<line x1="238.1" y1="231.5" x2="328.6" y2="283.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<line x1="310.5" y1="351.7" x2="328.6" y2="283.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<line x1="339.2" y1="332.9" x2="357.3" y2="264.4" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<line x1="238.1" y1="231.5" x2="357.3" y2="264.4" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<path d="M339.2,332.9 Q348.9,332.3 310.5,351.7" fill="none" stroke="#d9253f" stroke-width="1.2"/>
+<text x="410.9" y="304.0" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#3c00f7" text-anchor="start">ĵ</text>
+<text x="313.6" y="376.0" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#3c00f7" text-anchor="start">î</text>
+<text x="204.0" y="93.4" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#3c00f7" text-anchor="start">k̂</text>
+<text x="276.2" y="113.4" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#171920" text-anchor="start">û</text>
+<text x="365.3" y="268.4" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#d9253f" text-anchor="start">v⃗</text>
+<text x="190.1" y="235.5" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#171920" text-anchor="start">P(v)</text>
+<text x="333.2" y="354.9" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#171920" text-anchor="start">(I−P)v</text>
+<text x="318.5" y="355.7" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#d9253f" text-anchor="start">Q(v)</text>
+<text x="336.6" y="285.2" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="13" fill="#d9253f" text-anchor="start">R(v)</text>
+<text x="242.0" y="306.0" font-family="ui-monospace, GeistMonoVariableVF, monospace" font-size="14" fill="#d9253f" text-anchor="start">θ</text>
+</svg>
