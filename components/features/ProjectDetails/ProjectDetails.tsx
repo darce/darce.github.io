@@ -70,8 +70,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                     <Image
                         src={`/images/${project.metaData.masthead.src}`}
                         alt={project.metaData.masthead.alt}
-                        width={1920}
-                        height={2383}
+                        width={646}
+                        height={900}
                         style={{ width: '100%', height: 'auto' }}
                         sizes="(max-width: 768px) 100vw, 70vw"
                     />
