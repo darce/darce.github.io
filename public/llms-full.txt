@@ -34,11 +34,11 @@ Summary: I got tired of rebuilding a coding task every time I changed agents. Wo
 
 I was leaning on coding agents more, and I kept losing the work around the code.
 
-One session knew the current plan. The next one did not. Claude Code would hold the right context for a branch, then I'd want Codex for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet.
+Claude Code would hold the right context for a branch. Then I'd want Codex for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet.
 
 So I moved the record into the repository.
 
-WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task, plus the review findings still open and the tests that passed. Claude Code and Codex both hit the same rows. Cursor does too, along with Grok and VS Code Copilot.
+WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task and the review findings still open. It also stores the tests that passed. Claude Code and Codex both hit the same rows. Cursor and Grok do too. So does Copilot.
 
 The short version: the task stays in the repo. You can change the window.
 
@@ -54,7 +54,7 @@ I think about that the same way I think about a prompt I would ship to a user. W
 
 Start a vague idea with `/scope`. Review the draft plan before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
 
-The commands mean the same thing wherever you run them. `/tdd` and `/branch-review` keep their meaning in every window, and so does `/offload`. Creating a worktree is a make target, so that bookkeeping does not burn a model turn.
+The commands mean the same thing wherever you run them. `/tdd` keeps its meaning in every window. So do `/branch-review` and `/offload`. Creating a worktree is a make target, so that bookkeeping does not burn a model turn.
 
 `/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan.
 
@@ -62,11 +62,11 @@ Install and the full command list are in the [WorkBay repository](https://github
 
 ## How I built it
 
-This sat well outside my usual front-end and accessibility work. I was in Python packaging and Git hooks, writing MCP servers and a SQLite schema. I used the same method I use on a UI that has to survive an audit. I wrote the spec first. Then I split the work and reviewed each slice.
+This sat well outside my usual front-end and accessibility work. I spent most of it in Python packaging and Git hooks. The MCP servers and the SQLite schema came with that. I used the same method I use on a UI that has to survive an audit. I wrote the spec first. Then I split the work and reviewed each slice.
 
 Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec. I set the bar for done and ran the reviews.
 
-I used to treat accessibility claims the same way. If I said a menu was keyboard-accessible, I had to show the path and the regression test. I stay in the loop. The project keeps the evidence.
+I used to treat accessibility claims the same way. If I said a menu was keyboard-accessible, I had to show the path and the regression test. I stay in the loop, and the project keeps the evidence.
 
 ### PhotoShelter: Accessibility Leadership & Product Prototyping
 *Enterprise DAM Platform*
