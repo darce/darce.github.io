@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Beginner geometry plates for the rotation-matrices article.
 
-Physics, not node graphs. Plain-language labels — no P(v), Bx/Az, f=.
-Tokens from styles/palettes.scss.
+Physics, not node graphs. Labels match the article: d, s = 1/(d − z),
+Ax / Az / Bx. No focal-length F. Tokens from styles/palettes.scss.
 """
 
 from __future__ import annotations
@@ -21,13 +21,20 @@ BLUE = "#3c00f7"
 FONT = "ui-monospace, GeistMonoVariableVF, Helvetica, monospace"
 
 
-def svg(w: float, h: float, body: str) -> str:
+def svg(w: float, h: float, body: str, *, x: float = 0, y: float = 0) -> str:
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
-        f'width="{w}" height="{h}" role="img">\n'
-        f'<rect width="{w}" height="{h}" fill="{PAPER}"/>\n'
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x:.1f} {y:.1f} {w:.1f} {h:.1f}" '
+        f'width="{w:.0f}" height="{h:.0f}" role="img">\n'
+        f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="{PAPER}"/>\n'
         f"{body}\n</svg>\n"
     )
+
+
+def crop(pts: list, pad: float = 28) -> tuple[float, float, float, float]:
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, y0 = min(xs) - pad, min(ys) - pad
+    return x0, y0, max(xs) - x0 + pad, max(ys) - y0 + pad
 
 
 def defs(prefix: str) -> str:
@@ -266,61 +273,182 @@ def _iso_zup(p, ox, oy, S):
     return (ox + S * x + 0.55 * S * y, oy - S * z + 0.32 * S * y)
 
 
-def combine_rotations() -> str:
-    """Two panels: Rz then Rx vs Rx then Rz. Same L, different order."""
-    ang = math.radians(70)
-    # L on the xy floor — two arms, obvious heading
-    L = [
-        (0.08, 0.08, 0.0),
-        (1.15, 0.08, 0.0),
-        (1.15, 0.32, 0.0),
-        (0.32, 0.32, 0.0),
-        (0.32, 1.15, 0.0),
-        (0.08, 1.15, 0.0),
+def _l_floor():
+    return [
+        (0.06, 0.06, 0.0),
+        (1.32, 0.06, 0.0),
+        (1.32, 0.38, 0.0),
+        (0.38, 0.38, 0.0),
+        (0.38, 1.32, 0.0),
+        (0.06, 1.32, 0.0),
     ]
 
-    def seq(pts, ops):
-        out = pts
-        for fn in ops:
-            out = [fn(p, ang) for p in out]
-        return out
 
-    left = seq(L, (_rz, _rx))
-    right = seq(L, (_rx, _rz))
+def _apply_ops(pts, ops, ang):
+    out = pts
+    for fn in ops:
+        out = [fn(p, ang) for p in out]
+    return out
 
-    def panel(ox, oy, result, title, prefix):
-        S = 88
 
-        def P(p):
-            return _iso_zup(p, ox, oy, S)
+def _iso_arc(P, pts3, *, color, end) -> str:
+    q = [P(p) for p in pts3]
+    d = f"M{q[0][0]:.1f},{q[0][1]:.1f}" + "".join(f" L{p[0]:.1f},{p[1]:.1f}" for p in q[1:])
+    return (
+        f'<path d="{d}" fill="none" stroke="{color}" stroke-width="1.6" '
+        f'marker-end="url(#{end})"/>'
+    )
 
-        def poly(pts, *, fill, stroke, width, dash=None):
-            d = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in pts)
-            extra = f' stroke-dasharray="{dash}"' if dash else ""
-            return (
-                f'<polygon points="{d}" fill="{fill}" fill-opacity="0.14" '
-                f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
-            )
 
-        o, px, py, pz = P((0, 0, 0)), P((1.35, 0, 0)), P((0, 1.35, 0)), P((0, 0, 1.25))
-        return [
-            defs(prefix),
-            line(o[0], o[1], px[0], px[1], width=1.3, end=f"{prefix}-ink"),
-            line(o[0], o[1], py[0], py[1], width=1.3, end=f"{prefix}-ink"),
-            line(o[0], o[1], pz[0], pz[1], width=1.3, end=f"{prefix}-ink"),
-            text(px[0] + 8, px[1] + 4, "x", size=14),
-            text(py[0] + 10, py[1] + 4, "y", size=14),
-            text(pz[0] - 14, pz[1] - 4, "z", size=14),
-            poly(L, fill=INK2, stroke=INK2, width=1.2, dash="5 4"),
-            poly(result, fill=CORAL, stroke=CORAL, width=1.6),
-            text(ox + 20, 28, title, size=14),
-        ]
+def _arc_pts(axis: str, r: float, a0: float, a1: float, n: int = 18):
+    out = []
+    for i in range(n + 1):
+        t = a0 + (a1 - a0) * i / n
+        c, s = math.cos(t), math.sin(t)
+        if axis == "z":
+            out.append((r * c, r * s, 0.0))
+        else:
+            out.append((0.0, r * c, r * s))
+    return out
+
+
+def combine_frame(
+    prefix: str,
+    title: str,
+    current,
+    ghost=None,
+    *,
+    change: str | None = None,
+    ghost_label: str = "",
+    ghost_at: int = 2,
+    now_label: str = "",
+    now_at: int = 2,
+    note: str = "",
+) -> tuple[list, str]:
+    """One isometric step. Returns (crop points, svg body) for a shared camera."""
+    S, ox, oy = 132, 90, 210
+
+    def P(p):
+        return _iso_zup(p, ox, oy, S)
+
+    def poly(pts, *, fill, stroke, width, dash=None, opacity=0.18):
+        d = " ".join(f"{P(p)[0]:.1f},{P(p)[1]:.1f}" for p in pts)
+        extra = f' stroke-dasharray="{dash}"' if dash else ""
+        return (
+            f'<polygon points="{d}" fill="{fill}" fill-opacity="{opacity}" '
+            f'stroke="{stroke}" stroke-width="{width}"{extra}/>'
+        )
+
+    o, px, py, pz = P((0, 0, 0)), P((1.35, 0, 0)), P((0, 1.35, 0)), P((0, 0, 1.25))
+    floor = [(0.0, 0.0, 0.0), (1.35, 0.0, 0.0), (1.35, 1.35, 0.0), (0.0, 1.35, 0.0)]
+    geom = [o, px, py, pz, *(P(p) for p in current), *(P(p) for p in floor)]
+    if ghost:
+        geom.extend(P(p) for p in ghost)
+
+    title_pt = (o[0] - 8, pz[1] - 28)
+    note_pt = (o[0] - 8, max(p[1] for p in geom) + 24)
+
+    def axis_ink(name: str) -> tuple[str, str]:
+        if change == name:
+            return CORAL, f"{prefix}-coral"
+        return INK, f"{prefix}-ink"
+
+    x_stroke, x_end = axis_ink("x")
+    z_stroke, z_end = axis_ink("z")
 
     body = [
-        *panel(90, 230, left, "Rz then Rx", "c1"),
-        *panel(400, 230, right, "Rx then Rz", "c2"),
+        defs(prefix),
+        poly(floor, fill=INK2, stroke=INK2, width=0.9, opacity=0.07),
+        line(o[0], o[1], px[0], px[1], stroke=x_stroke, width=1.5, end=x_end),
+        line(o[0], o[1], py[0], py[1], width=1.4, end=f"{prefix}-ink"),
+        line(o[0], o[1], pz[0], pz[1], stroke=z_stroke, width=1.5, end=z_end),
+        text(px[0] + 8, px[1] + 5, "x", size=15, fill=x_stroke),
+        text(py[0] + 10, py[1] + 6, "y", size=15),
+        text(pz[0] - 16, pz[1] - 4, "z", size=15, fill=z_stroke),
+        text(title_pt[0], title_pt[1], title, size=16),
     ]
-    return svg(680, 320, "\n".join(body))
+    geom.append(title_pt)
+    if change == "z":
+        body.append(_iso_arc(P, _arc_pts("z", 0.46, 0.18, 0.95), color=CORAL, end=f"{prefix}-coral"))
+        rz = (pz[0] + 12, (o[1] + pz[1]) / 2 + 4)
+        body.append(text(rz[0], rz[1], "Rz", size=14, fill=CORAL))
+        geom.append(rz)
+    elif change == "x":
+        body.append(_iso_arc(P, _arc_pts("x", 0.46, 0.18, 0.95), color=CORAL, end=f"{prefix}-coral"))
+        rx = ((o[0] + px[0]) / 2, px[1] - 16)
+        body.append(text(rx[0], rx[1], "Rx", size=14, fill=CORAL, anchor="middle"))
+        geom.append(rx)
+    if ghost:
+        body.append(poly(ghost, fill=INK2, stroke=INK2, width=1.2, dash="5 4", opacity=0.10))
+        if ghost_label:
+            g = P(ghost[ghost_at])
+            body.append(text(g[0] + 8, g[1] - 10, ghost_label, size=12, fill=INK2))
+            geom.append((g[0] + 52, g[1] - 10))
+    body.append(poly(current, fill=CORAL, stroke=CORAL, width=1.8, opacity=0.20))
+    if now_label:
+        c = P(current[now_at])
+        body.append(text(c[0] - 8, c[1] - 10, now_label, size=13, fill=CORAL, anchor="end"))
+        geom.append((c[0] - 8 * len(now_label), c[1] - 10))
+    if note:
+        body.append(text(note_pt[0], note_pt[1], note, size=13, fill=INK2))
+        geom.extend([note_pt, (note_pt[0] + 7.2 * len(note), note_pt[1])])
+    return geom, "\n".join(body)
+
+
+def combine_steps() -> list[tuple[str, str]]:
+    ang = math.radians(65)
+    start = _l_floor()
+    after_z = _apply_ops(start, (_rz,), ang)
+    after_zx = _apply_ops(start, (_rz, _rx), ang)
+    after_xz = _apply_ops(start, (_rx, _rz), ang)
+    specs = [
+        dict(name="rotation-combine-1.svg", prefix="s1", title="1 · start", current=start, note="on the xy floor"),
+        dict(
+            name="rotation-combine-2.svg",
+            prefix="s2",
+            title="2 · apply Rz",
+            current=after_z,
+            ghost=start,
+            change="z",
+            now_label="after Rz",
+            now_at=5,
+            note="changing: turn around z — still flat",
+        ),
+        dict(
+            name="rotation-combine-3.svg",
+            prefix="s3",
+            title="3 · then Rx",
+            current=after_zx,
+            ghost=after_z,
+            change="x",
+            ghost_label="after Rz",
+            ghost_at=5,
+            now_label="tipped",
+            now_at=2,
+            note="changing: that pose tips around x",
+        ),
+        dict(
+            name="rotation-combine-4.svg",
+            prefix="s4",
+            title="4 · other order",
+            current=after_xz,
+            ghost=after_zx,
+            ghost_label="step 3",
+            ghost_at=2,
+            now_label="Rx then Rz",
+            now_at=5,
+            note="same two turns, reverse order ≠ step 3",
+        ),
+    ]
+    frames = []
+    all_pts: list = []
+    for spec in specs:
+        name = spec.pop("name")
+        pts, body = combine_frame(**spec)
+        frames.append((name, body))
+        all_pts.extend(pts)
+    x0, y0, w, h = crop(all_pts, pad=20)
+    return [(name, svg(w, h, body, x=x0, y=y0)) for name, body in frames]
 
 
 def _iso(p, ox, oy, S):
@@ -355,76 +483,82 @@ def dim_along(a, b, label, *, offset, color=INK2, size=13) -> list[str]:
 
 def perspective() -> str:
     """Isometric pinhole: x up, y across the screen, z through the plane."""
-    ox, oy = 120, 300
-    S = 92
+    ox, oy = 70, 250
+    S = 152
 
     def proj(p):
         return _iso(p, ox, oy, S)
 
-    F, Az, Ax = 1.55, 3.10, 1.28
-    Bx = Ax * F / Az
+    d, Az, Ax = 1.45, 2.75, 1.18
+    Bx = Ax * d / Az
 
     eye = (0.0, 0.0, 0.0)
-    # similar-triangle plane is xz (y = 0)
     pt = (Ax, 0.0, Az)
-    hit = (Bx, 0.0, F)
+    hit = (Bx, 0.0, d)
     foot_a = (0.0, 0.0, Az)
-    foot_b = (0.0, 0.0, F)
+    foot_b = (0.0, 0.0, d)
     plane = [
-        (1.55, -1.05, F),
-        (1.55, 1.05, F),
-        (-1.05, 1.05, F),
-        (-1.05, -1.05, F),
+        (1.28, -0.82, d),
+        (1.28, 0.82, d),
+        (-0.72, 0.82, d),
+        (-0.72, -0.82, d),
     ]
 
     Pe, Pa, Pb = proj(eye), proj(pt), proj(hit)
     Pfa, Pfb = proj(foot_a), proj(foot_b)
     Pp = [proj(p) for p in plane]
-    Pz = proj((0.0, 0.0, Az + 0.55))
-    Px = proj((1.75, 0.0, 0.0))
-    Py = proj((0.0, 1.35, 0.0))
+    Pz = proj((0.0, 0.0, Az + 0.22))
+    Px = proj((1.38, 0.0, 0.0))
+    Py = proj((0.0, 0.95, 0.0))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
+    screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
 
     body = [
         defs("pj"),
-        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.3, end="pj-ink"),
-        line(Pe[0], Pe[1], Px[0], Px[1], width=1.3, end="pj-ink"),
-        line(Pe[0], Pe[1], Py[0], Py[1], width=1.3, end="pj-ink"),
-        text(Pz[0] + 8, Pz[1] + 2, "z", size=14),
-        text(Px[0] - 14, Px[1] - 6, "x", size=14),
-        text(Py[0] + 8, Py[1] + 12, "y", size=14),
+        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.4, end="pj-ink"),
+        line(Pe[0], Pe[1], Px[0], Px[1], width=1.4, end="pj-ink"),
+        line(Pe[0], Pe[1], Py[0], Py[1], width=1.4, end="pj-ink"),
+        text(Pz[0] + 8, Pz[1] + 2, "z", size=16),
+        text(Px[0] - 16, Px[1] - 4, "x", size=16),
+        text(Py[0] + 8, Py[1] + 14, "y", size=16),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
-        f'stroke="{BLUE}" stroke-width="1.5"/>',
-        text((Pp[0][0] + Pp[1][0]) / 2 - 8, min(Pp[0][1], Pp[1][1]) - 12, "screen", fill=BLUE, size=13, anchor="middle"),
+        f'stroke="{BLUE}" stroke-width="1.6"/>',
+        text(screen_lab[0], screen_lab[1], "screen", fill=BLUE, size=14, anchor="middle"),
         f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {Pfa[0]:.1f},{Pfa[1]:.1f}" '
         f'fill="{CORAL}" fill-opacity="0.06" stroke="none"/>',
-        line(Pe[0], Pe[1], Pa[0], Pa[1], stroke=CORAL, width=1.7, end="pj-coral"),
+        line(Pe[0], Pe[1], Pa[0], Pa[1], stroke=CORAL, width=1.8, end="pj-coral"),
         line(Pb[0], Pb[1], Pfb[0], Pfb[1], stroke=INK2, width=1, dash="3 3"),
         line(Pa[0], Pa[1], Pfa[0], Pfa[1], stroke=INK2, width=1, dash="3 3"),
         eye_side(Pe[0], Pe[1]),
-        circle(Pb[0], Pb[1], 5, fill=INK),
-        text(Pb[0] + 10, Pb[1] - 4, "B", size=14),
-        circle(Pa[0], Pa[1], 5, fill=CORAL),
-        text(Pa[0] + 10, Pa[1] - 6, "A", size=14, fill=CORAL),
-        *dim_along(Pe, Pfb, "d", offset=30),
-        *dim_along(Pe, Pfa, "Az", offset=50),
-        *dim_along(Pfa, Pa, "Ax", offset=16, color=CORAL),
-        *dim_along(Pfb, Pb, "Bx", offset=-16),
+        circle(Pb[0], Pb[1], 5.5, fill=INK),
+        text(Pb[0] + 10, Pb[1] - 4, "B", size=16),
+        circle(Pa[0], Pa[1], 5.5, fill=CORAL),
+        text(Pa[0] + 10, Pa[1] - 6, "A", size=16, fill=CORAL),
+        *dim_along(Pe, Pfb, "d", offset=26, size=15),
+        *dim_along(Pe, Pfa, "Az", offset=46, size=15),
+        *dim_along(Pfa, Pa, "Ax", offset=16, color=CORAL, size=15),
+        *dim_along(Pfb, Pb, "Bx", offset=-16, size=15),
     ]
-    return svg(640, 460, "\n".join(body))
+    pts = [
+        Pe, Pa, Pb, Pfa, Pfb, Pz, Px, Py, *Pp, screen_lab,
+        (Pe[0] - 36, Pe[1] + 52), (Pa[0] + 36, Pa[1] - 18),
+        (Pfa[0] + 20, Pfa[1] + 56), (Px[0] - 20, Px[1] - 12),
+    ]
+    x0, y0, w, h = crop(pts, pad=16)
+    return svg(w, h, "\n".join(body), x=x0, y=y0)
 
 
 def f_projection() -> str:
     """Same isometric frame. Same eye distance d, two depths."""
-    ox, oy = 120, 300
-    S = 88
+    ox, oy = 70, 250
+    S = 142
 
     def proj(p):
         return _iso(p, ox, oy, S)
 
-    d = 1.55
-    h = 1.20
-    z_near, z_far = 1.10, 2.30
+    d = 1.38
+    h = 1.08
+    z_near, z_far = 0.88, 1.85
 
     eye = (0.0, 0.0, 0.0)
     near = (h, 0.0, d + z_near)
@@ -432,48 +566,57 @@ def f_projection() -> str:
     hit_n = (h * d / (d + z_near), 0.0, d)
     hit_f = (h * d / (d + z_far), 0.0, d)
     plane = [
-        (1.50, -1.00, d),
-        (1.50, 1.00, d),
-        (-1.05, 1.00, d),
-        (-1.05, -1.00, d),
+        (1.22, -0.78, d),
+        (1.22, 0.78, d),
+        (-0.70, 0.78, d),
+        (-0.70, -0.78, d),
     ]
 
     Pe, Pn, Pf = proj(eye), proj(near), proj(far)
     Pbn, Pbf = proj(hit_n), proj(hit_f)
     Pp = [proj(p) for p in plane]
-    Pz = proj((0.0, 0.0, d + z_far + 0.45))
-    Px = proj((1.70, 0.0, 0.0))
-    Py = proj((0.0, 1.30, 0.0))
+    Pz = proj((0.0, 0.0, d + z_far + 0.18))
+    Px = proj((1.32, 0.0, 0.0))
+    Py = proj((0.0, 0.92, 0.0))
     Pplane = proj((0.0, 0.0, d))
     Pnz = proj((0.0, 0.0, d + z_near))
     plane_pts = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in Pp)
+    screen_lab = ((Pp[0][0] + Pp[1][0]) / 2, min(Pp[0][1], Pp[1][1]) - 14)
+    formula = ((Pe[0] + Pplane[0]) / 2, min(Pp[0][1], Pp[1][1]) - 34)
 
     body = [
         defs("fp"),
-        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.3, end="fp-ink"),
-        line(Pe[0], Pe[1], Px[0], Px[1], width=1.3, end="fp-ink"),
-        line(Pe[0], Pe[1], Py[0], Py[1], width=1.3, end="fp-ink"),
-        text(Pz[0] + 8, Pz[1] + 2, "z", size=14),
-        text(Px[0] - 14, Px[1] - 6, "x", size=14),
-        text(Py[0] + 8, Py[1] + 12, "y", size=14),
+        line(Pe[0], Pe[1], Pz[0], Pz[1], width=1.4, end="fp-ink"),
+        line(Pe[0], Pe[1], Px[0], Px[1], width=1.4, end="fp-ink"),
+        line(Pe[0], Pe[1], Py[0], Py[1], width=1.4, end="fp-ink"),
+        text(Pz[0] + 8, Pz[1] + 2, "z", size=16),
+        text(Px[0] - 16, Px[1] - 4, "x", size=16),
+        text(Py[0] + 8, Py[1] + 14, "y", size=16),
         f'<polygon points="{plane_pts}" fill="{BLUE}" fill-opacity="0.10" '
-        f'stroke="{BLUE}" stroke-width="1.5"/>',
-        text((Pp[0][0] + Pp[1][0]) / 2 - 8, min(Pp[0][1], Pp[1][1]) - 12, "screen", fill=BLUE, size=13, anchor="middle"),
+        f'stroke="{BLUE}" stroke-width="1.6"/>',
+        text(screen_lab[0], screen_lab[1], "screen", fill=BLUE, size=14, anchor="middle"),
         eye_side(Pe[0], Pe[1]),
-        line(Pe[0], Pe[1], Pn[0], Pn[1], stroke=CORAL, width=1.7, end="fp-coral"),
-        line(Pe[0], Pe[1], Pf[0], Pf[1], stroke=CORAL, width=1.3, dash="5 3"),
-        circle(Pbn[0], Pbn[1], 5, fill=INK),
-        circle(Pbf[0], Pbf[1], 4, fill=INK2),
-        circle(Pn[0], Pn[1], 5, fill=CORAL),
-        circle(Pf[0], Pf[1], 5, fill=CORAL),
-        text(Pn[0] + 10, Pn[1] - 8, "near", fill=CORAL, size=14),
-        text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=14),
-        text(Pbn[0] - 12, Pbn[1] - 10, "x′", size=14, anchor="end"),
-        text(Pbf[0] + 12, Pbf[1] + 4, "x″", size=13, fill=INK2),
-        *dim_along(Pe, Pplane, "d", offset=32),
-        *dim_along(Pplane, Pnz, "d − z", offset=32, color=CORAL),
+        line(Pe[0], Pe[1], Pn[0], Pn[1], stroke=CORAL, width=1.8, end="fp-coral"),
+        line(Pe[0], Pe[1], Pf[0], Pf[1], stroke=CORAL, width=1.4, dash="5 3"),
+        circle(Pbn[0], Pbn[1], 5.5, fill=INK),
+        circle(Pbf[0], Pbf[1], 4.5, fill=INK2),
+        circle(Pn[0], Pn[1], 5.5, fill=CORAL),
+        circle(Pf[0], Pf[1], 5.5, fill=CORAL),
+        text(Pn[0] + 10, Pn[1] - 8, "near", fill=CORAL, size=15),
+        text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=15),
+        text(Pbn[0] - 12, Pbn[1] - 10, "x′", size=15, anchor="end"),
+        text(Pbf[0] + 12, Pbf[1] + 6, "x″", size=14, fill=INK2),
+        *dim_along(Pe, Pplane, "d", offset=26, size=15),
+        *dim_along(Pplane, Pnz, "d − z", offset=26, color=CORAL, size=15),
+        text(formula[0], formula[1], "s = 1/(d − z)", size=15, fill=INK, anchor="middle"),
     ]
-    return svg(660, 460, "\n".join(body))
+    pts = [
+        Pe, Pn, Pf, Pbn, Pbf, Pz, Px, Py, Pplane, Pnz, *Pp, screen_lab, formula,
+        (Pe[0] - 40, Pe[1] + 48), (Pf[0] + 40, Pf[1] - 16),
+        (Pn[0] + 48, Pn[1] - 10), (Pbn[0] - 28, Pbn[1] - 12),
+    ]
+    x0, y0, w, hgt = crop(pts, pad=16)
+    return svg(w, hgt, "\n".join(body), x=x0, y=y0)
 
 
 def main() -> None:
@@ -481,10 +624,14 @@ def main() -> None:
         write("rotation-ccw.svg", counterclockwise()),
         write("rotation-cw.svg", clockwise()),
         write("rotation-apply.svg", apply_rotation()),
-        write("rotation-combine.svg", combine_rotations()),
         write("rotation-perspective.svg", perspective()),
         write("rotation-f-projection.svg", f_projection()),
     ]
+    written += [write(name, content) for name, content in combine_steps()]
+    stale = OUT / "rotation-combine.svg"
+    if stale.exists():
+        stale.unlink()
+        print(f"removed {stale.relative_to(Path(__file__).resolve().parents[1])}")
     root = Path(__file__).resolve().parents[1]
     for p in written:
         print(p.relative_to(root))

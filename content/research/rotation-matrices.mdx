@@ -139,13 +139,32 @@ The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z
 
 This demo uses **column vectors** and $v' = Mv$ (matrix on the left). Composition is right-to-left: apply $R_x$, then $R_y$, then $R_z$. Rotations are **active** (they move the cube; the axes stay put) and **right-handed**: a positive angle is counterclockwise when you look along the axis toward the origin. Screens flip $y$, so the same $R_z$ looks clockwise on the page. The view step later is not a rotation — it is a projective scale.
 
-Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative.
+Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative. Walk it one turn at a time:
 
+<DiagramPair>
 <Diagram
-    src="/images/research/rotation-combine.svg"
-    alt="Two isometric views of the same L. Left: rotated around z then around x. Right: rotated around x then around z. The final coral poses do not match. Ghost is the start pose."
-    caption="Same start, same two turns, opposite order. The coral L lands in a different place."
+    src="/images/research/rotation-combine-1.svg"
+    alt="Step 1. An L lies on the xy plane. Axes x, y, and z meet at the origin."
+    caption="1 · Start. The L sits on the xy plane."
 />
+<Diagram
+    src="/images/research/rotation-combine-2.svg"
+    alt="Step 2. The L has turned around z. Ghost shows the start pose. The L is still on the floor."
+    caption="2 · Apply Rz. It turns around z and stays on the floor."
+/>
+</DiagramPair>
+<DiagramPair>
+<Diagram
+    src="/images/research/rotation-combine-3.svg"
+    alt="Step 3. The L from step 2 has now tipped around x. Ghost is the after-Rz pose."
+    caption="3 · Then Rx. That pose tips around x."
+/>
+<Diagram
+    src="/images/research/rotation-combine-4.svg"
+    alt="Step 4. The other order: after Rx then Rz the coral L is in a different place than step 3."
+    caption="4 · Other order: Rx then Rz. Same two turns, different pose."
+/>
+</DiagramPair>
 
 A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
@@ -174,7 +193,7 @@ After rotation the cube is still in 3D. The screen is 2D.
 
 A ray from the eye through the screen hits the point. Where it crosses the screen is what you draw.
 
-The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). In that setup $d$ is also the **focal length**. The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of the point:
+The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of the point:
 
 $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
 
@@ -182,15 +201,15 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="An eye looking at a vertical screen. A ray through B on the screen hits point A. Dimensions mark d, Ax, Az, and Bx."
-    caption="Bx = Ax · d / Az. d is the eye–plane distance (focal length in this setup). A is the point, B is where the ray hits the screen."
+    alt="An eye looking at a screen. A ray through B on the screen hits point A. Dimensions mark d, Ax, Az, and Bx."
+    caption="Bx = Ax · d / Az. d is the eye–plane distance. A is the point, B is where the ray hits the screen."
 />
 
-The demo stores that constant as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Focal length is baked to $1$ in these units, so $s$ is $1/w$ after a homogeneous multiply — not a second focal length. Same $d$, two depths: the far point lands closer to the middle.
+The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** per vertex, $s = 1/(d - z)$. Same $d$, two depths: the far point lands closer to the middle.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="An eye, a screen an eye-distance d away, and two rays to a near point and a far point. Hits are labeled x prime and x double prime. A d minus z mark sits past the screen."
+    alt="An eye, a screen a distance d away, and two rays to a near point and a far point. Hits are labeled x prime and x double prime. Marks show d and d minus z."
     caption="s = 1/(d − z). Same eye distance d, two depths. The far hit x″ sits closer to the middle than x′."
 />
 
