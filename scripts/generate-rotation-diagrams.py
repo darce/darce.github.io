@@ -472,23 +472,57 @@ def _away(a: tuple, b: tuple, t: float = 0.2) -> tuple:
     return tuple(a[i] + t * (b[i] - a[i]) for i in range(len(a)))
 
 
-def _tree(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
-    """Deciduous tree: cloud canopy + thick trunk. (cx, cy) is the canopy top."""
-    r = s
+def _pin(p: tuple, d: float) -> tuple:
+    """Pinhole hit: ray from the origin through p, onto the plane z = d."""
+    x, y, z = p
+    t = d / z
+    return (x * t, y * t, d)
+
+
+def _tree(
+    top: tuple[float, float],
+    bot: tuple[float, float],
+    *,
+    fill: str,
+    stroke: str,
+    opacity: float = 1.0,
+    halo: bool = False,
+) -> list[str]:
+    """Deciduous tree: visible canopy top is `top`, trunk base is `bot` (SVG)."""
+    cx, ty = top
+    _, by = bot
+    h = max(by - ty, 1.0)
+    r = min(0.28 * h, 0.50 * h)
+    # Main disc top sits on `top`, so the pinhole ray hits the visible edge.
     discs = (
-        (cx, cy + 0.88 * r, r),
-        (cx - 0.58 * r, cy + 1.18 * r, 0.70 * r),
-        (cx + 0.58 * r, cy + 1.18 * r, 0.70 * r),
+        (cx, ty + r, r),
+        (cx - 0.58 * r, ty + 1.32 * r, 0.70 * r),
+        (cx + 0.58 * r, ty + 1.32 * r, 0.70 * r),
     )
-    tw, top, bot = 0.20 * r, cy + 1.75 * r, cy + 2.75 * r
-    parts = [
-        f'<rect x="{cx - tw:.1f}" y="{top:.1f}" width="{2 * tw:.1f}" height="{bot - top:.1f}" '
-        f'fill="{stroke}" stroke="{stroke}" stroke-width="1.1"/>'
-    ]
+    tw, trunk_top = 0.08 * h, ty + 1.85 * r
+    if trunk_top > by - 2:
+        trunk_top = (ty + by) * 0.62
+    op = f' fill-opacity="{opacity:.2f}"' if opacity < 1 else ""
+    parts: list[str] = []
+    if halo:
+        hw = 3.2
+        parts.append(
+            f'<rect x="{cx - tw:.1f}" y="{trunk_top:.1f}" width="{2 * tw:.1f}" '
+            f'height="{by - trunk_top:.1f}" fill="none" stroke="{PAPER}" stroke-width="{hw}"/>'
+        )
+        for x, y, rr in discs:
+            parts.append(
+                f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rr:.1f}" fill="none" '
+                f'stroke="{PAPER}" stroke-width="{hw}"/>'
+            )
+    parts.append(
+        f'<rect x="{cx - tw:.1f}" y="{trunk_top:.1f}" width="{2 * tw:.1f}" '
+        f'height="{by - trunk_top:.1f}" fill="{stroke}"{op} stroke="{stroke}" stroke-width="1.1"/>'
+    )
     # Opaque fills so the three discs read as one canopy, not a Venn diagram.
     for x, y, rr in discs:
         parts.append(
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rr:.1f}" fill="{fill}" '
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rr:.1f}" fill="{fill}"{op} '
             f'stroke="{stroke}" stroke-width="1.2"/>'
         )
     return parts
@@ -496,27 +530,33 @@ def _tree(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str
 
 @dataclass
 class Tree:
-    """Same tree in the world or on the screen; `size` is canopy radius in px."""
+    """Tree spanning a world-space top→bottom edge (same path for world and screen)."""
 
-    point: tuple
-    size: float
+    top: tuple
+    bottom: tuple
     color: str = CORAL
     label: str = ""
     label_color: str = CORAL
+    opacity: float = 1.0
+    halo: bool = False
 
     def draw(self, cam: Camera) -> tuple[list[str], list]:
-        cx, cy = cam.project(self.point)
-        s = self.size
-        parts = _tree(cx, cy, s, fill=self.color, stroke=self.color)
+        pt, pb = cam.project(self.top), cam.project(self.bottom)
+        h = max(pb[1] - pt[1], 1.0)
+        r = 0.28 * h
+        parts = _tree(
+            pt, pb, fill=self.color, stroke=self.color, opacity=self.opacity, halo=self.halo
+        )
         pts = [
-            (cx - 1.35 * s, cy),
-            (cx + 1.35 * s, cy + 2.45 * s),
+            (pt[0] - 1.35 * r, pt[1]),
+            (pt[0] + 1.35 * r, pb[1]),
+            pt,
+            pb,
         ]
         if self.label:
-            parts.append(
-                _text(cx + 1.4 * s, cy + 0.6 * s, self.label, size=14, fill=self.label_color)
-            )
-            pts.append((cx + 1.4 * s + 8 * len(self.label), cy + 0.6 * s))
+            lx, ly = pt[0] + 1.55 * r, pt[1] + 0.32 * h
+            parts.append(_text(lx, ly, self.label, size=14, fill=self.label_color))
+            pts.append((lx + 8 * len(self.label), ly))
         return parts, pts
 
 
@@ -872,37 +912,40 @@ def combine_compare() -> str:
 def perspective() -> str:
     cam = Camera(70, 250, 152, kind="pinhole")
     d, Az, Ax = 1.45, 2.75, 1.18
-    Bx = Ax * d / Az
-    eye, pt, hit = (0.0, 0.0, 0.0), (Ax, 0.0, Az), (Bx, 0.0, d)
-    foot_a, foot_b = (0.0, 0.0, Az), (0.0, 0.0, d)
+    eye = (0.0, 0.0, 0.0)
+    top, bot = (Ax, 0.0, Az), (0.0, 0.0, Az)
+    hit_top, hit_bot = _pin(top, d), _pin(bot, d)
     screen = Screen(d)
-    world_s, hit_s = 26.0, 26.0 * (Bx / Ax)
     scene = Scene(cam, "pj")
     scene.add(
         Axes(reach=(1.38, 0.95, Az + 0.22), prefix="pj"),
         screen,
-        Seg(_away(eye, pt, 0.10), _away(pt, eye, 0.16), CORAL, 1.8, end="pj-coral"),
-        Seg(hit, foot_b, INK2, 1, dash="3 3"),
-        Seg(pt, foot_a, INK2, 1, dash="3 3"),
-        Tree(pt, world_s, CORAL),
-        Tree(hit, hit_s, INK),
-        Brace(eye, foot_b, "d", BLUE, offset=34, size=16),
-        Brace(eye, foot_a, "depth", INK2, offset=56, math=False),
-        Brace(foot_a, pt, "height in space", CORAL, offset=28, size=13, math=False),
-        Brace(foot_b, hit, "height on screen", INK, offset=-48, size=13, math=False),
+        Seg(_away(eye, top, 0.10), _away(top, eye, 0.16), CORAL, 1.8, end="pj-coral"),
+        Seg(hit_top, hit_bot, INK2, 1, dash="3 3"),
+        Seg(top, bot, INK2, 1, dash="3 3"),
+        Tree(top, bot, CORAL),
+        Tree(hit_top, hit_bot, INK, halo=True),
+        Dot(top, CORAL, 3.2),
+        Dot(bot, CORAL, 3.2),
+        Dot(hit_top, INK, 3.2),
+        Dot(hit_bot, INK, 3.2),
+        Brace(eye, hit_bot, "d", BLUE, offset=34, size=16),
+        Brace(eye, bot, "depth", INK2, offset=56, math=False),
+        Brace(bot, top, "height in space", CORAL, offset=56, size=13, math=False, nudge=(10, 8)),
+        Brace(hit_bot, hit_top, "height on screen", INK, offset=-48, size=13, math=False),
         Eye(),
     )
     parts, pts = scene.gather()
-    Pe, Pa, Pfa = cam.project(eye), cam.project(pt), cam.project(foot_a)
+    Pe, Pa, Pfa = cam.project(eye), cam.project(top), cam.project(bot)
     parts.insert(
         2,
         f'<polygon points="{Pe[0]:.1f},{Pe[1]:.1f} {Pa[0]:.1f},{Pa[1]:.1f} {Pfa[0]:.1f},{Pfa[1]:.1f}" '
         f'fill="{CORAL}" fill-opacity="0.06" stroke="none"/>',
     )
     left = min(p[0] for p in pts)
-    top = min(p[1] for p in pts)
-    eq1 = (left, top - 22)
-    eq2 = (left, top - 4)
+    top_y = min(p[1] for p in pts)
+    eq1 = (left, top_y - 22)
+    eq2 = (left, top_y - 4)
     parts.append(
         _eq(eq1[0], eq1[1], [("height on screen", INK)], size=15)
     )
@@ -928,37 +971,48 @@ def perspective() -> str:
 
 def f_projection() -> str:
     cam = Camera(70, 250, 142, kind="pinhole")
-    d, hgt = 1.38, 1.08
-    z_near, z_far = 0.70, 2.35
+    d, hgt = 1.38, 0.86
+    # Opposite sides of the axis so the two screen images do not nest.
+    y_near, y_far = 1.00, -0.72
+    z_near, z_far = 0.42, 1.95
     eye = (0.0, 0.0, 0.0)
-    near = (hgt, 0.0, d + z_near)
-    far = (hgt, 0.0, d + z_far)
-    hit_n = (hgt * d / (d + z_near), 0.0, d)
-    hit_f = (hgt * d / (d + z_far), 0.0, d)
+    zn, zf = d + z_near, d + z_far
+    near_top, near_bot = (hgt, y_near, zn), (0.0, y_near, zn)
+    far_top, far_bot = (hgt, y_far, zf), (0.0, y_far, zf)
+    sn_top, sn_bot = _pin(near_top, d), _pin(near_bot, d)
+    sf_top, sf_bot = _pin(far_top, d), _pin(far_bot, d)
     plane = (0.0, 0.0, d)
-    n_z = (0.0, 0.0, d + z_near)
-    screen = Screen(d, hx=1.22, hy=0.78)
-    world_s = 24.0
-    near_s = world_s * (hit_n[0] / hgt)
-    far_s = world_s * (hit_f[0] / hgt)
+    n_z = (0.0, 0.0, zn)
+    screen = Screen(d, hx=1.22, hy=1.02)
     scene = Scene(cam, "fp")
     scene.add(
-        Axes(reach=(1.32, 0.92, d + z_far + 0.18), prefix="fp"),
+        Axes(reach=(1.32, 1.28, zf + 0.22), prefix="fp"),
         screen,
-        Seg(_away(eye, far, 0.10), _away(far, eye, 0.16), CORAL, 1.4, dash="5 3", end="fp-coral"),
-        Seg(_away(eye, near, 0.10), _away(near, eye, 0.16), CORAL, 1.8, end="fp-coral"),
-        Tree(far, world_s, CORAL, "far"),
-        Tree(near, world_s, CORAL, "near"),
-        Tree(hit_f, max(far_s, 6.0), INK2),
-        Tree(hit_n, near_s, INK),
+        # Bottom then top, far then near — each screen edge sits on its ray.
+        Seg(_away(eye, far_bot, 0.10), _away(far_bot, eye, 0.10), CORAL, 1.15, dash="5 3"),
+        Seg(_away(eye, far_top, 0.10), _away(far_top, eye, 0.16), CORAL, 1.4, dash="5 3", end="fp-coral"),
+        Seg(_away(eye, near_bot, 0.10), _away(near_bot, eye, 0.10), CORAL, 1.45),
+        Seg(_away(eye, near_top, 0.10), _away(near_top, eye, 0.16), CORAL, 1.8, end="fp-coral"),
+        Tree(far_top, far_bot, CORAL, "far"),
+        Tree(near_top, near_bot, CORAL, "near"),
+        Tree(sf_top, sf_bot, INK2, halo=True),
+        Tree(sn_top, sn_bot, INK, halo=True),
+        Dot(far_top, CORAL, 3.0),
+        Dot(far_bot, CORAL, 3.0),
+        Dot(near_top, CORAL, 3.0),
+        Dot(near_bot, CORAL, 3.0),
+        Dot(sf_top, INK2, 3.0),
+        Dot(sf_bot, INK2, 3.0),
+        Dot(sn_top, INK, 3.4),
+        Dot(sn_bot, INK, 3.4),
         Brace(eye, plane, "d", BLUE, offset=34, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
         Eye(),
     )
     parts, pts = scene.gather()
     left = min(p[0] for p in pts)
-    top = min(p[1] for p in pts)
-    eq = (left, top - 6)
+    top_y = min(p[1] for p in pts)
+    eq = (left, top_y - 6)
     parts.append(
         _eq(
             eq[0],
