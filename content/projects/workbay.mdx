@@ -23,70 +23,42 @@ tags:
 - Git
 - Python
 ---
+## Why it exists
+
+Coding agents keep getting cheaper, but never from one vendor at a time. Claude's API is priced for the frontier. Other vendors sell tokens at fire-sale prices to win users, and the cheap capacity moves from month to month. The sensible response is to route each piece of work to whichever model is a good deal this week.
+
+What stops you is that your working context lives inside each vendor's product. The task you were on and the review feedback you have not addressed sit in one transcript, in one app. Switch tools and you start cold, or you paste a summary and hope the next model does not treat a guess as fact.
+
+WorkBay moves that state out of the transcript and into the repository, so the work can follow the price.
+
 ## What it is
 
-WorkBay is a SQLite file in the project, two MCP servers, and a set of git hooks. The file holds the active task, its branch and worktree, which slices closed and at which commit, the review findings still open, and the tests that passed.
+WorkBay is a small SQLite database in your project, plus the plumbing that lets agents read and write it. It records the active task, the branch it lives on, the review findings still open, and the tests that passed, each tied to a specific commit.
 
-Agents read and write those rows over MCP (the protocol they use to call tools). The same commands are generated for Claude Code, Codex, Cursor, grok, and VS Code Copilot. A session that ends in one of them can start again in another.
-
-WorkBay stores the task and the gates that still have to pass, not the chat.
-
-## What it solves
-
-A coding agent starts every session cold. Chat summaries fill the gap until you need a finding that is still open, or a decision you already made. The next model can treat a pasted summary as fact. WorkBay records the finding and the commit that backs it.
-
-Skills are advice a model can skip. Hooks installed through `core.hooksPath` still run after you change harnesses: no edits on `main` outside permitted paths, branch names must match the grammar, and the close gate fails while a slice has no recorded decision. Unrestricted shell can still skip hooks.
-
-Creating a worktree, closing a slice, and running the merge gate are make targets. They do not spend a model turn.
-
-A second model can review the branch without reading the first model's transcript. It writes findings into the database. The author has to clear high and medium findings before merge.
-
-## Main features
-
-### Shared commands
-
-Fifteen portable commands come from one manifest. The meaning stays the same; only the install path changes.
+Agents reach the database over MCP, the protocol they already use to call tools. The same commands are generated for Claude Code, Codex, Cursor, grok, and VS Code Copilot from one manifest, so `/branch-review` means the same thing in every harness and feels native in each. End a session in one tool, pick it up in another, and the task continues where it stopped.
 
 | Command | Use when |
 | --- | --- |
 | `/scope` | The idea is not bounded yet |
 | `/tdd` | A slice starts from a failing test |
 | `/branch-review` | A branch claims to be done |
-| `/offload` | A mechanical slice can go to a cheaper backend under a token cap |
+| `/offload` | A well-specified slice can go to a cheaper model |
 | `/handoff-lifecycle` | You are resuming or switching tasks |
 
-`/plan-analyze`, `/planning-review`, and `/review-parallel` are in the same set. The full list is in the [WorkBay repository](https://github.com/darce/workbay).
+There are fifteen in all. The full list is in the [WorkBay repository](https://github.com/darce/workbay).
 
-A typical task:
+## Why you can trust it
 
-```bash
-/scope
-/plan-analyze
-/planning-review
-make task-start
-/tdd
-/incremental-implementation
-/branch-review
-make close-check
-make task-finish
-```
+A pasted chat summary is a claim. A WorkBay record is anchored to git. When a reviewer flags a problem, the finding carries the commit where it was found and, later, the commit that fixed it. When a test passes, the result is stored with the code it ran against. A second model can review a branch without reading the first model's chat, because everything it needs is already in the database.
 
-### Hooks
+Git hooks back this up. Direct edits to `main` are refused. A branch cannot merge while findings are still open. These rules hold no matter which agent is driving, because they run in git, not in the model.
 
-Edits on `main` are refused outside permitted surfaces. Branch names must match `feature/<task-ref>` (plus `maint`, `hotfix`, `release`, `revert`). `make review-ready` fails while findings are open. `make close-check` refuses a finish when any slice lacks a recorded decision. File touches are recorded per slice.
+## Cheap tokens, kept at arm's length
 
-### Database
+`/offload` is the pricing side of the story. It takes a slice of work that is fully specified, sends it to a cheaper backend in an isolated worktree, and caps the tokens it may spend. The result never merges on its own; you review the diff first. A heavily discounted model becomes useful without becoming trusted.
 
-State lives in `.task-state/handoff.db`. The main tables are active tasks, decisions (with commit SHA), review findings (severity, status, two commit anchors), test results, touched files, blockers, and archives of finished tasks.
+## Embeddings, briefly
 
-`load_session` returns a ranked packet: active task, open findings, recent decisions, touched files. Optional embeddings rank those rows by meaning when a query does not match the original phrasing. They do not replace hooks.
+Optional semantic embeddings sit on top of the database. Instead of matching exact wording, an agent asks for what matters right now and gets back the open findings, past decisions, and blockers closest in meaning. This has paid off more than I expected, in ways that deserve their own post.
 
-### Author and reviewer
-
-A reviewing agent, usually a different model family, writes findings into the database. The authoring agent sees them on the next `load_session`. Deferred, wontfix, and superseded are allowed exits. Neither agent reads the other transcript.
-
-### Offload
-
-`/offload` sends one self-contained slice to an isolated worktree under a token cap. The lane never merges. You review the diff. Preflight fails before any spend if the backend is missing, the worktree is dirty, or the budget is unset.
-
-Install, upgrade, and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope`.
+Install instructions are in the [WorkBay repository](https://github.com/darce/workbay). Start from `/scope` and see how far a task travels.
