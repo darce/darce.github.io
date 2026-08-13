@@ -12,9 +12,24 @@
         }
     }
 
-    .masthead {
+    .lede {
         margin: 0 0 $s-large;
-        max-width: 100%;
+
+        &:has(.masthead) {
+            display: flex;
+            align-items: flex-start;
+            gap: $s-large;
+
+            @media (max-width: $tabletMax) {
+                display: block;
+            }
+        }
+    }
+
+    .masthead {
+        flex: 0 1 50%;
+        max-width: 50%;
+        margin: 0;
 
         img {
             display: block;
@@ -28,14 +43,24 @@
             font-weight: 200;
             font-style: italic;
         }
+
+        @media (max-width: $tabletMax) {
+            max-width: 100%;
+            margin: 0 0 $s-large;
+        }
     }
 
-    >aside {
-        padding: 0 $s-x-large;
+    .metadata {
+        flex: 1 1 0;
+        min-width: 0;
         font-weight: 200;
         font-style: italic;
 
-        @media (max-width:$tabletMax) {
+        .lede:not(:has(.masthead)) & {
+            padding: 0 $s-x-large;
+        }
+
+        @media (max-width: $tabletMax) {
             padding: 0;
         }
     }
