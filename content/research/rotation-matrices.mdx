@@ -110,7 +110,14 @@ To rotate a vertex, multiply the matrix by its coordinates:
 
 $$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
 
-The result $(x', y', z')$ is the rotated position.
+The result $(x', y', z')$ is the rotated position. Do that for every vertex and the whole shape turns. The origin stays put.
+
+<Diagram
+    src="/images/research/rotation-apply.svg"
+    alt="A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow."
+    caption="Apply R to every corner. Same L, turned by θ. Ghost is before, coral is after."
+/>
+
 In this demo, that math is done in plain TypeScript:
 ```typescript
 const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
@@ -130,17 +137,15 @@ const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
 
 The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
 
-Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
-
-A single rotation about an arbitrary axis $\hat{u}$ splits the same way: the part of $\vec{v}$ along $\hat{u}$ is fixed; the perpendicular part spins in the plane of $\theta$.
-
-In the $xy$-plane that looks like this: a shape turns around the origin. The origin stays put. The whole shape comes along.
+Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative.
 
 <Diagram
-    src="/images/research/rotation-decomposition.svg"
-    alt="A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow."
-    caption="Same L, turned by θ. Ghost is before, coral is after. The origin does not move."
+    src="/images/research/rotation-combine.svg"
+    alt="Two isometric views of the same L. Left: rotated around z then around x. Right: rotated around x then around z. The final coral poses do not match. Ghost is the start pose."
+    caption="Same start, same two turns, opposite order. The coral L lands in a different place."
 />
+
+A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
 ```typescript
 export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
