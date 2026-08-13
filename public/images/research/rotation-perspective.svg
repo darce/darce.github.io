@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -118.2 479.3 444.0" width="479" height="444" role="img">
-<rect x="24.0" y="-118.2" width="479.3" height="444.0" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -109.9 479.3 435.7" width="479" height="436" role="img">
+<rect x="24.0" y="-109.9" width="479.3" height="435.7" fill="#ffffff"/>
 <defs>
 <marker id="pj-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="pj-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -17,12 +17,14 @@
 <line x1="99.4" y1="224.1" x2="437.8" y2="-73.9" stroke="#d9253f" stroke-width="1.8" fill="none"/>
 <line x1="264.0" y1="79.2" x2="264.0" y2="166.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
 <line x1="437.8" y1="-73.9" x2="437.8" y2="91.2" stroke="#464c5c" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
-<polygon points="411.8,-73.9 463.8,-73.9 463.8,-29.7 411.8,-29.7" fill="#d9253f" fill-opacity="0.42" stroke="#d9253f" stroke-width="1.4"/>
-<polygon points="411.8,-73.9 426.1,-82.2 478.1,-82.2 463.8,-73.9" fill="#d9253f" fill-opacity="0.22" stroke="#d9253f" stroke-width="1.4"/>
-<polygon points="463.8,-73.9 478.1,-82.2 478.1,-38.0 463.8,-29.7" fill="#d9253f" fill-opacity="0.3" stroke="#d9253f" stroke-width="1.4"/>
-<polygon points="250.2,79.2 277.7,79.2 277.7,102.5 250.2,102.5" fill="#171920" fill-opacity="0.42" stroke="#171920" stroke-width="1.4"/>
-<polygon points="250.2,79.2 257.8,74.9 285.2,74.9 277.7,79.2" fill="#171920" fill-opacity="0.22" stroke="#171920" stroke-width="1.4"/>
-<polygon points="277.7,79.2 285.2,74.9 285.2,98.2 277.7,102.5" fill="#171920" fill-opacity="0.3" stroke="#171920" stroke-width="1.4"/>
+<rect x="432.6" y="-28.4" width="10.4" height="26.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.1"/>
+<circle cx="437.8" cy="-51.0" r="26.0" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="422.8" cy="-43.2" r="18.2" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<circle cx="452.9" cy="-43.2" r="18.2" fill="#d9253f" stroke="#d9253f" stroke-width="1.2"/>
+<rect x="261.2" y="103.2" width="5.5" height="13.7" fill="#171920" stroke="#171920" stroke-width="1.1"/>
+<circle cx="264.0" cy="91.3" r="13.7" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<circle cx="256.0" cy="95.4" r="9.6" fill="#171920" stroke="#171920" stroke-width="1.2"/>
+<circle cx="271.9" cy="95.4" r="9.6" fill="#171920" stroke="#171920" stroke-width="1.2"/>
 <line x1="78.3" y1="269.3" x2="81.9" y2="277.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <line x1="81.9" y1="277.5" x2="275.8" y2="193.8" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
 <line x1="275.8" y1="193.8" x2="272.3" y2="185.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
@@ -47,5 +49,5 @@
 <path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#ffffff" stroke="none"/>
 <path d="M85.6,234.4 L70.0,250.0 L85.6,265.6" fill="none" stroke="#171920" stroke-width="1.8" stroke-linejoin="miter"/>
 <path d="M82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7" fill="none" stroke="#171920" stroke-width="1.8"/>
-<text x="46.0" y="-88.2" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" text-anchor="start"><tspan fill="#171920" font-style="italic">h</tspan><tspan fill="#171920">′</tspan><tspan fill="#171920"> = </tspan><tspan fill="#d9253f" font-style="italic">h</tspan><tspan fill="#171920"> · </tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> / depth</tspan></text>
+<text x="46.0" y="-79.9" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" text-anchor="start"><tspan fill="#171920" font-style="italic">h</tspan><tspan fill="#171920">′</tspan><tspan fill="#171920"> = </tspan><tspan fill="#d9253f" font-style="italic">h</tspan><tspan fill="#171920"> · </tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> / depth</tspan></text>
 </svg>
