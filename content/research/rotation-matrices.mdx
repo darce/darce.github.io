@@ -206,16 +206,17 @@ $$h' = h \times \frac{d}{\text{depth}}$$
 Depth here is $d - z$. Farther away means a larger depth, so a smaller $h'$. Same construction as $B_x = A_x \cdot d / A_z$.
 
 <Diagram
-    src="/images/research/rotation-perspective.svg?v=7"
-    alt="An eye in front of a screen. A coral tree in space has height h. A smaller ink tree on the screen is h prime. Braces mark d, depth, h, and h prime. The equation h prime = h times d over depth sits at the top left."
+    src="/images/research/rotation-perspective.svg?v=8"
+    alt="An eye in front of a screen. A coral cube in space has height h. A smaller ink cube on the screen is h prime. Braces mark d, depth, h, and h prime. The equation h prime = h times d over depth sits at the top left."
+    caption="h is height in space, h′ is height on the screen. Same colors as the braces: h′ = h · d / depth."
 />
 
-The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
+The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far cube lands closer to the middle, and smaller.
 
 <Diagram
-    src="/images/research/rotation-f-projection.svg?v=7"
-    alt="An eye, a screen, and two same-size coral trees at different depths. On the screen the near tree is large and the far tree is small and closer to the middle. Braces mark d and d minus z. The equation s = 1 over d minus z sits at the top left."
-    caption="s = 1/(d − z). Same trees, two depths. Farther away → smaller h′, closer to the middle."
+    src="/images/research/rotation-f-projection.svg?v=8"
+    alt="An eye, a screen, and two same-size coral cubes at different depths. On the screen the near cube is large and the far cube is small and closer to the middle. Braces mark d and d minus z. The equation s = 1 over d minus z sits at the top left."
+    caption="s = 1/(d − z). Same cubes, two depths. Farther away → smaller h′, closer to the middle."
 />
 
 ```typescript

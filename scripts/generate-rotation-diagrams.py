@@ -456,27 +456,34 @@ def _away(a: tuple, b: tuple, t: float = 0.2) -> tuple:
     return tuple(a[i] + t * (b[i] - a[i]) for i in range(len(a)))
 
 
-def _tree(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
-    """Hard-edge tree. s is half-width of the canopy in px. Anchor at canopy base."""
-    canopy = (
-        f"{cx:.1f},{cy - 1.55 * s:.1f} {cx + s:.1f},{cy:.1f} {cx - s:.1f},{cy:.1f}"
-    )
-    tw, th = 0.18 * s, 0.5 * s
-    trunk = (
-        f"{cx - tw:.1f},{cy:.1f} {cx + tw:.1f},{cy:.1f} "
-        f"{cx + tw:.1f},{cy + th:.1f} {cx - tw:.1f},{cy + th:.1f}"
-    )
+def _cube(cx: float, cy: float, s: float, *, fill: str, stroke: str) -> list[str]:
+    """Hard-edge isometric cube. (cx, cy) is the top-front edge center."""
+    dx, dy, h = 0.55 * s, 0.32 * s, 1.7 * s
+    fl = (cx - s, cy)
+    fr = (cx + s, cy)
+    br = (cx + s + dx, cy - dy)
+    bl = (cx - s + dx, cy - dy)
+    flb = (cx - s, cy + h)
+    frb = (cx + s, cy + h)
+    brb = (cx + s + dx, cy + h - dy)
+
+    def poly(pts, op):
+        d = " ".join(f"{p[0]:.1f},{p[1]:.1f}" for p in pts)
+        return (
+            f'<polygon points="{d}" fill="{fill}" fill-opacity="{op}" '
+            f'stroke="{stroke}" stroke-width="1.4"/>'
+        )
+
     return [
-        f'<polygon points="{canopy}" fill="{fill}" fill-opacity="0.38" '
-        f'stroke="{stroke}" stroke-width="1.5"/>',
-        f'<polygon points="{trunk}" fill="{stroke}" fill-opacity="0.85" '
-        f'stroke="{stroke}" stroke-width="1.2"/>',
+        poly([fl, fr, frb, flb], 0.42),
+        poly([fl, bl, br, fr], 0.22),
+        poly([fr, br, brb, frb], 0.30),
     ]
 
 
 @dataclass
-class Tree:
-    """Same tree in the world or on the screen; `size` is canopy half-width in px."""
+class CubeIcon:
+    """Same cube in the world or on the screen; `size` is half-width in px."""
 
     point: tuple
     size: float
@@ -487,16 +494,17 @@ class Tree:
     def draw(self, cam: Camera) -> tuple[list[str], list]:
         cx, cy = cam.project(self.point)
         s = self.size
-        parts = _tree(cx, cy, s, fill=self.color, stroke=self.color)
+        parts = _cube(cx, cy, s, fill=self.color, stroke=self.color)
         pts = [
-            (cx - s, cy - 1.55 * s),
-            (cx + s, cy + 0.5 * s),
+            (cx - s, cy),
+            (cx + s + 0.55 * s, cy - 0.32 * s),
+            (cx + s, cy + 1.7 * s),
         ]
         if self.label:
             parts.append(
-                _text(cx + s + 6, cy - 0.8 * s, self.label, size=14, fill=self.label_color)
+                _text(cx + s + 8, cy + 4, self.label, size=14, fill=self.label_color)
             )
-            pts.append((cx + s + 8 * len(self.label), cy - 0.8 * s))
+            pts.append((cx + s + 8 * len(self.label), cy + 4))
         return parts, pts
 
 
@@ -864,8 +872,8 @@ def perspective() -> str:
         Seg(_away(eye, pt, 0.08), pt, CORAL, 1.8),
         Seg(hit, foot_b, INK2, 1, dash="3 3"),
         Seg(pt, foot_a, INK2, 1, dash="3 3"),
-        Tree(pt, world_s, CORAL),
-        Tree(hit, hit_s, INK),
+        CubeIcon(pt, world_s, CORAL),
+        CubeIcon(hit, hit_s, INK),
         Brace(eye, foot_b, "d", BLUE, offset=30, size=16),
         Brace(eye, foot_a, "depth", INK2, offset=54, math=False),
         Brace(foot_a, pt, "h", CORAL, offset=22, size=16, nudge=(-6, 0)),
@@ -923,10 +931,10 @@ def f_projection() -> str:
         screen,
         Seg(_away(eye, near, 0.08), near, CORAL, 1.7),
         Seg(_away(eye, far, 0.08), far, CORAL, 1.3, dash="5 3"),
-        Tree(near, world_s, CORAL, "near"),
-        Tree(far, world_s, CORAL, "far"),
-        Tree(hit_n, near_s, INK),
-        Tree(hit_f, max(far_s, 5.5), INK2),
+        CubeIcon(near, world_s, CORAL, "near"),
+        CubeIcon(far, world_s, CORAL, "far"),
+        CubeIcon(hit_n, near_s, INK),
+        CubeIcon(hit_f, max(far_s, 5.5), INK2),
         Brace(eye, plane, "d", BLUE, offset=30, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
         Eye(),
