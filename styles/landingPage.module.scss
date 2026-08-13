@@ -1,6 +1,8 @@
 @import '../styles/vars.scss';
 @import '../styles/mixins.scss';
 
+$project-icon: $s-x-large * 2 + $s-large;
+
 .landing {
     max-width: 720px;
     padding: $s-x-large;
@@ -136,7 +138,6 @@
 
 .projectItemInner {
     padding: 0;
-    overflow: hidden;
 
     @include themeComponent($themes) {
         background-color: t('surface');
@@ -145,22 +146,19 @@
 
 .projectHead {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: stretch;
-    overflow: hidden;
+    grid-template-columns: $project-icon minmax(0, 1fr);
+    align-items: start;
+    min-height: $project-icon;
 }
 
 .projectIcon {
     position: relative;
-    z-index: 0;
     box-sizing: border-box;
-    height: 100%;
-    aspect-ratio: 1 / 1;
+    width: $project-icon;
+    height: $project-icon;
     overflow: hidden;
 
     img {
-        position: absolute;
-        inset: 0;
         display: block;
         width: 100%;
         height: 100%;
@@ -170,14 +168,9 @@
 }
 
 .projectText {
-    position: relative;
-    z-index: 1;
     min-width: 0;
     padding: $s-medium;
-
-    @include themeComponent($themes) {
-        background-color: t('surface');
-    }
+    overflow-wrap: break-word;
 }
 
 .projectTitle {
