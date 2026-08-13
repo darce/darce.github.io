@@ -99,9 +99,9 @@ describe('ARIA landmarks and semantic structure', () => {
 
     it('color contrast is maintained in text elements', async () => {
         const { container } = render(
-            <main style={{ backgroundColor: '#f9f7f4' }}>
-                <h2 style={{ color: '#333' }}>Heading text</h2>
-                <p style={{ color: '#333' }}>Body text with sufficient contrast.</p>
+            <main style={{ backgroundColor: '#e7eaef' }}>
+                <h2 style={{ color: '#171920' }}>Heading text</h2>
+                <p style={{ color: '#171920' }}>Body text with sufficient contrast.</p>
                 <a href="/" style={{ color: '#004e98' }}>Link text</a>
             </main>
         )
