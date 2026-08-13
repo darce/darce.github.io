@@ -3,8 +3,8 @@ index: 5
 year: 2026
 title: 'WorkBay: Durable State for Coding Agents'
 subtitle: Open-source developer tooling
-description: 'I got tired of rebuilding a coding task every time I changed agents. WorkBay keeps the open findings and the tests that passed in the repository, so the next window can continue from the same record.'
-details: 'I got tired of rebuilding a coding task every time I changed agents. One session knew the plan. The next one started over. WorkBay keeps that workflow in the repository, including the open findings and the tests that passed.'
+description: A SQLite task ledger for coding agents. Shared over MCP so Claude Code, Codex, Cursor, grok, and Copilot continue the same task, findings, and test evidence.
+details: WorkBay stores the active task, open review findings, and passing tests in a SQLite file in your repo. Agents share that file over MCP, so you can change windows without rebuilding the thread.
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -23,38 +23,70 @@ tags:
 - Git
 - Python
 ---
-I was leaning on coding agents more, and I kept losing the work around the code.
+## What it is
 
-Claude Code would hold the right context for a branch. Then I'd want Codex for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet.
+WorkBay is a SQLite file in the project, two MCP servers, and a set of git hooks. The file holds the active task, its branch and worktree, which slices closed and at which commit, the review findings still open, and the tests that passed.
 
-So I moved the record into the repository.
+Agents read and write those rows over MCP (the protocol they use to call tools). The same commands are generated for Claude Code, Codex, Cursor, grok, and VS Code Copilot. A session that ends in one of them can start again in another.
 
-WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task and the review findings still open. It also stores the tests that passed. Claude Code and Codex both hit the same rows. Cursor and Grok do too. So does Copilot.
+WorkBay stores the task and the gates that still have to pass, not the chat.
 
-The short version: the task stays in the repo. You can change the window.
+## What it solves
 
-That matters on a Tuesday when Codex is cheap and I already started in Claude Code. I log into the other tool. The history is still there. If I want Claude, I run it inside Claude Code at the subscription price. WorkBay installs there as a native plugin, so I can keep that work off the Anthropic API.
+A coding agent starts every session cold. Chat summaries fill the gap until you need a finding that is still open, or a decision you already made. The next model can treat a pasted summary as fact. WorkBay records the finding and the commit that backs it.
 
-I also got tired of picking up a half-finished slice and watching the next model invent a fresh approach to a decision I'd already made. Optional semantic embeddings help after a cold start. They pull up related decisions and open slices even when the wording changed.
+Skills are advice a model can skip. Hooks installed through `core.hooksPath` still run after you change harnesses: no edits on `main` outside permitted paths, branch names must match the grammar, and the close gate fails while a slice has no recorded decision. Unrestricted shell can still skip hooks.
 
-I wanted a second model that could review without reading the first model's pep talk. A reviewing agent writes findings into the database. The author has to clear them before merge. Neither one sees the other transcript.
+Creating a worktree, closing a slice, and running the merge gate are make targets. They do not spend a model turn.
 
-I think about that the same way I think about a prompt I would ship to a user. What you feed the next model has to earn its way in. A transcript summary is easy to paste. It is also easy for the next agent to treat as fact. WorkBay stores the finding and the commit that backs it.
+A second model can review the branch without reading the first model's transcript. It writes findings into the database. The author has to clear high and medium findings before merge.
 
-## How a task actually goes
+## Main features
 
-Start a vague idea with `/scope`. Review the draft plan before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
+### Shared commands
 
-The commands mean the same thing wherever you run them. `/tdd` keeps its meaning in every window. So do `/branch-review` and `/offload`. Creating a worktree is a make target, so that bookkeeping does not burn a model turn.
+Fifteen portable commands come from one manifest. The meaning stays the same; only the install path changes.
 
-`/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan.
+| Command | Use when |
+| --- | --- |
+| `/scope` | The idea is not bounded yet |
+| `/tdd` | A slice starts from a failing test |
+| `/branch-review` | A branch claims to be done |
+| `/offload` | A mechanical slice can go to a cheaper backend under a token cap |
+| `/handoff-lifecycle` | You are resuming or switching tasks |
 
-Install and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope`.
+`/plan-analyze`, `/planning-review`, and `/review-parallel` are in the same set. The full list is in the [WorkBay repository](https://github.com/darce/workbay).
 
-## How I built it
+A typical task:
 
-This sat well outside my usual front-end and accessibility work. I spent most of it in Python packaging and Git hooks. The MCP servers and the SQLite schema came with that. I used the same method I use on a UI that has to survive an audit. I wrote the spec first. Then I split the work and reviewed each slice.
+```
+/scope
+/plan-analyze
+/planning-review
+make task-start
+/tdd
+/incremental-implementation
+/branch-review
+make close-check
+make task-finish
+```
 
-Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec. I set the bar for done and ran the reviews.
+### Hooks
 
-I used to treat accessibility claims the same way. If I said a menu was keyboard-accessible, I had to show the path and the regression test. I stay in the loop, and the project keeps the evidence.
+Edits on `main` are refused outside permitted surfaces. Branch names must match `feature/<task-ref>` (plus `maint`, `hotfix`, `release`, `revert`). `make review-ready` fails while findings are open. `make close-check` refuses a finish when any slice lacks a recorded decision. File touches are recorded per slice.
+
+### Database
+
+State lives in `.task-state/handoff.db`. The main tables are active tasks, decisions (with commit SHA), review findings (severity, status, two commit anchors), test results, touched files, blockers, and archives of finished tasks.
+
+`load_session` returns a ranked packet: active task, open findings, recent decisions, touched files. Optional embeddings rank those rows by meaning when a query does not match the original phrasing. They do not replace hooks.
+
+### Author and reviewer
+
+A reviewing agent, usually a different model family, writes findings into the database. The authoring agent sees them on the next `load_session`. Deferred, wontfix, and superseded are allowed exits. Neither agent reads the other transcript.
+
+### Offload
+
+`/offload` sends one self-contained slice to an isolated worktree under a token cap. The lane never merges. You review the diff. Preflight fails before any spend if the backend is missing, the worktree is dirty, or the budget is unset.
+
+Install, upgrade, and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope`.
