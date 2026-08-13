@@ -50,6 +50,10 @@ const Diagram = ({
     </figure>
 )
 
+const DiagramPair = ({ children }: { children: React.ReactNode }) => (
+    <div className={styles.diagramPair}>{children}</div>
+)
+
 const mdxComponents = {
     OrderBook,
     OrderBookProvider,
@@ -59,6 +63,7 @@ const mdxComponents = {
     OrderImbalance,
     Cube: MDXCube,
     Diagram,
+    DiagramPair,
     hr: () => null,
 }
 
