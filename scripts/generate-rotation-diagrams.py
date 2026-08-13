@@ -539,6 +539,8 @@ class Tree:
     label_color: str = CORAL
     opacity: float = 1.0
     halo: bool = False
+    clip: str | None = None
+    ray_style: str | None = None  # "solid" | "dashed" — swatch next to the label
 
     def draw(self, cam: Camera) -> tuple[list[str], list]:
         pt, pb = cam.project(self.top), cam.project(self.bottom)
@@ -547,6 +549,8 @@ class Tree:
         parts = _tree(
             pt, pb, fill=self.color, stroke=self.color, opacity=self.opacity, halo=self.halo
         )
+        if self.clip:
+            parts = [f'<g clip-path="url(#{self.clip})">', *parts, "</g>"]
         pts = [
             (pt[0] - 1.35 * r, pt[1]),
             (pt[0] + 1.35 * r, pb[1]),
@@ -555,8 +559,15 @@ class Tree:
         ]
         if self.label:
             lx, ly = pt[0] + 1.55 * r, pt[1] + 0.32 * h
-            parts.append(_text(lx, ly, self.label, size=14, fill=self.label_color))
-            pts.append((lx + 8 * len(self.label), ly))
+            if self.ray_style:
+                x1, x2, ym = lx, lx + 22, ly - 4
+                dash = "5 3" if self.ray_style == "dashed" else None
+                parts.append(_line(x1, ym, x2, ym, stroke=BLUE, width=1.8, dash=dash))
+                parts.append(_text(x2 + 6, ly, self.label, size=14, fill=self.label_color))
+                pts.append((x2 + 6 + 8 * len(self.label), ly))
+            else:
+                parts.append(_text(lx, ly, self.label, size=14, fill=self.label_color))
+                pts.append((lx + 8 * len(self.label), ly))
         return parts, pts
 
 
@@ -615,6 +626,7 @@ class Screen:
     d: float
     hx: float = 1.28
     hy: float = 0.82
+    clip_id: str | None = None
 
     def corners(self) -> list:
         return [
@@ -633,7 +645,10 @@ class Screen:
         d = " ".join(f"{x:.1f},{y:.1f}" for x, y in q)
         tx, ty = self.top(cam)
         lab = (tx, ty - 14)
-        parts = [
+        parts = []
+        if self.clip_id:
+            parts.append(f'<clipPath id="{self.clip_id}"><polygon points="{d}"/></clipPath>')
+        parts += [
             f'<polygon points="{d}" fill="{BLUE}" fill-opacity="0.10" '
             f'stroke="{BLUE}" stroke-width="1.6"/>',
             _text(lab[0], lab[1], "screen", size=14, fill=BLUE, anchor="middle"),
@@ -920,13 +935,11 @@ def perspective() -> str:
     scene.add(
         Axes(reach=(1.38, 0.95, Az + 0.22), prefix="pj"),
         screen,
-        Seg(_away(eye, top, 0.10), _away(top, eye, 0.16), CORAL, 1.8, end="pj-coral"),
         Seg(hit_top, hit_bot, INK2, 1, dash="3 3"),
         Seg(top, bot, INK2, 1, dash="3 3"),
         Tree(top, bot, CORAL),
         Tree(hit_top, hit_bot, INK, halo=True),
-        Dot(top, CORAL, 3.2),
-        Dot(bot, CORAL, 3.2),
+        Seg(_away(eye, top, 0.08), top, BLUE, 1.8, end="pj-blue"),
         Dot(hit_top, INK, 3.2),
         Dot(hit_bot, INK, 3.2),
         Brace(eye, hit_bot, "d", BLUE, offset=34, size=16),
@@ -971,10 +984,10 @@ def perspective() -> str:
 
 def f_projection() -> str:
     cam = Camera(70, 250, 142, kind="pinhole")
-    d, hgt = 1.38, 0.86
-    # Opposite sides of the axis so the two screen images do not nest.
-    y_near, y_far = 1.00, -0.72
-    z_near, z_far = 0.42, 1.95
+    d, hgt = 1.38, 0.78
+    # Opposite sides so the two images do not nest; y_near kept inside the film.
+    y_near, y_far = 0.56, -0.60
+    z_near, z_far = 0.50, 2.05
     eye = (0.0, 0.0, 0.0)
     zn, zf = d + z_near, d + z_far
     near_top, near_bot = (hgt, y_near, zn), (0.0, y_near, zn)
@@ -983,28 +996,24 @@ def f_projection() -> str:
     sf_top, sf_bot = _pin(far_top, d), _pin(far_bot, d)
     plane = (0.0, 0.0, d)
     n_z = (0.0, 0.0, zn)
-    screen = Screen(d, hx=1.22, hy=1.02)
+    screen = Screen(d, hx=1.22, hy=1.10, clip_id="fp-film")
     scene = Scene(cam, "fp")
     scene.add(
-        Axes(reach=(1.32, 1.28, zf + 0.22), prefix="fp"),
+        Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp"),
         screen,
-        # Bottom then top, far then near — each screen edge sits on its ray.
-        Seg(_away(eye, far_bot, 0.10), _away(far_bot, eye, 0.10), CORAL, 1.15, dash="5 3"),
-        Seg(_away(eye, far_top, 0.10), _away(far_top, eye, 0.16), CORAL, 1.4, dash="5 3", end="fp-coral"),
-        Seg(_away(eye, near_bot, 0.10), _away(near_bot, eye, 0.10), CORAL, 1.45),
-        Seg(_away(eye, near_top, 0.10), _away(near_top, eye, 0.16), CORAL, 1.8, end="fp-coral"),
-        Tree(far_top, far_bot, CORAL, "far"),
-        Tree(near_top, near_bot, CORAL, "near"),
-        Tree(sf_top, sf_bot, INK2, halo=True),
-        Tree(sn_top, sn_bot, INK, halo=True),
-        Dot(far_top, CORAL, 3.0),
-        Dot(far_bot, CORAL, 3.0),
-        Dot(near_top, CORAL, 3.0),
-        Dot(near_bot, CORAL, 3.0),
-        Dot(sf_top, INK2, 3.0),
-        Dot(sf_bot, INK2, 3.0),
-        Dot(sn_top, INK, 3.4),
-        Dot(sn_bot, INK, 3.4),
+        Tree(far_top, far_bot, CORAL, "far", ray_style="dashed"),
+        Tree(near_top, near_bot, CORAL, "near", ray_style="solid"),
+        Tree(sf_top, sf_bot, INK2, halo=True, clip="fp-film"),
+        Tree(sn_top, sn_bot, INK, halo=True, clip="fp-film"),
+        # Rays after the trees so the arrow sits on the edge, not under the canopy.
+        Seg(_away(eye, far_bot, 0.08), far_bot, BLUE, 1.25, dash="5 3", end="fp-blue"),
+        Seg(_away(eye, far_top, 0.08), far_top, BLUE, 1.45, dash="5 3", end="fp-blue"),
+        Seg(_away(eye, near_bot, 0.08), near_bot, BLUE, 1.55, end="fp-blue"),
+        Seg(_away(eye, near_top, 0.08), near_top, BLUE, 1.8, end="fp-blue"),
+        Dot(sf_top, INK2, 2.8),
+        Dot(sf_bot, INK2, 2.8),
+        Dot(sn_top, INK, 3.0),
+        Dot(sn_bot, INK, 3.0),
         Brace(eye, plane, "d", BLUE, offset=34, size=16),
         Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
         Eye(),
@@ -1035,7 +1044,23 @@ def f_projection() -> str:
             size=15,
         )
     )
-    pts.extend([eq, (eq[0] + 200, eq[1] - 28), (eq[0], eq[1] + 10)])
+    # Key: why two ray styles.
+    kx, ky = eq[0], eq[1] + 22
+    parts += [
+        _line(kx, ky, kx + 22, ky, stroke=BLUE, width=1.8),
+        _text(kx + 28, ky + 4, "near", size=13, fill=INK),
+        _line(kx + 78, ky, kx + 100, ky, stroke=BLUE, width=1.45, dash="5 3"),
+        _text(kx + 106, ky + 4, "far", size=13, fill=INK),
+    ]
+    pts.extend(
+        [
+            eq,
+            (eq[0] + 200, eq[1] - 28),
+            (eq[0], eq[1] + 10),
+            (kx, ky - 8),
+            (kx + 140, ky + 10),
+        ]
+    )
     x0, y0, w, hgt_box = _crop(pts, pad=22)
     return _svg(w, hgt_box, "\n".join(parts), x=x0, y=y0)
 
