@@ -20,6 +20,7 @@ export interface MetaData {
     description?: string
     details?: string
     thumbnail?: MetaImage
+    masthead?: MetaImage
     links?: MetaLink[]
     images?: MetaImage[]
     tags?: string[]
