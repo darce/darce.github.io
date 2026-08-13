@@ -476,7 +476,7 @@ def combine_compare() -> str:
     start = _l_floor()
     after_zx = _apply_ops(start, (_rz, _rx), ang)
     after_xz = _apply_ops(start, (_rx, _rz), ang)
-    gap = 310
+    gap = 340
     pts_a, body_a = combine_frame("c5a", "Rz then Rx", after_zx)
     pts_b, body_b = combine_frame("c5b", "Rx then Rz", after_xz, ox=90 + gap)
     left_o = _iso_zup((0, 0, 0), 90, 210, 132)
@@ -515,7 +515,9 @@ def eq_line(x, y, parts, *, size=14, anchor="middle") -> str:
     )
 
 
-def brace_along(a, b, label, *, offset, color=INK2, size=13) -> tuple[list[str], list]:
+def brace_along(
+    a, b, label, *, offset, color=INK2, size=13, nudge=(0.0, 0.0)
+) -> tuple[list[str], list]:
     """Hard-edge brace (square C + nub) offset from already-projected a→b."""
     dx, dy = b[0] - a[0], b[1] - a[1]
     length = math.hypot(dx, dy) or 1.0
@@ -532,7 +534,7 @@ def brace_along(a, b, label, *, offset, color=INK2, size=13) -> tuple[list[str],
     b1 = (b[0] + nx * (off - tick), b[1] + ny * (off - tick))
     mx, my = (a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2
     nub_pt = (mx + nx * nub, my + ny * nub)
-    lx, ly = mx + nx * (nub + 13), my + ny * (nub + 13) + 4
+    lx, ly = mx + nx * (nub + 16) + nudge[0], my + ny * (nub + 16) + 4 + nudge[1]
     parts = [
         line(a1[0], a1[1], a2[0], a2[1], stroke=color, width=1.4),
         line(a2[0], a2[1], b2[0], b2[1], stroke=color, width=1.4),
@@ -602,7 +604,7 @@ def perspective() -> str:
     b_d, p_d = brace_along(Pe, Pfb, "d", offset=30, color=BLUE, size=15)
     b_depth, p_depth = brace_along(Pe, Pfa, "depth", offset=54, color=INK2, size=14)
     b_h, p_h = brace_along(Pfa, Pa, "height", offset=20, color=CORAL, size=14)
-    b_m, p_m = brace_along(Pfb, Pb, "mark", offset=-32, color=INK, size=14)
+    b_m, p_m = brace_along(Pfb, Pb, "mark", offset=-36, color=INK, size=14, nudge=(-18, 0))
     body += [
         *b_d,
         *b_depth,
