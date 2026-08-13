@@ -26,49 +26,158 @@ Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 
 ## Projects
 
-### Workstate: Portable State for Coding Agents
+### WorkBay: Durable State for Coding Agents
 *Open-source developer tooling*
 Year: 2026
 Tags: Developer Tooling, AI-assisted Engineering, MCP, SQLite, Git, Python
-Summary: A local handoff database for moving AI-assisted coding work between Claude Code, Codex, Cursor, Grok, and VS Code Copilot without losing task state, review findings, or test evidence.
+Summary: A local SQLite record that any coding agent reads over MCP. The active task, decisions, review findings, and tests stay in the repository. A task can move between Claude Code, Codex, Cursor, Grok, and Copilot.
 
 ## The problem
 
-I was leaning on coding agents more, and the same failure kept showing up. The code could move forward while the state around it stayed fragile.
+A coding agent starts each session cold. Yesterday's plan, the open review finding, and the reason a change was refused stay behind.
 
-One session knew the current plan; the next one didn't. Claude Code might hold the right context for a branch, and then I'd want Codex or Cursor for a different pass and have to rebuild the thread by hand. Summaries helped, but a summary is still a summary. It rarely carried the thing I needed later — the review finding I hadn't fixed yet, or the reason behind a decision I'd half-forgotten.
+Conversation tools save a summary of the chat. A summary does not carry the open finding, the test that passed, or the decision you must keep.
 
-That's a lock-in problem as much as a memory problem. When the useful history lives inside one agent's transcript, the project starts depending on that tool. So I moved the state into the repository.
+When that history lives in one agent transcript, the project depends on that agent. Change the tool and the record stays behind.
 
-## What it does
+I moved the record into the repository.
 
-Workstate keeps a local SQLite database alongside the project, and agents read and write to it over MCP. It records the work: the active task and branch, the files being touched, decisions and blockers, review findings, and test runs with their commands and exit codes.
+The earlier name for this project was Workstate. The product is now WorkBay. The old URL `/projects/workstate/` redirects here.
 
-The next agent doesn't need a long prompt explaining what happened. It can ask the project instead.
+## What WorkBay is
 
-A task can start in Claude Code and continue in Codex, Cursor, Grok, or Copilot against the same record. Claude reaches it through the local plugin surfaces; the other clients pick it up through generated skills, commands, and MCP tools. The workflow belongs to the repo, so it survives whichever chat window you close.
+WorkBay is a durable agent-state engine for a Git repository. It keeps a local SQLite database at `.task-state/handoff.db`. Agents read and write that database over MCP.
 
-That helps when the tools shift under you, which they do. One agent turns out better at planning, another at implementation. Pricing changes. You hit a context limit at a bad moment. A team might want to keep its Claude installs local instead of routing coordination through a hosted service. Through all of it, the handoff state stays put and stays visible to whatever agent you reach for next.
+WorkBay records the work:
 
-## Enforcement
+- the active task, branch, and worktree
+- decisions and blockers
+- review findings and review runs
+- test commands and exit codes
+- files that a slice touched
 
-Saving the notes was easy. The point was making them hard to ignore.
+The next agent does not need a long prompt. It asks the project. Claude Code, Codex, Cursor, Grok, and VS Code Copilot read the same rows.
 
-Workstate wraps the workflow in Git hooks. Edits to main are refused outside a small allowlist of files. Branch names have to match a fixed grammar tied to a task reference. A branch can't go review-ready while a finding is still open, and a task can't close until every slice has a recorded decision.
+WorkBay stores what the work still owes: what was done, what is still open, and what a merge must refuse. Memory plugins store what was said. WorkBay does not replace them. You can use both.
 
-Findings and decisions are anchored to commit SHAs. When an agent claims a finding is fixed, there's a commit to inspect. When a task closes, there's a record of what changed, what passed, and what got accepted as a tradeoff anyway. I wanted less talk about confidence and more evidence I could check later — "this was fixed" should be something you verify against git history.
+Paul Klee painted *Highway and Byways* (*Hauptweg und Nebenwege*) in 1929, after a trip to Egypt. The canvas is a field of vertical stripes with one thicker band down the center. I use that painting here because WorkBay keeps the same split. The main path is the task record. The side paths are indexes and generated views. You can delete the side paths and the engine still works.
 
-## Building it
+![Paul Klee, Highway and Byways (Hauptweg und Nebenwege), 1929. Oil on canvas. A thick vertical band of pale earth colors runs down the center of a field of narrower colored stripes. Museum Ludwig, Cologne.](/images/klee-highway-and-byways-1929.jpg)*Paul Klee, Highway and Byways, 1929. Oil on canvas. Museum Ludwig, Cologne. Photograph © Raimond Spekking / [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (via Wikimedia Commons).*
 
-This was backend-heavy work, well outside my usual front-end-and-accessibility base: Python packaging, MCP servers, Git hooks, SQLite migrations, installers, release automation. I handled it the way I handle a UI that has to survive an audit: write the spec, split the work, review each slice, keep the evidence.
+## How the record works
 
-Agents wrote a large share of the implementation, and I treated that as supervised production rather than delegation. I owned the spec and the architecture, set the acceptance criteria, ran the reviews, and decided when it was done. In the end, Workstate enforces the same process I used to build it.
+`handoff.db` is the source of truth. Typed tables hold the state.
 
-## Where it stands
+| Table | Holds |
+| --- | --- |
+| `handoff_state` | Active tasks: objective, status, branch, worktree, plan path |
+| `decisions` | Decisions with branch, commit SHA, and session |
+| `review_findings` | Findings with severity, status, and two commit anchors |
+| `review_runs` | Review records with a verdict |
+| `verified_tests` | Test commands and exit codes |
+| `blockers`, `next_actions` | Open blockers and follow-up work |
+| `task_archives` | Snapshots of completed tasks |
 
-Workstate shipped in June 2026. A CLI installs it into a Git repository, provisions the local database, registers the MCP servers, and generates the surfaces for each supported agent. It's open source at [github.com/darce/workstate](https://github.com/darce/workstate).
+`search_handoff` searches those rows with FTS5 and BM25. That is the public search path. Keep it.
 
-The line back to my accessibility work is short. A remediation claim has to survive inspection — the keyboard path, the screen reader behavior, the fix, the regression test that proves it stayed fixed. Workstate brings that habit to AI-assisted engineering. The agent moves fast; the project keeps the record.
+Optional embeddings sit on selected concept prose. Cosine rank is for reinjection after a cold start or after compaction. Cosine is not search. Do not move `search_handoff` to embeddings.
+
+`CURRENT_TASK.json` and `DASHBOARD.txt` are generated views. Do not edit them by hand. Regenerate them from the database.
+
+Do not store chain-of-thought or encrypted provider blobs in `handoff.db`. Record typed decisions at the MCP write boundary. Treat provider thought signatures as secrets. Strip them before you index, search, or export.
+
+## How a task moves
+
+A typical task follows this path:
+
+1. Define the scope with `/scope`.
+2. Check a draft plan with `/plan-analyze`.
+3. Record a formal review with `/planning-review`.
+4. Open a branch and a worktree with `make task-start`.
+5. Start each slice from a failing test with `/tdd`.
+6. Make the tests pass with `/incremental-implementation`.
+7. Record a pre-merge review with `/branch-review`.
+8. Run the merge gate with `make close-check`.
+9. Close and archive with `make task-finish`.
+
+Work lands in small slices. Each slice starts from a failing test. Review findings attach to the branch. High and medium findings must reach zero before `make review-ready` passes. Deferred, wontfix, and superseded are valid exits.
+
+A reviewing agent, usually a different model family, writes findings into the database. The authoring agent reads them on the next `load_session`. Neither agent reads the other transcript.
+
+Git hooks enforce the path while `core.hooksPath` is intact:
+
+- Edits on `main` are refused outside a small allowlist.
+- Branch names must match a grammar tied to a task reference.
+- `make review-ready` fails while findings are open.
+- `make close-check` fails when a slice has no recorded decision.
+- Findings and decisions attach to commit SHAs.
+
+An unrestricted shell can still skip hooks. The hooks block the default path. They do not make the repository a sealed box.
+
+For independent work, `/offload` sends one slice to a bounded lane. Each lane owns a worktree and a token budget. The lane never merges. Useful width is the set of ready tasks that do not depend on each other. Those tasks must not touch the same files. The default wave cap is 20. Typical plans use 2 to 6 lanes. Do not raise the cap to force more width.
+
+## How to start
+
+WorkBay installs from tagged refs on [github.com/darce/workbay](https://github.com/darce/workbay). Check the current tag before you install. On 13 August 2026 the current tag was `workbay-v0.3.32`.
+
+Claude Code:
+
+```
+/plugin marketplace add darce/workbay
+```
+
+Any other agent:
+
+```
+REF=workbay-v0.3.32
+curl -fsSL "https://raw.githubusercontent.com/darce/workbay/${REF}/scripts/install-workbay-cli.sh" \
+  | bash -s -- "$REF"
+workbay install --target /path/to/your/repo --remote-ref "$REF"
+```
+
+One install does this work:
+
+- writes skill and hook surfaces for Claude Code, Codex, Cursor, Grok, and VS Code Copilot
+- registers two MCP servers: `mcp-workbay-handoff` and `mcp-workbay-orchestrator`
+- creates `.task-state/handoff.db`
+- sets `core.hooksPath`
+
+Restart the agent so it loads the new surfaces. Then run:
+
+```
+make context
+make task-start TASK=PROJ-1 OBJECTIVE="add rate limiting"
+```
+
+If the idea is still vague, start inside the agent with `/scope`.
+
+Use `--no-embeddings` if the repository is new or the host cannot provision the model. Use `/workbay` later to turn embeddings on or off.
+
+After an upgrade, run `workbay doctor --target .`. If the doctor reports drift, run `workbay repair`.
+
+The full install notes live in [`docs/CONSUMER.md`](https://github.com/darce/workbay/blob/main/docs/CONSUMER.md) on the WorkBay repository.
+
+## What to keep small
+
+In August 2026 I checked this architecture against the code and against [heuristics-canon](https://github.com/darce/heuristics-canon). The next work is to keep the engine strict and small. Do not grow a generic memory product.
+
+These rules still hold:
+
+- Keep `search_handoff` on FTS5. Hybrid BM25 plus vector rank exists only as evaluation.
+- Do not add a traces table as a second source of truth. Capture typed decisions at the write boundary.
+- Do not raise the default wave cap of 20. Measure admitted width against the ready independent set.
+- Do not install Superpowers, SkillOpt, or a second skill marketplace. WorkBay already has the ledger, lexical search plus optional embeddings, portable skills, and dependency-aware lanes.
+- Strip encrypted provider blobs before they reach search, embeddings, or export.
+
+This is the design test. Remove the concept index and every generated view. If the decisions, scoped FTS5 search, and handoff packets still work, WorkBay is still the engine.
+
+## How I built it
+
+This was backend-heavy work, outside my usual front-end and accessibility base: Python packaging, MCP servers, Git hooks, SQLite migrations, installers, and release automation. I used the same method I use on a UI that must survive an audit. I wrote the spec, split the work, reviewed each slice, and kept the evidence.
+
+Agents wrote a large share of the implementation. I treated that as supervised production. The spec and the architecture stayed with me. I set the acceptance criteria, ran the reviews, and decided when the work was done.
+
+The line back to my accessibility work is short. A remediation claim must survive inspection: the keyboard path, the screen reader behavior, the fix, and the regression test that proves the fix stayed. WorkBay brings that habit to AI-assisted engineering. The agent moves fast. The project keeps the record.
 
 ### PhotoShelter: Accessibility Leadership & Product Prototyping
 *Enterprise DAM Platform*
