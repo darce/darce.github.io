@@ -61,6 +61,20 @@ def line(x1, y1, x2, y2, *, stroke=INK, width=1.2, end=None, dash=None) -> str:
     )
 
 
+def dim_h(x1, y, x2, label, *, color=INK2, sub=None) -> list[str]:
+    """Horizontal measure with end ticks."""
+    mid = (x1 + x2) / 2
+    out = [
+        line(x1, y, x2, y, stroke=color, width=1),
+        line(x1, y - 4, x1, y + 4, stroke=color, width=1),
+        line(x2, y - 4, x2, y + 4, stroke=color, width=1),
+        text(mid, y + 16, label, size=15, fill=color, anchor="middle"),
+    ]
+    if sub:
+        out.append(text(mid, y + 32, sub, size=11, fill=color, anchor="middle"))
+    return out
+
+
 def circle(x, y, r, *, fill=INK, stroke=None, sw=0) -> str:
     extra = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ""
     return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}"{extra}/>'
@@ -357,8 +371,9 @@ def perspective() -> str:
         text(Pb[0] - 10, Pb[1] - 12, "on screen", size=13, anchor="end"),
         circle(Pa[0], Pa[1], 5, fill=CORAL),
         text(Pa[0] + 10, Pa[1] - 6, "point in space", size=13, fill=CORAL),
+        *dim_h(Pe[0], Pe[1] + 36, foot_b[0], "F", sub="focal length"),
     ]
-    return svg(640, 420, "\n".join(body))
+    return svg(640, 430, "\n".join(body))
 
 
 def f_projection() -> str:
@@ -409,8 +424,9 @@ def f_projection() -> str:
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=14),
         text(Pbn[0] - 12, Pbn[1] - 12, "bigger", size=13, anchor="end"),
         text(Pbf[0] + 12, Pbf[1] + 4, "smaller", size=13, fill=INK2),
+        *dim_h(Pe[0], Pe[1] + 36, proj((0, 0, d))[0], "F", sub="focal length"),
     ]
-    return svg(640, 400, "\n".join(body))
+    return svg(640, 420, "\n".join(body))
 
 
 def main() -> None:

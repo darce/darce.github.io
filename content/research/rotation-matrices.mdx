@@ -155,30 +155,28 @@ The goal isn’t to build a general transform stack; it’s to keep the full pip
 
 ## From 3D to Screen
 
-After rotation, the cube exists in three dimensions. Your screen has two.
+After rotation the cube is still in 3D. The screen is 2D.
 
-A perspective projection maps 3D points to 2D. Points farther from the viewer appear smaller. The projection divides $x$ and $y$ by a factor that depends on $z$:
+A ray from the eye through the screen hits the point. Where it crosses the screen is what you draw.
 
-$$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
+The gap from the eye to the screen is the **focal length** $F$. The two triangles — eye to the screen hit, and eye to the point — are the same shape, so the hit is a shrink of the point:
 
-where $d$ is the distance from the viewer to the projection plane.
+$$\text{height on screen} = \text{height in space} \times \frac{F}{\text{depth}}$$
 
-A ray from the camera through $A$ hits the image plane at $B$. Similar triangles give the screen coordinate:
-
-$$B_x = A_x \frac{B_z}{A_z}$$
+Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot F / A_z$, with $F$ for the usual $B_z$.
 
 <Diagram
     src="/images/research/rotation-perspective.svg"
-    alt="An eye on the left, a vertical screen, and a coral ray from the eye through a dot on the screen to a point in space."
-    caption="A ray from the eye through the screen hits the point. The hit is a smaller copy of the point — same shape, closer to the middle."
+    alt="An eye on the left looking at a vertical screen. A coral ray goes through a hit on the screen to a point in space. A dimension F marks the distance from the eye to the screen."
+    caption="F is the focal length — how far the screen sits from the eye. The ray’s hit is a smaller copy of the point."
 />
 
-The demo folds that shrink into a single scale $f = 1/(d - z)$. Two points at the same height but different depth land at different places on the screen — the farther one is smaller.
+The demo stores $F$ as `distance` and folds the shrink into one scale per vertex, $f = 1/(d - z)$. Same $F$, two depths: the far point lands closer to the middle.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg"
-    alt="An eye, a vertical screen, and two coral rays to a near point and a far point at the same height. The near ray hits the screen higher than the far ray."
-    caption="Same height, two depths. The far ray crosses the screen closer to the middle, so that point looks smaller."
+    alt="An eye, a vertical screen a focal length F away, and two coral rays to a near point and a far point at the same height. The near ray hits the screen higher."
+    caption="Same F, same height, two depths. The far ray crosses the screen closer to the middle, so that point looks smaller."
 />
 
 ```typescript

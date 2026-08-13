@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640" height="420" role="img">
-<rect width="640" height="420" fill="#e7eaef"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" width="640" height="430" role="img">
+<rect width="640" height="430" fill="#e7eaef"/>
 <defs>
 <marker id="pj-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="pj-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
@@ -22,4 +22,9 @@
 <text x="241.0" y="171.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="end">on screen</text>
 <circle cx="401.0" cy="120.0" r="5" fill="#d9253f"/>
 <text x="411.0" y="114.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#d9253f" text-anchor="start">point in space</text>
+<line x1="96.0" y1="284.0" x2="251.0" y2="284.0" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="96.0" y1="280.0" x2="96.0" y2="288.0" stroke="#464c5c" stroke-width="1" fill="none"/>
+<line x1="251.0" y1="280.0" x2="251.0" y2="288.0" stroke="#464c5c" stroke-width="1" fill="none"/>
+<text x="173.5" y="300.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#464c5c" text-anchor="middle">F</text>
+<text x="173.5" y="316.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="11" fill="#464c5c" text-anchor="middle">focal length</text>
 </svg>
