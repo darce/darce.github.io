@@ -4,16 +4,24 @@ interface Vertex {
     z: number
 }
 
-/** transformPoints is the only exported function */
-export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
-    /** First rotate and scale, then project */
+/**
+ * Column vectors, v′ = Mv (matrix on the left). Apply Rx, then Ry, then Rz
+ * (right-to-left composition). Rotations are active and right-handed.
+ * `eyeDistance` is the eye-to-plane gap (d). Perspective scale is 1/(d − z).
+ */
+export const transformPoints = (
+    vertexArray: Vertex[],
+    angleX: number,
+    angleY: number,
+    angleZ: number,
+    scale: number,
+    eyeDistance: number,
+) => {
     let rotatedPoints = rotationX(vertexArray, angleX)
     rotatedPoints = rotationY(rotatedPoints, angleY)
     rotatedPoints = rotationZ(rotatedPoints, angleZ)
     const scaledPoints = scaleXYZ(rotatedPoints, scale)
-    const projectedPoints = projectPoints(scaledPoints, distance)
-
-    return projectedPoints
+    return projectPoints(scaledPoints, eyeDistance)
 }
 
 const transformPointsWithMatrix = (vertexArray: Vertex[], rotationMatrix: number[][]): Vertex[] => {
@@ -78,8 +86,9 @@ const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
 }
 
 const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    // Active right-handed Ry: +sin in [0][2], −sin in [2][0].
     const rotationMatrix: number[][] = [
-        [Math.cos(angle), 0, -Math.sin(angle)],
+        [Math.cos(angle), 0, Math.sin(angle)],
         [0, 1, 0],
         [-Math.sin(angle), 0, Math.cos(angle)]
     ]
@@ -104,13 +113,14 @@ const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
     return transformPointsWithMatrix(vertexArray, scaleMatrix)
 }
 
-const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+/** Project with unit focal length: s = 1 / (eyeDistance − z). s is scale, not focal length. */
+const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
     const result: Vertex[] = []
     vertexArray.forEach(vertex => {
-        const f = 1 / (distance - vertex.z)
+        const perspectiveScale = 1 / (eyeDistance - vertex.z)
         const projectionMatrix: number[][] = [
-            [f, 0, 0],
-            [0, f, 0],
+            [perspectiveScale, 0, 0],
+            [0, perspectiveScale, 0],
             [0, 0, 1]
         ]
         result.push(matrixMultiplyVertex(projectionMatrix, vertex))

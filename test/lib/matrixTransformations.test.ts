@@ -20,7 +20,7 @@ describe('transformPoints', () => {
 
     it('preserves vertex positions with zero rotation', () => {
         const result = transformPoints(CUBE_VERTICES, 0, 0, 0, 1, 5)
-        // With distance=5, z=-1: f = 1/(5-(-1)) = 1/6
+        // eyeDistance=5, z=-1: perspectiveScale = 1/(5-(-1)) = 1/6
         // x' = -1 * 1/6, y' = -1 * 1/6
         const first = result[0]
         expect(first.x).toBeCloseTo(-1 / 6, 5)
@@ -30,11 +30,17 @@ describe('transformPoints', () => {
     it('scales vertices by the given factor', () => {
         const scale1 = transformPoints(CUBE_VERTICES, 0, 0, 0, 1, 5)
         const scale2 = transformPoints(CUBE_VERTICES, 0, 0, 0, 2, 5)
-        // Scaling doubles the position before projection
-        // scale=1, z=-1: f=1/6, x = -1/6
-        // scale=2, z=-1*2=-2: f=1/(5-(-2))=1/7 hmm, scaling affects z too
-        // Actually scaling is applied before projection, so z changes too
+        // Uniform xy scale is applied before projection. Depth still uses
+        // the vertex z after that step (this helper does not scale z).
         expect(Math.abs(scale2[0].x)).toBeGreaterThan(Math.abs(scale1[0].x))
+    })
+
+    it('uses active right-handed Ry: +x maps toward −z', () => {
+        const [hit] = transformPoints([{ x: 1, y: 0, z: 0 }], 0, Math.PI / 2, 0, 1, 5)
+        // Ry(π/2)·(1,0,0) = (0,0,−1); then s = 1/(5−(−1)) = 1/6
+        expect(hit.x).toBeCloseTo(0, 5)
+        expect(hit.y).toBeCloseTo(0, 5)
+        expect(hit.z).toBeCloseTo(-1, 5)
     })
 
     it('produces different results for different rotation angles', () => {

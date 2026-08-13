@@ -406,7 +406,7 @@ def perspective() -> str:
         text(Pb[0] + 10, Pb[1] - 4, "B", size=14),
         circle(Pa[0], Pa[1], 5, fill=CORAL),
         text(Pa[0] + 10, Pa[1] - 6, "A", size=14, fill=CORAL),
-        *dim_along(Pe, Pfb, "F", offset=30),
+        *dim_along(Pe, Pfb, "d", offset=30),
         *dim_along(Pe, Pfa, "Az", offset=50),
         *dim_along(Pfa, Pa, "Ax", offset=16, color=CORAL),
         *dim_along(Pfb, Pb, "Bx", offset=-16),
@@ -415,7 +415,7 @@ def perspective() -> str:
 
 
 def f_projection() -> str:
-    """Same isometric frame. Same F, two depths."""
+    """Same isometric frame. Same eye distance d, two depths."""
     ox, oy = 120, 300
     S = 88
 
@@ -470,7 +470,7 @@ def f_projection() -> str:
         text(Pf[0] + 10, Pf[1] - 8, "far", fill=CORAL, size=14),
         text(Pbn[0] - 12, Pbn[1] - 10, "x′", size=14, anchor="end"),
         text(Pbf[0] + 12, Pbf[1] + 4, "x″", size=13, fill=INK2),
-        *dim_along(Pe, Pplane, "F", offset=32),
+        *dim_along(Pe, Pplane, "d", offset=32),
         *dim_along(Pplane, Pnz, "d − z", offset=32, color=CORAL),
     ]
     return svg(660, 460, "\n".join(body))
