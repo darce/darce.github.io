@@ -18,6 +18,7 @@ INK = "#171920"
 INK2 = "#464c5c"
 CORAL = "#d9253f"
 BLUE = "#3c00f7"
+GREEN = "#0c8a3e"
 FONT = "ui-monospace, GeistMonoVariableVF, Helvetica, monospace"
 # Equations: serif + italic variables (ISO 80000 / AMS). Words stay roman.
 MATH = "Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif"
@@ -97,7 +98,7 @@ def _crop(pts: list, pad: float = 22) -> tuple[float, float, float, float]:
 
 def _defs(prefix: str) -> str:
     parts = []
-    for name, color in (("ink", INK), ("coral", CORAL), ("blue", BLUE)):
+    for name, color in (("ink", INK), ("coral", CORAL), ("blue", BLUE), ("green", GREEN)):
         parts.append(
             f'<marker id="{prefix}-{name}" viewBox="0 0 10 10" refX="9" refY="5" '
             f'markerWidth="6.5" markerHeight="6.5" orient="auto">'
@@ -939,7 +940,7 @@ def perspective() -> str:
         Seg(top, bot, INK2, 1, dash="3 3"),
         Tree(top, bot, CORAL),
         Tree(hit_top, hit_bot, INK, halo=True),
-        Seg(_away(eye, top, 0.08), top, BLUE, 1.8, end="pj-blue"),
+        Seg(_away(eye, top, 0.08), top, GREEN, 1.8, end="pj-green"),
         Dot(hit_top, INK, 3.2),
         Dot(hit_bot, INK, 3.2),
         Brace(eye, hit_bot, "d", BLUE, offset=34, size=16),
@@ -1001,15 +1002,15 @@ def f_projection() -> str:
     scene.add(
         Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp"),
         screen,
-        Tree(far_top, far_bot, CORAL, "far", ray_style="dashed"),
-        Tree(near_top, near_bot, CORAL, "near", ray_style="solid"),
+        Tree(far_top, far_bot, CORAL),
+        Tree(near_top, near_bot, CORAL),
         Tree(sf_top, sf_bot, INK2, halo=True, clip="fp-film"),
         Tree(sn_top, sn_bot, INK, halo=True, clip="fp-film"),
         # Rays after the trees so the arrow sits on the edge, not under the canopy.
-        Seg(_away(eye, far_bot, 0.08), far_bot, BLUE, 1.25, dash="5 3", end="fp-blue"),
-        Seg(_away(eye, far_top, 0.08), far_top, BLUE, 1.45, dash="5 3", end="fp-blue"),
-        Seg(_away(eye, near_bot, 0.08), near_bot, BLUE, 1.55, end="fp-blue"),
-        Seg(_away(eye, near_top, 0.08), near_top, BLUE, 1.8, end="fp-blue"),
+        Seg(_away(eye, far_bot, 0.08), far_bot, GREEN, 1.25, dash="5 3", end="fp-green"),
+        Seg(_away(eye, far_top, 0.08), far_top, GREEN, 1.45, dash="5 3", end="fp-green"),
+        Seg(_away(eye, near_bot, 0.08), near_bot, GREEN, 1.55, end="fp-green"),
+        Seg(_away(eye, near_top, 0.08), near_top, GREEN, 1.8, end="fp-green"),
         Dot(sf_top, INK2, 2.8),
         Dot(sf_bot, INK2, 2.8),
         Dot(sn_top, INK, 3.0),
@@ -1044,21 +1045,20 @@ def f_projection() -> str:
             size=15,
         )
     )
-    # Key: why two ray styles.
+    # One stacked key: solid = near, dashed = far.
     kx, ky = eq[0], eq[1] + 22
     parts += [
-        _line(kx, ky, kx + 22, ky, stroke=BLUE, width=1.8),
+        _line(kx, ky, kx + 22, ky, stroke=GREEN, width=1.8),
         _text(kx + 28, ky + 4, "near", size=13, fill=INK),
-        _line(kx + 78, ky, kx + 100, ky, stroke=BLUE, width=1.45, dash="5 3"),
-        _text(kx + 106, ky + 4, "far", size=13, fill=INK),
+        _line(kx, ky + 18, kx + 22, ky + 18, stroke=GREEN, width=1.45, dash="5 3"),
+        _text(kx + 28, ky + 22, "far", size=13, fill=INK),
     ]
     pts.extend(
         [
             eq,
             (eq[0] + 200, eq[1] - 28),
-            (eq[0], eq[1] + 10),
             (kx, ky - 8),
-            (kx + 140, ky + 10),
+            (kx + 70, ky + 28),
         ]
     )
     x0, y0, w, hgt_box = _crop(pts, pad=22)
