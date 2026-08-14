@@ -1,10 +1,10 @@
 ---
 index: 5
 year: 2026
-title: 'WorkBay: Workflow State for Coding Agents'
+title: 'WorkBay: State for Coding Agents'
 subtitle: Open-source developer tooling
-description: I built WorkBay to keep task, review, and test state in a repository so I can move coding work between Claude Code, Codex, Cursor, grok, and Copilot without reconstructing the task from a transcript.
-details: WorkBay stores workflow state in SQLite, exposes it over MCP, and generates the skills, commands, and hooks used by several coding-agent harnesses.
+description: I built WorkBay to keep task and review state in a repository when I move coding work between different agent tools.
+details: WorkBay stores task state in SQLite and exposes it over MCP. Several coding tools can read the same record.
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -26,76 +26,78 @@ tags:
 
 ## Why I built it
 
-I regularly move coding work between Claude Code, Codex, Cursor, grok, and Copilot. Git carries the code between them, but it does not carry much of the working state around the code: what I am trying to do, which review findings remain open, why I made a decision, or which test result supported it.
+I move coding work between Claude Code and Codex fairly often. I also use Cursor, grok and Copilot when one of them suits a particular job.
 
-That information usually ends up in a conversation transcript or a generated summary. When I change tools, I either bring the summary with me or reconstruct the task from the repository.
+Git makes that easy for the code. The surrounding task state is harder to move.
 
-I built WorkBay to keep the narrower, operational part of that context in the repository itself.
+A review comment may exist only in a chat. The reason I rejected an approach may be buried fifty messages back. A new session can inspect the repository, but it has no direct record of those decisions unless I wrote them down somewhere.
 
-## What it records
+I built WorkBay to write that record into the project.
 
-WorkBay creates a SQLite database at `.task-state/handoff.db`. It records the active task, branch and worktree, implementation decisions, review findings, test evidence, touched files, and the commits associated with them.
+## What it keeps
 
-Agents access the same state through MCP. I generate the harness-specific command and skill surfaces from one manifest, so the workflow is substantially the same whether I open the repository in Claude Code, Codex, Cursor, grok, or VS Code Copilot.
+WorkBay creates a SQLite database at `.task-state/handoff.db`.
 
-For example:
+The current task lives there with its branch. Review findings have their own records. Decisions can refer to the commit where they were made. Test results can refer to the code they ran against.
 
-| Command | What I use it for |
-| --- | --- |
-| `/scope` | Turning an idea into a bounded task |
-| `/tdd` | Starting an implementation slice from a failing test |
-| `/branch-review` | Reviewing a branch and recording findings |
-| `/offload` | Sending a well-specified slice to another backend |
-| `/handoff-lifecycle` | Resuming, switching, or closing a task |
+The database is available over MCP, so more than one coding tool can read it.
 
-There are fifteen commands in the current system. The repository documents the complete set.
+I keep the commands consistent between tools from a shared manifest. `/scope`, for example, turns a loose idea into a bounded task. `/branch-review` records findings from a review. The repository contains the full command set.
 
-## Moving a task between agents
+## Changing tools
 
-When I open the same project in another supported harness, WorkBay can load the active task and the state attached to it. Open findings remain open. Recorded decisions remain attached to the task. Test evidence and commit references still point at the code they came from.
+Suppose I stop a task in Claude Code and open the same repository in Codex.
 
-This does not make the harnesses interchangeable. Authentication, available tools, model behaviour, shell access, and supported features still differ. I may still need to explain unfamiliar code or provide evidence that was never recorded.
+WorkBay can load the active task from the database. An open review finding is still open. A recorded decision is still attached to the task that produced it.
 
-What I avoid is rebuilding the basic workflow state by hand every time I change sessions.
+That saves me from reconstructing the task from chat history.
 
-The same mechanism also helps after a long session has been compacted. WorkBay can reload the current task from the database instead of depending entirely on another prose summary of the earlier conversation.
+Some re-entry remains. Codex may have different tools available than Claude Code. It may also need an explanation of code that was never entered into WorkBay. The database only knows what was recorded in it.
 
-## Review state tied to Git
+This is useful after context compaction too. I can reload the task record instead of relying entirely on a prose recap of an earlier session.
 
-I wanted review findings to survive the reviewer that produced them.
+## Review findings
 
-A finding in WorkBay has a status and commit provenance. A later session can see that the finding remains open, which commit addressed it, and whether the branch has reached the state required by the close gate.
+I wanted review comments to remain useful after the reviewing session ended.
 
-The installation also configures Git hooks and Make targets for the workflow I use. They cover things such as edits on `main`, branch naming, unresolved review findings, and implementation slices that have not reached a recorded disposition.
+A WorkBay finding has a status. It can also carry commit provenance.
 
-These hooks are workflow controls, not a security boundary. A process with unrestricted shell access can alter `core.hooksPath`, skip some hooks, or use the documented bypass mechanisms. Their purpose is to make the normal path consistent across harnesses and sessions.
+If another agent later addresses the finding, I can associate that change with the record. The close checks then read the stored state before the task is finished.
 
-## Running bounded work elsewhere
+WorkBay also installs Git hooks for parts of this process. I use them to catch edits on `main` and to enforce the branch rules used by the project.
 
-I added `/offload` for implementation work that is already well specified.
+The hooks govern the normal development path. Shell access can change the hook configuration or bypass some checks, so I treat them as development safeguards rather than access control.
 
-It gives one slice to an explicitly selected backend in an isolated worktree, with a token budget and a structured result. The worker can commit its work and return a handoff, but it does not merge the result. I inspect the diff or send it through another review pass first.
+## Sending out bounded work
 
-I use this for mechanical or well-bounded work where using the same model for every step would be unnecessary. Ambiguous design work, architecture decisions, and tasks that depend heavily on evidence from the current session are poor candidates for this kind of handoff.
+`/offload` is for implementation work that I have already reduced to a small, explicit task.
 
-WorkBay also refuses to silently substitute a different backend when the requested one is unavailable. I would rather have the dispatch fail than change the execution environment without saying so.
+It creates an isolated worktree and sends the task to the backend I selected. I give that run a token budget.
 
-## Optional semantic retrieval
+The worker can commit a result. Merge authority stays with the parent task, where I can inspect the diff first.
 
-The SQLite schema is structured, but exact keyword matching becomes less useful as a project accumulates decisions and findings.
+I use this for changes that are mechanical or already well specified. Architecture work usually stays in the main session because too much of the relevant context is implicit.
 
-WorkBay can optionally embed those database rows and use semantic retrieval when loading a session. The indexed material is still the workflow record: decisions, findings, tests, blockers, and related state. It is not a second transcript store.
+If a requested backend is unavailable, the dispatch stops. It does not choose another backend on my behalf.
 
-I find this most useful on work that spans many sessions. On a new repository with little history, there is correspondingly little to retrieve, and embeddings can be disabled.
+## Semantic lookup
 
-## Where I draw the boundary
+After a project has accumulated enough history, exact text search becomes less useful.
 
-I treat WorkBay as repository-level workflow plumbing.
+WorkBay can optionally create embeddings for rows already stored in its database. On session load, those embeddings help find older records that are related in meaning even when the wording differs.
 
-It preserves selected state that I want another coding session to be able to inspect. It does not preserve the complete reasoning of a previous model, compensate for differences between models, decide what should be built next, or prevent a sufficiently privileged process from bypassing its Git controls.
+The source material remains the structured WorkBay data.
 
-Its useful unit is something I can make concrete: a task, a branch, a decision, a review finding, a test result, a touched file, or a commit.
+On a short project I usually do not need this. It becomes more useful when a task survives many sessions.
 
-That has been enough to let me change coding environments without making the conversation transcript the only record of what happened.
+## What I use it for
 
-Installation, the complete command set, and the schema are documented in the [WorkBay repository](https://github.com/darce/workbay).
+WorkBay is project plumbing for my own agent-assisted development process.
+
+Its job is fairly narrow: preserve enough recorded state that I can reopen a task without treating the previous chat as the sole source of history.
+
+It does not capture everything a model was thinking. I do not expect it to make different models behave alike either.
+
+What it gives me is a record I can inspect later: which task was active, what review work remained, and which commits were involved.
+
+Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
