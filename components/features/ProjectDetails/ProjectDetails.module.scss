@@ -38,10 +38,14 @@
             object-fit: contain;
         }
 
+        // Image credit: small, quiet, italic
         figcaption {
             margin-top: $s-small;
+            font-size: 0.75rem;
+            line-height: 1.5;
             font-weight: 200;
             font-style: italic;
+            opacity: 0.7;
         }
 
         @media (max-width: $tabletMax) {
@@ -50,14 +54,30 @@
         }
     }
 
+    // Project summary: upright, body weight, opened by a 2px rule
     .metadata {
         flex: 1 1 0;
         min-width: 0;
-        font-weight: 200;
-        font-style: italic;
+
+        border-top: 2px solid;
+
+        @include themeComponent($themes) {
+            border-top-color: t('text');
+        }
+
+        .links {
+            padding-top: $s-small;
+        }
+
+        p {
+            margin-top: $s-small;
+        }
 
         .lede:not(:has(.masthead)) & {
             padding: 0 $s-x-large;
+            border-top: none;
+            font-weight: 200;
+            font-style: italic;
         }
 
         @media (max-width: $tabletMax) {
