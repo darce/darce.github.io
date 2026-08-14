@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WorkBay: Workflow State for Coding Agents — vetter copy 2026-08-13</title>
+<link rel="canonical" href="https://darce.xyz/projects/workbay/">
+<style>
+body { font-family: ui-monospace, Menlo, monospace; max-width: 44rem; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.55; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #000; padding: 0.35rem 0.6rem; text-align: left; }
+code { background: #eee; padding: 0 0.2em; }
+</style>
+</head>
+<body>
+<p><em>Static copy of <a href="https://darce.xyz/projects/workbay/">darce.xyz/projects/workbay</a>, published 2026-08-13 for review.</em></p>
+
+<h1>WorkBay: Workflow State for Coding Agents</h1>
+<p>Open-source developer tooling — <a href="https://github.com/darce/workbay">github.com/darce/workbay</a></p>
+
+<h2>Why I built it</h2>
+<p>I regularly move coding work between Claude Code, Codex, Cursor, grok, and Copilot. Git carries the code between them, but it does not carry much of the working state around the code: what I am trying to do, which review findings remain open, why I made a decision, or which test result supported it.</p>
+<p>That information usually ends up in a conversation transcript or a generated summary. When I change tools, I either bring the summary with me or reconstruct the task from the repository.</p>
+<p>I built WorkBay to keep the narrower, operational part of that context in the repository itself.</p>
+
+<h2>What it records</h2>
+<p>WorkBay creates a SQLite database at <code>.task-state/handoff.db</code>. It records the active task, branch and worktree, implementation decisions, review findings, test evidence, touched files, and the commits associated with them.</p>
+<p>Agents access the same state through MCP. I generate the harness-specific command and skill surfaces from one manifest, so the workflow is substantially the same whether I open the repository in Claude Code, Codex, Cursor, grok, or VS Code Copilot.</p>
+<p>For example:</p>
+<table>
+<thead><tr><th>Command</th><th>What I use it for</th></tr></thead>
+<tbody>
+<tr><td><code>/scope</code></td><td>Turning an idea into a bounded task</td></tr>
+<tr><td><code>/tdd</code></td><td>Starting an implementation slice from a failing test</td></tr>
+<tr><td><code>/branch-review</code></td><td>Reviewing a branch and recording findings</td></tr>
+<tr><td><code>/offload</code></td><td>Sending a well-specified slice to another backend</td></tr>
+<tr><td><code>/handoff-lifecycle</code></td><td>Resuming, switching, or closing a task</td></tr>
+</tbody>
+</table>
+<p>There are fifteen commands in the current system. The repository documents the complete set.</p>
+
+<h2>Moving a task between agents</h2>
+<p>When I open the same project in another supported harness, WorkBay can load the active task and the state attached to it. Open findings remain open. Recorded decisions remain attached to the task. Test evidence and commit references still point at the code they came from.</p>
+<p>This does not make the harnesses interchangeable. Authentication, available tools, model behaviour, shell access, and supported features still differ. I may still need to explain unfamiliar code or provide evidence that was never recorded.</p>
+<p>What I avoid is rebuilding the basic workflow state by hand every time I change sessions.</p>
+<p>The same mechanism also helps after a long session has been compacted. WorkBay can reload the current task from the database instead of depending entirely on another prose summary of the earlier conversation.</p>
+
+<h2>Review state tied to Git</h2>
+<p>I wanted review findings to survive the reviewer that produced them.</p>
+<p>A finding in WorkBay has a status and commit provenance. A later session can see that the finding remains open, which commit addressed it, and whether the branch has reached the state required by the close gate.</p>
+<p>The installation also configures Git hooks and Make targets for the workflow I use. They cover things such as edits on <code>main</code>, branch naming, unresolved review findings, and implementation slices that have not reached a recorded disposition.</p>
+<p>These hooks are workflow controls, not a security boundary. A process with unrestricted shell access can alter <code>core.hooksPath</code>, skip some hooks, or use the documented bypass mechanisms. Their purpose is to make the normal path consistent across harnesses and sessions.</p>
+
+<h2>Running bounded work elsewhere</h2>
+<p>I added <code>/offload</code> for implementation work that is already well specified.</p>
+<p>It gives one slice to an explicitly selected backend in an isolated worktree, with a token budget and a structured result. The worker can commit its work and return a handoff, but it does not merge the result. I inspect the diff or send it through another review pass first.</p>
+<p>I use this for mechanical or well-bounded work where using the same model for every step would be unnecessary. Ambiguous design work, architecture decisions, and tasks that depend heavily on evidence from the current session are poor candidates for this kind of handoff.</p>
+<p>WorkBay also refuses to silently substitute a different backend when the requested one is unavailable. I would rather have the dispatch fail than change the execution environment without saying so.</p>
+
+<h2>Optional semantic retrieval</h2>
+<p>The SQLite schema is structured, but exact keyword matching becomes less useful as a project accumulates decisions and findings.</p>
+<p>WorkBay can optionally embed those database rows and use semantic retrieval when loading a session. The indexed material is still the workflow record: decisions, findings, tests, blockers, and related state. It is not a second transcript store.</p>
+<p>I find this most useful on work that spans many sessions. On a new repository with little history, there is correspondingly little to retrieve, and embeddings can be disabled.</p>
+
+<h2>Where I draw the boundary</h2>
+<p>I treat WorkBay as repository-level workflow plumbing.</p>
+<p>It preserves selected state that I want another coding session to be able to inspect. It does not preserve the complete reasoning of a previous model, compensate for differences between models, decide what should be built next, or prevent a sufficiently privileged process from bypassing its Git controls.</p>
+<p>Its useful unit is something I can make concrete: a task, a branch, a decision, a review finding, a test result, a touched file, or a commit.</p>
+<p>That has been enough to let me change coding environments without making the conversation transcript the only record of what happened.</p>
+<p>Installation, the complete command set, and the schema are documented in the <a href="https://github.com/darce/workbay">WorkBay repository</a>.</p>
+</body>
+</html>
