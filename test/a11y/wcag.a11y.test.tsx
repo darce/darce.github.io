@@ -168,12 +168,6 @@ describe('Heading hierarchy (WCAG 1.3.1)', () => {
             expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1)
         }
     })
-
-    it('resume page heading hierarchy is correct (h1 → h2)', () => {
-        const levels = [1, 2] // h1 (from header) then h2 (resume sections)
-        const hasSkip = levels.some((level, i) => i > 0 && level - levels[i - 1] > 1)
-        expect(hasSkip).toBe(false)
-    })
 })
 
 // ---------------------------------------------------------------------------
