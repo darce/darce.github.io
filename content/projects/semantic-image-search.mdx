@@ -84,7 +84,7 @@ These are separate designed states because each has a different cause, action, a
 
 **Similarity** answers “what else looks like this?” after a photo is selected. **Places** answers “where did this happen?” for images with usable location information. **Timeline** answers “when does this occur?” and helps reveal temporal patterns.
 
-A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts expose missing metadata—for example, photographs without location—rather than allowing absent fields to disappear silently. Zooming preserves surrounding context and the viewer’s position within it.
+A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts surface missing metadata—for example, photographs without location—so absent fields stay visible. Zooming preserves surrounding context and the viewer’s position within it.
 
 > **Figure pending** — Similarity / Places / Timeline exploration.
 
@@ -96,7 +96,7 @@ Performance and runtime behavior were evaluated against an 8 GB Apple Silicon co
 
 ### Interaction and expert evidence
 
-A whole-product UX map framed expert review, and its evaluation blocks (targeted review questions attached to each screen) isolated specific interaction risks. Accessibility review addressed keyboard operation and VoiceOver announcements, while adversarial review probed claims and failure states. Mutation checks (tests that change state and confirm the view follows) caught state that persisted when it should have changed.
+A whole-product UX map framed expert review, with targeted review questions attached to each screen to isolate specific interaction risks. Accessibility review addressed keyboard operation and VoiceOver announcements, while adversarial review probed claims and failure states. Automated checks that changed state and confirmed the view updated correctly caught places where the display did not follow a state change.
 
 ### External-user evidence
 
@@ -104,7 +104,7 @@ Not yet run. This is the next open evidence gap: a 3–5 person task-based study
 
 ## Three times evaluation changed the product
 
-- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes (Heuristics Canon VIZ-17).
+- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
 - Partial-library plots looked like complete-library truth → users could draw conclusions from a subset → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
 - Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when axis identity changes → verified by a mutation check.
 
@@ -114,13 +114,4 @@ The outcome is a working end-to-end native product with coherent search, inspect
 
 External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
 
-> **Screens: pending.** The following screens will appear here once captured.
-
-1. Cold start
-2. Indexing progress
-3. Semantic results
-4. Selected photo and details
-5. Similarity / Places / Timeline exploration
-6. Partial-library caveat
-7. Timeline selection and zoom
-8. Missing-model and settings recovery
+> **Screens: pending.** Cold start, indexing progress, semantic results, selected photo and details, Similarity/Places/Timeline exploration, partial-library caveat, timeline selection and zoom, and missing-model and settings recovery will appear here once captured.

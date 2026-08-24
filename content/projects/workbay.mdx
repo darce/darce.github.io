@@ -30,7 +30,7 @@ A coding session ends and the agent loses the thread: which task was active, whi
 
 `Plan → Task → Work → Review → Findings → Gate → Merge`
 
-A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state.
+A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state, though re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
 
 ## Three product decisions
 
@@ -40,7 +40,7 @@ A cold session loads its active task and continues it. An independent reviewer r
 
 ## Design Map
 
-The adjacent Design Map ships as the `/ux-map` command: a text-first UX map of jobs, screens, zones, states, actions, flows, and code references. Those render as deterministic ASCII, Mermaid, and Markdown for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
+The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
 
 ## Under the hood
 
