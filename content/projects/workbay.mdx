@@ -24,7 +24,7 @@ tags:
 - Python
 ---
 
-A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, on any agent tool, picks it up where the last one left off.
+A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, in any of the supported agent tools, picks it up where the last one left off.
 
 ## One journey
 
@@ -40,7 +40,7 @@ A cold session loads its active task and continues it. An independent reviewer r
 
 ## Design Map
 
-The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
+The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. The inventory and critique steps are deterministic; model reasoning happens outside them. The tooling is public. The consumer maps I keep for my own products are private R&D.
 
 ## Under the hood
 

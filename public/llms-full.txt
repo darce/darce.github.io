@@ -18,7 +18,7 @@ What I bring:
 - **Semantic Image Search** — a native macOS local-first AI photo search product designed and built end to end, with explicit incomplete-data states.
 - **PhotoShelter** — R&D prototyping that surfaced integration issues early (an internal estimate of roughly 30% less downstream implementation effort) and WCAG remediation that protected $9.2M ARR across a platform with 80,000+ users.
 - **MSNBC** — senior design technologist prototyping editorial and interactive experiences.
-- **Heuristics Canon** — a versioned library of design and engineering rules with stable IDs, so a critique cites a rule with a stable ID. It decided the pending-media state in Semantic Image Search and the cross-agent state boundary in WorkBay.
+- **Heuristics Canon** — a versioned library of design and engineering rules with stable IDs, so a critique names the exact rule it leans on. It decided the pending-media state in Semantic Image Search and the cross-agent state boundary in WorkBay.
 
 ### Independent product R&D
 
@@ -114,7 +114,7 @@ A selection carries across all three views, so inspection remains anchored while
 
 ### Technical evidence
 
-Performance and runtime behavior were evaluated against an 8 GB Apple Silicon constraint. Privacy checks examined the network and execution boundary around local gallery processing. Model and licence constraints were reviewed, and automated tests covered core behavior.
+Performance and runtime behavior were evaluated against an 8 GB Apple Silicon constraint. Privacy checks found no network egress of gallery data in the tested flows. Model and licence constraints were reviewed, and automated tests covered core behavior.
 
 ### Interaction and expert evidence
 
@@ -182,7 +182,7 @@ Year: 2026
 Tags: Product Design, AI Workflow Design, Developer Tooling, Coding Agents, MCP, Python
 Summary: Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
 
-A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, on any agent tool, picks it up where the last one left off.
+A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, in any of the supported agent tools, picks it up where the last one left off.
 
 ## One journey
 
@@ -198,7 +198,7 @@ A cold session loads its active task and continues it. An independent reviewer r
 
 ## Design Map
 
-The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
+The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. The inventory and critique steps are deterministic; model reasoning happens outside them. The tooling is public. The consumer maps I keep for my own products are private R&D.
 
 ## Under the hood
 
