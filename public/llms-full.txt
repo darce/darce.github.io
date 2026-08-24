@@ -188,7 +188,7 @@ A coding session ends and the agent loses the thread: which task was active, whi
 
 `Plan → Task → Work → Review → Findings → Gate → Merge`
 
-A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state, though re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
+A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state. Re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
 
 ## Three product decisions
 
