@@ -40,7 +40,7 @@ Summary: A native macOS app that searches a photo library by meaning, keeps ever
 
 ## Search
 
-A photo library holds more than its folder names record: places, recurring subjects, and visual structure across years. Cloud photo services can search that material, but only after the library has been uploaded. This app runs the models on the Mac instead, within 8 GB of memory, and the person chooses which folders it may read. Nothing outside those folders is scanned, and no gallery image leaves the device.
+A photo library holds more than its folder names record: which subjects keep recurring, and where the photos were taken. Cloud photo services can search that material, but only after the library has been uploaded. This app runs the models on the Mac instead, within 8 GB of memory. It reads only the folders the person has chosen, and gallery images stay on the device.
 
 ### Cold start and indexing
 
@@ -99,7 +99,7 @@ Results are ordered by nearness to the query. Position carries the ranking; raw 
 
 Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
 
-**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking; its open details show 4032 × 3024, Apple iPhone 13 Pro, 26 mm f/1.5, 2021:07:14 18:22:00, GPS 64.1466°, -21.9426°, an offline mini-map, and surrounding result thumbnails.
+**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking. The open details panel shows the file's size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00) and GPS position (64.1466°, -21.9426°) above an offline mini-map, with the surrounding result thumbnails below.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -162,7 +162,7 @@ Three views share one selection. Similarity shows what else looks like the selec
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results, unranked, and says so.
+The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results and labelled as unranked.
 
 ### Timeline
 
@@ -219,7 +219,7 @@ The breadcrumb records the window that was asked for; the range line states what
 
 ## Incomplete states
 
-Photo search fails in more than one way, and a single "no results" message would hide which one happened. Each condition below has its own cause, its own wording, and its own way out.
+Photo search fails in more than one way, and a single "no results" message would hide which one happened. Each condition below is worded for its cause and offers a way out of it.
 
 No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
 
@@ -307,7 +307,7 @@ A whole-product UX map framed the review, with a question attached to each scree
 
 ### External users
 
-Not yet run. This is the open evidence gap: a task-based study with three to five people covering search, inspection, and exploration.
+Not yet run. This is the open evidence gap: a task-based study with three to five people.
 
 ### What the reviews changed
 
@@ -317,7 +317,7 @@ Not yet run. This is the open evidence gap: a task-based study with three to fiv
 
 ## Limits
 
-The app is a working end-to-end product with local inference, keyboard and VoiceOver support, explicit failure states, and a recorded review trail. It has not been used by anyone outside the review, and it has not been measured on a library larger than the test corpus. The next step is the user study: whether people can form useful queries, read the caveats correctly, and keep their bearings across the three Explore views.
+The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside the review, and it has not been measured on a library larger than the test corpus. The next step is the user study. Its first question is whether people can form useful queries and read the caveats correctly.
 
 > **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
 
