@@ -1,10 +1,10 @@
 ---
-index: 5
+index: 15
 year: 2026
 title: 'WorkBay: State for Coding Agents'
-subtitle: Open-source developer tooling
-description: I built WorkBay to keep task and review state in a repository when I move coding work between different agent tools.
-details: WorkBay stores task state in SQLite and exposes it over MCP. Several coding tools can read the same record.
+subtitle: 'Open-source developer tooling · AI workflow product design'
+description: 'Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.'
+details: 'WorkBay keeps the active task, unresolved review findings, recorded decisions, and test evidence in the repository so any coding-agent harness can pick the work up. The adjacent Design Map (`/ux-map`) turns jobs, screens, states, and flows into version-controlled artifacts that can be rendered and critiqued before implementation.'
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -16,88 +16,34 @@ masthead:
   src: arp-collage-squares-laws-of-chance-1916.jpg
   alt: "Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted paper on paper. Museum of Modern Art, New York. Public domain."
 tags:
+- Product Design
+- AI Workflow Design
 - Developer Tooling
 - Coding Agents
 - MCP
-- SQLite
-- Git
 - Python
 ---
 
-## Why I built it
+A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, on any agent tool, picks it up where the last one left off.
 
-I move coding work between Claude Code and Codex fairly often. I also use Cursor, grok and Copilot when one of them suits a particular job.
+## One journey
 
-Git makes that easy for the code. The surrounding task state is harder to move.
+`Plan → Task → Work → Review → Findings → Gate → Merge`
 
-A review comment may exist only in a chat. The reason I rejected an approach may be buried fifty messages back. A new session can inspect the repository, but it has no direct record of those decisions unless I wrote them down somewhere.
+A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state.
 
-I built WorkBay to write that record into the project.
+## Three product decisions
 
-## What it keeps
+1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads decisions instead of asking for a prose recap.
+2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
+3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops rather than switching silently.
 
-WorkBay creates a SQLite database at `.task-state/handoff.db`.
+## Design Map
 
-The current task lives there with its branch. Review findings have their own records. Decisions can refer to the commit where they were made. Test results can refer to the code they ran against.
+The adjacent Design Map ships as the `/ux-map` command: a text-first UX map of jobs, screens, zones, states, actions, flows, and code references. Those render as deterministic ASCII, Mermaid, and Markdown for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
 
-The database is available over MCP, so more than one coding tool can read it.
+## Under the hood
 
-I keep the commands consistent between tools from a shared manifest. `/scope`, for example, turns a loose idea into a bounded task. `/branch-review` records findings from a review. The repository contains the full command set.
-
-## Changing tools
-
-Suppose I stop a task in Claude Code and open the same repository in Codex.
-
-WorkBay can load the active task from the database. An open review finding is still open. A recorded decision is still attached to the task that produced it.
-
-That saves me from reconstructing the task from chat history.
-
-Some re-entry remains. Codex may have different tools available than Claude Code. It may also need an explanation of code that was never entered into WorkBay. The database only knows what was recorded in it.
-
-This is useful after context compaction too. I can reload the task record instead of relying entirely on a prose recap of an earlier session.
-
-## Review findings
-
-I wanted review comments to remain useful after the reviewing session ended.
-
-A WorkBay finding has a status. It can also carry commit provenance.
-
-If another agent later addresses the finding, I can associate that change with the record. The close checks then read the stored state before the task is finished.
-
-WorkBay also installs Git hooks for parts of this process. I use them to catch edits on `main` and to enforce the branch rules used by the project.
-
-The hooks govern the normal development path. Shell access can change the hook configuration or bypass some checks, so I treat them as development safeguards rather than access control.
-
-## Sending out bounded work
-
-`/offload` is for implementation work that I have already reduced to a small, explicit task.
-
-It creates an isolated worktree and sends the task to the backend I selected. I give that run a token budget.
-
-The worker can commit a result. Merge authority stays with the parent task, where I can inspect the diff first.
-
-I use this for changes that are mechanical or already well specified. Architecture work usually stays in the main session because too much of the relevant context is implicit.
-
-If a requested backend is unavailable, the dispatch stops. It does not choose another backend on my behalf.
-
-## Semantic lookup
-
-After a project has accumulated enough history, exact text search becomes less useful.
-
-WorkBay can optionally create embeddings for rows already stored in its database. On session load, those embeddings help find older records that are related in meaning even when the wording differs.
-
-The source material remains the structured WorkBay data.
-
-On a short project I usually do not need this. It becomes more useful when a task survives many sessions.
-
-## What I use it for
-
-WorkBay is project plumbing for my own agent-assisted development process.
-
-Its job is fairly narrow: preserve enough recorded state that I can reopen a task without treating the previous chat as the sole source of history.
-
-It does not capture everything a model was thinking. I do not expect it to make different models behave alike either.
-
-What it gives me is a record I can inspect later: which task was active, what review work remained, and which commits were involved.
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows.
 
 Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
