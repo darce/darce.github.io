@@ -1,0 +1,9 @@
+[project]
+name = "darce-xyz"
+version = "0.0.0"
+description = "Stub so WorkBay remote lanes (uv sync) succeed in this Node.js repo; no Python code."
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
