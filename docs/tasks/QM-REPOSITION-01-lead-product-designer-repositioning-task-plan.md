@@ -226,8 +226,8 @@ Proof: grep from Verification Strategy; `npm test && npm run typecheck && npx ne
      "owns": ["content/header/masthead.mdx", "lib/seo.ts", "scripts/generate-llm-content.js", "content/about/about.mdx", "content/footer/footer.mdx", "pages/about.tsx", "pages/work.tsx", "test/lib/seo.test.ts"],
      "depends": [], "blast": "none"},
     {"id": "s2", "title": "semantic image search case (text-first, media-pending)", "independent": true,
-     "owns": ["content/projects/semantic-image-search.mdx", "test/content/semantic-image-search.test.ts"],
-     "depends": [], "blast": "none"},
+     "owns": ["content/projects/semantic-image-search.mdx", "test/content/semantic-image-search.test.ts", "components/features/ProjectDetails/ProjectDetails.module.scss"],
+     "depends": [], "blast": "shared-component (ProjectDetails table styles; additive rules only, all case studies render through it)"},
     {"id": "s3", "title": "homepage hero + featured order", "independent": false,
      "owns": ["pages/index.tsx", "styles/landingPage.module.scss", "test/pages/featured.test.ts"],
      "depends": ["s2"], "blast": "none"},
@@ -253,7 +253,7 @@ Note: `s6` also edits `scripts/generate-llm-content.js:STATIC_PAGES` (owned by `
 | Lane ID | Owned Paths | Upstream | Required Tests |
 | --- | --- | --- | --- |
 | `lane-s1` | `s1.owns` | none | `npm ci && npx vitest run test/lib/seo.test.ts` |
-| `lane-s2` | `s2.owns` | none | `npm ci && npx vitest run test/content/semantic-image-search.test.ts` |
+| `lane-s2` | `s2.owns` | ProjectDetails.module.scss (shared, additive) | `npm ci && npx vitest run test/content/semantic-image-search.test.ts` |
 | `lane-s4` | `content/projects/workbay.mdx` | none | `npm ci && npx vitest run test/lib/schemas.test.ts` |
 | `lane-s5` | `content/projects/photoshelter.mdx` | none | `npm ci && npx vitest run test/lib/schemas.test.ts` |
 | `lane-s3` | `s3.owns` | `lane-s1` merged | `npm ci && npx vitest run test/pages/featured.test.ts` |

@@ -177,6 +177,46 @@
             padding: 0 0 0 $s-large;
         }
 
+        // Hard-edge data table: 1px rules, no radius, header opened by a 2px rule
+        table {
+            width: 100%;
+            margin: $s-large 0;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        th,
+        td {
+            padding: $s-small $s-medium;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: $s-line solid;
+
+            @include themeComponent($themes) {
+                border-bottom-color: t('text');
+            }
+        }
+
+        thead th {
+            border-bottom-width: 2px;
+            font-weight: 600;
+        }
+
+        tbody th {
+            width: 11em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        @media (max-width: $tabletMax) {
+            tbody th {
+                width: auto;
+                white-space: normal;
+            }
+        }
+
         pre {
             max-width: 100%;
             padding: $s-medium;

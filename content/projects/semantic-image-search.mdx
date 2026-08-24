@@ -1,0 +1,126 @@
+---
+index: 1
+year: 2026
+title: 'Semantic Image Search: Local-First AI Photo Search & Exploration'
+subtitle: 'Independent product R&D · macOS'
+description: 'A native macOS product for semantic photo search and visual exploration that keeps gallery processing on-device and makes incomplete data explicit.'
+details: 'I designed and built a native macOS photo-search product that uses on-device models to retrieve and explore a user’s library while keeping gallery images local. Missing or partial data is shown as such instead of being presented as certainty.'
+tags:
+  - Product Design
+  - Interaction Design
+  - Human-AI Interaction
+  - SwiftUI
+  - Core ML
+  - Accessibility
+---
+
+I designed and built a native macOS photo-search product that uses on-device models to retrieve and explore a user’s library while keeping gallery images local and showing missing or partial data as incomplete.
+
+My role covered product design, interaction design, technical architecture, and implementation. The stage is a working independent R&D product that is not yet user-tested.
+
+> **Figure pending** — product hero screen. Screenshots are being captured; this slot is intentionally visible so the case does not imply media that does not exist.
+
+## At a glance
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Dimension</th>
+      <th scope="col">Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">Role</th><td>Product design, interaction design, technical architecture, implementation</td></tr>
+    <tr><th scope="row">Stage</th><td>Working independent R&D product</td></tr>
+    <tr><th scope="row">Platform</th><td>macOS</td></tr>
+    <tr><th scope="row">Core jobs</th><td>Search, inspect, explore</td></tr>
+    <tr><th scope="row">AI</th><td>Local semantic retrieval plus segmentation/detection components</td></tr>
+    <tr><th scope="row">Constraint</th><td>Useful on 8 GB Apple Silicon</td></tr>
+    <tr><th scope="row">Trust boundary</th><td>Gallery processing stays local</td></tr>
+    <tr><th scope="row">Accessibility</th><td>Keyboard and VoiceOver behavior</td></tr>
+    <tr><th scope="row">Research status</th><td>Expert/adversarial evaluation done; external user testing not yet run.</td></tr>
+  </tbody>
+</table>
+
+## Problem
+
+A photo library carries meaning that folder names and filenames rarely capture: place, repeated subjects, visual structure, and relationships across years. People need ways to find and inspect that material without surrendering their galleries to a cloud service.
+
+Cloud AI can improve retrieval, but it moves the privacy boundary away from the person and their device. The product therefore had to run locally on modest Apple Silicon hardware. It also had to be honest when the library, index, model, permission, or metadata was incomplete.
+
+## Product principles
+
+1. **User chooses the boundary.** Selected folders define the searchable set; there is no silent whole-disk scan.
+2. **No gallery egress.** Model processing happens locally; gallery images never leave the machine.
+3. **Unknown must look unknown.** Partial and missing states are made explicit in context.
+4. **Search plus browse.** A semantic query works alongside exploratory views for material the person has not yet named.
+5. **Machine output stays inspectable.** Selecting a photo exposes the underlying facts behind the result.
+
+## Core journey
+
+Choose folder → index → semantic query → inspect result → explore patterns
+
+> **Figure pending** — annotated journey strip.
+
+## Designing for incomplete truth
+
+**No folder yet.** The start state explains that a folder must be chosen before indexing can begin. Treating it as an ordinary empty result would falsely imply that an existing library had already been searched and contained nothing relevant.
+
+**No matches.** A query can complete successfully without finding a suitable photo. Distinguishing this from an indexing failure tells the user that the selected boundary was searched, while still showing what was searched and how to adjust the query or selection.
+
+**Model unavailable.** Semantic search depends on a local model that may be absent or unusable. Saying “no results” would hide the actual cause and could lead someone to conclude that their photos were inadequate when retrieval was only temporarily unavailable.
+
+**Partial library.** Indexing may cover some photos before interruption, or metadata may exist for only part of the collection. The interface scopes what is included and identifies the cause, so a subset is never presented as the whole library.
+
+**Unavailable volume or permission.** A mounted volume may be offline, removed, or denied to the app. Naming that condition preserves the distinction between inaccessible source material and material that was inspected and found irrelevant.
+
+**Experimental capability.** Some machine-derived behavior is deliberately marked experimental. Its presentation keeps uncertainty visible so preliminary output does not acquire the same authority as established product behavior.
+
+These are separate designed states because each has a different cause, action, and evidentiary meaning; treating unknown as a designed state prevents absence from masquerading as certainty.
+
+> **Figure pending** — partial-library caveat screen.
+
+## Data-rich exploration
+
+**Similarity** answers “what else looks like this?” after a photo is selected. **Places** answers “where did this happen?” for images with usable location information. **Timeline** answers “when does this occur?” and helps reveal temporal patterns.
+
+A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts expose missing metadata—for example, photographs without location—rather than allowing absent fields to disappear silently. Zooming preserves surrounding context and the viewer’s position within it.
+
+> **Figure pending** — Similarity / Places / Timeline exploration.
+
+## Evaluation
+
+### Technical evidence
+
+Performance and runtime behavior were evaluated against an 8 GB Apple Silicon constraint. Privacy checks examined the network and execution boundary around local gallery processing. Model and licence constraints were reviewed, and automated tests covered core behavior.
+
+### Interaction and expert evidence
+
+A whole-product UX map framed expert review, and its evaluation blocks (targeted review questions attached to each screen) isolated specific interaction risks. Accessibility review addressed keyboard operation and VoiceOver announcements, while adversarial review probed claims and failure states. Mutation checks (tests that change state and confirm the view follows) caught state that persisted when it should have changed.
+
+### External-user evidence
+
+Not yet run. This is the next open evidence gap: a 3–5 person task-based study on search, inspect, and explore.
+
+## Three times evaluation changed the product
+
+- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes (Heuristics Canon VIZ-17).
+- Partial-library plots looked like complete-library truth → users could draw conclusions from a subset → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
+- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when axis identity changes → verified by a mutation check.
+
+## Outcome and limits
+
+The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a formal evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
+
+External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
+
+> **Screens: pending.** The following screens will appear here once captured.
+
+1. Cold start
+2. Indexing progress
+3. Semantic results
+4. Selected photo and details
+5. Similarity / Places / Timeline exploration
+6. Partial-library caveat
+7. Timeline selection and zoom
+8. Missing-model and settings recovery
