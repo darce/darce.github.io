@@ -25,9 +25,10 @@ describe('resolveNavPath', () => {
         expect(resolveNavPath('/projects/photoshelter')).toBe('/work')
     })
 
-    it('maps /research/* to /research', () => {
-        expect(resolveNavPath('/research')).toBe('/research')
-        expect(resolveNavPath('/research/order-book')).toBe('/research')
+    it('maps /practice and legacy /research/* to /practice', () => {
+        expect(resolveNavPath('/practice')).toBe('/practice')
+        expect(resolveNavPath('/research')).toBe('/practice')
+        expect(resolveNavPath('/research/order-book')).toBe('/practice')
     })
 
     it('maps /about to /about', () => {
@@ -37,13 +38,19 @@ describe('resolveNavPath', () => {
     it('returns the path as-is for unknown routes', () => {
         expect(resolveNavPath('/privacy')).toBe('/privacy')
         expect(resolveNavPath('/resume')).toBe('/resume')
+        expect(resolveNavPath('/resume/')).toBe('/resume')
     })
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, research, and about', () => {
+    it('contains home, work, practice, about, and résumé', () => {
         const labels = NAV_ITEMS.map(item => item.label)
-        expect(labels).toEqual(['home', 'work', 'research', 'about'])
+        expect(labels).toEqual(['home', 'work', 'practice', 'about', 'résumé'])
+    })
+
+    it('marks the résumé entry as a PDF for assistive tech (canon A11Y-20)', () => {
+        const resume = NAV_ITEMS.find(item => item.href === '/resume')
+        expect(resume?.ariaLabel).toBe('Résumé (PDF)')
     })
 
     it('has valid href values', () => {

@@ -15,7 +15,7 @@ describe('Page-level accessibility', () => {
                     {' | '}
                     <a href="/about/">About</a>
                     {' | '}
-                    <a href="/research/">Research</a>
+                    <a href="/practice/">Practice</a>
                 </p>
             </main>
         )
@@ -51,9 +51,10 @@ describe('Page-level accessibility', () => {
                 <a href="#main-content" className="skip-link">Skip to main content</a>
                 <header>
                     <nav aria-label="Main navigation">
-                        <a href="/">Work</a>
-                        <a href="/research">Research</a>
+                        <a href="/work">Work</a>
+                        <a href="/practice">Practice</a>
                         <a href="/about">About</a>
+                        <a href="/resume" aria-label="Résumé (PDF)">Résumé</a>
                     </nav>
                 </header>
                 <main id="main-content">
