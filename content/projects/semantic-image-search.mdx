@@ -51,7 +51,7 @@ Cloud AI can improve retrieval, but it moves the privacy boundary away from the 
 ## Product principles
 
 1. **User chooses the boundary.** Selected folders define the searchable set; there is no silent whole-disk scan.
-2. **No gallery egress.** Model processing happens locally; gallery images never leave the machine.
+2. **No gallery egress.** Model processing happens locally, and gallery images are designed to stay on the machine; the Evaluation section's privacy checks examine that boundary.
 3. **Unknown must look unknown.** Partial and missing states are made explicit in context.
 4. **Search plus browse.** A semantic query works alongside exploratory views for material the person has not yet named.
 5. **Machine output stays inspectable.** Selecting a photo exposes the underlying facts behind the result.
@@ -76,7 +76,7 @@ Choose folder → index → semantic query → inspect result → explore patter
 
 **Experimental capability.** Some machine-derived behavior is deliberately marked experimental. Its presentation keeps uncertainty visible so preliminary output does not acquire the same authority as established product behavior.
 
-These are separate designed states because each has a different cause, action, and evidentiary meaning; treating unknown as a designed state prevents absence from masquerading as certainty.
+These are separate designed states because each has a different cause, action, and evidence; treating unknown as a designed state prevents absence from masquerading as certainty.
 
 > **Figure pending** — partial-library caveat screen.
 
@@ -104,13 +104,13 @@ Not yet run. This is the next open evidence gap: a 3–5 person task-based study
 
 ## Three times evaluation changed the product
 
-- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
-- Partial-library plots looked like complete-library truth → users could draw conclusions from a subset → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
-- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when axis identity changes → verified by a mutation check.
+- Explore tab switching destroyed the established viewpoint → orientation was lost on every tab switch → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
+- Partial-library plots looked like complete-library truth → a subset could read as the whole library → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
+- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when the axis itself changes → verified by a mutation check.
 
 ## Outcome and limits
 
-The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a formal evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
+The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a recorded evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
 
 External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
 

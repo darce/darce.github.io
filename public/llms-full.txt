@@ -16,9 +16,9 @@ My code fluency with React, TypeScript, SwiftUI, and Python lets product hypothe
 
 What I bring:
 - **Semantic Image Search** — a native macOS local-first AI photo search product designed and built end to end, with explicit incomplete-data states.
-- **PhotoShelter** — R&D prototyping that surfaced integration issues early (~30% less downstream implementation effort) and WCAG remediation that protected $9.2M ARR across a platform with 80,000+ users.
+- **PhotoShelter** — R&D prototyping that surfaced integration issues early (an internal estimate of roughly 30% less downstream implementation effort) and WCAG remediation that protected $9.2M ARR across a platform with 80,000+ users.
 - **MSNBC** — senior design technologist prototyping editorial and interactive experiences.
-- **Heuristics Canon** — a source-linked library of design and engineering rules with stable IDs, so a critique cites a rule instead of a taste. It decided the pending-media state in Semantic Image Search and the cross-agent state boundary in WorkBay.
+- **Heuristics Canon** — a versioned library of design and engineering rules with stable IDs, so a critique cites a rule with a stable ID. It decided the pending-media state in Semantic Image Search and the cross-agent state boundary in WorkBay.
 
 ### Independent product R&D
 
@@ -73,7 +73,7 @@ Cloud AI can improve retrieval, but it moves the privacy boundary away from the 
 ## Product principles
 
 1. **User chooses the boundary.** Selected folders define the searchable set; there is no silent whole-disk scan.
-2. **No gallery egress.** Model processing happens locally; gallery images never leave the machine.
+2. **No gallery egress.** Model processing happens locally, and gallery images are designed to stay on the machine; the Evaluation section's privacy checks examine that boundary.
 3. **Unknown must look unknown.** Partial and missing states are made explicit in context.
 4. **Search plus browse.** A semantic query works alongside exploratory views for material the person has not yet named.
 5. **Machine output stays inspectable.** Selecting a photo exposes the underlying facts behind the result.
@@ -98,7 +98,7 @@ Choose folder → index → semantic query → inspect result → explore patter
 
 **Experimental capability.** Some machine-derived behavior is deliberately marked experimental. Its presentation keeps uncertainty visible so preliminary output does not acquire the same authority as established product behavior.
 
-These are separate designed states because each has a different cause, action, and evidentiary meaning; treating unknown as a designed state prevents absence from masquerading as certainty.
+These are separate designed states because each has a different cause, action, and evidence; treating unknown as a designed state prevents absence from masquerading as certainty.
 
 > **Figure pending** — partial-library caveat screen.
 
@@ -126,13 +126,13 @@ Not yet run. This is the next open evidence gap: a 3–5 person task-based study
 
 ## Three times evaluation changed the product
 
-- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
-- Partial-library plots looked like complete-library truth → users could draw conclusions from a subset → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
-- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when axis identity changes → verified by a mutation check.
+- Explore tab switching destroyed the established viewpoint → orientation was lost on every tab switch → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
+- Partial-library plots looked like complete-library truth → a subset could read as the whole library → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
+- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when the axis itself changes → verified by a mutation check.
 
 ## Outcome and limits
 
-The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a formal evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
+The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a recorded evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
 
 External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
 
@@ -142,7 +142,7 @@ External users remain untested, and performance beyond the current test corpus r
 *Enterprise DAM · 80,000+ users*
 Year: 2021
 Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
-Summary: R&D prototyping that cut downstream implementation effort by roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
+Summary: R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
 
 ## R&D prototyping
 
@@ -150,7 +150,7 @@ Working with the Chief Architect, I built exploratory prototypes outside the pro
 
 ### Workflow automation interface
 
-This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development effort by roughly 30%.
+This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development effort by an internal estimate of roughly 30%.
 
 ### Client-side image blur comparison
 
@@ -192,9 +192,9 @@ A cold session loads its active task and continues it. An independent reviewer r
 
 ## Three product decisions
 
-1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads decisions instead of asking for a prose recap.
+1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads recorded decisions directly, with no prose recap required.
 2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
-3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops rather than switching silently.
+3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops and reports the failure.
 
 ## Design Map
 

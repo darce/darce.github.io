@@ -4,7 +4,7 @@ year: 2026
 title: 'WorkBay: State for Coding Agents'
 subtitle: 'Open-source developer tooling · AI workflow product design'
 description: 'Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.'
-details: 'WorkBay keeps the active task, unresolved review findings, recorded decisions, and test evidence in the repository so any coding-agent harness can pick the work up. The adjacent Design Map (`/ux-map`) turns jobs, screens, states, and flows into version-controlled artifacts that can be rendered and critiqued before implementation.'
+details: 'WorkBay keeps the active task, unresolved review findings, recorded decisions, and test evidence in the repository so a later session in a supported agent tool can pick the work up. The adjacent Design Map (`/ux-map`) turns jobs, screens, states, and flows into version-controlled artifacts that can be rendered and critiqued before implementation.'
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -34,9 +34,9 @@ A cold session loads its active task and continues it. An independent reviewer r
 
 ## Three product decisions
 
-1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads decisions instead of asking for a prose recap.
+1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads recorded decisions directly, with no prose recap required.
 2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
-3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops rather than switching silently.
+3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops and reports the failure.
 
 ## Design Map
 
