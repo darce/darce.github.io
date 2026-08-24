@@ -1,6 +1,6 @@
 # darce.xyz
 > Portfolio and case studies for Daniel Arcé.
-> Product designer and design technologist with 14+ years shipping user-facing software across media, enterprise SaaS, and AI products. Interaction design, accessibility, and working software for data-rich systems.
+> Product designer and design technologist, 14+ years shipping software for media, enterprise SaaS, and AI products. Interaction design and accessibility.
 
 ## Pages
 - / — Home
