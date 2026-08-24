@@ -9,13 +9,12 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-const FEATURED_SLUGS = ['workbay', 'photoshelter', 'apple', 'msnbc']
+export const FEATURED_SLUGS = ['semantic-image-search', 'photoshelter', 'workbay']
 
-const FEATURED_METRICS: Record<string, string> = {
-    workbay: 'Open findings and passing tests stay in the repository when you change agents',
+export const FEATURED_METRICS: Record<string, string> = {
+    'semantic-image-search': 'Native macOS local-first AI photo search, designed and built end to end, with explicit incomplete-data states',
     photoshelter: 'Led WCAG remediation protecting $9.2M ARR in institutional contracts',
-    apple: 'Internally reported 92% open rate on the marketing department\'s first CSS-animated email campaign',
-    msnbc: 'Shipped live video platform under a six-month litigation deadline',
+    workbay: 'Open findings and passing tests stay in the repository when you change agents',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -67,12 +66,9 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
-                                Product engineer with 14+ years building accessible software
-                                for Apple, MSNBC, PhotoShelter, and startups. Currently building
-                                AI-assisted accessibility tooling at{' '}
-                                <a href="https://altcontext.com" target="_blank" rel="noopener noreferrer">
-                                    AltContext.com.
-                                </a>
+                                Product designer and design technologist with 14+ years
+                                shipping accessible software for Apple, MSNBC, PhotoShelter,
+                                and independent AI products.
                             </p>
                             <a
                                 className={styles.cta}

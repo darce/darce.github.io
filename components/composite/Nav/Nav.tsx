@@ -28,7 +28,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
                         data-path={navItem.href}
                         className={activePath === navItem.href ? styles.selected : ''}
                     >
-                        <Link href={navItem.href} aria-label={navItem.label}>
+                        <Link href={navItem.href} aria-label={navItem.ariaLabel ?? navItem.label}>
                             {navItem.label}
                         </Link>
                     </li>

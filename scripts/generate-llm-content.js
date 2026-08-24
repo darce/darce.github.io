@@ -17,6 +17,7 @@ const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 const STATIC_PAGES = [
     { loc: '/', priority: '1.0', label: 'Home' },
     { loc: '/work/', priority: '0.9', label: 'Index of project case studies' },
+    { loc: '/practice/', priority: '0.8', label: 'How design and engineering judgment is made inspectable (Heuristics Canon)' },
     { loc: '/about/', priority: '0.8', label: 'Bio, role focus, strengths' },
     { loc: '/research/', priority: '0.7', label: 'Index of technical writing and experiments' },
     { loc: '/privacy/', priority: '0.3', label: 'Privacy policy' },

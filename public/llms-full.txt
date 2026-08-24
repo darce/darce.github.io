@@ -1,24 +1,30 @@
 # Daniel Arcé
-Product engineer with 14+ years building accessible software for consumer platforms, media companies, and startups. Front-end architecture, WCAG compliance, and AI accessibility tooling.
+Product designer and design technologist with 14+ years shipping user-facing software across media, enterprise SaaS, and AI products. Interaction design, accessibility, and working software for data-rich systems.
 
 ## About
 Hello, I'm Daniel Arcé.
 
-I build accessible software that holds up under real scrutiny.
+I'm a product designer and design technologist. My recurring specialty is turning technical complexity into understandable user-facing systems.
 
-I'm a product engineer with 14+ years of experience building user-facing software for consumer platforms, media companies, and startups. My background is in front-end architecture and accessibility. More recently, my work has moved into AI-assisted accessibility tooling, product architecture, and the UX problems that come with shipping AI to end users.
+I've shipped user-facing software for more than 14 years across media, consumer platforms, enterprise SaaS, and independent AI products. That work has included MSNBC, Apple, PhotoShelter, and my own products.
 
-I've led accessibility programs that protected millions in contract revenue, built reusable front-end systems in React and TypeScript, and worked closely with product, design, and compliance teams to ship software that passes accessibility audits and holds up to legal review.
+Accessibility sharpened my discipline around real constraints and falsifiable product quality. Designs are checked against what a user can actually do.
 
-I'm currently building [AltContext.com](https://altcontext.com), a product that uses AI to generate context-aware alt text for media systems. That work has pushed me further into product architecture, backend services, data workflows, and the practical realities of shipping AI in user-facing software.
+Recent AI work extends that discipline to uncertainty, provenance, privacy, correction, and failure states. The product must show what it does not know.
+
+My code fluency with React, TypeScript, SwiftUI, and Python lets product hypotheses meet real system constraints early. Working software is part of the design process, not a later phase.
 
 What I bring:
-- Led WCAG remediation at PhotoShelter, protecting $9.2M ARR in institutional contracts
-- Front-end architecture in React and TypeScript, with reusable component systems
-- Experience working across design, product, engineering, and compliance to ship accessible software
-- Building AI tooling for accessibility (AltContext.com) from prototype through production
+- **Semantic Image Search** — a native macOS local-first AI photo search product designed and built end to end, with explicit incomplete-data states.
+- **PhotoShelter** — R&D prototyping that surfaced integration issues early (~30% less downstream implementation effort) and WCAG remediation that protected $9.2M ARR across a platform with 80,000+ users.
+- **MSNBC** — senior design technologist prototyping editorial and interactive experiences.
+- **Heuristics Canon** — a source-linked library of design and engineering rules with stable IDs, so a critique cites a rule instead of a taste. It decided the pending-media state in Semantic Image Search and the cross-agent state boundary in WorkBay.
 
-I'm most interested in roles involving accessibility, AI tooling, design systems, content and media platforms, and software where compliance and user safety are real constraints.
+### Independent product R&D
+
+My independent products include AltContext (context-aware alt text for media systems), Semantic Image Search, and WorkBay.
+
+I'm interested in product design for AI and complex systems, design technology, accessibility, media and content platforms.
 
 Get in touch: [daniel.arce@gmail.com](mailto:daniel.arce@gmail.com)
 
@@ -26,53 +32,129 @@ Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 
 ## Projects
 
-### WorkBay: Durable State for Coding Agents
-*Open-source developer tooling*
+### Semantic Image Search: Local-First AI Photo Search & Exploration
+*Independent product R&D · macOS*
 Year: 2026
-Tags: Developer Tooling, AI-assisted Engineering, MCP, SQLite, Git, Python
-Summary: I got tired of rebuilding a coding task every time I changed agents. WorkBay keeps the open findings and the tests that passed in the repository, so the next window can continue from the same record.
+Tags: Product Design, Interaction Design, Human-AI Interaction, SwiftUI, Core ML, Accessibility
+Summary: A native macOS product for semantic photo search and visual exploration that keeps gallery processing on-device and makes incomplete data explicit.
 
-I was leaning on coding agents more, and I kept losing the work around the code.
+I designed and built a native macOS photo-search product that uses on-device models to retrieve and explore a user’s library while keeping gallery images local and showing missing or partial data as incomplete.
 
-Claude Code would hold the right context for a branch. Then I'd want Codex for a different pass and rebuild the thread by hand. Summaries helped until I needed the review finding I hadn't fixed yet.
+My role covered product design, interaction design, technical architecture, and implementation. The stage is a working independent R&D product that is not yet user-tested.
 
-So I moved the record into the repository.
+> **Figure pending** — product hero screen. Screenshots are being captured; this slot is intentionally visible so the case does not imply media that does not exist.
 
-WorkBay is a local SQLite file next to the project. Agents read and write it over MCP. It holds the active task and the review findings still open. It also stores the tests that passed. Claude Code and Codex both hit the same rows. Cursor and Grok do too. So does Copilot.
+## At a glance
 
-The short version: the task stays in the repo. You can change the window.
+  
+    
+      Dimension</th>
+      Detail</th>
+    </tr>
+  </thead>
+  
+    Role</th>Product design, interaction design, technical architecture, implementation</td></tr>
+    Stage</th>Working independent R&D product</td></tr>
+    Platform</th>macOS</td></tr>
+    Core jobs</th>Search, inspect, explore</td></tr>
+    AI</th>Local semantic retrieval plus segmentation/detection components</td></tr>
+    Constraint</th>Useful on 8 GB Apple Silicon</td></tr>
+    Trust boundary</th>Gallery processing stays local</td></tr>
+    Accessibility</th>Keyboard and VoiceOver behavior</td></tr>
+    Research status</th>Expert/adversarial evaluation done; external user testing not yet run.</td></tr>
+  </tbody>
 
-That matters on a Tuesday when Codex is cheap and I already started in Claude Code. I log into the other tool. The history is still there. If I want Claude, I run it inside Claude Code at the subscription price. WorkBay installs there as a native plugin, so I can keep that work off the Anthropic API.
+## Problem
 
-I also got tired of picking up a half-finished slice and watching the next model invent a fresh approach to a decision I'd already made. Optional semantic embeddings help after a cold start. They pull up related decisions and open slices even when the wording changed.
+A photo library carries meaning that folder names and filenames rarely capture: place, repeated subjects, visual structure, and relationships across years. People need ways to find and inspect that material without surrendering their galleries to a cloud service.
 
-I wanted a second model that could review without reading the first model's pep talk. A reviewing agent writes findings into the database. The author has to clear them before merge. Neither one sees the other transcript.
+Cloud AI can improve retrieval, but it moves the privacy boundary away from the person and their device. The product therefore had to run locally on modest Apple Silicon hardware. It also had to be honest when the library, index, model, permission, or metadata was incomplete.
 
-I think about that the same way I think about a prompt I would ship to a user. What you feed the next model has to earn its way in. A transcript summary is easy to paste. It is also easy for the next agent to treat as fact. WorkBay stores the finding and the commit that backs it.
+## Product principles
 
-## How a task actually goes
+1. **User chooses the boundary.** Selected folders define the searchable set; there is no silent whole-disk scan.
+2. **No gallery egress.** Model processing happens locally; gallery images never leave the machine.
+3. **Unknown must look unknown.** Partial and missing states are made explicit in context.
+4. **Search plus browse.** A semantic query works alongside exploratory views for material the person has not yet named.
+5. **Machine output stays inspectable.** Selecting a photo exposes the underlying facts behind the result.
 
-Start a vague idea with `/scope`. Review the draft plan before anyone opens a branch. Work lands in small slices, each one from a failing test. A different model can review the branch. Open findings block merge. When the task is done, the record archives with it.
+## Core journey
 
-The commands mean the same thing wherever you run them. `/tdd` keeps its meaning in every window. So do `/branch-review` and `/offload`. Creating a worktree is a make target, so that bookkeeping does not burn a model turn.
+Choose folder → index → semantic query → inspect result → explore patterns
 
-`/offload` is how I send one mechanical slice to a cheaper backend under a token cap. That lane never merges. I look at the diff. The stronger model stays on the plan.
+> **Figure pending** — annotated journey strip.
 
-Install and the full command list are in the [WorkBay repository](https://github.com/darce/workbay). Restart the agent after install, then start from `/scope`.
+## Designing for incomplete truth
 
-## How I built it
+**No folder yet.** The start state explains that a folder must be chosen before indexing can begin. Treating it as an ordinary empty result would falsely imply that an existing library had already been searched and contained nothing relevant.
 
-This sat well outside my usual front-end and accessibility work. I spent most of it in Python packaging and Git hooks. The MCP servers and the SQLite schema came with that. I used the same method I use on a UI that has to survive an audit. I wrote the spec first. Then I split the work and reviewed each slice.
+**No matches.** A query can complete successfully without finding a suitable photo. Distinguishing this from an indexing failure tells the user that the selected boundary was searched, while still showing what was searched and how to adjust the query or selection.
 
-Agents wrote a large share of the implementation. I treated that as supervised production. I owned the spec. I set the bar for done and ran the reviews.
+**Model unavailable.** Semantic search depends on a local model that may be absent or unusable. Saying “no results” would hide the actual cause and could lead someone to conclude that their photos were inadequate when retrieval was only temporarily unavailable.
 
-I used to treat accessibility claims the same way. If I said a menu was keyboard-accessible, I had to show the path and the regression test. I stay in the loop, and the project keeps the evidence.
+**Partial library.** Indexing may cover some photos before interruption, or metadata may exist for only part of the collection. The interface scopes what is included and identifies the cause, so a subset is never presented as the whole library.
 
-### PhotoShelter: Accessibility Leadership & Product Prototyping
-*Enterprise DAM Platform*
+**Unavailable volume or permission.** A mounted volume may be offline, removed, or denied to the app. Naming that condition preserves the distinction between inaccessible source material and material that was inspected and found irrelevant.
+
+**Experimental capability.** Some machine-derived behavior is deliberately marked experimental. Its presentation keeps uncertainty visible so preliminary output does not acquire the same authority as established product behavior.
+
+These are separate designed states because each has a different cause, action, and evidentiary meaning; treating unknown as a designed state prevents absence from masquerading as certainty.
+
+> **Figure pending** — partial-library caveat screen.
+
+## Data-rich exploration
+
+**Similarity** answers “what else looks like this?” after a photo is selected. **Places** answers “where did this happen?” for images with usable location information. **Timeline** answers “when does this occur?” and helps reveal temporal patterns.
+
+A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts surface missing metadata—for example, photographs without location—so absent fields stay visible. Zooming preserves surrounding context and the viewer’s position within it.
+
+> **Figure pending** — Similarity / Places / Timeline exploration.
+
+## Evaluation
+
+### Technical evidence
+
+Performance and runtime behavior were evaluated against an 8 GB Apple Silicon constraint. Privacy checks examined the network and execution boundary around local gallery processing. Model and licence constraints were reviewed, and automated tests covered core behavior.
+
+### Interaction and expert evidence
+
+A whole-product UX map framed expert review, with targeted review questions attached to each screen to isolate specific interaction risks. Accessibility review addressed keyboard operation and VoiceOver announcements, while adversarial review probed claims and failure states. Automated checks that changed state and confirmed the view updated correctly caught places where the display did not follow a state change.
+
+### External-user evidence
+
+Not yet run. This is the next open evidence gap: a 3–5 person task-based study on search, inspect, and explore.
+
+## Three times evaluation changed the product
+
+- Explore tab switching destroyed the established viewpoint → users lost their place → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
+- Partial-library plots looked like complete-library truth → users could draw conclusions from a subset → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
+- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when axis identity changes → verified by a mutation check.
+
+## Outcome and limits
+
+The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a formal evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
+
+External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
+
+> **Screens: pending.** Cold start, indexing progress, semantic results, selected photo and details, Similarity/Places/Timeline exploration, partial-library caveat, timeline selection and zoom, and missing-model and settings recovery will appear here once captured.
+
+### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
+*Enterprise DAM · 80,000+ users*
 Year: 2021
-Tags: Accessibility, React, Web Components, PolymerLit, JavaScript, OpenCV.js, Enterprise SaaS
-Summary: Led WCAG remediation, front-end systems work, and R&D prototyping for a cloud-based media platform
+Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
+Summary: R&D prototyping that cut downstream implementation effort by roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
+
+## R&D prototyping
+
+Working with the Chief Architect, I built exploratory prototypes outside the production timeline to answer product questions cheaply and catch integration problems before they reached production.
+
+### Workflow automation interface
+
+This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development effort by roughly 30%.
+
+### Client-side image blur comparison
+
+Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
 
 ## Accessibility
 
@@ -88,23 +170,41 @@ Before this work, every menu in the product was mouse-only. Keyboard access is e
 
 The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
 
-![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
+![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
 
-### Team adoption
+## Team adoption
 
 I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
 
-## R&D Prototyping
+### WorkBay: State for Coding Agents
+*Open-source developer tooling · AI workflow product design*
+Year: 2026
+Tags: Product Design, AI Workflow Design, Developer Tooling, Coding Agents, MCP, Python
+Summary: Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
 
-In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped test ideas and catch integration problems before they reached production.
+A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, on any agent tool, picks it up where the last one left off.
 
-### Workflow automation interface
+## One journey
 
-This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+`Plan → Task → Work → Review → Findings → Gate → Merge`
 
-### Client-side image blur comparison
+A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state, though re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
 
-Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+## Three product decisions
+
+1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads decisions instead of asking for a prose recap.
+2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
+3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops rather than switching silently.
+
+## Design Map
+
+The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. Deterministic inventory and critique stay separate from probabilistic model reasoning. The consumer maps I keep for my own products are private R&D; the tooling is public.
+
+## Under the hood
+
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows.
+
+Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
 
 ### Apple: iPhone X Launch & Marketing Tooling
 *Marketing Engineering*
@@ -227,7 +327,7 @@ Rotation matrices perform that transformation. In this demo, the math is done di
 
 Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
 
-Each axis has its own matrix.
+Each axis has its own matrix. In the plane perpendicular to that axis the picture is a 2D rotation: counterclockwise when $y$ points up (the math convention), clockwise when $y$ points down (the screen).
 
 ### Around X
 
@@ -285,7 +385,8 @@ To rotate a vertex, multiply the matrix by its coordinates:
 
 $$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
 
-The result $(x', y', z')$ is the rotated position.
+The result $(x', y', z')$ is the rotated position. Do that for every vertex and the whole shape turns. The origin stays put.
+
 In this demo, that math is done in plain TypeScript:
 ```typescript
 const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
@@ -305,16 +406,26 @@ const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
 
 The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
 
-Order matters. Rotating first around $x$ then around $y$ gives a different result than $y$ then $x$. Matrix multiplication is not commutative.
+This demo uses **column vectors** and $v' = Mv$ (matrix on the left). Composition is right-to-left: apply $R_x$, then $R_y$, then $R_z$. Rotations are **active** (they move the cube; the axes stay put) and **right-handed**: a positive angle is counterclockwise when you look along the axis toward the origin. Screens flip $y$, so the same $R_z$ looks clockwise on the page. The view step later is not a rotation — it is a projective scale.
+
+Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative. Walk it one turn at a time:
+
+A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
 ```typescript
-export const transformPoints = (vertexArray: Vertex[], angleX: number, angleY: number, angleZ: number, scale: number, distance: number) => {
+export const transformPoints = (
+    vertexArray: Vertex[],
+    angleX: number,
+    angleY: number,
+    angleZ: number,
+    scale: number,
+    eyeDistance: number,
+) => {
     let rotatedPoints = rotationX(vertexArray, angleX)
     rotatedPoints = rotationY(rotatedPoints, angleY)
     rotatedPoints = rotationZ(rotatedPoints, angleZ)
     const scaledPoints = scaleXYZ(rotatedPoints, scale)
-    const projectedPoints = projectPoints(scaledPoints, distance)
-    return projectedPoints
+    return projectPoints(scaledPoints, eyeDistance)
 }
 ```
 
@@ -322,22 +433,26 @@ The goal isn’t to build a general transform stack; it’s to keep the full pip
 
 ## From 3D to Screen
 
-After rotation, the cube exists in three dimensions. Your screen has two.
+After rotation the cube is still in 3D. The screen is 2D.
 
-A perspective projection maps 3D points to 2D. Points farther from the viewer appear smaller. The projection divides $x$ and $y$ by a factor that depends on $z$:
+A ray from the eye through the screen hits the point. Where it crosses the screen is what you draw.
 
-$$x' = \frac{x}{d - z} \qquad y' = \frac{y}{d - z}$$
+The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ when the plane sits at $z = 0$). The two triangles — eye to the screen hit, and eye to the point — are the same shape, so **height on screen** is a shrink of **height in space**:
 
-where $d$ is the distance from the viewer to the projection plane.
+$$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
+
+Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
+
+The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
 
 ```typescript
-const projectPoints = (vertexArray: Vertex[], distance: number): Vertex[] => {
+const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
     const result: Vertex[] = []
     vertexArray.forEach(vertex => {
-        const f = 1 / (distance - vertex.z)
+        const perspectiveScale = 1 / (eyeDistance - vertex.z)
         const projectionMatrix = [
-            [f, 0, 0],
-            [0, f, 0],
+            [perspectiveScale, 0, 0],
+            [0, perspectiveScale, 0],
             [0, 0, 1]
         ]
         result.push(matrixMultiplyVertex(projectionMatrix, vertex))
@@ -375,6 +490,103 @@ Here's the full chain:
 2. Apply rotation matrices  
 3. Project to 2D  
 4. Push the result into a CSS transform
+
+## The complete code
+
+The functions from the article, in one place, in the order the cube runs them. This is `lib/matrixTransformations.ts` plus the vertex `div`s.
+
+```typescript
+interface Vertex {
+    x: number
+    y: number
+    z: number
+}
+
+const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [1, 0, 0],
+        [0, Math.cos(angle), -Math.sin(angle)],
+        [0, Math.sin(angle), Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const rotationY = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), 0, Math.sin(angle)],
+        [0, 1, 0],
+        [-Math.sin(angle), 0, Math.cos(angle)]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
+    const rotationMatrix = [
+        [Math.cos(angle), -Math.sin(angle), 0],
+        [Math.sin(angle), Math.cos(angle), 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, rotationMatrix)
+}
+
+const transformPointsWithMatrix = (vertexArray: Vertex[], matrix: number[][]): Vertex[] => {
+    return vertexArray.map(vertex => matrixMultiplyVertex(matrix, vertex))
+}
+
+const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
+    const result: number[][] = []
+    for (let i = 0; i < matrix.length; i++) {
+        let sum = 0
+        sum += matrix[i][0] * vertex.x
+        sum += matrix[i][1] * vertex.y
+        sum += matrix[i][2] * vertex.z
+        result[i] = [sum]
+    }
+    return { x: result[0][0], y: result[1][0], z: result[2][0] }
+}
+
+const scaleXYZ = (vertexArray: Vertex[], scale: number): Vertex[] => {
+    const scaleMatrix = [
+        [scale, 0, 0],
+        [0, scale, 0],
+        [0, 0, 1]
+    ]
+    return transformPointsWithMatrix(vertexArray, scaleMatrix)
+}
+
+const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
+    const result: Vertex[] = []
+    vertexArray.forEach(vertex => {
+        const perspectiveScale = 1 / (eyeDistance - vertex.z)
+        const projectionMatrix = [
+            [perspectiveScale, 0, 0],
+            [0, perspectiveScale, 0],
+            [0, 0, 1]
+        ]
+        result.push(matrixMultiplyVertex(projectionMatrix, vertex))
+    })
+    return result
+}
+
+export const transformPoints = (
+    vertexArray: Vertex[],
+    angleX: number,
+    angleY: number,
+    angleZ: number,
+    scale: number,
+    eyeDistance: number,
+) => {
+    let rotatedPoints = rotationX(vertexArray, angleX)
+    rotatedPoints = rotationY(rotatedPoints, angleY)
+    rotatedPoints = rotationZ(rotatedPoints, angleZ)
+    const scaledPoints = scaleXYZ(rotatedPoints, scale)
+    return projectPoints(scaledPoints, eyeDistance)
+}
+
+{vertices.map((vertex, index) => (
+    
+))}
+```
 ---
 
 ### Live Order Book: Real-Time Market Visualization

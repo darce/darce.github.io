@@ -1,0 +1,19 @@
+---
+title: Practice
+subtitle: How judgment gets made inspectable
+
+---
+
+<h2>Practice</h2>
+
+Shipped work shows the decision, not the reasoning behind it. This page is where the reasoning lives: the method I use to keep design and engineering judgment inspectable instead of asserted.
+
+### Heuristics Canon — making product and engineering judgment inspectable
+
+The Heuristics Canon is a source-linked library of design and engineering rules with stable IDs. A critique cites a rule (for example [RLSE-04] or [A11Y-20]) instead of a preference, so a reviewer can check the citation against the rule rather than take the claim on trust.
+
+The Canon runs on real decisions. It decided the pending-media state in Semantic Image Search — an incomplete result set had to say so rather than look finished — and the cross-agent state boundary in WorkBay, where two agents editing the same task needed a rule for who owns the write, not a judgment call made fresh each time.
+
+Citing a rule ID also means the rule can be wrong in public. If a cited rule doesn't hold up under a specific case, the fix is to correct the rule, and every future citation of it improves with it.
+
+Read the research index for exhibits — order book visualization, rotation matrices — that work through specific engineering problems this way.
