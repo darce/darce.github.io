@@ -6,7 +6,7 @@ const STALE = /Product Engineer|Front-End Architecture|AltContext/i
 describe('site positioning (QM-REPOSITION-01 s1)', () => {
     it('title states the product-design identity', () => {
         expect(SITE_TITLE).toBe(
-            'Daniel Arcé — Product Designer & Design Technologist for AI and complex systems',
+            'Daniel Arcé — Product Designer & Design Technologist',
         )
     })
 

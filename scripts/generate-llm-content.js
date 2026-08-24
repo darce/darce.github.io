@@ -4,7 +4,7 @@ const matter = require('gray-matter')
 
 const SITE_URL = 'https://darce.xyz'
 const SITE_NAME = 'Daniel Arcé'
-const SITE_DESCRIPTION = 'Product engineer with 14+ years building accessible software for consumer platforms, media companies, and startups. Front-end architecture, WCAG compliance, and AI accessibility tooling.'
+const SITE_DESCRIPTION = 'Product designer and design technologist with 14+ years shipping user-facing software across media, enterprise SaaS, and AI products. Interaction design, accessibility, and working software for data-rich systems.'
 const CONTACT = {
     email: 'daniel.arce@gmail.com',
     github: 'https://github.com/darce',
@@ -65,7 +65,7 @@ function stripMdxComponents(content) {
 function generateLlmsTxt(projects, research) {
     const lines = [
         `# ${SITE_URL.replace('https://', '')}`,
-        `> Portfolio and case studies for ${SITE_NAME}, product engineer.`,
+        `> Portfolio and case studies for ${SITE_NAME}.`,
         `> ${SITE_DESCRIPTION}`,
         '',
         '## Pages',
