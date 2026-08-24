@@ -1,10 +1,10 @@
 ---
 index: 10
 year: 2021
-title: 'PhotoShelter: Accessibility Leadership & Product Prototyping'
-subtitle: Enterprise DAM Platform
-description: Led WCAG remediation, front-end systems work, and R&D prototyping for a cloud-based media platform
-details: PhotoShelter is a cloud-based Digital Asset Management platform serving 80,000+ users and hosting 1B+ files. I led the WCAG 2.1 audit and remediation effort, helped protect contracts tied to accessibility compliance, mentored four developers on accessible engineering practices, and prototyped new product workflows in R&D.
+title: 'PhotoShelter: Product R&D & Accessibility at Enterprise Scale'
+subtitle: 'Enterprise DAM · 80,000+ users'
+description: 'R&D prototyping that cut downstream implementation effort by roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.'
+details: 'PhotoShelter is a cloud Digital Asset Management platform serving 80,000+ users and hosting 1B+ files. Working with the Chief Architect, I prototyped new product workflows outside the production path to surface integration problems early — the workflow-automation prototype informed the Smart Galleries feature and reduced later development effort by roughly 30%. I also led the WCAG 2.1 audit and remediation that protected $9.2M ARR in institutional contracts and mentored four developers on accessible engineering practice.'
 links:
 - url: http://www.photoshelter.com
   label: PhotoShelter.com
@@ -15,14 +15,27 @@ images:
 - src: photoshelter-main-menu.png
   alt: "Main PhotoShelter menu with accessible keyboard navigation"
 tags:
+- Product R&D
+- Prototyping
 - Accessibility
-- React
+- Interaction Design
 - Web Components
-- PolymerLit
-- JavaScript
 - OpenCV.js
 - Enterprise SaaS
 ---
+
+## R&D prototyping
+
+Working with the Chief Architect, I built exploratory prototypes outside the production timeline to answer product questions cheaply and catch integration problems before they reached production.
+
+### Workflow automation interface
+
+This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
+
+### Client-side image blur comparison
+
+Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+
 ## Accessibility
 
 PhotoShelter's customer base includes universities and professional sports organizations, and several key contracts worth a combined $9.2M ARR were exposed if the product could not demonstrate [ADA](https://www.ada.gov/law-and-regs/ada/) and WCAG compliance. I led the WCAG 2.1 audit and front-end remediation effort for PhotoShelter's core product to close that gap.
@@ -37,20 +50,8 @@ Before this work, every menu in the product was mouse-only. Keyboard access is e
 
 The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
 
-![The main menu seamlessly goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
+![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
 
-### Team adoption
+## Team adoption
 
 I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
-
-## R&D Prototyping
-
-In parallel, I worked with the Chief Architect on exploratory prototypes outside the main production timeline. These projects helped test ideas and catch integration problems before they reached production.
-
-### Workflow automation interface
-
-This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development time by roughly 30%.
-
-### Client-side image blur comparison
-
-Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
