@@ -43,14 +43,9 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, practice, about, and résumé', () => {
+    it('contains home, work, and about only (practice and résumé are reachable from page content, not the top nav)', () => {
         const labels = NAV_ITEMS.map(item => item.label)
-        expect(labels).toEqual(['home', 'work', 'practice', 'about', 'résumé'])
-    })
-
-    it('marks the résumé entry as a PDF for assistive tech (canon A11Y-20)', () => {
-        const resume = NAV_ITEMS.find(item => item.href === '/resume')
-        expect(resume?.ariaLabel).toBe('Résumé (PDF)')
+        expect(labels).toEqual(['home', 'work', 'about'])
     })
 
     it('has valid href values', () => {

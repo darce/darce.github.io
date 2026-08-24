@@ -52,9 +52,7 @@ describe('Page-level accessibility', () => {
                 <header>
                     <nav aria-label="Main navigation">
                         <a href="/work">Work</a>
-                        <a href="/practice">Practice</a>
                         <a href="/about">About</a>
-                        <a href="/resume" aria-label="Résumé (PDF)">Résumé</a>
                     </nav>
                 </header>
                 <main id="main-content">

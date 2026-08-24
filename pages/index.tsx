@@ -91,8 +91,15 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                     <Link href={`/projects/${project.slug}/`} className={styles.projectLink}>
                                         <div className={styles.projectItemInner}>
                                             <div className={styles.projectHead}>
-                                                {icon && (
-                                                    <span className={styles.projectIcon} aria-hidden="true">
+                                                <span
+                                                    className={
+                                                        icon
+                                                            ? styles.projectIcon
+                                                            : `${styles.projectIcon} ${styles.projectIconPending}`
+                                                    }
+                                                    aria-hidden="true"
+                                                >
+                                                    {icon && (
                                                         <Image
                                                             src={`/images/${icon.src}`}
                                                             alt=""
@@ -106,8 +113,8 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                                     : {}),
                                                             }}
                                                         />
-                                                    </span>
-                                                )}
+                                                    )}
+                                                </span>
                                                 <div className={styles.projectText}>
                                                     <h3 className={styles.projectTitle}>
                                                         {project.metaData.title}

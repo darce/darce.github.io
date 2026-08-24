@@ -9,9 +9,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
     { href: '/', label: 'home' },
     { href: '/work', label: 'work' },
-    { href: '/practice', label: 'practice' },
     { href: '/about', label: 'about' },
-    { href: '/resume', label: 'résumé', ariaLabel: 'Résumé (PDF)' },
 ]
 
 export const buildItemPath = (section: ContentSection, slug: string): string =>
