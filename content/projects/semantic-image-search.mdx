@@ -18,7 +18,23 @@ I designed and built a native macOS photo-search product that uses on-device mod
 
 My role covered product design, interaction design, technical architecture, and implementation. The stage is a working independent R&D product that is not yet user-tested.
 
-> **Figure pending** — product hero screen. Screenshots are being captured; this slot is intentionally visible so the case does not imply media that does not exist.
+**Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ red bicycle                                           ] (Search)       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ▸ Explore                                                                │
+├──────────────────────────────────────────────────────────────────────────┤
+│ red bicycle                                                              │
+│ 64 search results · nearest 64                                           │
+│  ●  ●  ●  ●  ●  ●                                                        │
+│  ●  ●  ●  ●  ●  ●                                                        │
+│  ●  ●  ●  ●  ●  ●                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+Position conveys ranking without exposing raw cosine scores as confidence. A flat ranking instead shows “No close matches…” as its own state.
 
 ## At a glance
 
@@ -60,7 +76,36 @@ Cloud AI can improve retrieval, but it moves the privacy boundary away from the 
 
 Choose folder → index → semantic query → inspect result → explore patterns
 
-> **Figure pending** — annotated journey strip.
+**Screen 1 — Cold start.** This screen shows the first-run search state before a folder has been chosen or any photos enrolled.
+
+```text
+┌─ Semantic Image Search ──────────────────────────────────────────────────┐
+│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
+│ │                   │ │ [ Search query                      ] (Search) │ │
+│ │  No layer packs   │ │ No folder yet. Use File → Open Folder to        │ │
+│ │  yet.             │ │ enroll photos, then search here.               │ │
+│ │                   │ ├────────────────────────────────────────────────┤ │
+│ │                   │ │                                                │ │
+│ │                   │ │                                                │ │
+│ └───────────────────┘ └────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The interface keeps “No folder yet” distinct from “no photo matched”; it does not show a zero-result count before any library exists.
+
+**Screen 2 — Indexing.** This screen shows a determinate indexing meter above the photo grid.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ Search query                                          ] (Search)       │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1,284                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+A determinate meter retains the known extent of indexing, while cancellation prevents an interrupted index from being presented as complete.
 
 ## Designing for incomplete truth
 
@@ -78,7 +123,63 @@ Choose folder → index → semantic query → inspect result → explore patter
 
 These are separate designed states because each has a different cause, action, and evidence; treating unknown as a designed state prevents absence from masquerading as certainty.
 
-> **Figure pending** — partial-library caveat screen.
+**Screen 6 — Partial-library caveat.** This screen shows a caveat explaining that missing files make the exploration plots partial.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity | Places | Timeline ]                                       │
+│ ⚠ 312 photos were never opened: their files are not where the library    │
+│   says they are, usually a volume that is not plugged in. Dates and      │
+│   places describe the rest of the library, not all of it.                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The caveat qualifies all three plots and names why the library is partial. Its visible and spoken wording share the same source so they cannot drift.
+
+**Screen 8 — Missing model and settings recovery.** These two settings panels show an unreadable model folder, recovery controls, library folders, content policy, and the optional local naming setting.
+
+```text
+┌─ Model folder ───────────────────────────────────────────────────────────┐
+│ Where the exported CLIP and MobileSAM packages live. The object detector │
+│ ships inside the app, so detection works even when this folder is        │
+│ missing; search does not.                                                │
+│                                                                          │
+│ /Volumes/Butter/cache/sis-coreml-export                                  │
+│ This folder is not readable — an unmounted disk, or models that were     │
+│ never exported there. Search will report the missing package by name.    │
+│                                                                          │
+│ ( Choose model folder… )   ( Reset to default )                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ Settings ───────────────────────────────────────────────────────────────┐
+│ Library folders                                                          │
+│   ~/Pictures/2021-iceland                              (Remove)          │
+│   + Open Folder…                                                         │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Memory                                                                   │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Models                                                                   │
+│                                                                          │
+│ Content                                                                  │
+│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
+│   depicts. This app has no explicit-content classifier, so nothing is    │
+│   filtered out and nothing is certified safe — search matches every      │
+│   indexed photo on the same terms, and a generated layer name may        │
+│   describe a photo plainly.                                              │
+│                                                                          │
+│ Local layer names                                                        │
+│   ☐ Ask local Ollama to name unsure layers                               │
+│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
+│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
+│     device.                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The model path and its readability are shown separately, and a missing package is named when search cannot run. Settings states that content is not filtered and identifies the optional local socket, which is off by default.
 
 ## Data-rich exploration
 
@@ -86,7 +187,115 @@ These are separate designed states because each has a different cause, action, a
 
 A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts surface missing metadata—for example, photographs without location—so absent fields stay visible. Zooming preserves surrounding context and the viewer’s position within it.
 
-> **Figure pending** — Similarity / Places / Timeline exploration.
+**Screen 4 — A photo selected, details open.** This screen shows a selected photo beside its filename, metadata, offline mini-map, and surrounding result thumbnails.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ┌────────────────┐  IMG_4417.HEIC                                        │
+│ │                │  Selected photo · double-click to open                │
+│ │   [ preview ]  │  ▾ Photo details                                      │
+│ │                │        Size  4032 × 3024                              │
+│ │                │      Camera  Apple iPhone 13 Pro                      │
+│ └────────────────┘        Lens  26 mm f/1.5                              │
+│                          Taken  2021:07:14 18:22:00                      │
+│                            GPS  64.1466°, -21.9426°                      │
+│                                 ┌──────────────────────────┐             │
+│                                 │        ·   ·             │             │
+│                                 │      ────●───────        │             │
+│                                 │            ·             │             │
+│                                 └──────────────────────────┘             │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ●  ●  ●  ●  ●  ●                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The spacing groups each label with its value, and the details section retains its open or collapsed state as selection changes. The mini-map uses an offline graticule rather than fetched tiles.
+
+**Screen 5 — Explore: Similarity / Places / Timeline.** This screen shows selection counts across three exploration tabs, followed by a Places map with coverage and selection details.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
+│                              ↑           ↑                               │
+│            41 of the 47 selected photos have coordinates.                │
+│            The gap between those two numbers IS the finding.             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
+│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
+│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
+│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
+│ │ 90°S └──────────────────┴──────────────────┘                         │ │
+│ │      180°W               0°              180°E                       │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
+│ Showing 41 of 1,284 photos. 1,198 have no coordinates, 45 could not be   │
+│ read.                                                                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
+│   not in your search results, so they are listed last rather than ranked.│
+│                                                       ( Clear region )   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+Per-tab counts preserve the current selection’s context when another view is hidden. Missing coordinates, unreadable files, and files never inspected remain separate explanations rather than one total.
+
+**Screen 7 — Timeline: rest, zoom, truncation.** These three timeline states show the full date range, a July 2021 daily zoom, and an axis truncated before 1962.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates                                                                │
+│ Photos by capture year                             Square-root count scale│
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │ 1284┤                                            │ │ Off the time    │ │
+│ │  722┤        ▅█                                  │ │ axis            │ │
+│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
+│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
+│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
+│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 94 photos have no capture date.                                        │
+│ ⓘ 1,190 dated: 1,104 from exposure time, 86 from file write time.        │
+│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
+│    (Gregorian).                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
+│ Photos by capture day                              Square-root count scale│
+│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
+│ Bars per   Year ○──────────● Day    Day                                  │
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
+│ │                 ╌  ╌                             │ │ axis            │ │
+│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
+│ └──────────────────────────────────────────────────┘ │      94         │ │
+│                                                      │ Undated photos  │ │
+│                                                      └─────────────────┘ │
+│ ⚠ 94 photos have no capture date.                                        │
+│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT.       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Photos by capture year                                                   │
+│ ┌──────────────────────────────────────────────────┐                     │
+│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
+│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
+│                                       [ Before 1962 ]                    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The breadcrumb records the requested window while the range states what the chart draws. Undated photos stay off the time axis, and truncation names what lies outside it and offers a route there.
 
 ## Evaluation
 
@@ -114,4 +323,4 @@ The outcome is a working end-to-end native product with coherent search, inspect
 
 External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
 
-> **Screens: pending.** Cold start, indexing progress, semantic results, selected photo and details, Similarity/Places/Timeline exploration, partial-library caveat, timeline selection and zoom, and missing-model and settings recovery will appear here once captured.
+> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). They are a claim about state and copy, not visual craft; pixel captures of 0.2.0 replace them once made.

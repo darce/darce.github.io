@@ -30,9 +30,32 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
         }
     })
 
-    it('declares screenshots as pending instead of faking them', () => {
-        expect(content).toMatch(/Screens:\s*pending/i)
+    it('embeds all eight ASCII screens while declaring pixel screenshots pending', () => {
         expect(data.images ?? []).toHaveLength(0)
+        expect(content).toMatch(/Screenshots:\s*pending/i)
+        expect(content).not.toMatch(/Screens:\s*pending/i)
+
+        const textFences = content.match(/```text\n[\s\S]*?\n```/g) ?? []
+        expect(textFences).toHaveLength(8)
+
+        for (const distinctiveDrawingString of [
+            'No folder yet',
+            'Embedding 812 of 1,284',
+            '64 search results',
+            'IMG_4417.HEIC',
+            'Showing 41 of 1,284 photos.',
+            '312 photos were never opened',
+            '3 photos dated before 1962 are off the left of this axis.',
+            'Ask local Ollama to name unsure layers',
+        ]) {
+            expect(textFences.some((fence) => fence.includes(distinctiveDrawingString))).toBe(true)
+        }
+
+        for (let screen = 1; screen <= 8; screen += 1) {
+            expect(content.split(`**Screen ${screen} — `)).toHaveLength(2)
+        }
+
+        expect(content).not.toMatch(/Figure pending/i)
     })
 
     it('keeps the external-user evaluation gap explicit and avoids inflated claims', () => {
