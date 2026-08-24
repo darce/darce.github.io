@@ -52,6 +52,7 @@ describe('Page-level accessibility', () => {
                 <header>
                     <nav aria-label="Main navigation">
                         <a href="/work">Work</a>
+                        <a href="/research">Research</a>
                         <a href="/about">About</a>
                     </nav>
                 </header>

@@ -25,10 +25,14 @@ describe('resolveNavPath', () => {
         expect(resolveNavPath('/projects/photoshelter')).toBe('/work')
     })
 
-    it('maps /practice and legacy /research/* to /practice', () => {
+    it('maps /research and /research/* to /research', () => {
+        expect(resolveNavPath('/research')).toBe('/research')
+        expect(resolveNavPath('/research/')).toBe('/research')
+        expect(resolveNavPath('/research/order-book')).toBe('/research')
+    })
+
+    it('maps /practice to /practice (not a top-nav item)', () => {
         expect(resolveNavPath('/practice')).toBe('/practice')
-        expect(resolveNavPath('/research')).toBe('/practice')
-        expect(resolveNavPath('/research/order-book')).toBe('/practice')
     })
 
     it('maps /about to /about', () => {
@@ -43,9 +47,9 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, and about only (practice and résumé are reachable from page content, not the top nav)', () => {
+    it('contains home, work, research, and about (practice and résumé are reachable from page content, not the top nav)', () => {
         const labels = NAV_ITEMS.map(item => item.label)
-        expect(labels).toEqual(['home', 'work', 'about'])
+        expect(labels).toEqual(['home', 'work', 'research', 'about'])
     })
 
     it('has valid href values', () => {

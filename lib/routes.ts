@@ -9,6 +9,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
     { href: '/', label: 'home' },
     { href: '/work', label: 'work' },
+    { href: '/research', label: 'research' },
     { href: '/about', label: 'about' },
 ]
 
@@ -22,7 +23,10 @@ export const resolveNavPath = (asPath: string): string => {
     if (asPath.startsWith('/work') || asPath.startsWith('/projects')) {
         return '/work'
     }
-    if (asPath.startsWith('/practice') || asPath.startsWith('/research')) {
+    if (asPath.startsWith('/research')) {
+        return '/research'
+    }
+    if (asPath.startsWith('/practice')) {
         return '/practice'
     }
     if (asPath.startsWith('/about')) {
