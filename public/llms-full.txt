@@ -98,7 +98,7 @@ Cloud AI can improve retrieval, but it moves the privacy boundary away from the 
 
 Choose folder → index → semantic query → inspect result → explore patterns
 
-**Screen 1 — Cold start.** This screen shows the first-run search state before a folder has been chosen or any photos enrolled.
+**Screen 1 — Cold start.** Before a folder is chosen, Search says “No folder yet. Use File → Open Folder to enroll photos, then search here,” Layers says there are no layer packs yet, and no zero-result count is shown.
 
 ```text
 ┌─ Semantic Image Search ──────────────────────────────────────────────────┐
@@ -115,7 +115,7 @@ Choose folder → index → semantic query → inspect result → explore patter
 
 The interface keeps “No folder yet” distinct from “no photo matched”; it does not show a zero-result count before any library exists.
 
-**Screen 2 — Indexing.** This screen shows a determinate indexing meter above the photo grid.
+**Screen 2 — Indexing.** A determinate meter reports “Embedding 812 of 1,284” above a two-row photo grid.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -145,7 +145,7 @@ A determinate meter retains the known extent of indexing, while cancellation pre
 
 These are separate designed states because each has a different cause, action, and evidence; treating unknown as a designed state prevents absence from masquerading as certainty.
 
-**Screen 6 — Partial-library caveat.** This screen shows a caveat explaining that missing files make the exploration plots partial.
+**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -162,7 +162,7 @@ These are separate designed states because each has a different cause, action, a
 
 The caveat qualifies all three plots and names why the library is partial. Its visible and spoken wording share the same source so they cannot drift.
 
-**Screen 8 — Missing model and settings recovery.** These two settings panels show an unreadable model folder, recovery controls, library folders, content policy, and the optional local naming setting.
+**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
 
 ```text
 ┌─ Model folder ───────────────────────────────────────────────────────────┐
@@ -209,7 +209,7 @@ The model path and its readability are shown separately, and a missing package i
 
 A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts surface missing metadata—for example, photographs without location—so absent fields stay visible. Zooming preserves surrounding context and the viewer’s position within it.
 
-**Screen 4 — A photo selected, details open.** This screen shows a selected photo beside its filename, metadata, offline mini-map, and surrounding result thumbnails.
+**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking; its open details show 4032 × 3024, Apple iPhone 13 Pro, 26 mm f/1.5, 2021:07:14 18:22:00, GPS 64.1466°, -21.9426°, an offline mini-map, and surrounding result thumbnails.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -233,7 +233,7 @@ A selection carries across all three views, so inspection remains anchored while
 
 The spacing groups each label with its value, and the details section retains its open or collapsed state as selection changes. The mini-map uses an offline graticule rather than fetched tiles.
 
-**Screen 5 — Explore: Similarity / Places / Timeline.** This screen shows selection counts across three exploration tabs, followed by a Places map with coverage and selection details.
+**Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47 because only 41 selected photos have coordinates; the Places state then reads 38, 41, and 41, shows 41 of 1,284 photos with 1,198 lacking coordinates and 45 unreadable, and lists a 41-photo map selection outside the search results last in place order rather than by rank.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -268,7 +268,7 @@ The spacing groups each label with its value, and the details section retains it
 
 Per-tab counts preserve the current selection’s context when another view is hidden. Missing coordinates, unreadable files, and files never inspected remain separate explanations rather than one total.
 
-**Screen 7 — Timeline: rest, zoom, truncation.** These three timeline states show the full date range, a July 2021 daily zoom, and an axis truncated before 1962.
+**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos—1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -345,7 +345,7 @@ The outcome is a working end-to-end native product with coherent search, inspect
 
 External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
 
-> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). They are a claim about state and copy, not visual craft; pixel captures of 0.2.0 replace them once made.
+> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note remains visible so the case does not imply media that does not exist.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Enterprise DAM · 80,000+ users*
