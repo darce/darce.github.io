@@ -12,7 +12,7 @@ interface WorkProps {
 }
 
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
-    const workDescription = 'Product design and design-technology work by Daniel Arcé: AI products, enterprise SaaS, accessibility, and interaction design for Apple, MSNBC, and PhotoShelter.'
+    const workDescription = 'Product design and design-technology work by Daniel Arcé: the Semantic Image Search AI product, enterprise SaaS, accessibility, and interaction design for Apple, MSNBC, and PhotoShelter.'
 
     const itemListJsonLd = {
         '@context': 'https://schema.org',
