@@ -10,7 +10,7 @@
 - /research/ — Index of technical writing and experiments
 
 ## Projects
-- /projects/semantic-image-search/ — A native macOS product for semantic photo search and visual exploration that keeps gallery processing on-device and makes incomplete data explicit.
+- /projects/semantic-image-search/ — A native macOS app that searches a photo library by meaning, keeps every image on the machine, and says plainly when its data is incomplete.
 - /projects/photoshelter/ — R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
 - /projects/workbay/ — Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
 - /projects/apple/ — Built launch-critical landing pages, a CSS-animated email campaign, and internal workflow tooling for Apple’s iPhone X release

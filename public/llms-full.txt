@@ -36,11 +36,46 @@ Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 *Independent product R&D · macOS*
 Year: 2026
 Tags: Product Design, Interaction Design, Human-AI Interaction, SwiftUI, Core ML, Accessibility
-Summary: A native macOS product for semantic photo search and visual exploration that keeps gallery processing on-device and makes incomplete data explicit.
+Summary: A native macOS app that searches a photo library by meaning, keeps every image on the machine, and says plainly when its data is incomplete.
 
-I designed and built a native macOS photo-search product that uses on-device models to retrieve and explore a user’s library while keeping gallery images local and showing missing or partial data as incomplete.
+## Search
 
-My role covered product design, interaction design, technical architecture, and implementation. The stage is a working independent R&D product that is not yet user-tested.
+A photo library holds more than its folder names record: places, recurring subjects, and visual structure across years. Cloud photo services can search that material, but only after the library has been uploaded. This app runs the models on the Mac instead, within 8 GB of memory, and the person chooses which folders it may read. Nothing outside those folders is scanned, and no gallery image leaves the device.
+
+### Cold start and indexing
+
+**Screen 1 — Cold start.** Before a folder is chosen, Search says "No folder yet. Use File → Open Folder to enroll photos, then search here," Layers says there are no layer packs yet, and no zero-result count is shown.
+
+```text
+┌─ Semantic Image Search ──────────────────────────────────────────────────┐
+│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
+│ │                   │ │ [ Search query                      ] (Search) │ │
+│ │  No layer packs   │ │ No folder yet. Use File → Open Folder to        │ │
+│ │  yet.             │ │ enroll photos, then search here.               │ │
+│ │                   │ ├────────────────────────────────────────────────┤ │
+│ │                   │ │                                                │ │
+│ │                   │ │                                                │ │
+│ └───────────────────┘ └────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The start state is kept apart from an empty result. A count of zero before any library exists would imply that a library had been searched and held nothing.
+
+**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1,284" above a two-row photo grid.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ Search query                                          ] (Search)       │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1,284                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index that is labelled as partial rather than presented as complete.
+
+### Ranked results
 
 **Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
 
@@ -58,156 +93,11 @@ My role covered product design, interaction design, technical architecture, and 
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-Position conveys ranking without exposing raw cosine scores as confidence. A flat ranking instead shows “No close matches…” as its own state.
+Results are ordered by nearness to the query. Position carries the ranking; raw cosine scores are not shown as if they were confidence. When nothing is near, the grid gives way to a "No close matches" state instead of a weakly ranked list.
 
-## At a glance
+## Inspection
 
-  
-    
-      Dimension</th>
-      Detail</th>
-    </tr>
-  </thead>
-  
-    Role</th>Product design, interaction design, technical architecture, implementation</td></tr>
-    Stage</th>Working independent R&D product</td></tr>
-    Platform</th>macOS</td></tr>
-    Core jobs</th>Search, inspect, explore</td></tr>
-    AI</th>Local semantic retrieval plus segmentation/detection components</td></tr>
-    Constraint</th>Useful on 8 GB Apple Silicon</td></tr>
-    Trust boundary</th>Gallery processing stays local</td></tr>
-    Accessibility</th>Keyboard and VoiceOver behavior</td></tr>
-    Research status</th>Expert/adversarial evaluation done; external user testing not yet run.</td></tr>
-  </tbody>
-
-## Problem
-
-A photo library carries meaning that folder names and filenames rarely capture: place, repeated subjects, visual structure, and relationships across years. People need ways to find and inspect that material without surrendering their galleries to a cloud service.
-
-Cloud AI can improve retrieval, but it moves the privacy boundary away from the person and their device. The product therefore had to run locally on modest Apple Silicon hardware. It also had to be honest when the library, index, model, permission, or metadata was incomplete.
-
-## Product principles
-
-1. **User chooses the boundary.** Selected folders define the searchable set; there is no silent whole-disk scan.
-2. **No gallery egress.** Model processing happens locally, and gallery images are designed to stay on the machine; the Evaluation section's privacy checks examine that boundary.
-3. **Unknown must look unknown.** Partial and missing states are made explicit in context.
-4. **Search plus browse.** A semantic query works alongside exploratory views for material the person has not yet named.
-5. **Machine output stays inspectable.** Selecting a photo exposes the underlying facts behind the result.
-
-## Core journey
-
-Choose folder → index → semantic query → inspect result → explore patterns
-
-**Screen 1 — Cold start.** Before a folder is chosen, Search says “No folder yet. Use File → Open Folder to enroll photos, then search here,” Layers says there are no layer packs yet, and no zero-result count is shown.
-
-```text
-┌─ Semantic Image Search ──────────────────────────────────────────────────┐
-│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │                   │ │ [ Search query                      ] (Search) │ │
-│ │  No layer packs   │ │ No folder yet. Use File → Open Folder to        │ │
-│ │  yet.             │ │ enroll photos, then search here.               │ │
-│ │                   │ ├────────────────────────────────────────────────┤ │
-│ │                   │ │                                                │ │
-│ │                   │ │                                                │ │
-│ └───────────────────┘ └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-The interface keeps “No folder yet” distinct from “no photo matched”; it does not show a zero-result count before any library exists.
-
-**Screen 2 — Indexing.** A determinate meter reports “Embedding 812 of 1,284” above a two-row photo grid.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ Search query                                          ] (Search)       │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1,284                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-A determinate meter retains the known extent of indexing, while cancellation prevents an interrupted index from being presented as complete.
-
-## Designing for incomplete truth
-
-**No folder yet.** The start state explains that a folder must be chosen before indexing can begin. Treating it as an ordinary empty result would falsely imply that an existing library had already been searched and contained nothing relevant.
-
-**No matches.** A query can complete successfully without finding a suitable photo. Distinguishing this from an indexing failure tells the user that the selected boundary was searched, while still showing what was searched and how to adjust the query or selection.
-
-**Model unavailable.** Semantic search depends on a local model that may be absent or unusable. Saying “no results” would hide the actual cause and could lead someone to conclude that their photos were inadequate when retrieval was only temporarily unavailable.
-
-**Partial library.** Indexing may cover some photos before interruption, or metadata may exist for only part of the collection. The interface scopes what is included and identifies the cause, so a subset is never presented as the whole library.
-
-**Unavailable volume or permission.** A mounted volume may be offline, removed, or denied to the app. Naming that condition preserves the distinction between inaccessible source material and material that was inspected and found irrelevant.
-
-**Experimental capability.** Some machine-derived behavior is deliberately marked experimental. Its presentation keeps uncertainty visible so preliminary output does not acquire the same authority as established product behavior.
-
-These are separate designed states because each has a different cause, action, and evidence; treating unknown as a designed state prevents absence from masquerading as certainty.
-
-**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are not where the library    │
-│   says they are, usually a volume that is not plugged in. Dates and      │
-│   places describe the rest of the library, not all of it.                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-The caveat qualifies all three plots and names why the library is partial. Its visible and spoken wording share the same source so they cannot drift.
-
-**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-The model path and its readability are shown separately, and a missing package is named when search cannot run. Settings states that content is not filtered and identifies the optional local socket, which is off by default.
-
-## Data-rich exploration
-
-**Similarity** answers “what else looks like this?” after a photo is selected. **Places** answers “where did this happen?” for images with usable location information. **Timeline** answers “when does this occur?” and helps reveal temporal patterns.
-
-A selection carries across all three views, so inspection remains anchored while the framing changes. Coverage counts surface missing metadata—for example, photographs without location—so absent fields stay visible. Zooming preserves surrounding context and the viewer’s position within it.
+Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
 
 **Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking; its open details show 4032 × 3024, Apple iPhone 13 Pro, 26 mm f/1.5, 2021:07:14 18:22:00, GPS 64.1466°, -21.9426°, an offline mini-map, and surrounding result thumbnails.
 
@@ -231,7 +121,13 @@ A selection carries across all three views, so inspection remains anchored while
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-The spacing groups each label with its value, and the details section retains its open or collapsed state as selection changes. The mini-map uses an offline graticule rather than fetched tiles.
+Each label sits with its value, and the details panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule; it never fetches tiles.
+
+## Exploration
+
+Three views share one selection. Similarity shows what else looks like the selected photo, Places shows where the selected photos were taken, and Timeline shows when. Moving between them keeps the selection, so the frame changes while the anchor does not, and each view reports how much of the selection it can show.
+
+### Places
 
 **Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47 because only 41 selected photos have coordinates; the Places state then reads 38, 41, and 41, shows 41 of 1,284 photos with 1,198 lacking coordinates and 45 unreadable, and lists a 41-photo map selection outside the search results last in place order rather than by rank.
 
@@ -266,9 +162,11 @@ The spacing groups each label with its value, and the details section retains it
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-Per-tab counts preserve the current selection’s context when another view is hidden. Missing coordinates, unreadable files, and files never inspected remain separate explanations rather than one total.
+The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results, unranked, and says so.
 
-**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos—1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
+### Timeline
+
+**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos: 1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -317,35 +215,111 @@ Per-tab counts preserve the current selection’s context when another view is h
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-The breadcrumb records the requested window while the range states what the chart draws. Undated photos stay off the time axis, and truncation names what lies outside it and offers a route there.
+The breadcrumb records the window that was asked for; the range line states what the chart draws. Undated photos sit beside the axis with their own count; they are not dropped. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
+
+## Incomplete states
+
+Photo search fails in more than one way, and a single "no results" message would hide which one happened. Each condition below has its own cause, its own wording, and its own way out.
+
+No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
+
+No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
+
+Model unavailable means the local model is absent or unreadable. Search names the missing package. A bare "no results" would blame the photos for a missing file.
+
+Partial library covers an index interrupted before it finished and metadata that exists for only part of the collection. The affected views are scoped to what was read and say why the rest is missing.
+
+Unavailable volume or permission covers an offline disk and a folder the app was denied. Either is reported as unreachable, which is different from searched and irrelevant.
+
+Experimental marks machine-derived behaviour that is still preliminary, so it does not carry the same authority as the rest of the app.
+
+**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity | Places | Timeline ]                                       │
+│ ⚠ 312 photos were never opened: their files are not where the library    │
+│   says they are, usually a volume that is not plugged in. Dates and      │
+│   places describe the rest of the library, not all of it.                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
+
+**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
+
+```text
+┌─ Model folder ───────────────────────────────────────────────────────────┐
+│ Where the exported CLIP and MobileSAM packages live. The object detector │
+│ ships inside the app, so detection works even when this folder is        │
+│ missing; search does not.                                                │
+│                                                                          │
+│ /Volumes/Butter/cache/sis-coreml-export                                  │
+│ This folder is not readable — an unmounted disk, or models that were     │
+│ never exported there. Search will report the missing package by name.    │
+│                                                                          │
+│ ( Choose model folder… )   ( Reset to default )                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ Settings ───────────────────────────────────────────────────────────────┐
+│ Library folders                                                          │
+│   ~/Pictures/2021-iceland                              (Remove)          │
+│   + Open Folder…                                                         │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Memory                                                                   │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Models                                                                   │
+│                                                                          │
+│ Content                                                                  │
+│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
+│   depicts. This app has no explicit-content classifier, so nothing is    │
+│   filtered out and nothing is certified safe — search matches every      │
+│   indexed photo on the same terms, and a generated layer name may        │
+│   describe a photo plainly.                                              │
+│                                                                          │
+│ Local layer names                                                        │
+│   ☐ Ask local Ollama to name unsure layers                               │
+│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
+│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
+│     device.                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
+
+## Accessibility
+
+Keyboard operation and VoiceOver were designed in from the start rather than added afterwards. Every state above has spoken wording, the partial-library caveat is announced when it appears, and the Explore views keep their viewpoint across tab changes so a keyboard user is not returned to the top of the map or chart on every switch.
 
 ## Evaluation
 
 ### Technical evidence
 
-Performance and runtime behavior were evaluated against an 8 GB Apple Silicon constraint. Privacy checks found no network egress of gallery data in the tested flows. Model and licence constraints were reviewed, and automated tests covered core behavior.
+Memory and runtime behaviour were measured against an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed, and automated tests cover the core behaviour.
 
-### Interaction and expert evidence
+### Expert review
 
-A whole-product UX map framed expert review, with targeted review questions attached to each screen to isolate specific interaction risks. Accessibility review addressed keyboard operation and VoiceOver announcements, while adversarial review probed claims and failure states. Automated checks that changed state and confirmed the view updated correctly caught places where the display did not follow a state change.
+A whole-product UX map framed the review, with a question attached to each screen to isolate one interaction risk at a time. Accessibility review covered keyboard operation and VoiceOver announcements; adversarial review went after the privacy claims and the failure states. Automated checks that changed state and then read the view caught places where the display had not followed the change.
 
-### External-user evidence
+### External users
 
-Not yet run. This is the next open evidence gap: a 3–5 person task-based study on search, inspect, and explore.
+Not yet run. This is the open evidence gap: a task-based study with three to five people covering search, inspection, and exploration.
 
-## Three times evaluation changed the product
+### What the reviews changed
 
-- Explore tab switching destroyed the established viewpoint → orientation was lost on every tab switch → persistent viewpoint state moved to the container → verified by a regression check across tab changes.
-- Partial-library plots looked like complete-library truth → a subset could read as the whole library → scoped, cause-specific caveat plus a VoiceOver announcement → verified by the accessibility review.
-- Timeline selection could outlive the axis it referred to → a selection pointed at nothing → positional state cleared when the axis itself changes → verified by a mutation check.
+- Switching Explore tabs reset the viewpoint, so orientation was lost on every switch. Viewpoint state moved to the container, and a regression check now covers tab changes.
+- Partial-library plots read as complete-library truth. They gained the scoped, cause-specific caveat above, with a VoiceOver announcement, which the accessibility review then confirmed.
+- A timeline selection could outlive the axis it referred to and point at nothing. Selection state is now cleared whenever the axis changes, and a mutation check covers it.
 
-## Outcome and limits
+## Limits
 
-The outcome is a working end-to-end native product with coherent search, inspection, and exploration interactions; local inference; keyboard and VoiceOver behavior; explicit failure states; and a recorded evaluation trail. It does not establish external demand or real-world effectiveness with outside participants.
+The app is a working end-to-end product with local inference, keyboard and VoiceOver support, explicit failure states, and a recorded review trail. It has not been used by anyone outside the review, and it has not been measured on a library larger than the test corpus. The next step is the user study: whether people can form useful queries, read the caveats correctly, and keep their bearings across the three Explore views.
 
-External users remain untested, and performance beyond the current test corpus remains unmeasured at larger real-library scale. The next experiment should learn whether people can form useful queries, understand result provenance and caveats, retain orientation across exploration views, and recover confidently from incomplete-truth states during task-based use.
-
-> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note remains visible so the case does not imply media that does not exist.
+> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Enterprise DAM · 80,000+ users*
