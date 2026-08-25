@@ -4,6 +4,7 @@
 <marker id="s2-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="s2-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="s2-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
+<marker id="s2-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0c8a3e"/></marker>
 </defs>
 <line x1="90.0" y1="210.0" x2="289.8" y2="210.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#s2-ink)"/>
 <text x="297.8" y="215.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">x</text>

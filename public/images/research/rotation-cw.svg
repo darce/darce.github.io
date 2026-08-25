@@ -4,6 +4,7 @@
 <marker id="cw-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
 <marker id="cw-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
 <marker id="cw-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c00f7"/></marker>
+<marker id="cw-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0c8a3e"/></marker>
 </defs>
 <line x1="78.0" y1="48.0" x2="316.0" y2="48.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#cw-ink)"/>
 <line x1="78.0" y1="48.0" x2="78.0" y2="286.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#cw-ink)"/>
