@@ -18,7 +18,7 @@ describe('site identity (Design Technologist)', () => {
         const raw = fs.readFileSync(footerPath, 'utf8')
         // The masthead already names the role on every page; a footer thesis
         // would restate it directly beneath the hero (WRIT-40).
-        expect(raw).toContain('](/resume/)')
+        expect(raw).toContain('](/daniel_arce_resume.pdf)')
         expect(raw).toContain('](/privacy/)')
         expect(raw).toContain('mailto:daniel.arce@gmail.com')
         expect(raw).not.toMatch(/design technologist\./i)
