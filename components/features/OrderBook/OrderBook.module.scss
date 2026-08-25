@@ -1,3 +1,4 @@
+@use "sass:math";
 @import '../../../styles/vars.scss';
 
 // OrderBook SCSS - Styles for custom depth chart visualization
@@ -11,7 +12,7 @@
 .depthChart {
     display: flex;
     flex-direction: column;
-    gap: $s-small / 2;
+    gap: math.div($s-small, 2);
 }
 
 .depthRow {
@@ -48,7 +49,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: $s-small / 2;
+    gap: math.div($s-small, 2);
 }
 
 .sizeText {

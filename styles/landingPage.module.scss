@@ -1,3 +1,4 @@
+@use "sass:math";
 @import '../styles/vars.scss';
 @import '../styles/mixins.scss';
 
@@ -198,7 +199,7 @@ $project-icon: $s-x-large * 2 + $s-large;
 .projectMeta {
     font-weight: 200;
     font-size: 0.9rem;
-    margin: $s-small / 2 0 0 0;
+    margin: math.div($s-small, 2) 0 0 0;
     color: inherit;
 }
 

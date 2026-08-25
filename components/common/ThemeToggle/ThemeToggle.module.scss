@@ -1,3 +1,4 @@
+@use "sass:math";
 @import '../../../styles/vars.scss';
 @import '../../../styles/mixins.scss';
 
@@ -21,13 +22,13 @@ $grid-size: $cell * 2;
     }
 
     @include ditheredShadow(
-        $offset: $s-small / 2,
+        $offset: math.div($s-small, 2),
         $offset-hover: $s-small
     );
 
     @media (hover: hover) {
         &:hover {
-            transform: translateY(-$s-small / 2);
+            transform: translateY(math.div(-$s-small, 2));
             transition: border-color 200ms $ease-decel,
                         transform 200ms $ease-decel;
 
