@@ -1,98 +1,78 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'vitest-axe'
+import Layout from '../../components/layout/Layout'
 import Footer from '../../components/layout/Footer/Footer'
-import { getMdxContent } from '../../lib/getMdxContent'
-import type { MarkdownData } from '../../types'
+import NotFoundPage from '../../pages/404'
+import PrivacyPage from '../../pages/privacy'
+import AboutPage from '../../pages/about'
+import { HeaderDataProvider } from '../../contexts/HeaderContext'
+import { FooterDataProvider } from '../../contexts/FooterContext'
+import { getMdxContent, getMdxIndexContent } from '../../lib/getMdxContent'
+import type { ContentIndexData, MarkdownData } from '../../types'
 
-// Most tests here render raw HTML structures matching page markup patterns,
-// not the actual Next.js page components. The footer case is the exception:
-// it mounts the shipped component so the assertion can fail.
+vi.mock('next/router', () => ({
+    useRouter: () => ({ asPath: '/', push: vi.fn(), prefetch: vi.fn(), events: { on: vi.fn(), off: vi.fn() } }),
+}))
+
+// Every test here mounts shipped components over real content — the same
+// pieces the exported pages are built from — so an a11y regression in the
+// component fails the assertion. (Project MDX is covered by
+// project-mdx.a11y.test.tsx, which renders ProjectDetails over the real
+// serialized case study.)
 
 describe('Page-level accessibility', () => {
+    let headerData: ContentIndexData[] = []
     let footerData: MarkdownData[] = []
+    let aboutData: MarkdownData[] = []
 
     beforeAll(async () => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: vi.fn().mockImplementation(query => ({
+                matches: false,
+                media: query,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+            })),
+        })
+        headerData = (await getMdxIndexContent({ subDir: 'header' })).parsedMdxArray
         footerData = (await getMdxContent({ subDir: 'footer' })).parsedMdxArray
+        aboutData = (await getMdxContent({ subDir: 'about' })).parsedMdxArray
     })
 
-    it('404 page has no a11y violations', async () => {
-        const { container } = render(
-            <main style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-                <h2>Page not found</h2>
-                <p style={{ marginTop: '1rem' }}>
-                    <a href="/">Home</a>
-                    {' | '}
-                    <a href="/work/">Work</a>
-                    {' | '}
-                    <a href="/research/">Research</a>
-                    {' | '}
-                    <a href="/about/">About</a>
-                </p>
-            </main>
-        )
+    const mountInShell = (page: React.ReactElement) =>
+        render(
+            <HeaderDataProvider initialData={headerData}>
+                <FooterDataProvider initialData={footerData}>
+                    <Layout>{page}</Layout>
+                </FooterDataProvider>
+            </HeaderDataProvider>
+        ).container
+
+    it('the shipped 404 page inside the shipped layout has no a11y violations', async () => {
+        const container = mountInShell(<NotFoundPage />)
+        expect(container.querySelector('h2')?.textContent).toBe('Page not found')
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })
 
-    it('privacy page structure has no a11y violations', async () => {
-        const { container } = render(
-            <main>
-                <h2>Privacy</h2>
-                <p>This site collects anonymous usage data.</p>
-                <h3>What is collected</h3>
-                <ul>
-                    <li>Page views</li>
-                    <li>Engagement time</li>
-                </ul>
-                <h3>What is not collected</h3>
-                <ul>
-                    <li>Names or email addresses</li>
-                </ul>
-                <h3>Contact</h3>
-                <p><a href="mailto:daniel.arce@gmail.com">daniel.arce@gmail.com</a></p>
-            </main>
-        )
+    it('the shipped layout carries a skip link that targets the main landmark', () => {
+        const container = mountInShell(<NotFoundPage />)
+        const skipLink = container.querySelector('a.skip-link')
+        expect(skipLink?.getAttribute('href')).toBe('#main-content')
+        expect(container.querySelector('main#main-content')).not.toBeNull()
+    })
+
+    it('the shipped privacy page has no a11y violations', async () => {
+        const { container } = render(<PrivacyPage />)
+        expect(container.querySelector('h2')?.textContent).toBe('Privacy')
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })
 
-    it('skip link pattern is accessible', async () => {
-        const { container } = render(
-            <div>
-                <a href="#main-content" className="skip-link">Skip to main content</a>
-                <header>
-                    <nav aria-label="Main navigation">
-                        <a href="/work">Work</a>
-                        <a href="/research">Research</a>
-                        <a href="/about">About</a>
-                    </nav>
-                </header>
-                <main id="main-content">
-                    <h1>Page content</h1>
-                </main>
-            </div>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('project detail markup with external link is accessible', async () => {
-        const { container } = render(
-            <article>
-                <h2>Test Project</h2>
-                <aside>
-                    <a target="_blank" rel="noopener noreferrer" href="https://example.com">
-                        Live site
-                    </a>
-                    <p>Project description</p>
-                </aside>
-                <figure>
-                    <img src="/images/test.png" alt="Test project screenshot" width={600} height={400} />
-                    <figcaption>Test project screenshot</figcaption>
-                </figure>
-            </article>
-        )
+    it('the shipped about page has no a11y violations', async () => {
+        const { container } = render(<AboutPage aboutData={aboutData} />)
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })
@@ -102,38 +82,6 @@ describe('Page-level accessibility', () => {
         const footer = container.querySelector('footer')!
         expect(footer.querySelector('a[href="/privacy/"]')).toBeTruthy()
         expect(footer.querySelector('a[href^="mailto:"]')).toBeTruthy()
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('heading hierarchy follows correct order', async () => {
-        // Simulates the about page structure
-        const { container } = render(
-            <main>
-                <h2>Hello, I&apos;m Daniel Arc&eacute;.</h2>
-                <p>I build accessible software.</p>
-                <ul>
-                    <li>Led WCAG remediation</li>
-                    <li>Front-end architecture</li>
-                </ul>
-            </main>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('form/interactive elements have labels', async () => {
-        // Simulates the order book symbol selector pattern
-        const { container } = render(
-            <div>
-                <label htmlFor="symbol-select">Trading pair</label>
-                <select id="symbol-select" aria-label="Select trading pair">
-                    <option value="BTCUSDT">BTC/USDT</option>
-                    <option value="ETHUSDT">ETH/USDT</option>
-                </select>
-                <button type="button" aria-label="Refresh data">Refresh</button>
-            </div>
-        )
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })
