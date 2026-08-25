@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'vitest-axe'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 /**
  * WCAG compliance tests beyond axe-core automated checks.
@@ -24,20 +26,18 @@ beforeEach(() => {
 // WCAG 2.5.8 — Target Size (Minimum 44×44 CSS px)
 // ---------------------------------------------------------------------------
 describe('Touch target sizes (WCAG 2.5.8)', () => {
-    it('interactive buttons meet 44px minimum tap target', () => {
-        const { container } = render(
-            <button
-                type="button"
-                aria-label="Switch to dark mode"
-                style={{ width: 44, height: 44, padding: 0 }}
-            >
-                <span aria-hidden="true" />
-            </button>
+    it('the shipped theme toggle has a hit target at or above the 24px floor', () => {
+        // The visible swatch is a 20px 2x2 grid on purpose. The pressable box is
+        // widened by a ::before, and jsdom does not apply CSS modules, so the
+        // guarantee has to be read out of the stylesheet the component imports.
+        const scss = readFileSync(
+            join(process.cwd(), 'components/common/ThemeToggle/ThemeToggle.module.scss'),
+            'utf8',
         )
-        const button = container.querySelector('button')!
-        const style = button.style
-        expect(parseInt(style.width)).toBeGreaterThanOrEqual(44)
-        expect(parseInt(style.height)).toBeGreaterThanOrEqual(44)
+        const hitTarget = /&::before\s*\{([\s\S]*?)\}/.exec(scss)?.[1] ?? ''
+        const px = (prop: string) => Number(new RegExp(prop + ':\\s*(\\d+)px').exec(hitTarget)?.[1] ?? 0)
+        expect(px('width')).toBeGreaterThanOrEqual(24)
+        expect(px('height')).toBeGreaterThanOrEqual(24)
     })
 
     it('navigation links have adequate vertical padding for touch', () => {

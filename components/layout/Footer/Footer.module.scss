@@ -25,13 +25,26 @@
     a {
         // Coral is a stroke everywhere else on the site, never ink: as link
         // text on the footer band it only reaches 3.7:1 light / 3.4:1 dark,
-        // short of AA for 0.85rem. The accent moves to a 2px underline, which
-        // is the same gesture the nav already makes, and hover stays a
-        // two-signal change so it does not rest on colour alone.
-        border-bottom: 2px solid transparent;
+        // short of AA for 0.85rem. The accent is a stroke here too.
+        //
+        // The stroke is drawn at rest, not only on hover. Link ink against
+        // footer body text is 2.12:1 light / 1.43:1 dark, so colour alone
+        // cannot mark these as links (1.4.1). The width is $s-line, the rule
+        // every other interactive border on the site follows.
+        border-bottom: $s-line solid;
 
         @include themeComponent($themes) {
             color: t('link');
+            border-bottom-color: t('link');
+        }
+
+        // Keyboard gets the same two-signal change the pointer gets.
+        &:focus-visible {
+            font-variation-settings: 'wght' 600;
+
+            @include themeComponent($themes) {
+                border-bottom-color: t('border');
+            }
         }
 
         @media (hover: hover) {

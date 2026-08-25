@@ -1,11 +1,21 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'vitest-axe'
+import Footer from '../../components/layout/Footer/Footer'
+import { getMdxContent } from '../../lib/getMdxContent'
+import type { MarkdownData } from '../../types'
 
-// These tests render raw HTML structures matching page markup patterns,
-// not the actual Next.js page components. No mocks needed.
+// Most tests here render raw HTML structures matching page markup patterns,
+// not the actual Next.js page components. The footer case is the exception:
+// it mounts the shipped component so the assertion can fail.
 
 describe('Page-level accessibility', () => {
+    let footerData: MarkdownData[] = []
+
+    beforeAll(async () => {
+        footerData = (await getMdxContent({ subDir: 'footer' })).parsedMdxArray
+    })
+
     it('404 page has no a11y violations', async () => {
         const { container } = render(
             <main style={{ padding: '4rem 2rem', textAlign: 'center' }}>
@@ -87,17 +97,11 @@ describe('Page-level accessibility', () => {
         expect(results).toHaveNoViolations()
     })
 
-    it('footer with privacy and contact links is accessible', async () => {
-        const { container } = render(
-            <footer>
-                <p>14+ years building accessible software.</p>
-                <nav aria-label="Footer links">
-                    <a href="/privacy/">Privacy</a>
-                    {' | '}
-                    <a href="mailto:daniel.arce@gmail.com">Contact</a>
-                </nav>
-            </footer>
-        )
+    it('the shipped footer is accessible and carries its utility links', async () => {
+        const { container } = render(<Footer footerData={footerData} />)
+        const footer = container.querySelector('footer')!
+        expect(footer.querySelector('a[href="/privacy/"]')).toBeTruthy()
+        expect(footer.querySelector('a[href^="mailto:"]')).toBeTruthy()
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })

@@ -24,9 +24,10 @@ const Menu: React.FC<MenuProps> = ({ section, projects, selectedProject, onSelec
                             <Link
                                 href={buildItemPath(section, project.slug)}
                                 aria-label={project.metaData.title ?? project.slug}
+                                aria-current={isSelected ? 'page' : undefined}
                                 onClick={() => onSelectProject?.(project)}
                             >
-                                <h3 className={styles.title}>{project.metaData.title}</h3>
+                                <p className={styles.title}>{project.metaData.title}</p>
                                 <p className={styles.subtitle}>{project.metaData.subtitle}</p>
                             </Link>
                         </li>

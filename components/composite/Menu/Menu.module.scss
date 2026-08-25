@@ -24,7 +24,11 @@
         border-bottom: $s solid;
         position: relative;
 
-        h3 {
+        // Was an h3; keeps its size and weight now that nav chrome no longer
+        // takes a heading rank ahead of the article's own h2.
+        .title {
+            font-size: 1.17em;
+            font-weight: bold;
             margin: 0;
             padding: 0;
         }

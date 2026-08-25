@@ -21,6 +21,18 @@ $grid-size: $cell * 2;
         border-color: t('text');
     }
 
+    // The swatch stays 20px; the pressable box reaches the 24px floor without
+    // resizing the grid. ditheredShadow owns ::after, so this uses ::before.
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 24px;
+        height: 24px;
+        transform: translate(-50%, -50%);
+    }
+
     @include ditheredShadow(
         $offset: math.div($s-small, 2),
         $offset-hover: $s-small
