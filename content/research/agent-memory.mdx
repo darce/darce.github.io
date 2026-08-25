@@ -21,7 +21,7 @@ tags:
 
 A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-WorkBay, the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. The next session starts from a small packet drawn out of that record instead of starting cold.
+[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. The next session starts from a small packet drawn out of that record instead of starting cold.
 
 <Diagram
     src="/images/research/memory-loop.svg?v=1"

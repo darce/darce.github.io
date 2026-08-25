@@ -44,6 +44,6 @@ The adjacent Design Map ships as the `/ux-map` command, which turns an inventory
 
 ## Under the hood
 
-WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows.
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows; the memory design has [its own research entry](/research/agent-memory/).
 
 Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
