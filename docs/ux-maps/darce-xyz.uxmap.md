@@ -59,7 +59,7 @@
 |   - Skip to main content (nav) states=[default]            |
 |   - Masthead wordmark + subtitle → home (nav) states=[def… |
 |   - Decorative 3D cube (other) states=[default]            |
-|   - Primary nav: home / work / practice / about / résumé … |
+|   - Primary nav: home / work / research / about (nav) sta… |
 |   - 2×2 theme swatch (form) states=[default]               |
 |   - Detail breadcrumb prev / title / next (nav) states=[d… |
 |   - Page canvas + main landmark (content) states=[default] |
@@ -67,8 +67,6 @@
 | ACTIONS                                                    |
 |   [secondary] Go home -> landing                           |
 |   [PRIMARY] Open about -> about                            |
-|   [PRIMARY] Open practice hub -> practice                  |
-|   [PRIMARY] Open résumé (PDF) -> resume                    |
 |   [PRIMARY] Open work hub -> work-index                    |
 |   [secondary] Toggle light / dark -> appearance            |
 +------------------------------------------------------------+
@@ -215,7 +213,7 @@
 |   - About article (content) states=[default]               |
 +------------------------------------------------------------+
 | ACTIONS                                                    |
-|   [PRIMARY] Open résumé (PDF) -> resume                    |
+|   [PRIMARY] Open practice hub -> practice                  |
 +------------------------------------------------------------+
 | states: default                                            |
 +------------------------------------------------------------+
@@ -226,7 +224,7 @@
 ```
 +------------------------------------------------------------+
 | Résumé (PDF)  [exit]  /resume/                             |
-| Serves the résumé as a direct PDF download. Now a primary… |
+| Serves the résumé as a direct PDF download. Not in the na… |
 +------------------------------------------------------------+
 | ZONES                                                      |
 |   - PDF handoff (browser viewer / download) (other) state… |
@@ -346,7 +344,7 @@ flowchart TD
   n_resume["Résumé (PDF) (exit)"]
   n_practice -->|heuristics canon essay| n_resume
   n_exit_mailto["Mail client (exit)"]
-  n_resume -->|PDF exit via nav| n_exit_mailto
+  n_resume -->|PDF exit via direct URL| n_exit_mailto
 ```
 
 ### Work hub → case → sibling (`flow-browse-work`)
@@ -422,8 +420,8 @@ flowchart TD
 - Footer.tsx exists and is unused — is a site footer in scope for this colour pass, or still not-doing?
 - 404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?
 - SIS screenshots are not captured. Does the case ship with labelled 'screenshot pending' placeholders (designed media_pending state) or is publish gated on media? ([RLSE-04][LAY-10])
-- Résumé nav item exits to a PDF with no site chrome. Should the nav item carry a PDF affordance (arrow/label) so the context change is not a surprise? ([A11Y-20][NAV-11])
-- /research left the nav; only /practice links to it. Is one in-site path enough for the research job, or should about/work also link it?
+- /resume/ has zero inbound links sitewide. Should it be linked from about (named as a PDF, [A11Y-04]) or stay a direct-URL-only exit?
+- Resolved: /research stays in the nav and is additionally linked from about and practice. /practice is the demoted item, reachable from body copy (NAV-08).
 - Practice essay cites canon rule IDs versionless — do those anchors resolve publicly, or are they internal-only references?
 
 ## Not doing
@@ -444,7 +442,7 @@ flowchart TD
 +----------------------------------------------+-------------------+
 | MASTHEAD  title (header)  subtitle (text)    | CUBE (border)     |
 +----------------------------------------------+-------------------+
-| nav: home  work  practice  about  résumé(PDF)  [2x2 toggle]      |
+| nav: home  work  research  about  [2x2 toggle]                   |
 |      active = weight + surface   hover = coral underline         |
 +------------------------------------------------------------------+
 | CANVAS                                                           |
@@ -465,7 +463,7 @@ states: default | dark | focus_keyboard | reduced_motion
 
 ```
 +------------------------------------------------------------------+
-| chrome; nav active = practice                                    |
+| chrome; nav active = none (practice is not a nav item)           |
 +------------------------------------------------------------------+
 | H1 Practice                                                      |
 | thesis paragraph (the obstacle: judgment is invisible in UI)     |
@@ -473,7 +471,7 @@ states: default | dark | focus_keyboard | reduced_motion
 | H2 Heuristics Canon — making product and engineering judgment    |
 |    inspectable            (MDX essay; [RULE-ID] cites)           |
 | ---------------------------------------------------------------- |
-| [ Research index → ]  DitheredCard   (only in-site path to it)   |
+| [ Research index → ]  DitheredCard   (also linked from about)    |
 | [ Get in touch ]  [ View work → ]                                |
 +------------------------------------------------------------------+
 ```
@@ -508,7 +506,7 @@ states: default | dark | image_error | media_pending
 | --- | --- | --- |
 | z-page-canvas | `backgroundColor` **and** `global.scss` body / Radix `--color-background` | Cool paper `#e7eaef` / terminal `#1c1d21` |
 | z-masthead | `masthead`, `header`, `text` | Value step vs page; optional terminal band |
-| z-primary-nav (5 items) | `link`, `surface`, `border`, `text` | No accent fill; place via weight + selected surface; résumé exit affordance |
+| z-primary-nav (4 items) | `link`, `surface`, `border`, `text` | No accent fill; place via weight + selected surface |
 | z-theme-toggle | `surface` `text` `link` `border` | 2×2 remains a live legend of the four identity chips |
 | z-hero-cta / cards / prev-next / practice cards | DitheredCard: `surface` + `border` hover | Coral stays the only hover accent |
 | z-hero-positioning (title + subhead) | `header`, `text` | Hierarchy by weight/size, no colour |

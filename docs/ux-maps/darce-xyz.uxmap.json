@@ -581,7 +581,7 @@
       "deep_link": true,
       "url_params": [],
       "code_ref": "pages/about.tsx",
-      "primary_action_id": "act-goto-resume",
+      "primary_action_id": "act-goto-practice",
       "states": [
         "default",
         "dark"
@@ -808,22 +808,12 @@
       "costly": false,
       "irreversible": false,
       "preview_required": false,
-      "screen_id": "site-shell"
+      "screen_id": "about"
     },
     {
       "id": "act-goto-about",
       "verb": "Open about",
       "target": "about",
-      "hierarchy": "primary",
-      "costly": false,
-      "irreversible": false,
-      "preview_required": false,
-      "screen_id": "site-shell"
-    },
-    {
-      "id": "act-goto-resume",
-      "verb": "Open résumé (PDF)",
-      "target": "resume",
       "hierarchy": "primary",
       "costly": false,
       "irreversible": false,
