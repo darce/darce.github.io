@@ -34,7 +34,7 @@ I designed and built a native macOS photo-search product that keeps gallery proc
 
 ## Final product
 
-> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
+> **Screenshots: pending.** The screens in this case are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
 
 ## At a glance
 
@@ -332,9 +332,9 @@ Not yet run. This is the open evidence gap: a task-based study with three to fiv
 
 ## Current evidence gap
 
-The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside the review, and it has not been measured on a library larger than the test corpus. The next step is the user study. Its first question is whether people can form useful queries and read the caveats correctly.
+The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside that review, and it has not been measured on a library larger than the test corpus.
 
-The next evidence gap is external usability. The product has been reviewed against implementation, accessibility, and adversarial criteria; it still needs observed task performance with people who did not build it.
+The next evidence gap is external usability. The product has been reviewed against implementation, accessibility, and adversarial criteria; it still needs observed task performance with people who did not build it. The first question that study has to answer is whether people can form useful queries and read the caveats correctly.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Product R&D and accessibility for a large DAM platform*
