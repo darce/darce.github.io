@@ -1,0 +1,40 @@
+---
+index: 2
+year: 2026
+title: 'Five Questions an Agent Cannot Answer from Context'
+subtitle: 'What semantic search over durable state gets used for in practice'
+type: 'note'
+status: 'measured'
+description: An observational readout of three production handoff databases — the five recurring questions that semantic search over durable agent state actually answers, with the record counts behind each one.
+details: An observational readout, not a controlled experiment. Three production handoff databases, 2,384 recorded review runs, 29,914 findings, 17,584 decisions. Five recurring uses of semantic search over durable state, each grounded in what the record holds.
+tags:
+  - Agents
+  - Embeddings
+  - Research
+---
+
+Every count below is read directly from three production `handoff.db` files ([the system itself is described separately](/research/agent-memory/)). This is an observational readout of how the memory gets interrogated, not a controlled experiment — the counts are measured, the usefulness claims are testimony from daily use.
+
+## Where is the core problem?
+
+Review verdicts accumulate per repository, and their distribution is diagnostic. Across the three databases, 2,384 review runs recorded 610 failures — but not evenly. The smallest project failed 42 of its 56 recorded runs. A fresh agent session sees one failing review; the database sees a 75% failure rate concentrated in one subsystem, which is the difference between fixing a symptom and naming a core problem.
+
+## Has this fix been found before?
+
+The largest index embeds 9,025 resolution notes and 7,990 fix descriptions. When a new finding lands, semantic search runs over the fixes, not just the failures — so an improvement pattern discovered once (a guard, a schema constraint, a test shape) is findable by meaning when a differently-worded version of the same problem returns.
+
+## Are we relitigating a settled decision?
+
+5,944 decision rationales are embedded in the largest repo, 17,584 decisions recorded overall. Before an agent re-opens an architectural question, the rationale index is searched; if the question was settled, the agent gets the decision and the *why*, and cites it instead of re-arguing it. The failure mode this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full token cost.
+
+## Is "done" actually done?
+
+The database keeps verified test results and review verdicts as rows, so a claim of completion checks against the record rather than the agent's confidence. Semantic search covers the softer half of the same question — whether a proposed solution was already discussed — because prior discussion rarely reuses the same words.
+
+## What has already been tried?
+
+Blockers and abandoned approaches persist past the session that hit them: 476 blocker descriptions are embedded across the two largest repos, and 1,004 archived task snapshots keep the shape of finished and failed work. The most expensive sentence in agent-assisted development is "let me try a different approach" aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
+
+## Scope
+
+What this note does not show: that any of this saves money or tokens. That claim has a different evidence tier and [its own pre-registered entry](/research/economics-of-agent-memory/).

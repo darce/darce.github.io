@@ -1,0 +1,37 @@
+---
+index: 1
+year: 2026
+title: 'Memory Outside the Model'
+subtitle: 'Durable agent state in SQLite, with embeddings as the index'
+type: 'method'
+status: 'running'
+description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read — structured rows as the canonical record, 58,838 semantic embeddings as an index over them, never as the memory itself.
+details: WorkBay stores canonical agent workflow state in a per-repo SQLite database and indexes selected fields as embeddings. The structured row stays authoritative; the vector is only a way to find it. 58,838 vectors across three working repositories, gte-base-en-v1.5, 768 dimensions.
+tags:
+  - Agents
+  - SQLite
+  - Embeddings
+  - Research
+---
+
+## The canonical record is a row, not a vector
+
+A coding agent forgets everything at the end of a session. WorkBay, the orchestration layer I use across my repositories, answers that with a database instead of a bigger context window: every task carries a `handoff.db` — a per-repo SQLite file that records decisions with rationales, review findings with their fixes, blockers, verified test results, and archived task snapshots. Across three working repositories that record currently holds 17,584 decisions, 29,914 review findings, and 1,004 archived tasks.
+
+Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. An external model evaluation of the architecture put it the same way — "the vector representation remains an index over the canonical records, rather than becoming the canonical memory itself" ([evaluation transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)). Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
+
+## Four layers, in order of authority
+
+The system separates what a session knows into four layers. Authoritative structured state: the SQLite rows themselves. Deterministic retrieval: SQL and full-text search over those rows — the database carries FTS indexes for decisions, findings, blockers, and actions. Semantic retrieval: cosine similarity over the embedded fields, for the question worded differently than the record. Bounded projection: a size-limited packet of the most relevant records, injected into whichever agent picks up the task.
+
+The order matters. Cosine similarity gets permissive as the index grows — at 34,300 vectors in the largest repo, an unfiltered nearest-neighbor query will always return *something*. So semantic search runs behind hard metadata filters first; the index's own primary key is `(entity_kind, entity_id)` with a covering index on `(task_ref, entity_kind)`, which makes the pre-filter structural rather than optional.
+
+## What the index actually holds
+
+The embedded fields are not chat transcripts. In the largest database, 79% of the vectors index review-finding text: 10,168 finding descriptions, 9,025 resolution notes, 7,990 fix descriptions. Another 5,944 index decision rationales. The memory is weighted toward exactly the things a fresh agent session cannot see: what went wrong, why the fix was accepted, and why a settled question was settled.
+
+## The boundary
+
+The database is vendor-agnostic — any harness that can read SQLite reads the same memory, and four different agent CLIs currently do. It is also private by default: `handoff.db` never enters git, and only a deliberate, bounded export crosses a machine boundary. The rows hold reasoning traces, and reasoning traces hold whatever the agent saw.
+
+Status is `running`, not `measured`: this repository's own database is the honest counterexample — 88 decisions, one archived task, and no semantic index switched on yet. The method is in daily use; its costs and payoffs are the subject of the two entries that follow.
