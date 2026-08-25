@@ -16,7 +16,7 @@ tags:
 
 **How do you make local AI search useful when the system cannot assume the library is complete?**
 
-I designed and built a native macOS photo-search product that keeps gallery processing on-device and makes missing, partial, or unavailable data visible instead of folding it into a confident result.
+Missing, partial, and unavailable data each get a state that names which one it is, so an incomplete view of the library never reads as a complete one.
 
 ## Final product
 
@@ -24,16 +24,13 @@ I designed and built a native macOS photo-search product that keeps gallery proc
 
 ## At a glance
 
-- **Role** — Independent product R&D; designed and built end to end, from interaction design through SwiftUI implementation.
-- **Platform** — Native macOS.
-- **Constraint** — Runs within 8 GB on Apple Silicon; gallery images stay on the device.
-- **Status** — Expert and adversarial review complete; testing with outside users not yet run.
+- **Platform** — Native macOS. The models run on the Mac, within 8 GB of memory.
+- **Library access** — Reads only the folders the person has chosen. Gallery images stay on the device.
+- **Surfaces** — Search, plus Similarity, Places, and Timeline for relationships a query did not express.
 
 ## Problem
 
 Photo libraries contain more meaning than filenames and folders expose, but cloud search creates a privacy boundary and local models introduce their own limits. A useful local product has to answer two questions at once: can the system find meaningful relationships, and can the interface tell the truth when its view of the library is incomplete?
-
-This app runs the models on the Mac, within 8 GB of memory. It reads only the folders the person has chosen, and gallery images stay on the device.
 
 ## Core journey
 
@@ -126,7 +123,7 @@ Each label sits with its value, and the details panel keeps its open or closed s
 
 Each condition below is worded for its cause and offers a way out of it. Two rules from [Heuristics Canon](https://github.com/darce/heuristics-canon) decided the split: [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02), which holds that abstention is a valid result rather than a forced classification, and [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04), which treats an undesigned state as a bug. Six states got copy of their own because those two rules said an undifferentiated blank was the defect, not the fallback.
 
-No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
+No folder yet is the start state, held apart from an empty result for the reason Screen 1 gives.
 
 No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
 
@@ -308,7 +305,7 @@ Keyboard operation and VoiceOver were designed in from the start rather than add
 
 ### External usability evidence
 
-Not yet run. This is the open evidence gap: a task-based study with three to five people.
+Not yet run.
 
 ## What changed
 
@@ -318,6 +315,4 @@ Not yet run. This is the open evidence gap: a task-based study with three to fiv
 
 ## Current evidence gap
 
-The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside that review, and it has not been measured on a library larger than the test corpus.
-
-The next evidence gap is external usability. The product has been reviewed against implementation, accessibility, and adversarial criteria; it still needs observed task performance with people who did not build it. The first question that study has to answer is whether people can form useful queries and read the caveats correctly.
+The app works end to end on the machine it was designed for. It has been reviewed against implementation, accessibility, and adversarial criteria, but it has never been measured on a library larger than the test corpus and never used by anyone outside that review. The next step is a task-based study with three to five people, and its first question is whether people can form useful queries and read the caveats correctly.

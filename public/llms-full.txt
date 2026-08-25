@@ -8,7 +8,7 @@ I'm a design technologist. I work on products where the interaction model and th
 
 I started in interactive media and design technology, then spent much of my career building front-end systems for media companies, consumer products, and SaaS teams. That engineering depth changed how I design: I can test an interaction against the actual data model, browser or platform behavior, accessibility tree, and failure states before a handoff turns those constraints into surprises.
 
-At PhotoShelter I combined product R&D with accessibility work on a digital-asset-management platform serving more than 80,000 users. The accessibility program helped protect $9.2M in institutional ARR, while a workflow-automation prototype exposed integration problems early enough to reduce later implementation work by roughly 30%.
+At PhotoShelter I combined product R&D with accessibility work on a digital-asset-management platform. I led the WCAG 2.1 audit and remediation for contracts that had to demonstrate compliance, and a workflow-automation prototype surfaced integration problems early enough to cut the later implementation work by an internal estimate of roughly 30%. The [case](/projects/photoshelter/) carries the figures and where they come from.
 
 My recent independent work moves further upstream. Semantic Image Search is a local-first macOS product for searching and exploring photo libraries with on-device models. WorkBay and its adjacent design R&D treat workflow and interaction structure as durable, versioned state rather than information that has to be reconstructed from a chat transcript or codebase on every pass.
 
@@ -30,7 +30,7 @@ Summary: Native macOS product for semantic search and visual exploration, with o
 
 **How do you make local AI search useful when the system cannot assume the library is complete?**
 
-I designed and built a native macOS photo-search product that keeps gallery processing on-device and makes missing, partial, or unavailable data visible instead of folding it into a confident result.
+Missing, partial, and unavailable data each get a state that names which one it is, so an incomplete view of the library never reads as a complete one.
 
 ## Final product
 
@@ -38,16 +38,13 @@ I designed and built a native macOS photo-search product that keeps gallery proc
 
 ## At a glance
 
-- **Role** — Independent product R&D; designed and built end to end, from interaction design through SwiftUI implementation.
-- **Platform** — Native macOS.
-- **Constraint** — Runs within 8 GB on Apple Silicon; gallery images stay on the device.
-- **Status** — Expert and adversarial review complete; testing with outside users not yet run.
+- **Platform** — Native macOS. The models run on the Mac, within 8 GB of memory.
+- **Library access** — Reads only the folders the person has chosen. Gallery images stay on the device.
+- **Surfaces** — Search, plus Similarity, Places, and Timeline for relationships a query did not express.
 
 ## Problem
 
 Photo libraries contain more meaning than filenames and folders expose, but cloud search creates a privacy boundary and local models introduce their own limits. A useful local product has to answer two questions at once: can the system find meaningful relationships, and can the interface tell the truth when its view of the library is incomplete?
-
-This app runs the models on the Mac, within 8 GB of memory. It reads only the folders the person has chosen, and gallery images stay on the device.
 
 ## Core journey
 
@@ -140,7 +137,7 @@ Each label sits with its value, and the details panel keeps its open or closed s
 
 Each condition below is worded for its cause and offers a way out of it. Two rules from [Heuristics Canon](https://github.com/darce/heuristics-canon) decided the split: [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02), which holds that abstention is a valid result rather than a forced classification, and [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04), which treats an undesigned state as a bug. Six states got copy of their own because those two rules said an undifferentiated blank was the defect, not the fallback.
 
-No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
+No folder yet is the start state, held apart from an empty result for the reason Screen 1 gives.
 
 No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
 
@@ -322,7 +319,7 @@ Keyboard operation and VoiceOver were designed in from the start rather than add
 
 ### External usability evidence
 
-Not yet run. This is the open evidence gap: a task-based study with three to five people.
+Not yet run.
 
 ## What changed
 
@@ -332,15 +329,13 @@ Not yet run. This is the open evidence gap: a task-based study with three to fiv
 
 ## Current evidence gap
 
-The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside that review, and it has not been measured on a library larger than the test corpus.
-
-The next evidence gap is external usability. The product has been reviewed against implementation, accessibility, and adversarial criteria; it still needs observed task performance with people who did not build it. The first question that study has to answer is whether people can form useful queries and read the caveats correctly.
+The app works end to end on the machine it was designed for. It has been reviewed against implementation, accessibility, and adversarial criteria, but it has never been measured on a library larger than the test corpus and never used by anyone outside that review. The next step is a task-based study with three to five people, and its first question is whether people can form useful queries and read the caveats correctly.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Product R&D and accessibility for a large DAM platform*
 Year: 2021
 Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
-Summary: R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
+Summary: R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.
 
 ## R&D prototyping
 
@@ -415,7 +410,7 @@ Summary: Built launch-critical landing pages, a CSS-animated email campaign, and
 I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. The work involved translating high-fidelity static comps into pixel-perfect, responsive front-end code under tight launch deadlines.
 ## CSS-animated email campaign
 
-I prototyped and developed what was reportedly the marketing department’s first CSS-animated direct email campaign. The animations were designed to increase engagement without relying on JavaScript or image-heavy treatments, keeping the email lightweight and broadly compatible across clients. The campaign recorded a 92% open rate, based on internal reporting.
+I prototyped and developed what was reportedly the marketing department’s first CSS-animated direct email campaign. The animations were designed to increase engagement without relying on JavaScript or image-heavy treatments, keeping the email lightweight and broadly compatible across clients. Internal reporting put the open rate well above the department's norm, though the sample size and the definition of an open were never recorded.
 ## Campaign tooling
 
 The email production workflow was manual and repetitive, so I built a set of CLI tools in Node.js, Bash, and Gulp to automate build, preview, and deployment steps for direct email campaigns. This reduced turnaround time and made campaign production more repeatable.
@@ -515,7 +510,7 @@ The IDs do not get renumbered, so a critique written against an earlier revision
 
 ## Where it is used
 
-The canon is cited by rule ID inside the product cases on this site, but only where a rule changed a decision. It is what put the visible media-pending state into Semantic Image Search instead of letting the case imply screenshots that do not exist.
+A case on this site cites the canon by rule ID only where a rule changed a decision. Semantic Image Search names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and the same review is what put the visible media-pending note on that case instead of letting it imply screenshots that do not exist.
 
 The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 
