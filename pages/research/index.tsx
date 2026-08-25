@@ -12,7 +12,7 @@ interface ResearchProps {
 }
 
 const Research: NextPageWithLayout<ResearchProps> = ({ researchData }) => {
-    const researchDescription = 'Research and technical explorations by Daniel Arcé — order book visualization, 3D rotation matrices, and front-end engineering experiments.'
+    const researchDescription = 'Research and technical explorations by Daniel Arcé — the Heuristics Canon decision-rule corpus, order book visualization, 3D rotation matrices, and front-end engineering experiments.'
 
     const itemListJsonLd = {
         '@context': 'https://schema.org',
