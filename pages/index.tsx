@@ -69,9 +69,6 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                             <p className={styles.positioning}>
                                 I design and build AI and data-rich products where interaction, accessibility, and implementation have to be solved together. My work spans product R&D, interface systems, and working prototypes for media, enterprise software, and independent AI products.
                             </p>
-                            <p className={styles.positioningSupport}>
-                                Recent work includes a local-first semantic image-search product and design tooling for versioned interaction architecture. Earlier roles include product R&D and accessibility at PhotoShelter and design technology at MSNBC.
-                            </p>
                             <a
                                 className={styles.cta}
                                 href="mailto:daniel.arce@gmail.com"
