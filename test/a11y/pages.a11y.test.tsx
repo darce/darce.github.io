@@ -11,11 +11,13 @@ describe('Page-level accessibility', () => {
             <main style={{ padding: '4rem 2rem', textAlign: 'center' }}>
                 <h2>Page not found</h2>
                 <p style={{ marginTop: '1rem' }}>
-                    <a href="/">Back to projects</a>
+                    <a href="/">Home</a>
                     {' | '}
-                    <a href="/about/">About</a>
+                    <a href="/work/">Work</a>
                     {' | '}
                     <a href="/research/">Research</a>
+                    {' | '}
+                    <a href="/about/">About</a>
                 </p>
             </main>
         )

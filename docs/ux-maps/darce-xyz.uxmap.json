@@ -5,7 +5,7 @@
     "Inventory every visitor surface before the ADLC colour / hierarchy transplant so token edits have a checklist, not invented IA",
     "Name jobs, screens, zones, states, and flows a hiring visitor actually walks",
     "Mark which palette tokens each zone already consumes so light/dark proof is relational, not a swatch strip",
-    "Model the repositioning to 'Product Designer & Design Technologist for AI and complex systems': new nav, new /practice hub, semantic-image-search case first, résumé as PDF exit"
+    "Model the repositioning to 'Design Technologist': four-item nav, no /practice hub, semantic-image-search case first, heuristics canon filed under research, résumé as PDF exit reachable from about and the footer"
   ],
   "jobs": [
     {
@@ -50,7 +50,7 @@
       "id": "site-shell",
       "kind": "screen",
       "title": "Site chrome",
-      "purpose": "Fully-connected escape hatch on every page: skip link, masthead, cube, primary nav, theme toggle. Colour change lands here first — page canvas, masthead band, nav ink, focus ring.",
+      "purpose": "Fully-connected escape hatch on every page: skip link, masthead, cube, primary nav, theme toggle, and the footer that carries résumé, privacy, and contact. Colour change lands here first — page canvas, masthead band, nav ink, footer band, focus ring.",
       "route": "*",
       "job_entry": false,
       "deep_link": false,
@@ -135,6 +135,17 @@
             "dark"
           ],
           "notes": "tokens: backgroundColor. Also hardcoded in styles/global.scss body and Radix --color-background — palette-only edits will miss this."
+        },
+        {
+          "id": "z-footer",
+          "label": "Footer: name, résumé, privacy, contact",
+          "role": "content",
+          "states": [
+            "default",
+            "dark",
+            "empty"
+          ],
+          "notes": "contentinfo landmark, content/footer/footer.mdx via FooterContext. tokens: masthead band, 2px link rule on top, link → border on hover. Sits outside #main-content, so the global link colour in styles/global.scss does not reach it — Footer.module.scss restates it. empty state = Footer returns null when no provider supplies data, which is how pages/resume.tsx renders without one."
         }
       ]
     },
@@ -240,7 +251,7 @@
       "id": "research-index",
       "kind": "screen",
       "title": "Research",
-      "purpose": "Same card grid as work, different section. Reached from /practice and deep links only (no longer a nav item; URLs stable).",
+      "purpose": "Same card grid as work, different section. Reached from the primary nav, from about, and from deep links. Holds the heuristics-canon entry alongside the front-end exhibits.",
       "route": "/research",
       "job_entry": false,
       "deep_link": true,
@@ -514,64 +525,6 @@
       ]
     },
     {
-      "id": "practice",
-      "kind": "screen",
-      "title": "Practice",
-      "purpose": "Hub for how judgment is made inspectable: the 'Heuristics Canon — making product and engineering judgment inspectable' essay plus a link to the research index. Answers the recruiter question 'does this person reason about design, or just ship it?'",
-      "route": "/practice",
-      "job_entry": true,
-      "deep_link": true,
-      "url_params": [],
-      "code_ref": "pages/practice.tsx",
-      "primary_action_id": "act-goto-research",
-      "states": [
-        "default",
-        "dark"
-      ],
-      "zones": [
-        {
-          "id": "z-practice-intro",
-          "label": "Practice framing (title + one-paragraph thesis)",
-          "role": "content",
-          "states": [
-            "default",
-            "dark"
-          ],
-          "notes": "tokens: header, text. STRAT-20: name the obstacle (judgment is invisible in shipped UI) before the method."
-        },
-        {
-          "id": "z-canon-essay",
-          "label": "Heuristics Canon essay",
-          "role": "content",
-          "states": [
-            "default",
-            "dark"
-          ],
-          "notes": "MDX body. Cites rule IDs versionless (e.g. [RLSE-04]). tokens: text + unclassed links → coral hover. WRIT-07: at most one not-X-but-Y pivot."
-        },
-        {
-          "id": "z-practice-research-link",
-          "label": "Link to research index (/research)",
-          "role": "nav",
-          "states": [
-            "default",
-            "dark"
-          ],
-          "notes": "DitheredCard. Secondary entry to research; the primary one is the nav. tokens: surface, text, border hover."
-        },
-        {
-          "id": "z-practice-cta",
-          "label": "Get in touch / view work",
-          "role": "job",
-          "states": [
-            "default",
-            "dark"
-          ],
-          "notes": "Secondary exit toward exit-mailto or work-index."
-        }
-      ]
-    },
-    {
       "id": "about",
       "kind": "screen",
       "title": "About",
@@ -581,7 +534,7 @@
       "deep_link": true,
       "url_params": [],
       "code_ref": "pages/about.tsx",
-      "primary_action_id": "act-goto-practice",
+      "primary_action_id": "act-goto-resume",
       "states": [
         "default",
         "dark"
@@ -798,17 +751,7 @@
       "costly": false,
       "irreversible": false,
       "preview_required": false,
-      "screen_id": "practice"
-    },
-    {
-      "id": "act-goto-practice",
-      "verb": "Open practice hub",
-      "target": "practice",
-      "hierarchy": "primary",
-      "costly": false,
-      "irreversible": false,
-      "preview_required": false,
-      "screen_id": "about"
+      "screen_id": "site-shell"
     },
     {
       "id": "act-goto-about",
@@ -899,6 +842,26 @@
       "irreversible": false,
       "preview_required": false,
       "screen_id": "landing"
+    },
+    {
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell",
+      "id": "act-goto-resume",
+      "verb": "Open résumé PDF",
+      "target": "resume"
+    },
+    {
+      "hierarchy": "secondary",
+      "costly": false,
+      "irreversible": false,
+      "preview_required": false,
+      "screen_id": "site-shell",
+      "id": "act-goto-privacy",
+      "verb": "Open privacy notice",
+      "target": "privacy"
     }
   ],
   "flows": [
@@ -928,7 +891,7 @@
     {
       "id": "flow-hire-eval-designer",
       "job": "job-assess-design-judgment",
-      "label": "Land → SIS case → practice → résumé PDF → contact",
+      "label": "Land → SIS case → heuristics canon → résumé PDF → contact",
       "steps": [
         {
           "screen_id": "landing",
@@ -939,12 +902,12 @@
           "branch_label": "semantic-image-search: thesis → incomplete truth → evaluation"
         },
         {
-          "screen_id": "practice",
-          "branch_label": "heuristics canon essay"
+          "screen_id": "research-detail",
+          "branch_label": "heuristics-canon exhibit"
         },
         {
           "screen_id": "resume",
-          "branch_label": "PDF exit via direct URL"
+          "branch_label": "PDF exit from the footer or about"
         },
         {
           "screen_id": "exit-mailto",
@@ -1038,47 +1001,28 @@
           "branch_label": "home / about / research"
         }
       ]
-    },
-    {
-      "id": "flow-practice-research",
-      "job": "job-browse-research",
-      "label": "Practice → research index → exhibit",
-      "steps": [
-        {
-          "screen_id": "practice",
-          "branch_label": "research link"
-        },
-        {
-          "screen_id": "research-index",
-          "branch_label": "card grid"
-        },
-        {
-          "screen_id": "research-detail",
-          "branch_label": "exhibit"
-        }
-      ]
     }
   ],
   "open_questions": [
     "Should the masthead band go terminal-dark (#1c1d21) on the light theme to match ADLC hierarchy, or stay a sunk-paper step so the wordmark stays ink-on-paper? ([COL-04][COL-12][IDNT-05])",
     "Radix Theme is appearance + accentColor cyan + radius medium — it leaks a second palette into OrderBook and any unstyled Radix surface. Freeze it, retune it, or isolate exhibits? ([COL-03][LAY-10])",
     "global.scss hardcodes parchment / #1a1a1a and $electric-ultramarine / $sky-blue / $coral-red outside t(). Token-only palette edit will desync body + unclassed links. ([UI-01][REF-10])",
-    "Footer.tsx exists and is unused — is a site footer in scope for this colour pass, or still not-doing?",
-    "404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?",
-    "SIS screenshots are not captured. Does the case ship with labelled 'screenshot pending' placeholders (designed media_pending state) or is publish gated on media? ([RLSE-04][LAY-10])",
-    "/resume/ has zero inbound links sitewide. Should it be linked from about (named as a PDF, [A11Y-04]) or stay a direct-URL-only exit?",
-    "Resolved: /research stays in the nav and is additionally linked from about and practice. /practice is the demoted item, reachable from body copy (NAV-08).",
-    "Practice essay cites canon rule IDs versionless — do those anchors resolve publicly, or are they internal-only references?"
+    "Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to /resume/. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])",
+    "Resolved: the 404 recovery links now mirror the primary nav — home, work, research, about — so no label points at a route it does not open. ([NAV-11])",
+    "Resolved: the case ships eight ASCII screens drawn from shipped code plus a visible 'Screenshots: pending' note. Publish is not gated on media. ([RLSE-04])",
+    "Resolved: /resume/ is linked from about and from the footer on every page. It remains a leaf with no chrome of its own — a visitor who lands there directly has only the browser back button. ([NAV-11])",
+    "Resolved: /practice is deleted, not demoted. Research stays in the nav and now holds the heuristics-canon entry that the practice hub would have carried. ([NAV-05][WRIT-40])",
+    "Open: the heuristics-canon research entry links the public repository but cites no rule IDs inline. If cases start citing IDs, decide whether the anchors resolve publicly before publishing them. ([WRIT-41])"
   ],
   "not_doing": [
     "Changing GeistMono / Roboto Flex (operator lock)",
     "Importing ADLC green / yellow / pass-fail chips onto the marketing surface (COL-09 thrift; keep coral + royal blue as the only accents)",
     "Recolouring OrderBook bid/ask Radix greens/reds as part of the site palette",
     "Pixel comps or freeform canvas as map SSOT",
-    "Adding a site footer or resurrecting Footer.tsx unless separately scoped",
     "exit-altcontext: AltContext.com link removed from the home hero; no external current-work exit on landing",
     "Removing or redirecting /research/* routes (URLs and the nav entry both stay live)",
-    "Capturing SIS screenshots inside this map slice (tracked as media_pending state, not blocked)"
+    "Capturing SIS screenshots inside this map slice (tracked as media_pending state, not blocked)",
+    "Giving pages/resume.tsx site chrome — it stays a bare PDF viewer route by design"
   ],
   "colour_touchpoints": {
     "identity_accents_keep": {

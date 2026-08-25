@@ -1,6 +1,6 @@
 # UX Map — darce.xyz
 
-> Inventory for `map_ref: darce-xyz` — repositioning revision (Product Designer & Design Technologist for AI and complex systems).
+> Inventory for `map_ref: darce-xyz` — repositioning revision (Design Technologist).
 > Source: `docs/ux-maps/darce-xyz.uxmap.json`
 > `code_ref` paths are relative to the **darce.github.io** repo root.
 > Rendered with `workbay-canvas-mcp ux-map render --format markdown` (mcp-workbay-canvas). The CLI schema only accepts
@@ -17,7 +17,7 @@
 - Inventory every visitor surface before the ADLC colour / hierarchy transplant so token edits have a checklist, not invented IA
 - Name jobs, screens, zones, states, and flows a hiring visitor actually walks
 - Mark which palette tokens each zone already consumes so light/dark proof is relational, not a swatch strip
-- Model the repositioning to 'Product Designer & Design Technologist for AI and complex systems': new nav, new /practice hub, semantic-image-search case first, résumé as PDF exit
+- Model the repositioning to 'Design Technologist': four-item nav, no /practice hub, semantic-image-search case first, heuristics canon filed under research, résumé as PDF exit reachable from about and the footer
 
 ## Jobs
 - `job-evaluate-hire` — Decide whether Daniel is the right hire
@@ -39,7 +39,6 @@
 | `research-index` | screen | `/research` | Research |
 | `project-detail` | screen | `/projects/:slug` | Project case |
 | `research-detail` | screen | `/research/:slug` | Research exhibit |
-| `practice` | screen | `/practice` | Practice |
 | `about` | screen | `/about` | About |
 | `resume` | exit | `/resume/` | Résumé (PDF) |
 | `privacy` | screen | `/privacy` | Privacy |
@@ -63,11 +62,15 @@
 |   - 2×2 theme swatch (form) states=[default]               |
 |   - Detail breadcrumb prev / title / next (nav) states=[d… |
 |   - Page canvas + main landmark (content) states=[default] |
+|   - Footer: name, résumé, privacy, contact (content) stat… |
 +------------------------------------------------------------+
 | ACTIONS                                                    |
 |   [secondary] Go home -> landing                           |
 |   [PRIMARY] Open about -> about                            |
 |   [PRIMARY] Open work hub -> work-index                    |
+|   [PRIMARY] Open research index -> research-index          |
+|   [secondary] Open résumé PDF -> resume                    |
+|   [secondary] Open privacy notice -> privacy               |
 |   [secondary] Toggle light / dark -> appearance            |
 +------------------------------------------------------------+
 | states: default                                            |
@@ -118,7 +121,7 @@
 ```
 +------------------------------------------------------------+
 | Research  [screen]  /research                              |
-| Same card grid as work, different section. Reached from /… |
+| Same card grid as work, different section. Reached from t… |
 +------------------------------------------------------------+
 | ZONES                                                      |
 |   - Research card grid (queue) states=[default,empty]      |
@@ -181,26 +184,6 @@
 +------------------------------------------------------------+
 ```
 
-### Practice (`practice`)
-
-```
-+------------------------------------------------------------+
-| Practice  [screen]  /practice                              |
-| Hub for how judgment is made inspectable: the 'Heuristics… |
-+------------------------------------------------------------+
-| ZONES                                                      |
-|   - Practice framing (title + one-paragraph thesis) (cont… |
-|   - Heuristics Canon essay (content) states=[default]      |
-|   - Link to research index (/research) (nav) states=[defa… |
-|   - Get in touch / view work (job) states=[default]        |
-+------------------------------------------------------------+
-| ACTIONS                                                    |
-|   [secondary] Open research index -> research-index        |
-+------------------------------------------------------------+
-| states: default                                            |
-+------------------------------------------------------------+
-```
-
 ### About (`about`)
 
 ```
@@ -213,7 +196,7 @@
 |   - About article (content) states=[default]               |
 +------------------------------------------------------------+
 | ACTIONS                                                    |
-|   [PRIMARY] Open practice hub -> practice                  |
+|   [secondary] Open résumé PDF -> resume                    |
 +------------------------------------------------------------+
 | states: default                                            |
 +------------------------------------------------------------+
@@ -331,20 +314,20 @@ flowchart TD
   n_project_detail -->|optional featured case| n_exit_mailto
 ```
 
-### Land → SIS case → practice → résumé PDF → contact (`flow-hire-eval-designer`)
+### Land → SIS case → heuristics canon → résumé PDF → contact (`flow-hire-eval-designer`)
 
 ```mermaid
 flowchart TD
-  %% flow: Land → SIS case → practice → résumé PDF → contact job=job-assess-design-judgment
+  %% flow: Land → SIS case → heuristics canon → résumé PDF → contact job=job-assess-design-judgment
   n_landing["Home (screen)"]
   n_project_detail["Project case (screen)"]
   n_landing -->|title/subhead + featured #1| n_project_detail
-  n_practice["Practice (screen)"]
-  n_project_detail -->|semantic-image-search: thesis → incomplete truth → evaluation| n_practice
+  n_research_detail["Research exhibit (screen)"]
+  n_project_detail -->|semantic-image-search: thesis → incomplete truth → evaluation| n_research_detail
   n_resume["Résumé (PDF) (exit)"]
-  n_practice -->|heuristics canon essay| n_resume
+  n_research_detail -->|heuristics-canon exhibit| n_resume
   n_exit_mailto["Mail client (exit)"]
-  n_resume -->|PDF exit via direct URL| n_exit_mailto
+  n_resume -->|PDF exit from the footer or about| n_exit_mailto
 ```
 
 ### Work hub → case → sibling (`flow-browse-work`)
@@ -401,38 +384,26 @@ flowchart TD
   n_exit_404 -->|not found| n_landing
 ```
 
-### Practice → research index → exhibit (`flow-practice-research`)
-
-```mermaid
-flowchart TD
-  %% flow: Practice → research index → exhibit job=job-browse-research
-  n_practice["Practice (screen)"]
-  n_research_index["Research (screen)"]
-  n_practice -->|research link| n_research_index
-  n_research_detail["Research exhibit (screen)"]
-  n_research_index -->|card grid| n_research_detail
-```
-
 ## Open questions
 - Should the masthead band go terminal-dark (#1c1d21) on the light theme to match ADLC hierarchy, or stay a sunk-paper step so the wordmark stays ink-on-paper? ([COL-04][COL-12][IDNT-05])
 - Radix Theme is appearance + accentColor cyan + radius medium — it leaks a second palette into OrderBook and any unstyled Radix surface. Freeze it, retune it, or isolate exhibits? ([COL-03][LAY-10])
 - global.scss hardcodes parchment / #1a1a1a and $electric-ultramarine / $sky-blue / $coral-red outside t(). Token-only palette edit will desync body + unclassed links. ([UI-01][REF-10])
-- Footer.tsx exists and is unused — is a site footer in scope for this colour pass, or still not-doing?
-- 404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?
-- SIS screenshots are not captured. Does the case ship with labelled 'screenshot pending' placeholders (designed media_pending state) or is publish gated on media? ([RLSE-04][LAY-10])
-- /resume/ has zero inbound links sitewide. Should it be linked from about (named as a PDF, [A11Y-04]) or stay a direct-URL-only exit?
-- Resolved: /research stays in the nav and is additionally linked from about and practice. /practice is the demoted item, reachable from body copy (NAV-08).
-- Practice essay cites canon rule IDs versionless — do those anchors resolve publicly, or are they internal-only references?
+- Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to /resume/. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])
+- Resolved: the 404 recovery links now mirror the primary nav — home, work, research, about — so no label points at a route it does not open. ([NAV-11])
+- Resolved: the case ships eight ASCII screens drawn from shipped code plus a visible 'Screenshots: pending' note. Publish is not gated on media. ([RLSE-04])
+- Resolved: /resume/ is linked from about and from the footer on every page. It remains a leaf with no chrome of its own — a visitor who lands there directly has only the browser back button. ([NAV-11])
+- Resolved: /practice is deleted, not demoted. Research stays in the nav and now holds the heuristics-canon entry that the practice hub would have carried. ([NAV-05][WRIT-40])
+- Open: the heuristics-canon research entry links the public repository but cites no rule IDs inline. If cases start citing IDs, decide whether the anchors resolve publicly before publishing them. ([WRIT-41])
 
 ## Not doing
 - Changing GeistMono / Roboto Flex (operator lock)
 - Importing ADLC green / yellow / pass-fail chips onto the marketing surface (COL-09 thrift; keep coral + royal blue as the only accents)
 - Recolouring OrderBook bid/ask Radix greens/reds as part of the site palette
 - Pixel comps or freeform canvas as map SSOT
-- Adding a site footer or resurrecting Footer.tsx unless separately scoped
 - exit-altcontext: AltContext.com link removed from the home hero; no external current-work exit on landing
-- Removing or redirecting /research/* routes (URLs stay live; only the nav entry is dropped)
+- Removing or redirecting /research/* routes (URLs and the nav entry both stay live)
 - Capturing SIS screenshots inside this map slice (tracked as media_pending state, not blocked)
+- Giving pages/resume.tsx site chrome — it stays a bare PDF viewer route by design
 
 ## ASCII — chrome + home (repositioned)
 
@@ -459,22 +430,38 @@ flowchart TD
 states: default | dark | focus_keyboard | reduced_motion
 ```
 
-## ASCII — practice hub
+## ASCII — footer (site-shell, every Layout page)
 
 ```
 +------------------------------------------------------------------+
-| chrome; nav active = none (practice is not a nav item)           |
-+------------------------------------------------------------------+
-| H1 Practice                                                      |
-| thesis paragraph (the obstacle: judgment is invisible in UI)     |
-| ---------------------------------------------------------------- |
-| H2 Heuristics Canon — making product and engineering judgment    |
-|    inspectable            (MDX essay; [RULE-ID] cites)           |
-| ---------------------------------------------------------------- |
-| [ Research index → ]  DitheredCard   (also linked from about)    |
-| [ Get in touch ]  [ View work → ]                                |
+| ...end of main content                                           |
++==================================================================+  <- 2px t('link') rule
+| Daniel Arcé                    [Résumé] | [Privacy] | [Contact]  |  band = t('masthead')
 +------------------------------------------------------------------+
 ```
+
+Mobile (<= $tabletMax) stacks the two rows and left-aligns them:
+
+```
++--------------------------------------+
++======================================+
+| Daniel Arcé                          |
+| [Résumé] | [Privacy] | [Contact]     |
++--------------------------------------+
+```
+
+Interaction notes:
+
+- The footer is outside `#main-content`, so the global link colour in
+  `styles/global.scss` never reaches it and the external-link arrow never
+  decorates the `mailto:`. `Footer.module.scss` restates `t('link')` at rest and
+  `t('border')` plus `wght 600` on hover, so the hover response is colour *and*
+  weight rather than colour alone ([A11Y-06]).
+- `Footer` returns `null` when no provider supplies data. That is the state
+  `pages/resume.tsx` renders in: no `Layout`, so no header, nav, or footer. A
+  visitor who deep-links the résumé has the browser back button and nothing else.
+- The footer is the only in-site link to `/privacy/`, which ships analytics and
+  is listed in `sitemap.xml`.
 
 ## ASCII — SIS case (project-detail, flagship)
 
@@ -508,7 +495,8 @@ states: default | dark | image_error | media_pending
 | z-masthead | `masthead`, `header`, `text` | Value step vs page; optional terminal band |
 | z-primary-nav (4 items) | `link`, `surface`, `border`, `text` | No accent fill; place via weight + selected surface |
 | z-theme-toggle | `surface` `text` `link` `border` | 2×2 remains a live legend of the four identity chips |
-| z-hero-cta / cards / prev-next / practice cards | DitheredCard: `surface` + `border` hover | Coral stays the only hover accent |
+| z-hero-cta / cards / prev-next | DitheredCard: `surface` + `border` hover | Coral stays the only hover accent |
+| z-footer | `masthead` band, 2px `link` top rule, `link` → `border` on hover | Restated in `Footer.module.scss`; outside `#main-content` so global link rules miss it |
 | z-hero-positioning (title + subhead) | `header`, `text` | Hierarchy by weight/size, no colour |
 | z-sis-thesis / z-sis-journey media_pending | placeholder on `inactiveBg` | Placeholder reads as designed, both appearances |
 | z-sis-incomplete-truth | `text`, hairline rules | State never hue-only ([A11Y-06]) |

@@ -14,11 +14,13 @@ const NotFoundPage: NextPageWithLayout = () => {
             </Head>
             <h2>Page not found</h2>
             <p>
-                <a href="/">Back to projects</a>
+                <a href="/">Home</a>
                 {' | '}
-                <a href="/about/">About</a>
+                <a href="/work/">Work</a>
                 {' | '}
                 <a href="/research/">Research</a>
+                {' | '}
+                <a href="/about/">About</a>
             </p>
         </div>
     )
