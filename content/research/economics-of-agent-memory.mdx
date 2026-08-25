@@ -6,7 +6,7 @@ subtitle: 'A pre-registered claim about durable memory and token spend'
 type: 'experiment'
 status: 'registered'
 description: The claim that durable, vendor-agnostic agent memory reduces token spend — stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
-details: Registered, not measured. The hypothesis, the argument for it, and the measurement that would settle it — published before the numbers exist, so the eventual result cannot quietly move the goalposts. One observed anchor, 676,751,332 tokens of junior-fleet traffic in a single repository.
+details: Registered; the measurement has not yet run. The hypothesis, the argument for it, and the measurement that would settle it — published before the numbers exist, so the eventual result cannot quietly move the goalposts. One observed anchor, 676,751,332 tokens of junior-fleet traffic in a single repository.
 tags:
   - Agents
   - Economics
@@ -19,20 +19,20 @@ Durable memory outside the model reduces the tokens an agent spends to reach the
 
 ## The argument
 
-Four mechanisms, in decreasing order of my confidence in them.
+Four mechanisms, ordered by my confidence in them; together they are why I put p ≈ 0.7 on the criterion in the last section being met.
 
-**Repeated mistakes are pure token cost.** A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information — 610 recorded review failures with embedded resolutions. Every one retrieved instead of re-derived is tokens not spent.
+**Repeated mistakes are pure token cost.** A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information — 610 recorded review failures with embedded resolutions. Every one retrieved instead of re-derived is tokens not spent — net of the injected packet's own cost, which is exactly what the measurement below has to settle.
 
 **The memory outlives the context window.** Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax that a bounded projection from durable state replaces at a fraction of the size.
 
 **Vendor-agnostic memory is paid for once.** Because the record is SQLite rather than a vendor's proprietary memory feature, every harness reads the same accumulated state. Work done under one vendor's pricing is legible to all of them; switching agents does not forfeit the memory.
 
-**Subsidised seats change where retrieval should happen.** Flat-rate subscription seats are priced below metered API rates for heavy use. The observed anchor: one repository's junior-worker fleet logged 676,751,332 tokens across 323 recorded turns. At metered per-token rates that traffic bills linearly; on a flat seat its marginal price is zero. Memory amplifies the asymmetry — retrieval from the database front-loads context that would otherwise be re-explored as metered traffic.
+**Subsidised seats change where retrieval should happen.** The observed anchor: one repository's junior-worker fleet logged 676,751,332 tokens across 323 recorded turns, on flat-rate seats priced below what that traffic would have billed metered. At metered per-token rates that traffic bills linearly; on a flat seat its marginal price is zero. Memory amplifies the asymmetry — retrieval from the database front-loads context that would otherwise be re-explored as metered traffic.
 
 ## What would settle it
 
 The measurement is cheap because the instrumentation already exists: every orchestrated turn writes token counts to a `turn_metrics` table, tagged by task and source.
 
-Design: matched task pairs in the same repository — one arm receives the semantic reinjection packet at session start, the control arm starts cold. Primary metric: total tokens per completed task, from `turn_metrics`, not from estimates. Secondary: count of review-failure repeats already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate; anything less, and this entry closes negative.
+Design: ten task pairs in the same repository, matched at assignment on task type and expected diff size — before any outcome is visible — with one arm receiving the semantic reinjection packet at session start and the control arm starting cold. Fixed N; no early stopping. Primary metric: total tokens per completed task, read directly from `turn_metrics`. Secondary: count of review-failure repeats already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate; anything less, and this entry closes negative.
 
-Publishing the design first is the point. The number, when it arrives, will have to live with the criterion written here.
+If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.

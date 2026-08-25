@@ -14,11 +14,11 @@ tags:
   - Research
 ---
 
-## The canonical record is a row, not a vector
+## The canonical record is a row
 
 A coding agent forgets everything at the end of a session. WorkBay, the orchestration layer I use across my repositories, answers that with a database instead of a bigger context window: every task carries a `handoff.db` — a per-repo SQLite file that records decisions with rationales, review findings with their fixes, blockers, verified test results, and archived task snapshots. Across three working repositories that record currently holds 17,584 decisions, 29,914 review findings, and 1,004 archived tasks.
 
-Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. An external model evaluation of the architecture put it the same way — "the vector representation remains an index over the canonical records, rather than becoming the canonical memory itself" ([evaluation transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)). Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
+Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. When I asked ChatGPT to evaluate the architecture, its summary landed on the same rule ([transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)) — agreement, not evidence; the rule stands on the schema, not the endorsement. Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
 
 ## Four layers, in order of authority
 
