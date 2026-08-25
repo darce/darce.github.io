@@ -13,8 +13,17 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
     it('exists with schema-valid frontmatter that sorts first', () => {
         expect(fs.existsSync(file)).toBe(true)
         expect(() => contentItemSchema.parse(data)).not.toThrow()
-        expect(data.index).toBeLessThan(5)
         expect(data.title).toMatch(/Semantic Image Search/)
+        // "sorts first" means first: every sibling project must sort after it
+        const siblings = fs.readdirSync(path.join(process.cwd(), 'content/projects'))
+            .filter(f => f.endsWith('.mdx') && f !== 'semantic-image-search.mdx')
+        expect(siblings.length).toBeGreaterThan(0)
+        for (const sibling of siblings) {
+            const siblingData = matter(fs.readFileSync(
+                path.join(process.cwd(), 'content/projects', sibling), 'utf8')).data
+            expect(data.index, `${sibling} must sort after semantic-image-search`)
+                .toBeLessThan(siblingData.index)
+        }
     })
 
     it('names every designed incomplete-truth state', () => {
@@ -97,6 +106,8 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
 
     it('keeps the external-user evaluation gap explicit and avoids inflated claims', () => {
         expect(content).toMatch(/not yet run/i)
-        expect(content).not.toMatch(/\b(validated|adoption|users love|seamless|leverage)\b/i)
+        // guard the whole file: frontmatter prose (title, description, details)
+        // renders too, so it gets no exemption from the trope check
+        expect(raw).not.toMatch(/\b(validated|adoption|users love|seamless|leverage)\b/i)
     })
 })
