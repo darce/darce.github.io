@@ -3,8 +3,9 @@
 > Companion to `docs/ux-maps/darce-xyz.uxmap.json` (`map_ref: darce-xyz`).
 > Positioning: Product Designer & Design Technologist for AI and complex systems.
 > Deterministic monospace wireframes, ≤70 cols. Rule IDs cite
-> `heuristics-canon/lexicons/*.md`, versionless; every ID below was grepped.
-> Fixed decisions: nav = home · work · practice · about · résumé; featured =
+> `heuristics-canon/lexicons/*.md`, versionless; each ID was read against its
+> rule text — presence in the lexicon is not support for the claim it is cited for.
+> Fixed decisions: nav = home · work · research · about; featured =
 > semantic-image-search → photoshelter → workbay; SIS screenshots not captured
 > (`media_pending` is a designed state, not a gap).
 
@@ -61,32 +62,34 @@ Canon check
 - [A11Y-20] résumé ↗ marks the PDF context change before activation.
 - [COL-02] coral hover proofed on the dithered headshot ground, not only paper.
 
-## 2. Nav bar — five items, active state
+## 2. Nav bar — four items, active state
 
 ```
 +---------------------------------------------------------------------+
-| home    work    practice    about    résumé ↗            [▪▪]       |
+| home    work    research    about                        [▪▪]       |
 |         ‾‾‾‾                                             [▪▪]       |
 |         (active: weight 600 + surface fill, no colour)              |
 +---------------------------------------------------------------------+
   hover  : 2px coral underline slides in under the item
   focus  : 2px ring, offset 2px, same on both themes
   current: aria-current="page"; weight + selected surface carry place
-  résumé : href="/resume/" → PDF; ↗ glyph = leaves the HTML site
-  research: not in nav; /research/* deep links stay live
+  résumé : not in nav; content links /resume/ → PDF; ↗ = leaves HTML site
+  research: in nav; /research/* deep links also round-trip standalone
 ```
 
 Interactivity
 - Hover: coral underline; no fill change (accent thrift).
 - Focus: ring on the anchor, not the li; visible in dark theme against terminal.
-- Keyboard: Tab across five items; Enter activates; arrow keys not needed (native list).
+- Keyboard: Tab across four items; Enter activates; arrow keys not needed (native list).
 - Theme: selected surface = `surface` token; ink = `text`; underline = `border`.
 
 Canon check
 - [A11Y-07] `<nav aria-label="Primary">` + list; active item exposed with `aria-current`.
 - [A11Y-06] active state is weight + surface, never hue alone.
-- [A11Y-20] résumé links change context to PDF and say so.
-- [A11Y-07] /research/* remains addressable even though it left the nav.
+- [A11Y-20] résumé links change context to a PDF download and say so.
+- [NAV-08] /practice is the demoted entry point — reachable from about and
+  from body copy, not the nav; demotion has a destination, not an orphan.
+- [NAV-11] /research/* deep links round-trip: the URL alone restores the article.
 - [COL-09] one accent (coral) and only on hover.
 
 ## 3. SIS case detail — top (hero, at-a-glance, journey strip)
@@ -221,7 +224,7 @@ Interactivity
 Canon check
 - [STRAT-20] intro names the obstacle (invisible judgment) before the method.
 - [WRIT-07] intro contains one pivot at most; audit the essay for stacked ones.
-- [A11Y-07] research link is the single in-site route to `/research` — deep links still work.
+- [NAV-08] the research link is a secondary path to `/research`; the nav is the primary one.
 - [A11Y-07] h1 Practice → h2 essay → h3 sections; no skipped level.
 - [HAI-09] a claim that judgment is "inspectable" is backed by citable rule IDs, not asserted.
 
@@ -292,7 +295,7 @@ canon rule IDs cited above.
 | medium | [RLSE-04] | resume (exit, CLI) | PDF 404 / blocked-download has no designed state; add fallback copy on the `/resume/` route. |
 | medium | [RLSE-04] | project-detail / z-sis-thesis, z-sis-journey, z-sis-incomplete-truth | `media_pending` is modelled; implementation must render a labelled placeholder box, not skip the figure. |
 | medium | [A11Y-20] | site-shell / z-primary-nav "résumé" | Nav link changes context to a PDF; add the ↗ glyph and `aria-label="Résumé (PDF)"`. |
-| medium | [A11Y-07] | practice / z-practice-research-link | /research left the nav; only one in-site link remains. Add a research link from about or the work index. |
+| low | [NAV-08] | practice / z-practice-research-link | Closed: /research is in the primary nav and also linked from about and practice. |
 | medium | [HAI-09] | project-detail / z-sis-evaluation | "experimental, in daily use" is a trust claim; the evaluation section must publish what was measured and the external-user gap. |
 | low | [A11Y-06] | project-detail / z-sis-incomplete-truth | Keep icon + label + copy per state; do not introduce per-state colour when screenshots land. |
 | low | [A11Y-07] | project-detail / z-sis-glance | At-a-glance must be `<table>`/`<dl>`, not styled divs. |

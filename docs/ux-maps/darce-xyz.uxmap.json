@@ -557,7 +557,7 @@
             "default",
             "dark"
           ],
-          "notes": "DitheredCard. Only in-site entry to research now that it left the nav. tokens: surface, text, border hover."
+          "notes": "DitheredCard. Secondary entry to research; the primary one is the nav. tokens: surface, text, border hover."
         },
         {
           "id": "z-practice-cta",
@@ -1077,7 +1077,7 @@
     "404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?",
     "SIS screenshots are not captured. Does the case ship with labelled 'screenshot pending' placeholders (designed media_pending state) or is publish gated on media? ([RLSE-04][LAY-10])",
     "Résumé link exits to a PDF with no site chrome. Should it carry a PDF affordance (arrow/label) so the context change is not a surprise? ([A11Y-20])",
-    "/research left the nav; only /practice links to it. Is one in-site path enough for the research job, or should about/work also link it?",
+    "Resolved: /research stays in the nav and is additionally linked from about and practice. /practice is the demoted item, reachable from body copy (NAV-08).",
     "Practice essay cites canon rule IDs versionless — do those anchors resolve publicly, or are they internal-only references?"
   ],
   "not_doing": [
@@ -1087,7 +1087,7 @@
     "Pixel comps or freeform canvas as map SSOT",
     "Adding a site footer or resurrecting Footer.tsx unless separately scoped",
     "exit-altcontext: AltContext.com link removed from the home hero; no external current-work exit on landing",
-    "Removing or redirecting /research/* routes (URLs stay live; only the nav entry is dropped)",
+    "Removing or redirecting /research/* routes (URLs and the nav entry both stay live)",
     "Capturing SIS screenshots inside this map slice (tracked as media_pending state, not blocked)"
   ],
   "colour_touchpoints": {
