@@ -145,7 +145,7 @@
             "dark",
             "empty"
           ],
-          "notes": "contentinfo landmark, content/footer/footer.mdx via FooterContext. tokens: masthead band, 2px link rule on top, link → border on hover. Sits outside #main-content, so the global link colour in styles/global.scss does not reach it — Footer.module.scss restates it. empty state = Footer returns null when no provider supplies data, which is how pages/resume.tsx renders without one."
+          "notes": "contentinfo landmark, content/footer/footer.mdx via FooterContext. tokens: masthead band, 2px link rule on top, link → border on hover. Sits outside #main-content, so the global link colour in styles/global.scss does not reach it — Footer.module.scss restates it. empty state = Footer returns null when no provider supplies data, which is how pages/resume.tsx renders without one. The Résumé item points at the PDF, not at /resume/."
         }
       ]
     },
@@ -565,12 +565,12 @@
       "id": "resume",
       "kind": "exit",
       "title": "Résumé (PDF)",
-      "purpose": "Serves the résumé as a direct PDF download. Not in the nav and not linked from content; direct-URL only. Leaves the HTML site.",
-      "route": "/resume/",
+      "purpose": "Serves the résumé as a PDF. The footer and About link the file directly so the refresh route never enters their history. /resume/ still resolves for a typed or shared URL and bounces here. Leaves the HTML site.",
+      "route": "/daniel_arce_resume.pdf",
       "job_entry": true,
       "deep_link": true,
       "url_params": [],
-      "code_ref": "pages/resume.tsx",
+      "code_ref": "pages/resume.tsx (bounce at /resume/), public/daniel_arce_resume.pdf",
       "primary_action_id": "act-contact",
       "states": [
         "default",
@@ -584,7 +584,7 @@
           "states": [
             "default"
           ],
-          "notes": "No site chrome or theme inside the PDF. A11Y-07: PDF must carry tagged headings; document title set. Back button is the only return path."
+          "notes": "No site chrome or theme inside the PDF. A11Y-07: PDF must carry tagged headings; document title set. Back returns to the linking page, because the /resume/ bounce is no longer in the path. The bounce page itself offers Home beside the download for anyone who reached it by URL."
         }
       ]
     },
@@ -850,7 +850,7 @@
       "preview_required": false,
       "screen_id": "site-shell",
       "id": "act-goto-resume",
-      "verb": "Open résumé PDF",
+      "verb": "Open résumé PDF (direct file link)",
       "target": "resume"
     },
     {
@@ -1007,10 +1007,10 @@
     "Should the masthead band go terminal-dark (#1c1d21) on the light theme to match ADLC hierarchy, or stay a sunk-paper step so the wordmark stays ink-on-paper? ([COL-04][COL-12][IDNT-05])",
     "Radix Theme is appearance + accentColor cyan + radius medium — it leaks a second palette into OrderBook and any unstyled Radix surface. Freeze it, retune it, or isolate exhibits? ([COL-03][LAY-10])",
     "global.scss hardcodes parchment / #1a1a1a and $electric-ultramarine / $sky-blue / $coral-red outside t(). Token-only palette edit will desync body + unclassed links. ([UI-01][REF-10])",
-    "Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to /resume/. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])",
+    "Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to the résumé PDF. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])",
     "Resolved: the 404 recovery links now mirror the primary nav — home, work, research, about — so no label points at a route it does not open. ([NAV-11])",
     "Resolved: the case ships eight ASCII screens drawn from shipped code plus a visible 'Screenshots: pending' note. Publish is not gated on media. ([RLSE-04])",
-    "Resolved: /resume/ is linked from about and from the footer on every page. It remains a leaf with no chrome of its own — a visitor who lands there directly has only the browser back button. ([NAV-11])",
+    "Resolved: the résumé PDF is linked from about and from the footer on every page, as a direct file link. The /resume/ bounce route is reachable only by typed URL and offers Home beside the download, so its single control is no longer the file the visitor just backed out of. ([NAV-07][NAV-11])",
     "Resolved: /practice is deleted, not demoted. Research stays in the nav and now holds the heuristics-canon entry that the practice hub would have carried. ([NAV-05][WRIT-40])",
     "Open: the heuristics-canon research entry links the public repository but cites no rule IDs inline. If cases start citing IDs, decide whether the anchors resolve publicly before publishing them. ([WRIT-41])"
   ],

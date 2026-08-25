@@ -40,7 +40,7 @@
 | `project-detail` | screen | `/projects/:slug` | Project case |
 | `research-detail` | screen | `/research/:slug` | Research exhibit |
 | `about` | screen | `/about` | About |
-| `resume` | exit | `/resume/` | Résumé (PDF) |
+| `resume` | exit | `/daniel_arce_resume.pdf` | Résumé (PDF) |
 | `privacy` | screen | `/privacy` | Privacy |
 | `mobile-sibling-nav` | overlay | `/projects/:slug \| /research/:slug` | Mobile prev / next |
 | `crash-fallback` | overlay | `*` | Error boundary |
@@ -206,8 +206,8 @@
 
 ```
 +------------------------------------------------------------+
-| Résumé (PDF)  [exit]  /resume/                             |
-| Serves the résumé as a direct PDF download. Not in the na… |
+| Résumé (PDF)  [exit]  /daniel_arce_resume.pdf              |
+| Serves the résumé as a PDF. The footer and About link t…   |
 +------------------------------------------------------------+
 | ZONES                                                      |
 |   - PDF handoff (browser viewer / download) (other) state… |
@@ -327,7 +327,7 @@ flowchart TD
   n_resume["Résumé (PDF) (exit)"]
   n_research_detail -->|heuristics-canon exhibit| n_resume
   n_exit_mailto["Mail client (exit)"]
-  n_resume -->|PDF exit from the footer or about| n_exit_mailto
+  n_resume -->|direct PDF link from the footer or about| n_exit_mailto
 ```
 
 ### Work hub → case → sibling (`flow-browse-work`)
@@ -388,10 +388,10 @@ flowchart TD
 - Should the masthead band go terminal-dark (#1c1d21) on the light theme to match ADLC hierarchy, or stay a sunk-paper step so the wordmark stays ink-on-paper? ([COL-04][COL-12][IDNT-05])
 - Radix Theme is appearance + accentColor cyan + radius medium — it leaks a second palette into OrderBook and any unstyled Radix surface. Freeze it, retune it, or isolate exhibits? ([COL-03][LAY-10])
 - global.scss hardcodes parchment / #1a1a1a and $electric-ultramarine / $sky-blue / $coral-red outside t(). Token-only palette edit will desync body + unclassed links. ([UI-01][REF-10])
-- Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to /resume/. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])
+- Resolved: the footer ships. It is the only in-site link to /privacy/ and one of two to the résumé PDF. It renders on every Layout page; pages/resume.tsx uses no Layout and has none. ([NAV-08][A11Y-04])
 - Resolved: the 404 recovery links now mirror the primary nav — home, work, research, about — so no label points at a route it does not open. ([NAV-11])
 - Resolved: the case ships eight ASCII screens drawn from shipped code plus a visible 'Screenshots: pending' note. Publish is not gated on media. ([RLSE-04])
-- Resolved: /resume/ is linked from about and from the footer on every page. It remains a leaf with no chrome of its own — a visitor who lands there directly has only the browser back button. ([NAV-11])
+- Resolved: the résumé PDF is linked from about and from the footer on every page, as a direct file link. The /resume/ bounce route is reachable only by typed URL and offers Home beside the download, so its single control is no longer the file the visitor just backed out of. ([NAV-07][NAV-11])
 - Resolved: /practice is deleted, not demoted. Research stays in the nav and now holds the heuristics-canon entry that the practice hub would have carried. ([NAV-05][WRIT-40])
 - Open: the heuristics-canon research entry links the public repository but cites no rule IDs inline. If cases start citing IDs, decide whether the anchors resolve publicly before publishing them. ([WRIT-41])
 
@@ -403,7 +403,7 @@ flowchart TD
 - exit-altcontext: AltContext.com link removed from the home hero; no external current-work exit on landing
 - Removing or redirecting /research/* routes (URLs and the nav entry both stay live)
 - Capturing SIS screenshots inside this map slice (tracked as media_pending state, not blocked)
-- Giving pages/resume.tsx site chrome — it stays a bare PDF viewer route by design
+- Giving pages/resume.tsx site chrome — it stays a bare bounce route by design; it carries one Home link, not a header, nav, or footer
 
 ## ASCII — chrome + home (repositioned)
 
@@ -454,12 +454,16 @@ Interaction notes:
 
 - The footer is outside `#main-content`, so the global link colour in
   `styles/global.scss` never reaches it and the external-link arrow never
-  decorates the `mailto:`. `Footer.module.scss` restates `t('link')` at rest and
-  `t('border')` plus `wght 600` on hover, so the hover response is colour *and*
-  weight rather than colour alone ([A11Y-06]).
+  decorates the `mailto:`. `Footer.module.scss` restates `t('link')` as both ink
+  and a `$s-line` bottom stroke at rest, because link ink against footer body
+  text is 2.12:1 light / 1.43:1 dark and colour alone cannot mark a link below
+  3:1. Hover and `:focus-visible` both move the stroke to `t('border')` and add
+  `wght 600`, so pointer and keyboard get the same two-signal response
+  ([A11Y-06]).
 - `Footer` returns `null` when no provider supplies data. That is the state
-  `pages/resume.tsx` renders in: no `Layout`, so no header, nav, or footer. A
-  visitor who deep-links the résumé has the browser back button and nothing else.
+  `pages/resume.tsx` renders in: no `Layout`, so no header, nav, or footer. That
+  route is now typed-URL only — the footer and About link the PDF directly — and
+  its fallback offers Home beside the download rather than re-offering the file.
 - The footer is the only in-site link to `/privacy/`, which ships analytics and
   is listed in `sitemap.xml`.
 
