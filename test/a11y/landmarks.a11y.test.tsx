@@ -1,68 +1,78 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'vitest-axe'
+import Layout from '../../components/layout/Layout'
+import { HeaderDataProvider } from '../../contexts/HeaderContext'
+import { FooterDataProvider } from '../../contexts/FooterContext'
+import { getMdxContent, getMdxIndexContent } from '../../lib/getMdxContent'
+import type { ContentIndexData, MarkdownData } from '../../types'
 
+vi.mock('next/router', () => ({
+    useRouter: () => ({ asPath: '/', push: vi.fn(), prefetch: vi.fn(), events: { on: vi.fn(), off: vi.fn() } }),
+}))
+
+// The landmark structure is only worth asserting against the components that
+// actually ship it. A hand-written fixture drifts silently: it kept asserting a
+// footer landmark for as long as the real Layout emitted none.
 describe('ARIA landmarks and semantic structure', () => {
-    it('site layout has correct landmark structure', async () => {
-        const { container } = render(
-            <div>
-                <a href="#main-content" className="skip-link">Skip to main content</a>
-                <header>
-                    <h1>Daniel Arce</h1>
-                    <nav aria-label="Site navigation">
-                        <a href="/">Work</a>
-                        <a href="/research">Research</a>
-                        <a href="/about">About</a>
-                    </nav>
-                </header>
-                <main id="main-content">
-                    <h2>Projects</h2>
-                    <p>Content here.</p>
-                </main>
-                <footer>
-                    <p>Footer content</p>
-                </footer>
-            </div>
+    let headerData: ContentIndexData[]
+    let footerData: MarkdownData[]
+
+    beforeAll(async () => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: vi.fn().mockImplementation(query => ({
+                matches: false,
+                media: query,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+            })),
+        })
+        headerData = (await getMdxIndexContent({ subDir: 'header' })).parsedMdxArray
+        footerData = (await getMdxContent({ subDir: 'footer' })).parsedMdxArray
+    })
+
+    const renderLayout = () =>
+        render(
+            <HeaderDataProvider initialData={headerData}>
+                <FooterDataProvider initialData={footerData}>
+                    <Layout>
+                        <h2>Projects</h2>
+                        <p>Content here.</p>
+                    </Layout>
+                </FooterDataProvider>
+            </HeaderDataProvider>
         )
 
+    it('the shipped layout has no landmark violations', async () => {
+        const { container } = renderLayout()
         const results = await axe(container)
         expect(results).toHaveNoViolations()
+    })
 
-        // Verify landmark elements are present
+    it('the shipped layout emits every landmark the skip link assumes', () => {
+        const { container } = renderLayout()
+
         expect(container.querySelector('header')).toBeTruthy()
         expect(container.querySelector('main')).toBeTruthy()
         expect(container.querySelector('nav')).toBeTruthy()
         expect(container.querySelector('footer')).toBeTruthy()
 
-        // Verify skip link target exists
+        const skipLink = container.querySelector('.skip-link')
+        expect(skipLink?.getAttribute('href')).toBe('#main-content')
         expect(container.querySelector('#main-content')).toBeTruthy()
     })
 
-    it('navigation has accessible label', async () => {
-        const { container } = render(
-            <nav aria-label="Site navigation">
-                <a href="/">Work</a>
-                <a href="/research">Research</a>
-                <a href="/about">About</a>
-            </nav>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
+    it('the shipped primary nav is named and marks the current page', () => {
+        const { container } = renderLayout()
 
-    it('multiple nav elements have distinct labels', async () => {
-        const { container } = render(
-            <div>
-                <nav aria-label="Site navigation">
-                    <a href="/">Work</a>
-                </nav>
-                <nav aria-label="Project navigation">
-                    <a href="/projects/apple">Apple</a>
-                </nav>
-            </div>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
+        const nav = container.querySelector('nav')
+        expect(nav?.getAttribute('aria-label')).toBeTruthy()
+
+        // asPath is mocked to '/', so home is the one item carrying aria-current
+        const current = container.querySelectorAll('[aria-current="page"]')
+        expect(current).toHaveLength(1)
+        expect(current[0].textContent).toBe('home')
     })
 
     it('images in content have alt text', async () => {
