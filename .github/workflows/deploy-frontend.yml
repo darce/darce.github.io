@@ -39,6 +39,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history so sitemap lastmod derives from per-file commit dates
+          # instead of collapsing to the HEAD commit on a shallow clone.
+          fetch-depth: 0
 
       - name: Setup Node.js, cache dependencies, install dependencies
         uses: ./.github/workflows/setup-node

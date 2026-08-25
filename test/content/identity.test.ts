@@ -8,10 +8,12 @@ const footerPath = path.join(process.cwd(), 'content/footer/footer.mdx')
 const seoPath = path.join(process.cwd(), 'lib/seo.ts')
 
 describe('site identity (Design Technologist)', () => {
-    it('masthead subtitle is Design Technologist', () => {
+    it('masthead subtitle fuses the role with its problem class', () => {
         const raw = fs.readFileSync(mastheadPath, 'utf8')
         const { data } = matter(raw)
-        expect(data.subtitle).toBe('Design Technologist')
+        expect(data.subtitle).toBe(
+            'Design Technologist — AI products, complex systems, accessible interaction'
+        )
     })
 
     it('footer is utility chrome, not a second bio', () => {

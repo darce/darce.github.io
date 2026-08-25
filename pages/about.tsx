@@ -16,7 +16,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
     const aboutContent = aboutData[0]
     const headShotObj = aboutContent.metaData.images ? aboutContent.metaData.images[0] : null
 
-    const aboutPageDescription = 'About Daniel Arcé — product designer and design technologist turning technical complexity into understandable, accessible user-facing systems for AI and data-rich products.'
+    const aboutPageDescription = 'About Daniel Arcé — design technologist turning technical complexity into understandable, accessible user-facing systems for AI and data-rich products.'
 
     return (
         <div className={`aboutPage ${styles.about}`}>

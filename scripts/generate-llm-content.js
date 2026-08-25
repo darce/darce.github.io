@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const { execSync } = require('child_process')
 const matter = require('gray-matter')
 
 const SITE_URL = 'https://darce.xyz'
@@ -144,18 +145,46 @@ function generateLlmsFullTxt(projects, research, about) {
 // Generate sitemap.xml
 // ---------------------------------------------------------------------------
 
-function generateSitemap(projects, research) {
-    const today = new Date().toISOString().split('T')[0]
+const REPO_ROOT = path.join(__dirname, '..')
+const gitDateCache = new Map()
 
+/** Last commit date (YYYY-MM-DD) touching relPath, so lastmod only moves when
+ *  the content does. CI must check out full history (fetch-depth: 0) or every
+ *  shallow clone collapses these to null. */
+function gitLastModified(relPath) {
+    if (gitDateCache.has(relPath)) return gitDateCache.get(relPath)
+    let date = null
+    try {
+        date = execSync(`git log -1 --format=%cs -- "${relPath}"`, {
+            cwd: REPO_ROOT,
+            encoding: 'utf-8',
+        }).trim() || null
+    } catch {
+        date = null
+    }
+    gitDateCache.set(relPath, date)
+    return date
+}
+
+function generateSitemap(projects, research) {
+    const repoDate = gitLastModified('.')
+    const lastmodFor = (relPath) => {
+        const date = relPath ? gitLastModified(relPath) : repoDate
+        if (date) return date
+        console.warn(`sitemap: no git date for ${relPath || 'repo'}, falling back to build date`)
+        return new Date().toISOString().split('T')[0]
+    }
+
+    const staticPages = STATIC_PAGES.map(p => ({ ...p, lastmod: lastmodFor(null) }))
     const dynamicPages = [
-        ...projects.map(p => ({ loc: `/projects/${p.slug}/`, priority: '0.6' })),
-        ...research.map(r => ({ loc: `/research/${r.slug}/`, priority: '0.6' })),
+        ...projects.map(p => ({ loc: `/projects/${p.slug}/`, priority: '0.6', lastmod: lastmodFor(`content/projects/${p.slug}.mdx`) })),
+        ...research.map(r => ({ loc: `/research/${r.slug}/`, priority: '0.6', lastmod: lastmodFor(`content/research/${r.slug}.mdx`) })),
     ]
 
-    const allPages = [...STATIC_PAGES, ...dynamicPages]
+    const allPages = [...staticPages, ...dynamicPages]
     const urls = allPages
-        .map(({ loc, priority }) =>
-            `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${priority}</priority>\n  </url>`
+        .map(({ loc, priority, lastmod }) =>
+            `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <priority>${priority}</priority>\n  </url>`
         )
         .join('\n')
 
