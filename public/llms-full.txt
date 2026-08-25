@@ -1,48 +1,57 @@
 # Daniel Arcé
-Product designer and design technologist, 14+ years shipping software for media, enterprise SaaS, and AI products. Interaction design and accessibility.
+Design technologist building AI and data-rich products across interaction design, accessibility, prototyping, and implementation.
 
 ## About
 Hello, I'm Daniel Arcé.
 
-I'm a product designer and design technologist. My recurring specialty is turning technical complexity into understandable user-facing systems.
+I'm a design technologist. I work on products where the interaction model and the technical model are hard to separate: AI-assisted tools, data-heavy interfaces, accessibility-critical workflows, and prototypes that need to survive contact with real system constraints.
 
-I've shipped user-facing software for more than 14 years across media, consumer platforms, enterprise SaaS, and independent AI products. That work has included MSNBC, Apple, PhotoShelter, and my own products.
+I started in interactive media and design technology, then spent much of my career building front-end systems for media companies, consumer products, and SaaS teams. That engineering depth changed how I design: I can test an interaction against the actual data model, browser or platform behavior, accessibility tree, and failure states before a handoff turns those constraints into surprises.
 
-Accessibility sharpened my discipline around real constraints and falsifiable product quality. Designs are checked against what a user can actually do.
+At PhotoShelter I combined product R&D with accessibility work on a digital-asset-management platform serving more than 80,000 users. The accessibility program helped protect $9.2M in institutional ARR, while a workflow-automation prototype exposed integration problems early enough to reduce later implementation work by roughly 30%.
 
-Recent AI work extends that discipline to uncertainty, provenance, privacy, correction, and failure states. The product must show what it does not know.
+My recent independent work moves further upstream. Semantic Image Search is a local-first macOS product for searching and exploring photo libraries with on-device models. WorkBay and its adjacent design R&D treat workflow and interaction structure as durable, versioned state rather than information that has to be reconstructed from a chat transcript or codebase on every pass.
 
-My code fluency with React, TypeScript, SwiftUI, and Python lets product hypotheses meet real system constraints early. Working software is part of the design process, not a later phase.
+I also maintain [Heuristics Canon](https://github.com/darce/heuristics-canon), a source-linked set of decision rules I use to review product, interaction, accessibility, AI, and engineering work. The useful part is not the size of the corpus; it is that a design claim can point to a rule, a source, and the artifact that changed because of it.
 
-What I bring:
-- **Semantic Image Search** — a native macOS local-first AI photo search product designed and built end to end, with explicit incomplete-data states.
-- **PhotoShelter** — R&D prototyping that surfaced integration issues early (an internal estimate of roughly 30% less downstream implementation effort) and WCAG remediation that protected $9.2M ARR across a platform with 80,000+ users.
-- **MSNBC** — senior design technologist who prototyped and shipped the live video platform for msnbc.com.
-- [**Heuristics Canon**](/practice/) — a versioned library of design and engineering rules with stable IDs, so a critique names the exact rule it leans on. It decided the visible media-pending state in Semantic Image Search.
+I'm most interested in senior product and design-engineering work where ambiguity is real, the interface has to explain complex system behavior, and a prototype is expected to answer product questions rather than decorate them.
 
-### Independent product R&D
-
-My independent products include AltContext (context-aware alt text for media systems), Semantic Image Search, and WorkBay.
-
-I'm interested in product design for AI and complex systems, design technology, accessibility, media and content platforms.
-
-For related writing, see the [research index](/research/).
-
-Get in touch: [daniel.arce@gmail.com](mailto:daniel.arce@gmail.com)
+[Get in touch](mailto:daniel.arce@gmail.com) · [Résumé](/resume/)
 
 Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 
 ## Projects
 
-### Semantic Image Search: Local-First AI Photo Search & Exploration
-*Independent product R&D · macOS*
+### Semantic Image Search
+*Local-first AI photo search and exploration*
 Year: 2026
 Tags: Product Design, Interaction Design, Human-AI Interaction, SwiftUI, Core ML, Accessibility
-Summary: A native macOS app that searches a photo library by meaning, keeps every image on the machine, and says plainly when its data is incomplete.
+Summary: Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.
 
-## Search
+**How do you make local AI search useful when the system cannot assume the library is complete?**
 
-A photo library holds more than its folder names record: which subjects keep recurring, and where the photos were taken. Cloud photo services can search that material, but only after the library has been uploaded. This app runs the models on the Mac instead, within 8 GB of memory. It reads only the folders the person has chosen, and gallery images stay on the device.
+I designed and built a native macOS photo-search product that keeps gallery processing on-device and makes missing, partial, or unavailable data visible instead of folding it into a confident result.
+
+## Final product
+
+> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
+
+## At a glance
+
+- **Role** — Independent product R&D; designed and built end to end, from interaction design through SwiftUI implementation.
+- **Platform** — Native macOS.
+- **Constraint** — Runs within 8 GB on Apple Silicon; gallery images stay on the device.
+- **Status** — Expert and adversarial review complete; testing with outside users not yet run.
+
+## Problem
+
+Photo libraries contain more meaning than filenames and folders expose, but cloud search creates a privacy boundary and local models introduce their own limits. A useful local product has to answer two questions at once: can the system find meaningful relationships, and can the interface tell the truth when its view of the library is incomplete?
+
+This app runs the models on the Mac, within 8 GB of memory. It reads only the folders the person has chosen, and gallery images stay on the device.
+
+## Core journey
+
+Choose a folder, index it, search by meaning, inspect a result, then move into Similarity, Places, or Timeline to explore relationships the original query did not express.
 
 ### Cold start and indexing
 
@@ -97,7 +106,7 @@ The meter shows how far indexing has got and how far it has to go. Cancelling le
 
 Results are ordered by nearness to the query. Position carries the ranking; raw cosine scores are not shown as if they were confidence. When nothing is near, the grid gives way to a "No close matches" state instead of a weakly ranked list.
 
-## Inspection
+### Inspection
 
 Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
 
@@ -125,9 +134,89 @@ Selecting a photo opens the facts behind the result, so a machine ranking can be
 
 Each label sits with its value, and the details panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule; it never fetches tiles.
 
-## Exploration
+## Designing incomplete truth
 
-Three views share one selection. Similarity shows what else looks like the selected photo, Places shows where the selected photos were taken, and Timeline shows when. Moving between them keeps the selection, so the frame changes while the anchor does not, and each view reports how much of the selection it can show.
+"No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim.
+
+Each condition below is worded for its cause and offers a way out of it.
+
+No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
+
+No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
+
+Model unavailable means the local model is absent or unreadable. Search names the missing package. A bare "no results" would blame the photos for a missing file.
+
+Partial library covers an index interrupted before it finished and metadata that exists for only part of the collection. The affected views are scoped to what was read and say why the rest is missing.
+
+Unavailable volume or permission covers an offline disk and a folder the app was denied. Either is reported as unreachable, which is different from searched and irrelevant.
+
+Experimental marks machine-derived behaviour that is still preliminary, so it does not carry the same authority as the rest of the app.
+
+**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity | Places | Timeline ]                                       │
+│ ⚠ 312 photos were never opened: their files are not where the library    │
+│   says they are, usually a volume that is not plugged in. Dates and      │
+│   places describe the rest of the library, not all of it.                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
+
+**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
+
+```text
+┌─ Model folder ───────────────────────────────────────────────────────────┐
+│ Where the exported CLIP and MobileSAM packages live. The object detector │
+│ ships inside the app, so detection works even when this folder is        │
+│ missing; search does not.                                                │
+│                                                                          │
+│ /Volumes/Butter/cache/sis-coreml-export                                  │
+│ This folder is not readable — an unmounted disk, or models that were     │
+│ never exported there. Search will report the missing package by name.    │
+│                                                                          │
+│ ( Choose model folder… )   ( Reset to default )                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ Settings ───────────────────────────────────────────────────────────────┐
+│ Library folders                                                          │
+│   ~/Pictures/2021-iceland                              (Remove)          │
+│   + Open Folder…                                                         │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Memory                                                                   │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Models                                                                   │
+│                                                                          │
+│ Content                                                                  │
+│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
+│   depicts. This app has no explicit-content classifier, so nothing is    │
+│   filtered out and nothing is certified safe — search matches every      │
+│   indexed photo on the same terms, and a generated layer name may        │
+│   describe a photo plainly.                                              │
+│                                                                          │
+│ Local layer names                                                        │
+│   ☐ Ask local Ollama to name unsure layers                               │
+│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
+│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
+│     device.                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
+
+## Similarity, Places, and Timeline
+
+Three views share one selection. Moving between them keeps the selection, so the frame changes while the anchor does not, and each view reports how much of the selection it can show.
+
+### Similarity
+
+The Similarity badge starts at 47, matching the selected set. After the Places map selection narrows, it reads 38.
 
 ### Places
 
@@ -219,112 +308,36 @@ The badge counts differ on purpose: 47 photos are selected and 41 of them have c
 
 The breadcrumb records the window that was asked for; the range line states what the chart draws. Undated photos sit beside the axis with their own count; they are not dropped. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
 
-## Incomplete states
-
-Photo search fails in more than one way, and a single "no results" message would hide which one happened. Each condition below is worded for its cause and offers a way out of it.
-
-No folder yet is the start state. Treating it as an ordinary empty result would imply that an existing library had been searched.
-
-No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
-
-Model unavailable means the local model is absent or unreadable. Search names the missing package. A bare "no results" would blame the photos for a missing file.
-
-Partial library covers an index interrupted before it finished and metadata that exists for only part of the collection. The affected views are scoped to what was read and say why the rest is missing.
-
-Unavailable volume or permission covers an offline disk and a folder the app was denied. Either is reported as unreachable, which is different from searched and irrelevant.
-
-Experimental marks machine-derived behaviour that is still preliminary, so it does not carry the same authority as the rest of the app.
-
-**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are not where the library    │
-│   says they are, usually a volume that is not plugged in. Dates and      │
-│   places describe the rest of the library, not all of it.                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
-
-**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
-
-## Accessibility
-
-Keyboard operation and VoiceOver were designed in from the start rather than added afterwards. Every state above has spoken wording, the partial-library caveat is announced when it appears, and the Explore views keep their viewpoint across tab changes so a keyboard user is not returned to the top of the map or chart on every switch.
-
 ## Evaluation
 
 ### Technical evidence
 
 Memory and runtime behaviour were measured against an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed, and automated tests cover the core behaviour.
 
-### Expert review
+### Interaction and accessibility review
 
-A whole-product UX map framed the review, with a question attached to each screen to isolate one interaction risk at a time. Accessibility review covered keyboard operation and VoiceOver announcements; adversarial review went after the privacy claims and the failure states. Automated checks that changed state and then read the view caught places where the display had not followed the change.
+A whole-product UX map framed the review, with a question attached to each screen to isolate one interaction risk at a time. Adversarial review went after the privacy claims and the failure states. Automated checks that changed state and then read the view caught places where the display had not followed the change.
 
-### External users
+Keyboard operation and VoiceOver were designed in from the start rather than added afterwards. Every state above has spoken wording, the partial-library caveat is announced when it appears, and the Explore views keep their viewpoint across tab changes so a keyboard user is not returned to the top of the map or chart on every switch.
+
+### External usability evidence
 
 Not yet run. This is the open evidence gap: a task-based study with three to five people.
 
-### What the reviews changed
+## What changed
 
 - Switching Explore tabs reset the viewpoint, so orientation was lost on every switch. Viewpoint state moved to the container, and a regression check now covers tab changes.
 - Partial-library plots read as complete-library truth. They gained the scoped, cause-specific caveat above, with a VoiceOver announcement, which the accessibility review then confirmed.
 - A timeline selection could outlive the axis it referred to and point at nothing. Selection state is now cleared whenever the axis changes, and a mutation check covers it.
 
-## Limits
+## Current evidence gap
 
 The app works end to end on the machine it was designed for, with a recorded review trail. It has not been used by anyone outside the review, and it has not been measured on a library larger than the test corpus. The next step is the user study. Its first question is whether people can form useful queries and read the caveats correctly.
 
-> **Screenshots: pending.** The screens above are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
+The next evidence gap is external usability. The product has been reviewed against implementation, accessibility, and adversarial criteria; it still needs observed task performance with people who did not build it.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
-*Enterprise DAM · 80,000+ users*
+*Product R&D and accessibility for a large DAM platform*
 Year: 2021
 Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
 Summary: R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG remediation that protected $9.2M ARR across a media platform serving 80,000+ users and 1B+ files.
@@ -362,7 +375,7 @@ The hardest part was keyboard support across Shadow DOM-based components. Becaus
 I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
 
 ### WorkBay: State for Coding Agents
-*Open-source developer tooling · AI workflow product design*
+*Durable workflow and interaction state for coding agents*
 Year: 2026
 Tags: Product Design, AI Workflow Design, Developer Tooling, Coding Agents, MCP, Python
 Summary: Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
@@ -408,7 +421,7 @@ I prototyped and developed what was reportedly the marketing department’s firs
 The email production workflow was manual and repetitive, so I built a set of CLI tools in Node.js, Bash, and Gulp to automate build, preview, and deployment steps for direct email campaigns. This reduced turnaround time and made campaign production more repeatable.
 
 ### MSNBC: Video Platform Prototyping & Launch
-*Broadcast Media Platform*
+*Design technology and rapid product prototyping*
 Year: 2014
 Tags: Front-End, AngularJS, Drupal, SCSS, JavaScript, Media Platform
 Summary: Prototyped and shipped a live video platform under a six-month deadline for a major broadcast news network
@@ -486,6 +499,25 @@ A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motio
 I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. The site also uses self-hosted video with caching optimizations to keep load times low without relying on third-party embeds.
 
 ## Research
+
+### Heuristics Canon
+*Source-linked decision rules for product and engineering review*
+Tags: Design Systems, Accessibility, Research
+Summary: A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
+
+## How a rule is written
+
+Every rule names a trigger, the check that trigger forces, and a source. The trigger is the move you were about to make; the check is the question that move has to survive; the source is the study, specification, or shipped artifact that earns the rule its place. A rule with no source does not enter the corpus.
+
+## Why the IDs are stable
+
+The IDs do not get renumbered, so a critique written against an earlier revision still resolves. That is the difference between a style guide and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the artifact records which rule changed it.
+
+## Where it is used
+
+The canon is cited by rule ID inside the product cases on this site, but only where a rule changed a decision. It is what put the visible media-pending state into Semantic Image Search instead of letting the case imply screenshots that do not exist.
+
+The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 
 ### 3D Without Canvas or WebGL
 *Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL*
