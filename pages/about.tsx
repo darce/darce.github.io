@@ -72,11 +72,13 @@ AboutPage.getLayout = (page: ReactElement) => {
 export const getStaticProps = async () => {
     const aboutProps = await getMdxContent({ subDir: 'about' })
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
+    const footerProps = await getMdxContent({ subDir: 'footer' })
 
     return {
         props: {
             aboutData: aboutProps.parsedMdxArray,
             headerData: headerProps.parsedMdxArray,
+            footerData: footerProps.parsedMdxArray,
         }
     }
 }

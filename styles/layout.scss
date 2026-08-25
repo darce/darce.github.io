@@ -123,6 +123,15 @@
         }
     }
 
+    .footer {
+        margin-top: $s-x-large;
+        padding: $s-large $s-x-large;
+
+        @media (max-width: $tabletMax) {
+            padding: $s-large;
+        }
+    }
+
     .singleColumn {
         display: block;
         max-width: 640px;

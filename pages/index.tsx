@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { NextPageWithLayout } from './_app'
-import { getMdxIndexContent } from '../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
 import { ContentIndexData, MetaImage } from '../types'
 import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
@@ -155,6 +155,7 @@ Landing.getLayout = (page: ReactElement) => {
 export const getStaticProps = async () => {
     const projectsProps = await getMdxIndexContent({ subDir: 'projects' })
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
+    const footerProps = await getMdxContent({ subDir: 'footer' })
 
     const featuredProjects = FEATURED_SLUGS
         .map(slug => projectsProps.parsedMdxArray.find(p => p.slug === slug))
@@ -164,6 +165,7 @@ export const getStaticProps = async () => {
         props: {
             featuredProjects,
             headerData: headerProps.parsedMdxArray,
+            footerData: footerProps.parsedMdxArray,
         }
     }
 }

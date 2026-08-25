@@ -3,7 +3,7 @@ import { GetStaticProps, GetStaticPaths } from 'next'
 import Head from 'next/head'
 import type { NextPageWithLayout } from '../_app'
 import { parseMarkdownFile } from '../../lib/markdownUtils'
-import { getMdxIndexContent } from '../../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../../lib/getMdxContent'
 import { ContentIndexData, MarkdownData } from '../../types'
 import Layout from '../../components/layout/Layout'
 import SectionView from '../../components/features/SectionView/SectionView'
@@ -20,6 +20,7 @@ interface SectionPageProps {
     section: ContentSection
     selectedItem: MarkdownData
     items: ContentIndexData[]
+    footerData: MarkdownData[]
 }
 
 const SectionPage: NextPageWithLayout<SectionPageProps> = ({ section, selectedItem, items }) => {
@@ -127,6 +128,7 @@ export const getStaticProps: GetStaticProps<SectionPageProps> = async ({ params 
 
     // Get header data for Layout
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
+    const footerProps = await getMdxContent({ subDir: 'footer' })
     // Get all items for this section's Menu navigation
     const sectionProps = await getMdxIndexContent({ subDir: section })
 
@@ -145,6 +147,7 @@ export const getStaticProps: GetStaticProps<SectionPageProps> = async ({ params 
             },
             items: allItems,
             headerData: headerProps.parsedMdxArray,
+            footerData: footerProps.parsedMdxArray,
             breadcrumb: metaData.title ?? null,
             breadcrumbPrev: prevItem
                 ? { href: `/${section}/${prevItem.slug}`, title: prevItem.metaData.title ?? prevItem.slug }

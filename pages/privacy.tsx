@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import Head from 'next/head'
 import type { NextPageWithLayout } from './_app'
 import Layout from '../components/layout/Layout'
-import { getMdxIndexContent } from '../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
 import { SITE_URL, SITE_NAME } from '../lib/seo'
 
 const PrivacyPage: NextPageWithLayout = () => {
@@ -82,9 +82,11 @@ PrivacyPage.getLayout = (page: ReactElement) => {
 
 export const getStaticProps = async () => {
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
+    const footerProps = await getMdxContent({ subDir: 'footer' })
     return {
         props: {
             headerData: headerProps.parsedMdxArray,
+            footerData: footerProps.parsedMdxArray,
         },
     }
 }

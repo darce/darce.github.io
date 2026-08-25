@@ -1,0 +1,46 @@
+@import '../../../styles/vars.scss';
+
+.footer {
+    @include themeComponent($themes) {
+        background-color: t('masthead');
+        // 2px decorative stroke, the same rule the nav underline uses at rest
+        border-top: 2px solid t('link');
+    }
+}
+
+.footerInner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $s-large;
+    font-size: 0.85rem;
+    line-height: 1.4rem;
+
+    p {
+        margin: 0;
+    }
+
+    // Footer links sit outside #main-content, so the global link colour never
+    // reaches them. Restate it here rather than widening the global selector.
+    a {
+        @include themeComponent($themes) {
+            color: t('link');
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                font-variation-settings: 'wght' 600;
+
+                @include themeComponent($themes) {
+                    color: t('border');
+                }
+            }
+        }
+    }
+
+    @media (max-width: $tabletMax) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $s-small;
+    }
+}

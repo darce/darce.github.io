@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
 import type { NextPageWithLayout } from '../_app'
-import { getMdxIndexContent } from '../../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../../lib/getMdxContent'
 import { ContentIndexData } from '../../types'
 import Layout from '../../components/layout/Layout'
 import SectionCards from '../../components/features/SectionCards/SectionCards'
@@ -55,11 +55,13 @@ Research.getLayout = (page: ReactElement) => {
 export const getStaticProps = async () => {
     const researchProps = await getMdxIndexContent({ subDir: 'research' })
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
+    const footerProps = await getMdxContent({ subDir: 'footer' })
 
     return {
         props: {
             researchData: researchProps.parsedMdxArray,
             headerData: headerProps.parsedMdxArray,
+            footerData: footerProps.parsedMdxArray,
         }
     }
 }

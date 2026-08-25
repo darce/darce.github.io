@@ -14,9 +14,14 @@ describe('site identity (Design Technologist)', () => {
         expect(data.subtitle).toBe('Design Technologist')
     })
 
-    it('footer leads with Design technologist', () => {
+    it('footer is utility chrome, not a second bio', () => {
         const raw = fs.readFileSync(footerPath, 'utf8')
-        expect(raw).toMatch(/^Design technologist\./)
+        // The masthead already names the role on every page; a footer thesis
+        // would restate it directly beneath the hero (WRIT-40).
+        expect(raw).toContain('](/resume/)')
+        expect(raw).toContain('](/privacy/)')
+        expect(raw).toContain('mailto:daniel.arce@gmail.com')
+        expect(raw).not.toMatch(/design technologist\./i)
     })
 
     it('does not retain the two-headed identity string', () => {
