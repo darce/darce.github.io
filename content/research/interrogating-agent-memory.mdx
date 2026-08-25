@@ -5,7 +5,7 @@ title: 'Five Questions an Agent Cannot Answer from Context'
 subtitle: 'What semantic search over durable state gets used for in practice'
 type: 'note'
 status: 'measured'
-description: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually answers, each grounded in what the record holds.
+description: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually gets asked, each grounded in what the record holds.
 details: An observational readout of production handoff databases in daily use. Five recurring uses of semantic search over durable state, each grounded in what the record holds.
 tags:
   - Agents
@@ -17,7 +17,7 @@ Everything below is read from `handoff.db` files in daily production use; [the s
 
 ## Where is the core problem?
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture rather than at the day's diff.
+Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture.
 
 <Diagram
     src="/images/research/memory-window.svg?v=1"
@@ -27,11 +27,11 @@ Review verdicts accumulate per repository, and their distribution is diagnostic.
 
 ## Has this fix been found before?
 
-The index covers fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a guard clause or a test shape discovered once is findable by meaning when a differently-worded version of the same problem returns.
+The index covers fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns.
 
 ## Are we relitigating a settled decision?
 
-Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent gets the ruling and the reasoning behind it, and cites the decision instead of re-arguing it. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full token cost. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard, aimed at judgment instead of history.
+Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full cost. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
 ## Is "done" actually done?
 
@@ -39,7 +39,7 @@ A claim of completion checks against rows: verified test results and recorded re
 
 ## What has already been tried?
 
-Blockers and abandoned approaches persist past the session that hit them. One of the most expensive sentences in agent-assisted development is "let me try a different approach," aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
+Blockers and abandoned approaches persist past the session that hit them. An expensive sentence in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw.
 
 ## Scope
 

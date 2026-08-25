@@ -5,7 +5,7 @@ title: 'Memory Outside the Model'
 subtitle: 'Durable agent state in SQLite, with embeddings as the index'
 type: 'method'
 status: 'running'
-description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read. Structured rows are the canonical record; semantic embeddings are an index over them, never the memory itself.
+description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
 details: WorkBay stores canonical agent workflow state in a per-repo SQLite database and indexes selected fields as embeddings. The structured row stays authoritative; the vector is only a way to find it again.
 tags:
   - Agents
@@ -33,23 +33,23 @@ A coding agent works inside a context window: the model's working memory, large 
 
 The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." Which model draws the space matters less than what the result is allowed to be: an index card, not the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time. The vector is an index over the canonical record. It is never the record.
+So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." Which model draws the space matters less than what the result is allowed to be: an index card, not the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
 
 ## Layers of authority
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search over them answers deterministically, with SQL and full-text queries. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session.
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session.
 
 <Diagram
     src="/images/research/memory-layers.svg?v=1"
     alt="Four stacked layers narrowing downward: rows as the canonical record, exact search with SQL and full text, meaning search with embeddings, and the packet the next session reads. A small card beside the embeddings layer points back up to the rows."
-    caption="Authority flows downward. Every layer below the rows is a way of finding them, never a replacement for them."
+    caption="Authority flows downward. Every layer below the rows resolves back to them."
 />
 
-The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, which makes the fence structural rather than a matter of discipline.
+The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema.
 
 ## What the memory leans toward
 
-The embedded record is not a chat transcript. Roughly four of every five embedded entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. That weighting is the design working as intended, because these are exactly the things a fresh session cannot see and will otherwise re-derive at full cost.
+The weighting of the embedded record is deliberate. Roughly four of every five entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. These are exactly the things a fresh session cannot see and would otherwise re-derive at full cost.
 
 ## The boundary
 
@@ -61,7 +61,7 @@ The memory is private by default. `handoff.db` never enters version control; the
     caption="One gate out, and it is deliberate. The path into the public repository stays closed."
 />
 
-The memory is also portable. Because the record is plain SQLite, any harness that can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Switching vendors does not forfeit it.
+The memory is also portable. Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Switching vendors does not forfeit it.
 
 ## Status
 
