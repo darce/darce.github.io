@@ -1,8 +1,9 @@
+import siteMeta from './siteMeta.json'
+
 export const SITE_URL = 'https://darce.xyz'
 export const SITE_NAME = 'Daniel Arcé'
 export const SITE_TITLE = 'Daniel Arcé — Design Technologist'
-export const SITE_DESCRIPTION =
-    'Design technologist building AI and data-rich products across interaction design, accessibility, prototyping, and implementation.'
+export const SITE_DESCRIPTION = siteMeta.description
 
 export const personJsonLd = {
     '@context': 'https://schema.org',

@@ -4,7 +4,7 @@ const matter = require('gray-matter')
 
 const SITE_URL = 'https://darce.xyz'
 const SITE_NAME = 'Daniel Arcé'
-const SITE_DESCRIPTION = 'Design technologist building AI and data-rich products across interaction design, accessibility, prototyping, and implementation.'
+const SITE_DESCRIPTION = require('../lib/siteMeta.json').description
 const CONTACT = {
     email: 'daniel.arce@gmail.com',
     github: 'https://github.com/darce',
