@@ -5,36 +5,42 @@ title: 'Five Questions an Agent Cannot Answer from Context'
 subtitle: 'What semantic search over durable state gets used for in practice'
 type: 'note'
 status: 'measured'
-description: An observational readout of three production handoff databases — the five recurring questions that semantic search over durable agent state actually answers, with the record counts behind each one.
-details: An observational readout of three production handoff databases — 2,384 recorded review runs, 29,914 findings, 17,584 decisions. Five recurring uses of semantic search over durable state, each grounded in what the record holds.
+description: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually answers, each grounded in what the record holds.
+details: An observational readout of production handoff databases in daily use. Five recurring uses of semantic search over durable state, each grounded in what the record holds.
 tags:
   - Agents
   - Embeddings
   - Research
 ---
 
-Every count below is read directly from three production `handoff.db` files ([the system itself is described separately](/research/agent-memory/)). This is an observational readout of how the memory gets interrogated, not a controlled experiment — the counts are measured, the usefulness claims are testimony from daily use.
+Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose.
 
 ## Where is the core problem?
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. Across the three databases, 2,384 review runs recorded 610 failures — but not evenly. The smallest project failed 42 of its 56 recorded runs. A fresh agent session sees one failing review; the database sees a 75% failure rate concentrated in one project.
+Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture rather than at the day's diff.
+
+<Diagram
+    src="/images/research/memory-window.svg?v=1"
+    alt="A tall column of stacked records with failed reviews marked in coral, clustered in one band. A small bracket spans the two records one session sees; a bracket down the whole column spans what the record holds."
+    caption="The cluster does not exist inside any single session. It only exists in the record."
+/>
 
 ## Has this fix been found before?
 
-The largest index embeds 9,025 resolution notes and 7,990 fix descriptions. When a new finding lands, semantic search runs over the fixes as well as the failures — so an improvement pattern discovered once (a guard, a schema constraint, a test shape) is findable by meaning when a differently-worded version of the same problem returns.
+The index covers fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a guard clause or a test shape discovered once is findable by meaning when a differently-worded version of the same problem returns.
 
 ## Are we relitigating a settled decision?
 
-5,944 decision rationales are embedded in the largest repo, 17,584 decisions recorded overall. Before an agent re-opens an architectural question, the rationale index is searched; if the question was settled, the agent gets the decision and the *why*, and cites it instead of re-arguing it. The failure mode this guards against is specific to agents: a model that cannot see a past debate can happily reprise both sides of it at full token cost.
+Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent gets the ruling and the reasoning behind it, and cites the decision instead of re-arguing it. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full token cost. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard, aimed at judgment instead of history.
 
 ## Is "done" actually done?
 
-The database keeps verified test results and review verdicts as rows, so a claim of completion checks against the record. Semantic search covers the softer half of the same question — whether a proposed solution was already discussed — because prior discussion rarely reuses the same words.
+A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words.
 
 ## What has already been tried?
 
-Blockers and abandoned approaches persist past the session that hit them: 476 blocker descriptions are embedded across the two largest repos, and 1,004 archived task snapshots keep the shape of finished and failed work. A costly sentence in agent-assisted development is "let me try a different approach" aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
+Blockers and abandoned approaches persist past the session that hit them. One of the most expensive sentences in agent-assisted development is "let me try a different approach," aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
 
 ## Scope
 
-What this note does not show: that any of this saves money or tokens. That claim has a different evidence tier and [its own pre-registered entry](/research/economics-of-agent-memory/).
+What this note does not show: that any of this saves money or tokens. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).

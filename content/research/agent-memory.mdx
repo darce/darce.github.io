@@ -5,8 +5,8 @@ title: 'Memory Outside the Model'
 subtitle: 'Durable agent state in SQLite, with embeddings as the index'
 type: 'method'
 status: 'running'
-description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read — structured rows as the canonical record, 58,838 semantic embeddings as an index over them, never as the memory itself.
-details: WorkBay stores canonical agent workflow state in a per-repo SQLite database and indexes selected fields as embeddings. The structured row stays authoritative; the vector is only a way to find it. 58,838 vectors across three working repositories, gte-base-en-v1.5, 768 dimensions.
+description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read. Structured rows are the canonical record; semantic embeddings are an index over them, never the memory itself.
+details: WorkBay stores canonical agent workflow state in a per-repo SQLite database and indexes selected fields as embeddings. The structured row stays authoritative; the vector is only a way to find it again.
 tags:
   - Agents
   - SQLite
@@ -14,24 +14,57 @@ tags:
   - Research
 ---
 
-## The canonical record is a row
+> **What this is:** a description of the memory my coding agents share: a small database that outlives their sessions, and the rules that keep it trustworthy.
+> **What this is not:** a measured claim that it saves money. That claim is [registered separately](/research/economics-of-agent-memory/), with a criterion it has to survive.
 
-A coding agent forgets everything at the end of a session. WorkBay, the orchestration layer I use across my repositories, answers that with a database instead of a bigger context window: every task carries a `handoff.db` — a per-repo SQLite file that records decisions with rationales, review findings with their fixes, blockers, verified test results, and archived task snapshots. Across three working repositories that record currently holds 17,584 decisions, 29,914 review findings, and 1,004 archived tasks.
+## A session forgets everything
 
-Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. When I asked ChatGPT to evaluate the architecture, its summary landed on the same rule ([transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)) — agreement, not evidence; the rule stands on the schema, not the endorsement. Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
+A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-## Four layers, in order of authority
+WorkBay, the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. The next session starts from a small packet drawn out of that record instead of starting cold.
 
-The system separates what a session knows into four layers. Authoritative structured state: the SQLite rows themselves. Deterministic retrieval: SQL and full-text search over those rows — the database carries FTS indexes for decisions, findings, blockers, and actions. Semantic retrieval: cosine similarity over the embedded fields, for the question worded differently than the record. Bounded projection: a size-limited packet of the most relevant records, injected into whichever agent picks up the task.
+<Diagram
+    src="/images/research/memory-loop.svg?v=1"
+    alt="Session A writes decisions, findings, and results into handoff.db, a single database file in the repo, while its own context is erased when it ends. A small packet drawn from the database seeds session B."
+    caption="The context dies with the session. The record survives it, and seeds the next one."
+/>
 
-The order matters. Cosine similarity gets permissive as the index grows — at 34,300 vectors in the largest repo, an unfiltered nearest-neighbor query will always return *something*. So semantic search runs behind hard metadata filters first; the index's own primary key is `(entity_kind, entity_id)` with a covering index on `(task_ref, entity_kind)`, which makes the pre-filter structural rather than optional.
+## An index card is not the book
 
-## What the index actually holds
+The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-The embedded fields are not chat transcripts. In the largest database, 79% of the vectors index review-finding text: 10,168 finding descriptions, 9,025 resolution notes, 7,990 fix descriptions. Another 5,944 index decision rationales. The memory is weighted toward exactly the things a fresh agent session cannot see: what went wrong, why the fix was accepted, and why a settled question was settled.
+So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." Which model draws the space matters less than what the result is allowed to be: an index card, not the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time. The vector is an index over the canonical record. It is never the record.
+
+## Layers of authority
+
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search over them answers deterministically, with SQL and full-text queries. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session.
+
+<Diagram
+    src="/images/research/memory-layers.svg?v=1"
+    alt="Four stacked layers narrowing downward: rows as the canonical record, exact search with SQL and full text, meaning search with embeddings, and the packet the next session reads. A small card beside the embeddings layer points back up to the rows."
+    caption="Authority flows downward. Every layer below the rows is a way of finding them, never a replacement for them."
+/>
+
+The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, which makes the fence structural rather than a matter of discipline.
+
+## What the memory leans toward
+
+The embedded record is not a chat transcript. Roughly four of every five embedded entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. That weighting is the design working as intended, because these are exactly the things a fresh session cannot see and will otherwise re-derive at full cost.
 
 ## The boundary
 
-The database is vendor-agnostic — any harness that can read SQLite reads the same memory, and four different agent CLIs currently do. It is also private by default: `handoff.db` never enters git, and only a deliberate, bounded export crosses a machine boundary. The rows hold reasoning traces, and reasoning traces hold whatever the agent saw.
+The memory is private by default. `handoff.db` never enters version control; the record holds reasoning traces, and reasoning traces hold whatever the agent saw. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
 
-Status is `running`, not `measured`: this repository's own database is the honest counterexample — 88 decisions, one archived task, and no semantic index switched on yet. The method is in daily use; its costs and payoffs are the subject of the two entries that follow.
+<Diagram
+    src="/images/research/memory-boundary.svg?v=1"
+    alt="The handoff database sits on the private side of a dashed machine boundary. A bounded export of chosen rows passes through a gap in the boundary. An arrow toward git is stopped at the boundary with a coral X labeled never."
+    caption="One gate out, and it is deliberate. The path into the public repository stays closed."
+/>
+
+The memory is also portable. Because the record is plain SQLite, any harness that can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Switching vendors does not forfeit it.
+
+## Status
+
+The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
+
+The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.
