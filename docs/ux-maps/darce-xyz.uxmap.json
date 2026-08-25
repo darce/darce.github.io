@@ -612,7 +612,7 @@
       "id": "resume",
       "kind": "exit",
       "title": "Résumé (PDF)",
-      "purpose": "Serves the résumé as a direct PDF download. Not in the nav and not linked from content; direct-URL only. Leaves the HTML site.",
+      "purpose": "Serves the résumé as a direct PDF download. Now a primary nav item ('résumé'). Leaves the HTML site.",
       "route": "/resume/",
       "job_entry": true,
       "deep_link": true,
@@ -954,7 +954,7 @@
         },
         {
           "screen_id": "resume",
-          "branch_label": "PDF exit via direct URL"
+          "branch_label": "PDF exit via nav"
         },
         {
           "screen_id": "exit-mailto",
@@ -1076,7 +1076,7 @@
     "Footer.tsx exists and is unused — is a site footer in scope for this colour pass, or still not-doing?",
     "404 copy says 'Back to projects' but href is '/'. Fix in this pass or leave?",
     "SIS screenshots are not captured. Does the case ship with labelled 'screenshot pending' placeholders (designed media_pending state) or is publish gated on media? ([RLSE-04][LAY-10])",
-    "/resume/ has zero inbound links sitewide. Should it be linked from about (named as a PDF, [A11Y-04]) or stay a direct-URL-only exit?",
+    "Résumé link exits to a PDF with no site chrome. Should it carry a PDF affordance (arrow/label) so the context change is not a surprise? ([A11Y-20])",
     "Resolved: /research stays in the nav and is additionally linked from about and practice. /practice is the demoted item, reachable from body copy (NAV-08).",
     "Practice essay cites canon rule IDs versionless — do those anchors resolve publicly, or are they internal-only references?"
   ],
