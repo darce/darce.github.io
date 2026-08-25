@@ -52,11 +52,26 @@
   </url>
   <url>
     <loc>https://darce.xyz/projects/barbarabeirne/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://darce.xyz/projects/bauhausdances/</loc>
+    <lastmod>2026-04-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://darce.xyz/research/agent-memory/</loc>
+    <lastmod>2026-08-25</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://darce.xyz/research/interrogating-agent-memory/</loc>
+    <lastmod>2026-08-25</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://darce.xyz/research/economics-of-agent-memory/</loc>
     <lastmod>2026-08-25</lastmod>
     <priority>0.6</priority>
   </url>

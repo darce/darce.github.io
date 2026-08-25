@@ -310,6 +310,93 @@ I built a custom WordPress theme on top of [Underscores](https://underscores.me/
 
 ## Research
 
+### Memory Outside the Model
+*Durable agent state in SQLite, with embeddings as the index*
+Tags: Agents, SQLite, Embeddings, Research
+Summary: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read — structured rows as the canonical record, 58,838 semantic embeddings as an index over them, never as the memory itself.
+
+## The canonical record is a row
+
+A coding agent forgets everything at the end of a session. WorkBay, the orchestration layer I use across my repositories, answers that with a database instead of a bigger context window: every task carries a `handoff.db` — a per-repo SQLite file that records decisions with rationales, review findings with their fixes, blockers, verified test results, and archived task snapshots. Across three working repositories that record currently holds 17,584 decisions, 29,914 review findings, and 1,004 archived tasks.
+
+Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. When I asked ChatGPT to evaluate the architecture, its summary landed on the same rule ([transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)) — agreement, not evidence; the rule stands on the schema, not the endorsement. Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
+
+## Four layers, in order of authority
+
+The system separates what a session knows into four layers. Authoritative structured state: the SQLite rows themselves. Deterministic retrieval: SQL and full-text search over those rows — the database carries FTS indexes for decisions, findings, blockers, and actions. Semantic retrieval: cosine similarity over the embedded fields, for the question worded differently than the record. Bounded projection: a size-limited packet of the most relevant records, injected into whichever agent picks up the task.
+
+The order matters. Cosine similarity gets permissive as the index grows — at 34,300 vectors in the largest repo, an unfiltered nearest-neighbor query will always return *something*. So semantic search runs behind hard metadata filters first; the index's own primary key is `(entity_kind, entity_id)` with a covering index on `(task_ref, entity_kind)`, which makes the pre-filter structural rather than optional.
+
+## What the index actually holds
+
+The embedded fields are not chat transcripts. In the largest database, 79% of the vectors index review-finding text: 10,168 finding descriptions, 9,025 resolution notes, 7,990 fix descriptions. Another 5,944 index decision rationales. The memory is weighted toward exactly the things a fresh agent session cannot see: what went wrong, why the fix was accepted, and why a settled question was settled.
+
+## The boundary
+
+The database is vendor-agnostic — any harness that can read SQLite reads the same memory, and four different agent CLIs currently do. It is also private by default: `handoff.db` never enters git, and only a deliberate, bounded export crosses a machine boundary. The rows hold reasoning traces, and reasoning traces hold whatever the agent saw.
+
+Status is `running`, not `measured`: this repository's own database is the honest counterexample — 88 decisions, one archived task, and no semantic index switched on yet. The method is in daily use; its costs and payoffs are the subject of the two entries that follow.
+
+### Five Questions an Agent Cannot Answer from Context
+*What semantic search over durable state gets used for in practice*
+Tags: Agents, Embeddings, Research
+Summary: An observational readout of three production handoff databases — the five recurring questions that semantic search over durable agent state actually answers, with the record counts behind each one.
+
+Every count below is read directly from three production `handoff.db` files ([the system itself is described separately](/research/agent-memory/)). This is an observational readout of how the memory gets interrogated, not a controlled experiment — the counts are measured, the usefulness claims are testimony from daily use.
+
+## Where is the core problem?
+
+Review verdicts accumulate per repository, and their distribution is diagnostic. Across the three databases, 2,384 review runs recorded 610 failures — but not evenly. The smallest project failed 42 of its 56 recorded runs. A fresh agent session sees one failing review; the database sees a 75% failure rate concentrated in one project.
+
+## Has this fix been found before?
+
+The largest index embeds 9,025 resolution notes and 7,990 fix descriptions. When a new finding lands, semantic search runs over the fixes as well as the failures — so an improvement pattern discovered once (a guard, a schema constraint, a test shape) is findable by meaning when a differently-worded version of the same problem returns.
+
+## Are we relitigating a settled decision?
+
+5,944 decision rationales are embedded in the largest repo, 17,584 decisions recorded overall. Before an agent re-opens an architectural question, the rationale index is searched; if the question was settled, the agent gets the decision and the *why*, and cites it instead of re-arguing it. The failure mode this guards against is specific to agents: a model that cannot see a past debate can happily reprise both sides of it at full token cost.
+
+## Is "done" actually done?
+
+The database keeps verified test results and review verdicts as rows, so a claim of completion checks against the record. Semantic search covers the softer half of the same question — whether a proposed solution was already discussed — because prior discussion rarely reuses the same words.
+
+## What has already been tried?
+
+Blockers and abandoned approaches persist past the session that hit them: 476 blocker descriptions are embedded across the two largest repos, and 1,004 archived task snapshots keep the shape of finished and failed work. A costly sentence in agent-assisted development is "let me try a different approach" aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
+
+## Scope
+
+What this note does not show: that any of this saves money or tokens. That claim has a different evidence tier and [its own pre-registered entry](/research/economics-of-agent-memory/).
+
+### The Economics of Remembering
+*A pre-registered claim about durable memory and token spend*
+Tags: Agents, Economics, Research
+Summary: The claim that durable, vendor-agnostic agent memory reduces token spend — stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
+
+## The claim
+
+Durable memory outside the model reduces the tokens an agent spends to reach the same outcome. This entry registers that claim before measuring it. Everything below is argument, not measurement; the status on this page stays `registered` until the measurement in the last section has been run, and will move to `measured` — or to `closed` with a negative result — when it has.
+
+## The argument
+
+Four mechanisms, ordered by my confidence in them; together they are why I put p ≈ 0.7 on the criterion in the last section being met.
+
+**Repeated mistakes are pure token cost.** A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information — 610 recorded review failures with embedded resolutions. Every one retrieved instead of re-derived is tokens not spent — net of the injected packet's own cost, which is exactly what the measurement below has to settle.
+
+**The memory outlives the context window.** Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax that a bounded projection from durable state replaces at a fraction of the size.
+
+**Vendor-agnostic memory is paid for once.** Because the record is SQLite rather than a vendor's proprietary memory feature, every harness reads the same accumulated state. Work done under one vendor's pricing is legible to all of them; switching agents does not forfeit the memory.
+
+**Subsidised seats change where retrieval should happen.** The observed anchor: one repository's junior-worker fleet logged 676,751,332 tokens across 323 recorded turns, on flat-rate seats priced below what that traffic would have billed metered. At metered per-token rates that traffic bills linearly; on a flat seat its marginal price is zero. Memory amplifies the asymmetry — retrieval from the database front-loads context that would otherwise be re-explored as metered traffic.
+
+## What would settle it
+
+The measurement is cheap because the instrumentation already exists: every orchestrated turn writes token counts to a `turn_metrics` table, tagged by task and source.
+
+Design: ten task pairs in the same repository, matched at assignment on task type and expected diff size — before any outcome is visible — with one arm receiving the semantic reinjection packet at session start and the control arm starting cold. Fixed N; no early stopping. Primary metric: total tokens per completed task, read directly from `turn_metrics`. Secondary: count of review-failure repeats already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate; anything less, and this entry closes negative.
+
+If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.
+
 ### Heuristics Canon
 *Source-linked decision rules for product and engineering review*
 Tags: Design Systems, Accessibility, Research
