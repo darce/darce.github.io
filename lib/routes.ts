@@ -3,7 +3,6 @@ export type ContentSection = 'projects' | 'research'
 export interface NavItem {
     href: string
     label: string
-    ariaLabel?: string
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -25,9 +24,6 @@ export const resolveNavPath = (asPath: string): string => {
     }
     if (asPath.startsWith('/research')) {
         return '/research'
-    }
-    if (asPath.startsWith('/practice')) {
-        return '/practice'
     }
     if (asPath.startsWith('/about')) {
         return '/about'

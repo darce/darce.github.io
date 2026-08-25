@@ -30,7 +30,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
                     >
                         <Link
                             href={navItem.href}
-                            aria-label={navItem.ariaLabel ?? navItem.label}
+                            aria-label={navItem.label}
                             aria-current={activePath === navItem.href ? 'page' : undefined}
                         >
                             {navItem.label}

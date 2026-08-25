@@ -15,7 +15,7 @@ describe('Page-level accessibility', () => {
                     {' | '}
                     <a href="/about/">About</a>
                     {' | '}
-                    <a href="/practice/">Practice</a>
+                    <a href="/research/">Research</a>
                 </p>
             </main>
         )

@@ -4,7 +4,7 @@ const matter = require('gray-matter')
 
 const SITE_URL = 'https://darce.xyz'
 const SITE_NAME = 'Daniel Arcé'
-const SITE_DESCRIPTION = 'Product designer and design technologist, 14+ years shipping software for media, enterprise SaaS, and AI products. Interaction design and accessibility.'
+const SITE_DESCRIPTION = 'Design technologist building AI and data-rich products across interaction design, accessibility, prototyping, and implementation.'
 const CONTACT = {
     email: 'daniel.arce@gmail.com',
     github: 'https://github.com/darce',
@@ -17,7 +17,6 @@ const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 const STATIC_PAGES = [
     { loc: '/', priority: '1.0', label: 'Home' },
     { loc: '/work/', priority: '0.9', label: 'Index of project case studies' },
-    { loc: '/practice/', priority: '0.6', label: 'How design and engineering judgment is made inspectable (Heuristics Canon)' },
     { loc: '/about/', priority: '0.8', label: 'Bio, role focus, strengths' },
     { loc: '/research/', priority: '0.7', label: 'Index of technical writing and experiments' },
     { loc: '/privacy/', priority: '0.3', label: 'Privacy policy' },

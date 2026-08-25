@@ -31,10 +31,6 @@ describe('resolveNavPath', () => {
         expect(resolveNavPath('/research/order-book')).toBe('/research')
     })
 
-    it('maps /practice to /practice (not a top-nav item)', () => {
-        expect(resolveNavPath('/practice')).toBe('/practice')
-    })
-
     it('maps /about to /about', () => {
         expect(resolveNavPath('/about')).toBe('/about')
     })
@@ -47,7 +43,7 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, research, and about (practice is reachable from page content; /resume/ is direct-URL only)', () => {
+    it('contains home, work, research, and about (/resume/ is direct-URL only)', () => {
         const labels = NAV_ITEMS.map(item => item.label)
         expect(labels).toEqual(['home', 'work', 'research', 'about'])
     })
