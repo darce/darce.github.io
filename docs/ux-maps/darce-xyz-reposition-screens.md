@@ -18,7 +18,7 @@
 | DANIEL ARCÉ                                         |   [cube]      |
 | product designer & design technologist              |               |
 +-----------------------------------------------------+---------------+
-| home  work  practice  about  résumé ↗          [▪▪] theme           |
+| home  work  research  about            [▪▪] theme                   |
 | ‾‾‾‾                                                                |
 +---------------------------------------------------------------------+
 |                                                                     |
@@ -50,7 +50,7 @@
 Interactivity
 - Hover: card border → coral (`t('border')`), dithered shadow stays; "Get in touch" same.
 - Focus: 2px visible ring on cards, CTA, nav; skip link appears at top-left on first Tab.
-- Keyboard: Tab order skip → masthead → nav (5) → toggle → CTA → cards 1-3 → view all.
+- Keyboard: Tab order skip → masthead → nav (4) → toggle → CTA → cards 1-3 → view all.
 - Theme: paper/terminal canvas; headshot dither and pending thumb use `inactiveBg`, both appearances.
 - `media_pending` thumb: labelled text box in the same aspect ratio, `alt` says "screenshot pending".
 
@@ -59,7 +59,6 @@ Canon check
 - [WRIT-02] / [WRIT-07] subhead and card blurbs: plain words, ≤1 not-X-but-Y pivot.
 - [PROD-01] each blurb names a behaviour outcome, not a feature list.
 - [A11Y-07] h1 → h2 "Selected work" → card h3s; markup mirrors the visual order.
-- [A11Y-20] résumé ↗ marks the PDF context change before activation.
 - [COL-02] coral hover proofed on the dithered headshot ground, not only paper.
 
 ## 2. Nav bar — four items, active state
@@ -73,7 +72,7 @@ Canon check
   hover  : 2px coral underline slides in under the item
   focus  : 2px ring, offset 2px, same on both themes
   current: aria-current="page"; weight + selected surface carry place
-  résumé : not in nav; content links /resume/ → PDF; ↗ = leaves HTML site
+  résumé : not in nav and not linked from content; /resume/ is direct-URL only
   research: in nav; /research/* deep links also round-trip standalone
 ```
 
@@ -84,9 +83,8 @@ Interactivity
 - Theme: selected surface = `surface` token; ink = `text`; underline = `border`.
 
 Canon check
-- [A11Y-07] `<nav aria-label="Primary">` + list; active item exposed with `aria-current`.
+- [A11Y-07] `<nav aria-label="Daniel Arcé">` + list; active item carries `aria-current="page"`.
 - [A11Y-06] active state is weight + surface, never hue alone.
-- [A11Y-20] résumé links change context to a PDF download and say so.
 - [NAV-08] /practice is the demoted entry point — reachable from about and
   from body copy, not the nav; demotion has a destination, not an orphan.
 - [NAV-11] /research/* deep links round-trip: the URL alone restores the article.
@@ -193,8 +191,8 @@ Canon check
 
 ```
 +---------------------------------------------------------------------+
-| home  work  practice  about  résumé ↗                    [▪▪]       |
-|             ‾‾‾‾‾‾‾‾                                                |
+| home  work  research  about                    [▪▪]                 |
+|                                                                     |
 +---------------------------------------------------------------------+
 | Practice                                                    (h1)    |
 | Shipped UI hides the judgment that made it. This page shows the     |
@@ -237,7 +235,7 @@ Canon check
 | DANIEL ARCÉ                         |
 | product designer & design technol.  |
 +-------------------------------------+
-| home  work  practice  about  résumé↗|
+| home  work  research  about         |
 | ‾‾‾‾                          [▪▪]  |
 +-------------------------------------+
 | +---------+                         |
@@ -294,7 +292,7 @@ canon rule IDs cited above.
 | medium | [RLSE-04] | landing, practice, about, privacy, site-shell (CLI) | CLI sees only `default` (dark/focus states are projected). Add `first_time`/`error` only if real; otherwise accept — static pages. |
 | medium | [RLSE-04] | resume (exit, CLI) | PDF 404 / blocked-download has no designed state; add fallback copy on the `/resume/` route. |
 | medium | [RLSE-04] | project-detail / z-sis-thesis, z-sis-journey, z-sis-incomplete-truth | `media_pending` is modelled; implementation must render a labelled placeholder box, not skip the figure. |
-| medium | [A11Y-20] | site-shell / z-primary-nav "résumé" | Nav link changes context to a PDF; add the ↗ glyph and `aria-label="Résumé (PDF)"`. |
+| high | [A11Y-04] | resume (exit) | /resume/ has zero inbound links sitewide, so it is unreachable in-site. If it ships, a content link must name it as a PDF. |
 | low | [NAV-08] | practice / z-practice-research-link | Closed: /research is in the primary nav and also linked from about and practice. |
 | medium | [HAI-09] | project-detail / z-sis-evaluation | "experimental, in daily use" is a trust claim; the evaluation section must publish what was measured and the external-user gap. |
 | low | [A11Y-06] | project-detail / z-sis-incomplete-truth | Keep icon + label + copy per state; do not introduce per-state colour when screenshots land. |
