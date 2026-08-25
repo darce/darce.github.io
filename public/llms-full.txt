@@ -54,52 +54,15 @@ Choose a folder, index it, search by meaning, inspect a result, then move into S
 
 **Screen 1 — Cold start.** Before a folder is chosen, Search says "No folder yet. Use File → Open Folder to enroll photos, then search here," Layers says there are no layer packs yet, and no zero-result count is shown.
 
-```text
-┌─ Semantic Image Search ──────────────────────────────────────────────────┐
-│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │                   │ │ [ Search query                      ] (Search) │ │
-│ │  No layer packs   │ │ No folder yet. Use File → Open Folder to        │ │
-│ │  yet.             │ │ enroll photos, then search here.               │ │
-│ │                   │ ├────────────────────────────────────────────────┤ │
-│ │                   │ │                                                │ │
-│ │                   │ │                                                │ │
-│ └───────────────────┘ └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
 The start state is kept apart from an empty result. A count of zero before any library exists would imply that a library had been searched and held nothing.
 
 **Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1,284" above a two-row photo grid.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ Search query                                          ] (Search)       │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1,284                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-└──────────────────────────────────────────────────────────────────────────┘
-```
 
 The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index that is labelled as partial rather than presented as complete.
 
 ### Ranked results
 
 **Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ red bicycle                                           ] (Search)       │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ▸ Explore                                                                │
-├──────────────────────────────────────────────────────────────────────────┤
-│ red bicycle                                                              │
-│ 64 search results · nearest 64                                           │
-│  ●  ●  ●  ●  ●  ●                                                        │
-│  ●  ●  ●  ●  ●  ●                                                        │
-│  ●  ●  ●  ●  ●  ●                                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-```
 
 Results are ordered by nearness to the query. Position carries the ranking; raw cosine scores are not shown as if they were confidence. When nothing is near, the grid gives way to a "No close matches" state instead of a weakly ranked list.
 
@@ -108,26 +71,6 @@ Results are ordered by nearness to the query. Position carries the ranking; raw 
 Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
 
 **Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking. The open details panel shows the file's size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00) and GPS position (64.1466°, -21.9426°) above an offline mini-map, with the surrounding result thumbnails below.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ┌────────────────┐  IMG_4417.HEIC                                        │
-│ │                │  Selected photo · double-click to open                │
-│ │   [ preview ]  │  ▾ Photo details                                      │
-│ │                │        Size  4032 × 3024                              │
-│ │                │      Camera  Apple iPhone 13 Pro                      │
-│ └────────────────┘        Lens  26 mm f/1.5                              │
-│                          Taken  2021:07:14 18:22:00                      │
-│                            GPS  64.1466°, -21.9426°                      │
-│                                 ┌──────────────────────────┐             │
-│                                 │        ·   ·             │             │
-│                                 │      ────●───────        │             │
-│                                 │            ·             │             │
-│                                 └──────────────────────────┘             │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ●  ●  ●  ●  ●  ●                                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-```
 
 Each label sits with its value, and the details panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule; it never fetches tiles.
 
@@ -151,59 +94,9 @@ Experimental marks machine-derived behaviour that is still preliminary, so it do
 
 **Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are not where the library    │
-│   says they are, usually a volume that is not plugged in. Dates and      │
-│   places describe the rest of the library, not all of it.                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
 The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
 
 **Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
 
 The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
 
@@ -219,89 +112,11 @@ The Similarity badge starts at 47, matching the selected set. After the Places m
 
 **Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47 because only 41 selected photos have coordinates; the Places state then reads 38, 41, and 41, shows 41 of 1,284 photos with 1,198 lacking coordinates and 45 unreadable, and lists a 41-photo map selection outside the search results last in place order rather than by rank.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
-│                              ↑           ↑                               │
-│            41 of the 47 selected photos have coordinates.                │
-│            The gap between those two numbers IS the finding.             │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
-│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
-│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
-│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
-│ │ 90°S └──────────────────┴──────────────────┘                         │ │
-│ │      180°W               0°              180°E                       │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
-│ Showing 41 of 1,284 photos. 1,198 have no coordinates, 45 could not be   │
-│ read.                                                                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
-│   not in your search results, so they are listed last rather than ranked.│
-│                                                       ( Clear region )   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
 The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results and labelled as unranked.
 
 ### Timeline
 
 **Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos: 1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates                                                                │
-│ Photos by capture year                             Square-root count scale│
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │ 1284┤                                            │ │ Off the time    │ │
-│ │  722┤        ▅█                                  │ │ axis            │ │
-│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
-│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
-│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
-│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 94 photos have no capture date.                                        │
-│ ⓘ 1,190 dated: 1,104 from exposure time, 86 from file write time.        │
-│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
-│ Photos by capture day                              Square-root count scale│
-│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
-│ Bars per   Year ○──────────● Day    Day                                  │
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
-│ │                 ╌  ╌                             │ │ axis            │ │
-│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
-│ └──────────────────────────────────────────────────┘ │      94         │ │
-│                                                      │ Undated photos  │ │
-│                                                      └─────────────────┘ │
-│ ⚠ 94 photos have no capture date.                                        │
-│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT.       │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ Photos by capture year                                                   │
-│ ┌──────────────────────────────────────────────────┐                     │
-│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
-│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
-│                                       [ Before 1962 ]                    │
-└──────────────────────────────────────────────────────────────────────────┘
-```
 
 The breadcrumb records the window that was asked for; the range line states what the chart draws. Undated photos sit beside the axis with their own count; they are not dropped. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
 

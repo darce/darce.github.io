@@ -54,6 +54,14 @@ const DiagramPair = ({ children }: { children: React.ReactNode }) => (
     <div className={styles.diagramPair}>{children}</div>
 )
 
+// ASCII wireframes read as noise character-by-character; expose them as a
+// single labelled image and hide the box-drawing from assistive tech
+const AsciiScreen = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <figure role="img" aria-label={label} className={styles.asciiScreen}>
+        <div aria-hidden="true">{children}</div>
+    </figure>
+)
+
 const mdxComponents = {
     OrderBook,
     OrderBookProvider,
@@ -64,6 +72,7 @@ const mdxComponents = {
     Cube: MDXCube,
     Diagram,
     DiagramPair,
+    AsciiScreen,
     hr: () => null,
 }
 

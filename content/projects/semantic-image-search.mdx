@@ -40,6 +40,8 @@ Choose a folder, index it, search by meaning, inspect a result, then move into S
 
 **Screen 1 — Cold start.** Before a folder is chosen, Search says "No folder yet. Use File → Open Folder to enroll photos, then search here," Layers says there are no layer packs yet, and no zero-result count is shown.
 
+<AsciiScreen label="Screen 1, cold start: window with an empty Layers panel reading 'No layer packs yet' and a search pane prompting to open a folder; no result count is drawn.">
+
 ```text
 ┌─ Semantic Image Search ──────────────────────────────────────────────────┐
 │ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
@@ -53,9 +55,13 @@ Choose a folder, index it, search by meaning, inspect a result, then move into S
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 The start state is kept apart from an empty result. A count of zero before any library exists would imply that a library had been searched and held nothing.
 
 **Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1,284" above a two-row photo grid.
+
+<AsciiScreen label="Screen 2, indexing: a determinate progress bar reading 'Embedding 812 of 1,284' under the search field, above a two-row grid of photo placeholders.">
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -67,11 +73,15 @@ The start state is kept apart from an empty result. A count of zero before any l
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index that is labelled as partial rather than presented as complete.
 
 ### Ranked results
 
 **Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
+
+<AsciiScreen label="Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails.">
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -87,6 +97,8 @@ The meter shows how far indexing has got and how far it has to go. Cancelling le
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 Results are ordered by nearness to the query. Position carries the ranking; raw cosine scores are not shown as if they were confidence. When nothing is near, the grid gives way to a "No close matches" state instead of a weakly ranked list.
 
 ### Inspection
@@ -94,6 +106,8 @@ Results are ordered by nearness to the query. Position carries the ranking; raw 
 Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
 
 **Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking. The open details panel shows the file's size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00) and GPS position (64.1466°, -21.9426°) above an offline mini-map, with the surrounding result thumbnails below.
+
+<AsciiScreen label="Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map, result thumbnails below.">
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -114,6 +128,8 @@ Selecting a photo opens the facts behind the result, so a machine ranking can be
 │  ●  ●  ●  ●  ●  ●                                                        │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
+
+</AsciiScreen>
 
 Each label sits with its value, and the details panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule; it never fetches tiles.
 
@@ -137,6 +153,8 @@ Experimental marks machine-derived behaviour that is still preliminary, so it do
 
 **Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
 
+<AsciiScreen label="Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram.">
+
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ ▾ Explore                                                                │
@@ -150,9 +168,13 @@ Experimental marks machine-derived behaviour that is still preliminary, so it do
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
 
 **Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
+
+<AsciiScreen label="Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option.">
 
 ```text
 ┌─ Model folder ───────────────────────────────────────────────────────────┐
@@ -191,6 +213,8 @@ The caveat qualifies all three plots and names why the library is partial. Its v
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
 
 ## Similarity, Places, and Timeline
@@ -204,6 +228,8 @@ The Similarity badge starts at 47, matching the selected set. After the Places m
 ### Places
 
 **Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47 because only 41 selected photos have coordinates; the Places state then reads 38, 41, and 41, shows 41 of 1,284 photos with 1,198 lacking coordinates and 45 unreadable, and lists a 41-photo map selection outside the search results last in place order rather than by rank.
+
+<AsciiScreen label="Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked.">
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -236,11 +262,15 @@ The Similarity badge starts at 47, matching the selected set. After the Places m
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
+</AsciiScreen>
+
 The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results and labelled as unranked.
 
 ### Timeline
 
 **Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos: 1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
+
+<AsciiScreen label="Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis and 1,190 dated; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action.">
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -288,6 +318,8 @@ The badge counts differ on purpose: 47 photos are selected and 41 of them have c
 │                                       [ Before 1962 ]                    │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
+
+</AsciiScreen>
 
 The breadcrumb records the window that was asked for; the range line states what the chart draws. Undated photos sit beside the axis with their own count; they are not dropped. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
 
