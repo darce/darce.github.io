@@ -14,12 +14,16 @@ tags:
   - Research
 ---
 
-## What the corpus is
+## How a rule is written
 
-The Heuristics Canon is a working research corpus. Recurring product, interaction, accessibility, AI, and engineering decisions are written as checkable rules, each with a stable ID and source provenance.
+Every rule names a trigger, the check that trigger forces, and a source. The trigger is the move you were about to make; the check is the question that move has to survive; the source is the study, specification, or shipped artifact that earns the rule its place. A rule with no source does not enter the corpus.
 
-A design claim can point to a rule, a source, and the artifact that changed because of it. A critique can name the exact rule it leans on and the source behind it.
+## Why the IDs are stable
 
-The corpus is cited by rule ID inside product cases on this site when a rule changed a decision. It decided the visible media-pending state in Semantic Image Search.
+The IDs do not get renumbered, so a critique written against an earlier revision still resolves. That is the difference between a style guide and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the artifact records which rule changed it.
 
-The public repository is [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
+## Where it is used
+
+The canon is cited by rule ID inside the product cases on this site, but only where a rule changed a decision. It is what put the visible media-pending state into Semantic Image Search instead of letting the case imply screenshots that do not exist.
+
+The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
