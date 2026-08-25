@@ -126,6 +126,8 @@ const normalizeMetaData = (rawData: unknown, filePath: string): MetaData => {
         ['masthead', asMetaThumbnail],
         ['images', asMetaImages],
         ['tags', asOptionalStringArray],
+        ['type', asOptionalString],
+        ['status', asOptionalString],
     ]
 
     for (const [key, normalize] of fieldNormalizers) {
