@@ -26,6 +26,8 @@ export const baseMetaSchema = z.object({
     masthead: metaImageSchema.optional(),
     images: z.array(metaImageSchema).min(1).optional(),
     tags: z.array(z.string().trim().min(1)).min(1).optional(),
+    type: z.enum(['experiment', 'method', 'note']).optional(),
+    status: z.enum(['registered', 'running', 'measured', 'rerun', 'closed']).optional(),
 })
 
 /** Projects and research require title + subtitle. */

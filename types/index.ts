@@ -24,6 +24,8 @@ export interface MetaData {
     links?: MetaLink[]
     images?: MetaImage[]
     tags?: string[]
+    type?: 'experiment' | 'method' | 'note'
+    status?: 'registered' | 'running' | 'measured' | 'rerun' | 'closed'
 }
 
 export interface ContentIndexData {

@@ -57,6 +57,14 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
                                     )}
                                 </div>
                                 <div className={styles.cardBody}>
+                                    {item.metaData.type && (
+                                        <p className={styles.cardBadges}>
+                                            <span className={styles.badge}>{item.metaData.type}</span>
+                                            {item.metaData.status && (
+                                                <span className={`${styles.badge} ${styles.badgeStatus}`}>{item.metaData.status}</span>
+                                            )}
+                                        </p>
+                                    )}
                                     <h3 className={styles.cardTitle}>{item.metaData.title}</h3>
                                     <p className={styles.cardSubtitle}>{item.metaData.subtitle}</p>
                                 </div>

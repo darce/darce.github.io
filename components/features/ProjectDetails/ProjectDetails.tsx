@@ -95,6 +95,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
     return (
         <article className={`${styles.projectDetails} ${className || ''} `}>
             <h2>{project.metaData.title}</h2>
+            {project.metaData.type && (
+                <p className={styles.badges}>
+                    <span className={styles.badge}>{project.metaData.type}</span>
+                    {project.metaData.status && (
+                        <span className={`${styles.badge} ${styles.badgeStatus}`}>{project.metaData.status}</span>
+                    )}
+                </p>
+            )}
             <div className={styles.lede}>
                 {project.metaData.masthead && (
                     <figure className={styles.masthead}>

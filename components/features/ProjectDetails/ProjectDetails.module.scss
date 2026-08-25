@@ -12,6 +12,33 @@
         }
     }
 
+    .badges {
+        margin: 0 0 $s-medium 0;
+        display: flex;
+        gap: $s-small;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 2px $s-small;
+        border: $s-line solid;
+
+        @include themeComponent($themes) {
+            border-color: t('text');
+            color: t('text');
+        }
+    }
+
+    .badgeStatus {
+        @include themeComponent($themes) {
+            border-color: t('link');
+            color: t('link');
+        }
+    }
+
     .lede {
         margin: 0 0 $s-large;
 
