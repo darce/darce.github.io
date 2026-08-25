@@ -9,12 +9,13 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-export const FEATURED_SLUGS = ['semantic-image-search', 'photoshelter', 'workbay']
+export const FEATURED_SLUGS = ['semantic-image-search', 'photoshelter', 'workbay', 'msnbc']
 
 export const FEATURED_METRICS: Record<string, string> = {
-    'semantic-image-search': 'Native macOS local-first AI photo search, designed and built end to end, with explicit incomplete-data states',
-    photoshelter: 'Led WCAG remediation protecting $9.2M ARR in institutional contracts',
-    workbay: 'Open findings and passing tests stay in the repository when you change agents',
+    'semantic-image-search': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
+    photoshelter: 'Workflow prototyping that exposed integration constraints before production work, plus accessibility remediation tied to $9.2M in institutional ARR.',
+    workbay: 'Cross-agent workflow state and adjacent design tooling that stores interaction structure as versioned data before implementation.',
+    msnbc: 'Working interface prototypes and reusable components for a live-video product shipped under a six-month deadline.',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -66,9 +67,10 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
-                                Product designer and design technologist with 14+ years
-                                shipping accessible software for Apple, MSNBC, PhotoShelter,
-                                and independent AI products.
+                                I design and build AI and data-rich products where interaction, accessibility, and implementation have to be solved together. My work spans product R&D, interface systems, and working prototypes for media, enterprise software, and independent AI products.
+                            </p>
+                            <p className={styles.positioning}>
+                                Recent work includes a local-first semantic image-search product and design tooling for versioned interaction architecture. Earlier roles include product R&D and accessibility at PhotoShelter and design technology at MSNBC.
                             </p>
                             <a
                                 className={styles.cta}
