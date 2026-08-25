@@ -28,8 +28,5 @@ export const resolveNavPath = (asPath: string): string => {
     if (asPath.startsWith('/about')) {
         return '/about'
     }
-    if (asPath.startsWith('/resume')) {
-        return '/resume'
-    }
     return asPath
 }

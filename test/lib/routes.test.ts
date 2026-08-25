@@ -37,13 +37,11 @@ describe('resolveNavPath', () => {
 
     it('returns the path as-is for unknown routes', () => {
         expect(resolveNavPath('/privacy')).toBe('/privacy')
-        expect(resolveNavPath('/resume')).toBe('/resume')
-        expect(resolveNavPath('/resume/')).toBe('/resume')
     })
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, research, and about (/resume/ is direct-URL only)', () => {
+    it('contains home, work, research, and about', () => {
         const labels = NAV_ITEMS.map(item => item.label)
         expect(labels).toEqual(['home', 'work', 'research', 'about'])
     })
