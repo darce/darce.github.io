@@ -1,0 +1,54 @@
+import { describe, it, expect } from 'vitest'
+import fs from 'fs'
+import path from 'path'
+
+// The public vet tool flags em-dash density, comma-grouped record counts,
+// and counted headers long before they read as habits. These guards hold
+// the memory entries at the level the 2026-08 rewrite brought them to.
+const slugs = [
+    'agent-memory',
+    'interrogating-agent-memory',
+    'economics-of-agent-memory',
+    'heuristics-canon',
+]
+
+const read = (slug: string) =>
+    fs.readFileSync(
+        path.join(process.cwd(), `content/research/${slug}.mdx`),
+        'utf8'
+    )
+
+describe('research entries stay concept-first', () => {
+    it.each(slugs)('%s keeps em-dashes at or below two', (slug) => {
+        const count = (read(slug).match(/—/g) ?? []).length
+        expect(count).toBeLessThanOrEqual(2)
+    })
+
+    it.each(slugs)('%s carries no comma-grouped record counts', (slug) => {
+        // 58,838 vectors meant nothing out of context and changed daily;
+        // proportions and orders of magnitude age, absolute counts rot.
+        expect(read(slug)).not.toMatch(/\b\d{1,3}(?:,\d{3})+\b/)
+    })
+
+    it.each(slugs)('%s never links a chat transcript as evidence', (slug) => {
+        expect(read(slug)).not.toMatch(/chatgpt\.com|claude\.ai\/share/i)
+    })
+
+    it.each(slugs)('%s names no embedding model in place of the concept', (slug) => {
+        expect(read(slug)).not.toMatch(/gte-base|768[- ]dim/i)
+    })
+
+    it('every referenced diagram ships in public/', () => {
+        const missing: string[] = []
+        for (const slug of slugs) {
+            for (const match of read(slug).matchAll(/src="([^"?]+)(?:\?[^"]*)?"/g)) {
+                const asset = match[1]
+                if (!asset.startsWith('/')) continue
+                if (!fs.existsSync(path.join(process.cwd(), 'public', asset))) {
+                    missing.push(`${slug} -> ${asset}`)
+                }
+            }
+        }
+        expect(missing).toEqual([])
+    })
+})
