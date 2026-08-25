@@ -23,6 +23,13 @@
     // Footer links sit outside #main-content, so the global link colour never
     // reaches them. Restate it here rather than widening the global selector.
     a {
+        // Coral is a stroke everywhere else on the site, never ink: as link
+        // text on the footer band it only reaches 3.7:1 light / 3.4:1 dark,
+        // short of AA for 0.85rem. The accent moves to a 2px underline, which
+        // is the same gesture the nav already makes, and hover stays a
+        // two-signal change so it does not rest on colour alone.
+        border-bottom: 2px solid transparent;
+
         @include themeComponent($themes) {
             color: t('link');
         }
@@ -32,7 +39,7 @@
                 font-variation-settings: 'wght' 600;
 
                 @include themeComponent($themes) {
-                    color: t('border');
+                    border-bottom-color: t('border');
                 }
             }
         }
