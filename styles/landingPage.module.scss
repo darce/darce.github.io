@@ -59,7 +59,7 @@ $project-icon: $s-x-large * 2 + $s-large;
     font-size: 1.4rem;
     line-height: 2.2rem;
     font-weight: 400;
-    margin: 0 0 $s-large 0;
+    margin: 0 0 $s-medium 0;
 
     @include themeComponent($themes) {
         color: t('text');
@@ -68,6 +68,24 @@ $project-icon: $s-x-large * 2 + $s-large;
     @media (max-width: $tabletMax) {
         font-size: 1.1rem;
         line-height: 1.8rem;
+    }
+}
+
+// Supporting second paragraph. The palette has no muted ink, so the step down
+// is size and measure only — never a softened colour.
+.positioningSupport {
+    font-size: 1.05rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+    margin: 0 0 $s-large 0;
+
+    @include themeComponent($themes) {
+        color: t('text');
+    }
+
+    @media (max-width: $tabletMax) {
+        font-size: 0.95rem;
+        line-height: 1.6rem;
     }
 }
 
