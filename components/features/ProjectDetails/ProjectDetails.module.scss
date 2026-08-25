@@ -86,24 +86,6 @@
     }
 
     .post {
-        // ASCII wireframes: wrapping shreds the box-drawing alignment, so keep
-        // columns intact and let the drawing scroll horizontally; the figure's
-        // aria-label carries the accessible equivalent
-        .asciiScreen {
-            margin: 0;
-
-            pre {
-                white-space: pre;
-                word-wrap: normal;
-                overflow-x: auto;
-            }
-
-            code {
-                white-space: pre;
-                word-break: normal;
-            }
-        }
-
         @media (max-width: $tabletMax) {
             display: block;
         }
