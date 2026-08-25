@@ -78,7 +78,7 @@ Each label sits with its value, and the details panel keeps its open or closed s
 
 "No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim.
 
-Each condition below is worded for its cause and offers a way out of it. Two rules from [Heuristics Canon](https://github.com/darce/heuristics-canon) decided the split: [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02), which holds that abstention is a valid result rather than a forced classification, and [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04), which treats an undesigned state as a bug. Six states got copy of their own because those two rules said an undifferentiated blank was the defect, not the fallback.
+Each condition below is worded for its cause and offers a way out of it. Two rules from the [Heuristics Canon](/research/heuristics-canon/) decided the split: [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02), which holds that abstention is a valid result rather than a forced classification, and [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04), which treats an undesigned state as a bug. Six states got copy of their own because those two rules said an undifferentiated blank was the defect, not the fallback.
 
 No folder yet is the start state, held apart from an empty result for the reason Screen 1 gives.
 
@@ -210,7 +210,7 @@ The adjacent Design Map ships as the `/ux-map` command, which turns an inventory
 
 ## Under the hood
 
-WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows.
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows; the memory design has [its own research entry](/research/agent-memory/).
 
 Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
 
@@ -313,87 +313,110 @@ I built a custom WordPress theme on top of [Underscores](https://underscores.me/
 ### Memory Outside the Model
 *Durable agent state in SQLite, with embeddings as the index*
 Tags: Agents, SQLite, Embeddings, Research
-Summary: How WorkBay keeps coding-agent memory in a per-repo SQLite database any harness can read — structured rows as the canonical record, 58,838 semantic embeddings as an index over them, never as the memory itself.
+Summary: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
 
-## The canonical record is a row
+> **What this is:** a description of the memory my coding agents share: a small database that outlives their sessions, and the rules that keep it trustworthy.
+> **What this is not:** a measured claim that it saves money. That claim is [registered separately](/research/economics-of-agent-memory/), with a criterion it has to survive.
 
-A coding agent forgets everything at the end of a session. WorkBay, the orchestration layer I use across my repositories, answers that with a database instead of a bigger context window: every task carries a `handoff.db` — a per-repo SQLite file that records decisions with rationales, review findings with their fixes, blockers, verified test results, and archived task snapshots. Across three working repositories that record currently holds 17,584 decisions, 29,914 review findings, and 1,004 archived tasks.
+## A session forgets everything
 
-Selected fields are also embedded — 58,838 vectors, gte-base-en-v1.5 at 768 dimensions. The design rule that keeps this honest: the vector is an index over the canonical record, never the record. When I asked ChatGPT to evaluate the architecture, its summary landed on the same rule ([transcript](https://chatgpt.com/share/6a8dfff8-9498-83e9-8d84-ae9ee5005af5)) — agreement, not evidence; the rule stands on the schema, not the endorsement. Each embedding stores a hash of its source text, so a stale vector is detectable, and the whole index can be rebuilt from the rows at any time.
+A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-## Four layers, in order of authority
+[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. The next session starts from a small packet drawn out of that record instead of starting cold.
 
-The system separates what a session knows into four layers. Authoritative structured state: the SQLite rows themselves. Deterministic retrieval: SQL and full-text search over those rows — the database carries FTS indexes for decisions, findings, blockers, and actions. Semantic retrieval: cosine similarity over the embedded fields, for the question worded differently than the record. Bounded projection: a size-limited packet of the most relevant records, injected into whichever agent picks up the task.
+## An index card is not the book
 
-The order matters. Cosine similarity gets permissive as the index grows — at 34,300 vectors in the largest repo, an unfiltered nearest-neighbor query will always return *something*. So semantic search runs behind hard metadata filters first; the index's own primary key is `(entity_kind, entity_id)` with a covering index on `(task_ref, entity_kind)`, which makes the pre-filter structural rather than optional.
+The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-## What the index actually holds
+So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." Which model draws the space matters less than what the result is allowed to be: an index card, not the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
 
-The embedded fields are not chat transcripts. In the largest database, 79% of the vectors index review-finding text: 10,168 finding descriptions, 9,025 resolution notes, 7,990 fix descriptions. Another 5,944 index decision rationales. The memory is weighted toward exactly the things a fresh agent session cannot see: what went wrong, why the fix was accepted, and why a settled question was settled.
+## Layers of authority
+
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session.
+
+The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema.
+
+## What the memory leans toward
+
+The weighting of the embedded record is deliberate. Roughly four of every five entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. These are exactly the things a fresh session cannot see and would otherwise re-derive at full cost.
 
 ## The boundary
 
-The database is vendor-agnostic — any harness that can read SQLite reads the same memory, and four different agent CLIs currently do. It is also private by default: `handoff.db` never enters git, and only a deliberate, bounded export crosses a machine boundary. The rows hold reasoning traces, and reasoning traces hold whatever the agent saw.
+The memory is private by default. `handoff.db` never enters version control; the record holds reasoning traces, and reasoning traces hold whatever the agent saw. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
 
-Status is `running`, not `measured`: this repository's own database is the honest counterexample — 88 decisions, one archived task, and no semantic index switched on yet. The method is in daily use; its costs and payoffs are the subject of the two entries that follow.
+The memory is also portable. Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Switching vendors does not forfeit it.
+
+## Status
+
+The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
+
+The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.
 
 ### Five Questions an Agent Cannot Answer from Context
 *What semantic search over durable state gets used for in practice*
 Tags: Agents, Embeddings, Research
-Summary: An observational readout of three production handoff databases — the five recurring questions that semantic search over durable agent state actually answers, with the record counts behind each one.
+Summary: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually gets asked, each grounded in what the record holds.
 
-Every count below is read directly from three production `handoff.db` files ([the system itself is described separately](/research/agent-memory/)). This is an observational readout of how the memory gets interrogated, not a controlled experiment — the counts are measured, the usefulness claims are testimony from daily use.
+Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose.
 
 ## Where is the core problem?
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. Across the three databases, 2,384 review runs recorded 610 failures — but not evenly. The smallest project failed 42 of its 56 recorded runs. A fresh agent session sees one failing review; the database sees a 75% failure rate concentrated in one project.
+Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture.
 
 ## Has this fix been found before?
 
-The largest index embeds 9,025 resolution notes and 7,990 fix descriptions. When a new finding lands, semantic search runs over the fixes as well as the failures — so an improvement pattern discovered once (a guard, a schema constraint, a test shape) is findable by meaning when a differently-worded version of the same problem returns.
+The index covers fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns.
 
 ## Are we relitigating a settled decision?
 
-5,944 decision rationales are embedded in the largest repo, 17,584 decisions recorded overall. Before an agent re-opens an architectural question, the rationale index is searched; if the question was settled, the agent gets the decision and the *why*, and cites it instead of re-arguing it. The failure mode this guards against is specific to agents: a model that cannot see a past debate can happily reprise both sides of it at full token cost.
+Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full cost. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
 ## Is "done" actually done?
 
-The database keeps verified test results and review verdicts as rows, so a claim of completion checks against the record. Semantic search covers the softer half of the same question — whether a proposed solution was already discussed — because prior discussion rarely reuses the same words.
+A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words.
 
 ## What has already been tried?
 
-Blockers and abandoned approaches persist past the session that hit them: 476 blocker descriptions are embedded across the two largest repos, and 1,004 archived task snapshots keep the shape of finished and failed work. A costly sentence in agent-assisted development is "let me try a different approach" aimed at an approach that already failed twice, invisibly, in sessions the current model never saw.
+Blockers and abandoned approaches persist past the session that hit them. An expensive sentence in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw.
 
 ## Scope
 
-What this note does not show: that any of this saves money or tokens. That claim has a different evidence tier and [its own pre-registered entry](/research/economics-of-agent-memory/).
+What this note does not show: that any of this saves money or tokens. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).
 
 ### The Economics of Remembering
 *A pre-registered claim about durable memory and token spend*
 Tags: Agents, Economics, Research
-Summary: The claim that durable, vendor-agnostic agent memory reduces token spend — stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
+Summary: The claim that durable, vendor-agnostic agent memory reduces token spend, stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
 
 ## The claim
 
-Durable memory outside the model reduces the tokens an agent spends to reach the same outcome. This entry registers that claim before measuring it. Everything below is argument, not measurement; the status on this page stays `registered` until the measurement in the last section has been run, and will move to `measured` — or to `closed` with a negative result — when it has.
+Durable memory outside the model reduces the tokens an agent spends to reach the same outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. Everything below is argument, not measurement. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
 
 ## The argument
 
-Four mechanisms, ordered by my confidence in them; together they are why I put p ≈ 0.7 on the criterion in the last section being met.
+The mechanisms below are ordered by my confidence in them. Together they are why I put p ≈ 0.7 on the criterion at the end of this page being met.
 
-**Repeated mistakes are pure token cost.** A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information — 610 recorded review failures with embedded resolutions. Every one retrieved instead of re-derived is tokens not spent — net of the injected packet's own cost, which is exactly what the measurement below has to settle.
+### Repeated mistakes are pure token cost
 
-**The memory outlives the context window.** Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax that a bounded projection from durable state replaces at a fraction of the size.
+A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information, failed reviews stored together with their resolutions. Each one retrieved replaces a full re-derivation; the saving is that re-derivation's tokens, net of the injected packet's own cost. Settling that balance is what the measurement below is for.
 
-**Vendor-agnostic memory is paid for once.** Because the record is SQLite rather than a vendor's proprietary memory feature, every harness reads the same accumulated state. Work done under one vendor's pricing is legible to all of them; switching agents does not forfeit the memory.
+### The memory outlives the context window
 
-**Subsidised seats change where retrieval should happen.** The observed anchor: one repository's junior-worker fleet logged 676,751,332 tokens across 323 recorded turns, on flat-rate seats priced below what that traffic would have billed metered. At metered per-token rates that traffic bills linearly; on a flat seat its marginal price is zero. Memory amplifies the asymmetry — retrieval from the database front-loads context that would otherwise be re-explored as metered traffic.
+Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax, and a bounded projection from durable state replaces it at a fraction of the size.
+
+### Vendor-agnostic memory is paid for once
+
+Because the record is [plain SQLite](/research/agent-memory/), every agent tool reads the same accumulated state. Work done under one vendor's pricing stays legible to all of them, and switching agents does not forfeit the memory.
+
+### Subscription seats change where waste lands
+
+Agent work is billed two ways. Through a metered API, every token appears on the bill, so every exploration, wrong turn, and retry costs real money. On a subscription seat, the same work is prepaid: the monthly price is fixed whether the agent works efficiently or wastefully, up to the plan's limits. The tokens are never free. What differs is whether waste shows up as a larger bill or as less useful work extracted from a fixed one. The observed anchor: a fleet of small subordinate agents in one repository moved hundreds of millions of tokens on flat-rate seats, traffic that would have cost several times the seat price if metered. Durable memory helps under either scheme. On a meter it takes re-exploration off the bill; on a seat it stretches how much finished work fits inside the same fixed price and plan limits.
 
 ## What would settle it
 
-The measurement is cheap because the instrumentation already exists: every orchestrated turn writes token counts to a `turn_metrics` table, tagged by task and source.
+The measurement is cheap because the instrumentation already exists: every orchestrated turn writes its token counts to a metrics table, tagged by task and source.
 
-Design: ten task pairs in the same repository, matched at assignment on task type and expected diff size — before any outcome is visible — with one arm receiving the semantic reinjection packet at session start and the control arm starting cold. Fixed N; no early stopping. Primary metric: total tokens per completed task, read directly from `turn_metrics`. Secondary: count of review-failure repeats already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate; anything less, and this entry closes negative.
+Design: ten task pairs in the same repository, matched at assignment on task type and the expected size of the change, before any outcome is visible. One arm receives the memory packet described in [Memory Outside the Model](/research/agent-memory/) at session start; the control arm starts cold. Fixed N; no early stopping. Pairs share one repository and one accumulating record; each memory arm reads the record as it stood at assignment, and the interference that remains is stated here rather than modeled. Primary metric: total tokens per completed task, read directly from the metrics table. Secondary: repeats of review failures already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate. Anything less, and this entry closes negative. The readout will report the confidence interval on the token difference, not only pass or fail against the criterion.
 
 If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.
 
@@ -402,17 +425,21 @@ If the measurement has not run by 2026-12-31, this entry closes unresolved. Publ
 Tags: Design Systems, Accessibility, Research
 Summary: A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
 
-## How a rule is written
+## A rule is a trigger, a check, and a source
 
-Every rule names a trigger, the check that trigger forces, and a source. The trigger is the move you were about to make; the check is the question that move has to survive; the source is the study, specification, or shipped artifact that earns the rule its place. A rule with no source does not enter the corpus.
+Every rule names the move you were about to make, the question that move has to survive, and the source that earns the rule its place. A source can be a published study or a shipped artifact; a rule with no source does not enter the corpus.
 
-## Why the IDs are stable
+## The IDs hold still
 
-The IDs do not get renumbered, so a critique written against an earlier revision still resolves. That is the difference between a style guide and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the artifact records which rule changed it.
+Rules never get renumbered, so a critique written against an earlier revision still resolves. That is the difference between a style guide and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the artifact records which rule changed it.
 
-## Where it is used
+## Rules that changed the work
 
-A case on this site cites the canon by rule ID only where a rule changed a decision. Semantic Image Search names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and the same review is what put the visible media-pending note on that case instead of letting it imply screenshots that do not exist.
+The test of a rule corpus is whether it reverses decisions that were already made. The agent workflow records described in [Memory Outside the Model](/research/agent-memory/) keep those reversals on file, and they are the strongest evidence the canon has.
+
+A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, reads the canon, and narrows or withdraws the proposal before it costs anything.
+
+The same corpus reviews this site. [Semantic Image Search](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and the same review put the visible media-pending note on that case instead of letting it imply screenshots that do not exist. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
 
 The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 
