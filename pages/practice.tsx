@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import Head from 'next/head'
 import type { NextPageWithLayout } from './_app'
 import { MarkdownData } from '../types'
-import { getMdxContent } from '../lib/getMdxContent'
+import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
 import { MDXRemote } from 'next-mdx-remote'
 import Layout from '../components/layout/Layout'
 import DitheredCard from '../components/common/DitheredCard/DitheredCard'
@@ -53,10 +53,12 @@ PracticePage.getLayout = (page: ReactElement) => {
 /** Call getStaticProps on build */
 export const getStaticProps = async () => {
     const practiceProps = await getMdxContent({ subDir: 'practice' })
+    const headerProps = await getMdxIndexContent({ subDir: 'header' })
 
     return {
         props: {
             practiceData: practiceProps.parsedMdxArray,
+            headerData: headerProps.parsedMdxArray,
         }
     }
 }
