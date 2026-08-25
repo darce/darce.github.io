@@ -47,7 +47,7 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, research, and about (practice and résumé are reachable from page content, not the top nav)', () => {
+    it('contains home, work, research, and about (practice is reachable from page content; /resume/ is direct-URL only)', () => {
         const labels = NAV_ITEMS.map(item => item.label)
         expect(labels).toEqual(['home', 'work', 'research', 'about'])
     })

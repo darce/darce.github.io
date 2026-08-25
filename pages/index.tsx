@@ -19,9 +19,9 @@ export const FEATURED_METRICS: Record<string, string> = {
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
 
-const cardIconFor = (project: ContentIndexData): MetaImage | undefined => {
+export const cardIconFor = (project: ContentIndexData): MetaImage | undefined => {
     const { masthead, thumbnail, images } = project.metaData
-    const candidates = [masthead, thumbnail, ...(images ?? [])].filter(
+    const candidates = [thumbnail, masthead, ...(images ?? [])].filter(
         (image): image is MetaImage => Boolean(image?.src),
     )
     return candidates.find((image) => isStillImage(image.src)) ?? candidates[0]
