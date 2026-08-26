@@ -6,7 +6,7 @@ subtitle: 'A pre-registered claim about durable memory and token spend'
 type: 'experiment'
 status: 'registered'
 description: The claim that durable, vendor-agnostic agent memory reduces token spend, stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
-details: Registered; the measurement has not yet run. The hypothesis, the argument for it, and the measurement that would settle it, published before the numbers exist so the eventual result cannot move the goalposts.
+details: Registered; the measurement has not yet run. The hypothesis, the argument for it, and the measurement that would settle it, published before the numbers exist so the eventual result cannot move the goalposts. The design was sized and shaped by an observational audit of the memory record itself.
 thumbnail:
   src: research/stripe-drawing-danica-phelps.jpg
   alt: "Danica Phelps, stripe drawing, 2013. Graphite and watercolor on paper. © Danica Phelps."
@@ -22,7 +22,9 @@ tags:
 
 ## The claim
 
-Injecting a bounded memory packet at session start reduces the tokens an agent spends to reach the same completion and review outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. Everything below is argument, not measurement. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
+Injecting a bounded memory packet at session start reduces the tokens an agent spends to reach the same completion and review outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
+
+The memory in question is [described separately](/research/agent-memory/): a plain SQLite record that accumulates review verdicts, errors, decisions with their reasoning, and test results across sessions, readable by any agent harness. The packet is a bounded projection of that record — a few hundred tokens of the most relevant history, injected once at session start. Two tiers of evidence appear below and are kept apart on purpose: the record itself is [observational](https://en.wikipedia.org/wiki/Observational_study) and can verify the argument's premises, but only the [controlled comparison](https://en.wikipedia.org/wiki/Randomized_controlled_trial) in the last section can decide the causal claim.
 
 ## The argument
 
@@ -30,24 +32,116 @@ The mechanisms below are ordered by my confidence in them. Together they are why
 
 ### Repeated mistakes are pure token cost
 
-A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information, failed reviews stored together with their resolutions. Each one retrieved replaces a full re-derivation; the saving is that re-derivation's tokens, net of the injected packet's own cost. Settling that balance is what the measurement below is for.
+A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information, failed reviews stored together with their resolutions — and the record shows the class recurring: thousands of review findings are near-duplicates of findings already recorded under earlier tasks, and about 99% of resolved findings carry a written resolution a later session could retrieve instead of re-deriving. Each retrieval replaces a re-derivation; the saving is that re-derivation's tokens, net of the injected packet's own cost. Settling that balance is what the measurement below is for.
 
 ### The memory outlives the context window
 
-Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax, and a bounded projection from durable state replaces it at a fraction of the size.
+Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax — the record logs thousands of session-start orientation reads — and a bounded projection from durable state replaces that re-establishment at a fraction of the size.
 
 ### Portable project state is paid for once
 
-Because the record is [plain SQLite](/research/agent-memory/), every agent tool reads the same accumulated state. Work done under one vendor stays legible to others. Wider WorkBay primitives, cross-harness review, and the [Heuristics Canon](/research/heuristics-canon/) may also change token spend, but this experiment does not isolate all of them. It tests only the memory packet.
+Because the record is plain SQLite with a documented schema, every agent tool reads the same accumulated state: the production databases behind this entry already hold rows written by four different agent backends. Work done under one vendor stays legible to others, and one harness can audit what another wrote without inheriting its transcript. Wider WorkBay primitives, cross-harness review, and the [Heuristics Canon](/research/heuristics-canon/) may also change token spend, but this experiment does not isolate all of them. It tests only the memory packet.
 
 ### Subscription seats change where waste lands
 
 Agent work is billed two ways. Through a metered API, every token appears on the bill, so every exploration, wrong turn, and retry costs real money. On a subscription seat, the same work is prepaid: the monthly price is fixed whether the agent works efficiently or wastefully, up to the plan's limits. The tokens are never free. What differs is whether waste shows up as a larger bill or as less useful work extracted from a fixed one. Durable memory helps under either scheme. On a meter it takes re-exploration off the bill; on a seat it stretches how much finished work fits inside the same fixed price and plan limits.
 
+### Why 0.7 and not more
+
+The outside view argues for humility. Ron Kohavi's large-scale experimentation record found that only about one third of tested ideas improved the metric they were designed to improve — the base rate behind canon rule [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01):
+
+> "require a controlled evaluation … and a prior that most ideas are flat or negative, because most tested ideas do not move their target metric and judgment alone mis-ranks them"
+> — [Heuristics Canon, EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01), after [Kohavi, Tang & Xu](https://github.com/darce/heuristics-canon/blob/main/SOURCES.md#src-trustworthy-controlled-experiments)
+
+I stay above that base rate only because the record has verified the mechanisms' premises — the repeats exist, the resolutions are retrievable, the orientation tax recurs — not because the argument feels strong. Feeling strong is what the base rate is for.
+
+## What the record already shows
+
+Before designing the measurement, I mined the production memory records it would draw from. That audit is itself a demonstration of the architecture's central property: because every review verdict, error, decision, and injection is a row in an ordinary database rather than a line in a vendor's transcript, the system's own history can be interrogated after the fact. The audit moved this experiment in both directions — it settled one side of the ledger, and it established that no retrospective reading of the record can settle the other.
+
+### The cost side is settled
+
+The packet is small — a few hundred tokens — against tasks whose total spend runs from thousands of tokens into the hundreds of millions. It sits three to five orders of magnitude below the work it precedes. Whatever the experiment finds, it will not find that the packet's own cost matters; the open question is only whether the benefit clears the threshold.
+
+### Why the record cannot settle the benefit side
+
+Three structural facts, each an honest lesson in why observational data cannot substitute for an experiment.
+
+**There is no untreated group.** The packet is a default: every interactive session gets one. A record with no variation in treatment holds a cohort, not a comparison, and mining cannot manufacture a control group that was never run.
+
+**The treatment and the meter never touch.** Memory packets land in interactive sessions; token counts are written by orchestrated worker lanes. The sessions that receive the treatment are almost never metered, and the lanes that are metered never receive the treatment. Joining injections to token metrics returns nothing.
+
+<Diagram
+    src="/images/research/econ-instruments.svg?v=1"
+    alt="Two boxes of stacked record rows. Left, interactive sessions: every row carries a coral packet mark, labeled memory packets 2,424 and token rows 1. Right, orchestrated lanes: every row carries an ink meter mark, labeled token rows 2,428 and memory packets 0. A dashed line between them is crossed out and labeled join: 0 rows."
+    caption="The treatment lands on the left. The meter runs on the right. The join is empty."
+/>
+
+**The meter itself is unreliable.** Most metered rows carry no token count at all, and where counts exist the recorded totals disagree with the sum of their own parts. A sensor that does not observe the quantity it claims to regulate cannot answer questions about it — canon rule [OBS-12](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#obs-12), distilled from Donella Meadows: "Missing information flows is one of the most common causes of system malfunction." Repairing these sensors is a prerequisite below, not a footnote.
+
+### The noise the effect must be found in
+
+Per-task token totals in the record span six orders of magnitude, with a [coefficient of variation](https://en.wikipedia.org/wiki/Coefficient_of_variation) near 2.4 — the [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) is more than double the mean.
+
+<Diagram
+    src="/images/research/econ-variance.svg?v=1"
+    alt="A log-scale axis from one thousand to one hundred million tokens with thirty tick marks, one per observed task total, spread across six decades. A bracket spans the full range, labeled thirty tasks: 909 to 268,741,814 tokens. A small coral bracket near one million tokens is labeled a 20% difference, and is nearly invisible at this scale."
+    caption="The effect to be detected, drawn to the same scale as the noise it must be detected in."
+/>
+
+Against that spread, a small unmatched comparison has essentially no [statistical power](https://en.wikipedia.org/wiki/Power_%28statistics%29) to resolve a 20% difference. The design below therefore leans entirely on [pairing](https://en.wikipedia.org/wiki/Paired_difference_test) to absorb the variance, and derives its sample size from measurement rather than guessing it — per canon rule [EXP-12](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-12): "pre-declare the minimum effect worth detecting, size for adequate power, and report the confidence interval on the delta." An underpowered run would end undecided while reading as a failure of the memory, the worst outcome a design can buy.
+
 ## What would settle it
 
-The measurement is cheap because the instrumentation already exists: every orchestrated turn writes its token counts to a metrics table, tagged by task and source.
+### Prerequisites
 
-Design: ten task pairs in the same repository, matched at assignment on task type and the expected size of the change, before any outcome is visible. Within each pair, random assignment chooses which twin receives the bounded memory packet described in [Memory Outside the Model](/research/agent-memory/) at session start; the other starts cold. Fixed N; no early stopping; no peeking at interim results. Pairs share one repository and one accumulating record; each memory arm reads the record as it stood at assignment, and the repository interference that remains is stated here rather than modeled. Primary metric: total tokens per completed task, read directly from the metrics table. Secondary: repeats of review failures already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens for the same outcome, at an equal or better review pass rate. Anything less, and this entry closes negative. The readout will report the confidence interval on the token difference, not only pass or fail against the criterion.
+Four instrumentation gaps close before any pair runs; each is a sensor repair, not a design choice.
 
-If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.
+1. **Token capture where the treatment lands.** Either the interactive harness records per-session token totals, or the trial runs entirely in orchestrated lanes, where the meter already writes — with the packet injected into one arm's prompt.
+2. **One defined cost quantity.** A single audited number per task: uncached input plus output, with cached reads weighted at their billed fraction — the cost-per-accepted-output discipline of [COST-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cost-04).
+3. **Covariates recorded at assignment.** Task type and expected change size are the matching variables, written before any outcome is visible.
+4. **A frozen, versioned packet rule.** The packet is program state, per [FM-03](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#fm-03): its selection query, size bound, and format are pinned before the first pair.
+
+### Design
+
+<Diagram
+    src="/images/research/econ-design.svg?v=1"
+    alt="Four boxes joined by arrows. A/A pairs, labeled variance and carryover, sets N. Probe pair, labeled scrambled packet, instrument check, runs before the trial. N pairs, outlined in coral and labeled matched then randomized, is the experiment. Readout, labeled CI on paired log-ratios, produces an interval, not a verdict."
+    caption="Two calibration stages before the trial, so the trial's size is derived rather than guessed."
+/>
+
+**Stage 1 — A/A pairs.** Identical twin tasks, neither receiving a packet, run first — the [null test](https://en.wikipedia.org/wiki/A/B_testing) canon rule [EXP-13](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-13) requires before any A/B, "because a platform or pipeline bug otherwise poisons every later test." The A/A residual says how much variance the pairing absorbs; from it, N is computed for 80% power at a [minimum detectable effect](https://en.wikipedia.org/wiki/Effect_size) of δ = 20%. If the computed N is unaffordable, that is published before the trial, not discovered after it.
+
+**Stage 2 — probe pair.** One pair runs with a *degraded* packet — same size, same format, contents scrambled from an unrelated project. If the scrambled packet performs like the real one, the instrument is not measuring memory content and the trial halts for diagnosis. This is the stage-isolation discipline of [RAG-09](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#rag-09): one end-to-end score cannot localize a failing component.
+
+**Stage 3 — N matched pairs.** Pairs are matched at assignment on the recorded covariates, then randomized within pair. Both twins start from the same base commit in isolated worktrees; both run under pinned loop bounds — steps, tokens, wall-time — per [FM-08](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#fm-08), because "continue until done" is not a control policy. Whether the packet's contents were actually consulted is logged per task, since [no prompt recovers un-retrieved evidence](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#rag-02). Fixed N; no early stopping; [no peeking](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-09) at interim results.
+
+One subtlety deserves its own diagram. Both arms share one repository and one accumulating record, which threatens the [stable-unit assumption](https://en.wikipedia.org/wiki/Rubin_causal_model) behind any naive A/B delta — canon rule [EXP-14](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-14): state the interference risk and use an interference-aware design, or label the estimate biased.
+
+<Diagram
+    src="/images/research/econ-interference.svg?v=1"
+    alt="Two boxes, cold twin with no packet and memory twin which gets the packet, both connected to a third box labeled one accumulating record. An ink arrow shows the cold twin writing findings, decisions, and fixes into the record; a coral arrow shows the packet being drawn from that same record into the memory twin. The path through the record is labeled the interference path."
+    caption="The cold arm feeds the record the memory arm's packet is drawn from. Freezing the record per pair cuts the path."
+/>
+
+The memory arm's packet is therefore drawn from the record *as it stood at assignment*, and neither twin writes back until its pair closes. The residual interference — every pair still lives in one repository whose history was built with memory on — is why the scope statement below is a real limit and not a disclaimer.
+
+**Stage 4 — readout.** The primary metric is **total tokens per assigned task**, not per completed task — the [intention-to-treat](https://en.wikipedia.org/wiki/Intention-to-treat_analysis) principle, canon rule [EXP-15](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-15). A twin that burns its token bound and fails to finish is an outcome, not a missing value; dropping it would let the noisiest failures silently exit whichever arm they damage. Because totals span decades, the analysis runs on within-pair log-ratios: the [median](https://en.wikipedia.org/wiki/Median) paired log-ratio with a [confidence interval](https://en.wikipedia.org/wiki/Confidence_interval) from the [Wilcoxon signed-rank](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) procedure, robust to the outliers the record guarantees. Per-pair deltas are also plotted against pair order, because an effect that exists only in early pairs is a [novelty artifact](https://en.wikipedia.org/wiki/Novelty_effect), per [EXP-11](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-11).
+
+Outcome quality is guarded by a reviewer [blinded](https://en.wikipedia.org/wiki/Blinded_experiment) to arm assignment, scoring both twins against a rubric frozen before the trial; the guardrail is non-inferiority of that score. An unblinded pass-rate would be a metric turned target — [Goodhart's law](https://en.wikipedia.org/wiki/Goodhart%27s_law), in Marilyn Strathern's phrasing: "When a measure becomes a target, it ceases to be a good measure." Together the token metric and the quality guardrail form an [overall evaluation criterion plus guardrail](https://experimentguide.com/) in Kohavi's sense, so the experiment cannot win by shipping cheaper, worse work.
+
+### Decision rule
+
+The pre-stated criterion is interval-based — [EXP-24](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-24): report the interval on the magnitude, "because bare significance hides precision" — with three outcomes instead of two:
+
+- **Survives.** The confidence interval on the median token saving lies entirely at or beyond 20%. Status moves to `measured`.
+- **Closes negative.** The interval lies entirely below 20%. The packet may still help, but not by the margin claimed, and this entry closes.
+- **Unresolved, underpowered.** The interval spans 20%. The entry says so explicitly and publishes the interval — an undecided measurement is reported as undecided, not spun in either direction.
+
+**Scope.** All pairs live in one repository: statistically [one cluster](https://en.wikipedia.org/wiki/Design_effect), so the estimate generalizes to this repository's workload, not to agent memory at large. Beyond it, the result is directional only. If the measurement has not run by 2026-12-31, this entry closes unresolved.
+
+## Still worth remembering?
+
+The honest summary of the record so far: nothing in it says the memory is useless, and nothing in it proves the memory pays. What it does say is one-sided in a useful way. The cost of remembering is closed as a question — a few-hundred-token packet against multi-million-token tasks is not a cost worth debating. The premises of the strongest mechanisms are no longer speculative: the repeated-mistake class exists at scale, its resolutions are written down almost every time, and the orientation tax recurs at session scale. And the architecture has already earned something no vendor transcript offers — a record durable and structured enough to be audited, including for the purpose of designing this experiment against it.
+
+What remains open is exactly one number: the causal magnitude of the benefit. No retrospective mining can produce it, because the record contains no session that ever went without the treatment. That is what the design above is for, and publishing it first is the point: the number, when it arrives, has to live with the criterion written here.
