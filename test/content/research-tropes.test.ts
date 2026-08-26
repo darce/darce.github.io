@@ -59,6 +59,22 @@ describe('research entries stay concept-first', () => {
         expect(economics).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
     })
 
+    it('frames the economics article around the settled cost and open benefit', () => {
+        const economics = read('economics-of-agent-memory')
+        expect(economics).toContain('[WorkBay](/projects/workbay/)')
+        expect(economics).toContain('`require a controlled evaluation')
+        expect(economics).toContain('about 99% of findings marked resolved carry a written resolution')
+        expect(economics).toContain('<PullQuote>')
+        expect(economics).not.toMatch(/p\s*[≈=]\s*0\.7|2026-12-31/)
+    })
+
+    it('states the economics contrast directly instead of using negative parallelism', () => {
+        const economics = read('economics-of-agent-memory')
+        expect(economics).not.toMatch(
+            /not declaring victory|not the part of the ledger|That does not mean memory has no cost|describes the write path, not the benefit|registered claim|previous draft|earlier phrase|pre-registered/i
+        )
+    })
+
     it('names the audit trail and cross-harness boundary without claiming free switching', () => {
         const memory = read('agent-memory')
         expect(memory).toMatch(/audit trail/i)
