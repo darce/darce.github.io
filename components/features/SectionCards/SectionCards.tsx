@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ContentIndexData } from '../../../types'
 import { ContentSection, buildItemPath } from '../../../lib/routes'
+import { formatResearchBadge } from '../../../lib/researchEvidenceLabels'
 import styles from './SectionCards.module.scss'
 
 interface SectionCardsProps {
@@ -59,9 +60,17 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
                                 <div className={styles.cardBody}>
                                     {item.metaData.type && (
                                         <p className={styles.cardBadges}>
-                                            <span className={styles.badge}>{item.metaData.type}</span>
+                                            <span className={styles.badge}>
+                                                {section === 'research'
+                                                    ? formatResearchBadge('type', item.metaData.type)
+                                                    : item.metaData.type}
+                                            </span>
                                             {item.metaData.status && (
-                                                <span className={`${styles.badge} ${styles.badgeStatus}`}>{item.metaData.status}</span>
+                                                <span className={`${styles.badge} ${styles.badgeStatus}`}>
+                                                    {section === 'research'
+                                                        ? formatResearchBadge('status', item.metaData.status)
+                                                        : item.metaData.status}
+                                                </span>
                                             )}
                                         </p>
                                     )}

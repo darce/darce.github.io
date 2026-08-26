@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
 
 import cubeStyles from '../../common/Cube/Cube.module.scss'
+import { formatResearchBadge } from '../../../lib/researchEvidenceLabels'
 import styles from './ProjectDetails.module.scss'
 
 // Dynamic imports for MDX components — render noscript fallback when JS is unavailable
@@ -79,28 +80,6 @@ const mdxComponents = {
 interface ProjectDetailsProps {
     project: MarkdownData
     className?: string
-}
-
-const TYPE_LABELS: Record<string, string> = {
-    method: 'Format: method',
-    note: 'Format: field note',
-    experiment: 'Format: hypothesis test',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-    running: 'Evidence: in daily use',
-    measured: 'Evidence: observational',
-    registered: 'Evidence: measurement pending',
-    rerun: 'Evidence: rerun planned',
-    closed: 'Evidence: closed',
-}
-
-/** Translate machine-readable research taxonomy into reader-facing badge copy. */
-export function formatResearchBadge(kind: 'type' | 'status', value: string): string {
-    if (kind === 'type') {
-        return TYPE_LABELS[value] ?? `Format: ${value}`
-    }
-    return STATUS_LABELS[value] ?? `Evidence: ${value}`
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) => {
