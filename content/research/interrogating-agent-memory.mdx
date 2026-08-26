@@ -20,7 +20,7 @@ tags:
   - Research
 ---
 
-Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose.
+Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational field note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose. Because the same structured rows are readable by different agents and models, the record also supports cross-evaluation: one harness can review what another wrote without inheriting its session transcript.
 
 ## Where is the core problem?
 
@@ -34,15 +34,15 @@ Review verdicts accumulate per repository, and their distribution is diagnostic.
 
 ## Has this fix been found before?
 
-The index covers fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns.
+The index covers accepted fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns. A second agent can ask the same question against the same rows and see whether the proposed fix still holds.
 
 ## Are we relitigating a settled decision?
 
-Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it at full cost. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
 ## Is "done" actually done?
 
-A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words.
+A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. Cross-evaluation here means a different model can re-check the same completion evidence without trusting the original agent's self-report.
 
 ## What has already been tried?
 
@@ -50,4 +50,4 @@ Blockers and abandoned approaches persist past the session that hit them. An exp
 
 ## Scope
 
-What this note does not show: that any of this saves money or tokens. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).
+What this note does not show: that any of this saves money or tokens. Observational reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).

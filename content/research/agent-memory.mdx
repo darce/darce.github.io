@@ -28,7 +28,7 @@ tags:
 
 A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. The next session starts from a small packet drawn out of that record instead of starting cold.
+[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. That write path is the inspectable audit trail. The next session starts from a small packet drawn out of that record instead of starting cold.
 
 <Diagram
     src="/images/research/memory-loop.svg?v=1"
@@ -40,11 +40,11 @@ A coding agent works inside a context window: the model's working memory, large 
 
 The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." Which model draws the space matters less than what the result is allowed to be: an index card, not the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." The embedding is a fallible index: it retrieves candidates, never authoritative answers. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
 
 ## Layers of authority
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session.
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session. That packet is an intentional allocation of a bounded context budget to the next task, not a dump of everything the database holds.
 
 <Diagram
     src="/images/research/memory-layers.svg?v=1"
@@ -58,7 +58,7 @@ The order is the point. Similarity search never says "no results." It says "here
 
 The weighting of the embedded record is deliberate. Roughly four of every five entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. These are exactly the things a fresh session cannot see and would otherwise re-derive at full cost.
 
-## The boundary
+## Portable state, not free switching
 
 The memory is private by default. `handoff.db` never enters version control; the record holds reasoning traces, and reasoning traces hold whatever the agent saw. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
 
@@ -68,10 +68,10 @@ The memory is private by default. `handoff.db` never enters version control; the
     caption="One gate out, and it is deliberate. The path into the public repository stays closed."
 />
 
-The memory is also portable. Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Switching vendors does not forfeit it.
+Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Harness switching still costs authentication, installation, capability gaps, and re-orientation; the durable record removes the cost of abandoning accumulated project history, not every switching cost.
 
 ## Status
 
-The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
+The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. Explicit evidence tiers matter here: observational notes and registered experiments sit above testimony, and this page does not claim either. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
 
 The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.

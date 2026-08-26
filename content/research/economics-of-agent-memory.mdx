@@ -22,7 +22,7 @@ tags:
 
 ## The claim
 
-Durable memory outside the model reduces the tokens an agent spends to reach the same outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. Everything below is argument, not measurement. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
+Injecting a bounded memory packet at session start reduces the tokens an agent spends to reach the same completion and review outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. Everything below is argument, not measurement. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
 
 ## The argument
 
@@ -36,18 +36,18 @@ A mistake an agent cannot see is a mistake it will re-make at full price: the ex
 
 Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax, and a bounded projection from durable state replaces it at a fraction of the size.
 
-### Vendor-agnostic memory is paid for once
+### Portable project state is paid for once
 
-Because the record is [plain SQLite](/research/agent-memory/), every agent tool reads the same accumulated state. Work done under one vendor's pricing stays legible to all of them, and switching agents does not forfeit the memory.
+Because the record is [plain SQLite](/research/agent-memory/), every agent tool reads the same accumulated state. Work done under one vendor stays legible to others. Wider WorkBay primitives, cross-harness review, and the [Heuristics Canon](/research/heuristics-canon/) may also change token spend, but this experiment does not isolate all of them. It tests only the memory packet.
 
 ### Subscription seats change where waste lands
 
-Agent work is billed two ways. Through a metered API, every token appears on the bill, so every exploration, wrong turn, and retry costs real money. On a subscription seat, the same work is prepaid: the monthly price is fixed whether the agent works efficiently or wastefully, up to the plan's limits. The tokens are never free. What differs is whether waste shows up as a larger bill or as less useful work extracted from a fixed one. The observed anchor: a fleet of small subordinate agents in one repository moved hundreds of millions of tokens on flat-rate seats, traffic that would have cost several times the seat price if metered. Durable memory helps under either scheme. On a meter it takes re-exploration off the bill; on a seat it stretches how much finished work fits inside the same fixed price and plan limits.
+Agent work is billed two ways. Through a metered API, every token appears on the bill, so every exploration, wrong turn, and retry costs real money. On a subscription seat, the same work is prepaid: the monthly price is fixed whether the agent works efficiently or wastefully, up to the plan's limits. The tokens are never free. What differs is whether waste shows up as a larger bill or as less useful work extracted from a fixed one. Durable memory helps under either scheme. On a meter it takes re-exploration off the bill; on a seat it stretches how much finished work fits inside the same fixed price and plan limits.
 
 ## What would settle it
 
 The measurement is cheap because the instrumentation already exists: every orchestrated turn writes its token counts to a metrics table, tagged by task and source.
 
-Design: ten task pairs in the same repository, matched at assignment on task type and the expected size of the change, before any outcome is visible. One arm receives the memory packet described in [Memory Outside the Model](/research/agent-memory/) at session start; the control arm starts cold. Fixed N; no early stopping. Pairs share one repository and one accumulating record; each memory arm reads the record as it stood at assignment, and the interference that remains is stated here rather than modeled. Primary metric: total tokens per completed task, read directly from the metrics table. Secondary: repeats of review failures already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens at an equal or better review pass rate. Anything less, and this entry closes negative. The readout will report the confidence interval on the token difference, not only pass or fail against the criterion.
+Design: ten task pairs in the same repository, matched at assignment on task type and the expected size of the change, before any outcome is visible. Within each pair, random assignment chooses which twin receives the bounded memory packet described in [Memory Outside the Model](/research/agent-memory/) at session start; the other starts cold. Fixed N; no early stopping; no peeking at interim results. Pairs share one repository and one accumulating record; each memory arm reads the record as it stood at assignment, and the repository interference that remains is stated here rather than modeled. Primary metric: total tokens per completed task, read directly from the metrics table. Secondary: repeats of review failures already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens for the same outcome, at an equal or better review pass rate. Anything less, and this entry closes negative. The readout will report the confidence interval on the token difference, not only pass or fail against the criterion.
 
 If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.

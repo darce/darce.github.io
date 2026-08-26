@@ -81,6 +81,28 @@ interface ProjectDetailsProps {
     className?: string
 }
 
+const TYPE_LABELS: Record<string, string> = {
+    method: 'Format: method',
+    note: 'Format: field note',
+    experiment: 'Format: hypothesis test',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+    running: 'Evidence: in daily use',
+    measured: 'Evidence: observational',
+    registered: 'Evidence: measurement pending',
+    rerun: 'Evidence: rerun planned',
+    closed: 'Evidence: closed',
+}
+
+/** Translate machine-readable research taxonomy into reader-facing badge copy. */
+export function formatResearchBadge(kind: 'type' | 'status', value: string): string {
+    if (kind === 'type') {
+        return TYPE_LABELS[value] ?? `Format: ${value}`
+    }
+    return STATUS_LABELS[value] ?? `Evidence: ${value}`
+}
+
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) => {
     const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
 
@@ -97,9 +119,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
             <h2>{project.metaData.title}</h2>
             {project.metaData.type && (
                 <p className={styles.badges}>
-                    <span className={styles.badge}>{project.metaData.type}</span>
+                    <span className={styles.badge}>{formatResearchBadge('type', project.metaData.type)}</span>
                     {project.metaData.status && (
-                        <span className={`${styles.badge} ${styles.badgeStatus}`}>{project.metaData.status}</span>
+                        <span className={`${styles.badge} ${styles.badgeStatus}`}>{formatResearchBadge('status', project.metaData.status)}</span>
                     )}
                 </p>
             )}
