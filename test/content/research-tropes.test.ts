@@ -51,4 +51,19 @@ describe('research entries stay concept-first', () => {
         }
         expect(missing).toEqual([])
     })
+
+    it('keeps the token claim causal, bounded, and genuinely randomized', () => {
+        const economics = read('economics-of-agent-memory')
+        expect(economics).toMatch(/random/i)
+        expect(economics).toMatch(/same outcome|equal or better review pass rate/i)
+        expect(economics).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
+    })
+
+    it('names the audit trail and cross-harness boundary without claiming free switching', () => {
+        const memory = read('agent-memory')
+        expect(memory).toMatch(/audit trail/i)
+        expect(memory).toMatch(/harness/i)
+        expect(memory).toMatch(/switching/i)
+        expect(memory).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
+    })
 })
