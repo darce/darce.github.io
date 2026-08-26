@@ -390,60 +390,56 @@ Summary: A production audit shows that durable agent memory is cheap to inject a
 
 ## The claim
 
-[WorkBay](/projects/workbay/) gives a new coding-agent session a bounded packet drawn from durable project state: prior decisions, review findings, resolutions, blockers, and verified tests. My registered claim is that this packet reduces total tokens per assigned task while preserving the same outcome quality.
+[WorkBay](/projects/workbay/) hands a new coding-agent session a bounded packet drawn from the project's durable record: prior decisions, review findings, resolutions, blockers, and verified tests. How that record works has [its own entry](/research/agent-memory/); this one is about whether it pays. The claim under test is that starting from the packet lowers the total tokens an agent spends per task while preserving the same outcome quality. Tokens are the metered unit of model work, so tokens per task is the closest thing agent work has to a unit price.
 
-The packet's direct price is already measurable, while its benefit remains open. Keeping those statements separate matters because a cheap intervention can still distract the agent, surface stale context, or degrade the work. The evidence supports continued use during measurement; a controlled comparison will decide the claim.
+The two halves of that claim are in different states. The packet's price is measured; its effect is not. The distinction matters because a cheap intervention can still hurt: it can distract the agent, or surface stale context that steers the work wrong.
 
-## What the record already proves
+## The record settles the cost side
 
-I audited three production `handoff.db` files used by different codebases. Because WorkBay stores workflow events as structured SQLite rows instead of burying them in vendor transcripts, the audit could inspect the system's history after the fact.
+I audited three production `handoff.db` databases from different codebases. Each stores its workflow events as structured database rows, which is what makes an after-the-fact audit like this possible at all.
 
-### The direct token cost is small
+### The packet is a rounding error next to the task
 
-A compact memory packet averages about 300 tokens. The measured tasks range from roughly 10³ to 10⁸ tokens, with a median near 3 × 10⁵. At the median, the task consumes about one thousand times the packet's token budget. The packet therefore clears the direct-cost adoption hurdle.
+A compact memory packet averages about 300 tokens. The tasks it precedes range from a few thousand tokens to hundreds of millions at the top end, where a single task fans out across many worker lanes, and the median task lands near three hundred thousand: roughly a thousand times the packet that opened it. Whatever else turns out to be true, the direct price of remembering is not the obstacle.
 
-The remaining possible costs are retrieval latency, stale or irrelevant context, privacy, and worse decisions. The trial must watch outcome quality as well as token spend.
+The costs that could still matter are indirect: retrieval latency, stale or irrelevant context, private state leaving its boundary, worse decisions made with misplaced confidence. None of them appears as a line item, which is why the experiment scores the quality of the outcome alongside the token count.
 
-### The record contains material worth retrieving
+### The shelves are stocked
 
-The earlier phrase `about 99% of resolved findings carry a written resolution a later session could retrieve instead of re-deriving` is a write-path completeness measure. The three repositories recorded resolution rates of 99.1%, 97.6%, and 99.5%; combined, 98.5% of findings marked resolved had resolution text.
+For memory to save anything, the record has to hold answers worth retrieving, and it does. Across the three codebases, about 99% of findings marked resolved carry a written resolution a later session could reuse instead of re-deriving; no codebase fell below 97%. The record also holds findings that recur across tasks and findings reopened after being closed, and session starts repeat the same orientation queries. All of it is work that has been paid for more than once.
 
-This is evidence that WorkBay is being used correctly in one important sense: when a finding closes, its resolution is almost always captured. Retrieval accuracy, agent consultation, and token savings belong to later stages of the pipeline. The records also contain thousands of cross-task duplicate-finding fingerprints, reopened findings, and recurring session-start orientation reads. Together, they establish a large class of potentially reusable work while leaving realized savings to the trial.
+What this settles is the write path: the library is stocked and the shelving is consistent. Whether an agent pulls the right volume at the right moment, and whether that changes what it spends, is the part production history cannot certify.
 
-### Portability and auditability already have value
+### Portability is already in hand
 
-The same record has rows written by several agent backends. One tool can inspect decisions and review evidence written by another without inheriting its transcript. That is an operational benefit today, even if the token-saving effect turns out to be smaller than 20%.
+The same record carries rows written by several different agent tools, and any of them can read the decisions and review evidence the others left behind. For a technologist weighing adoption, this benefit needs no experiment to confirm: the audit trail and portable project state exist today, whatever the trial ends up saying about token savings.
 
-## Why the probability was removed
+## The record cannot settle the benefit
 
-The previous draft assigned the experiment a probability of 0.7. That number looked quantitative but had no defined reference class, calibration record, or model behind it. Removing it makes the uncertainty more honest.
+Production history cannot say whether the packet causes savings. Every interactive session receives a packet, so there is no untreated group to compare against. The sessions that meter token spend reliably are the orchestrated worker lanes, and those never receive packets. One instrument has the treatment; the other has the meter. No session has both.
 
-The relevant [Heuristics Canon rule, EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01), says to `require a controlled evaluation and a prior that most ideas are flat or negative`. The audit raises confidence in the mechanism because reusable records exist and are cheap to inject. It cannot turn that mechanism into a calibrated probability of success.
+More mining cannot close that gap. The comparison has to be built on purpose, which is what the experiment is for.
 
-## What remains unmeasured
+## The experiment
 
-The production record cannot estimate the causal benefit. Every interactive session receives a packet, so there is no untreated group. Packet injections happen in interactive sessions, while usable token measurements mostly come from orchestrated worker lanes. The two instruments have no session-level overlap, and most metered rows omit token counts or contain totals that disagree with their components.
+Instrumentation comes first. The interactive harness has to record one audited token total per assigned task. The rule that selects and formats the packet has to be versioned and frozen. Each task's type and expected size has to be recorded before assignment, both arms have to start from the same base commit under the same limits, and a reviewer who cannot see which arm produced the work scores it against a fixed rubric.
 
-That is enough explanation for the missing answer: the historical data has treatment without a reliable meter, and metering without treatment variation. More retrospective mining cannot manufacture the comparison.
+Then the run:
 
-## The future test
+1. **A/A calibration.** Pairs of identical cold runs establish how much two attempts at the same task differ on their own. That baseline noise sets how many pairs the trial needs.
+2. **Content probe.** A relevant packet runs against an equal-size packet from an unrelated project. If relevance is not even detectable, the trial is not ready.
+3. **Matched pairs.** Each task runs twice from the same starting commit, one run with the frozen packet and one cold, assigned at random. Fixed token and time bounds keep either side from running away, and neither run writes back to the shared record until its pair closes.
+4. **Readout.** The primary metric is total tokens per task, reported as a confidence interval on the paired difference alongside the blinded quality scores. Failed tasks stay in the denominator.
 
-Before the trial, the interactive harness must record one audited token quantity per assigned task. The packet selection rule, size, and format must be versioned. Task type and expected change size must be recorded before assignment. Both arms must run from the same base commit under the same limits, and a reviewer who cannot see the assignment must score outcome quality against a frozen rubric.
+The success bar is set before the first pair runs: the packet has to cut token spend by at least a fifth, while the blinded quality scores stay within a declared margin of the cold arm's. Fixing the bar in advance is what keeps the eventual result honest, because a threshold chosen after seeing the data can always be argued into place. A fifth is where the saving justifies engineering attention. If the measured interval clears it, the claim stands; if it falls short, the claim closes and the packet keeps its job as an audit trail only. The trial covers one repository's workload, so anything broader would need replication.
 
-The run has four stages:
+The stance going in comes from the [Heuristics Canon](/research/heuristics-canon/) epistemics rule [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01): `require a controlled evaluation … and a prior that most ideas are flat or negative`. Most interventions of this shape do nothing. The audit above justifies running the experiment; it does not justify predicting its result.
 
-1. **A/A calibration.** Identical cold pairs estimate within-pair noise. That observed variance sets the sample size needed for 80% power to detect a 20% token reduction.
-2. **Content probe.** A relevant packet is compared with an equal-size packet from an unrelated project. A detectable relevance effect is the readiness criterion for proceeding to the trial.
-3. **Matched randomized pairs.** Within each pair, one twin receives the frozen memory packet and one starts cold. Fixed token, step, and time bounds prevent either arm from running indefinitely. Neither twin writes back to the shared record until the pair closes.
-4. **Readout.** The primary metric is total tokens per assigned task. The result is an interval on the paired effect, guarded by non-inferior blinded review quality. Failed tasks stay in the denominator.
+## The decision in the meantime
 
-The pre-registered 20% threshold remains useful because it distinguishes a merely detectable effect from one large enough to matter. If the interval clears 20% and quality is no worse, the claim survives. If it lies below 20%, this claim closes. If it crosses 20%, the result remains unresolved. The study covers one repository's workload, so any broader claim would need replication.
+Anyone deciding today whether a persistent memory system earns its keep has settled facts and one open question. The direct cost is negligible against the work it precedes. The audit trail and portability across agent tools are usable today. The material worth reusing demonstrably exists. What stays open until the trial reports is whether reuse lowers spend at equal quality.
 
-## The decision now
-
-The evidence supports a narrower focus than either “memory is beneficial” or “memory is so cheap there is no reason to skip it.” WorkBay's direct memory cost is small, its durable record already provides auditability and portable project state, and its causal effect on token spend remains open.
-
-I will keep the bounded packet on while instrumenting the comparison. That provisional product decision rests on a low direct cost and benefits already observed in the record. The controlled comparison will determine whether the packet makes agent work cheaper at the same quality.
+My own position is cheap insurance: the packet stays on while the instrumentation lands, since its measured price is small and its side benefits are already real. The controlled comparison decides whether it is also making the work cheaper.
 
 ### Heuristics Canon
 *Source-linked decision rules for product and engineering review*
