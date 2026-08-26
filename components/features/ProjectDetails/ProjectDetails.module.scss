@@ -204,6 +204,23 @@
             padding: 0 0 0 $s-large;
         }
 
+        .pullQuote {
+            margin: $s-x-large 0;
+            padding: $s-large 0;
+            border-top: 2px solid;
+            border-bottom: $s-line solid;
+            font-size: clamp(1.35rem, 3vw, 2rem);
+            line-height: 1.25;
+            font-weight: 500;
+            font-style: normal;
+
+            @include themeComponent($themes) {
+                border-top-color: t('border');
+                border-bottom-color: t('text');
+                color: t('text');
+            }
+        }
+
         // Hard-edge data table: 1px rules, no radius, header opened by a 2px rule
         table {
             width: 100%;

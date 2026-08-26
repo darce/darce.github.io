@@ -36,11 +36,11 @@ I audited three production `handoff.db` databases from different codebases. Each
 
 ### The packet is a rounding error next to the task
 
-A compact memory packet averages about 300 tokens. The tasks it precedes range from a few thousand tokens to hundreds of millions, and a typical task lands near three hundred thousand: roughly a thousand times the packet that opened it. Whatever else turns out to be true, the direct price of remembering is not the obstacle.
+A compact memory packet averages about 300 tokens. The tasks it precedes range from a few thousand tokens to hundreds of millions at the top end, where a single task fans out across many worker lanes, and the median task lands near three hundred thousand: roughly a thousand times the packet that opened it. Whatever else turns out to be true, the direct price of remembering is not the obstacle.
 
 <Diagram
     src="/images/research/econ-scale.svg?v=1"
-    alt="A logarithmic ruler. A small coral square near the low end marks the memory packet. An ink square several steps higher marks a typical task, and a bracket below spans the observed range of tasks from smallest to largest."
+    alt="A logarithmic ruler. A small coral square near the low end marks the memory packet. An ink square several steps higher marks the median task, and a bracket below spans the observed range of tasks from smallest to largest."
     caption="The packet and the tasks it precedes, on a ruler where every step is tenfold."
 />
 
@@ -48,13 +48,13 @@ The costs that could still matter are indirect: retrieval latency, stale or irre
 
 ### The shelves are stocked
 
-For memory to save anything, the record has to hold answers worth retrieving, and it does. Across the three codebases, about 99% of findings marked resolved carry a written resolution a later session could reuse instead of re-deriving; no codebase fell below 97%. The record also holds findings that recur across tasks and findings reopened after being closed, and session starts repeat the same orientation queries. All of it is work that has visibly been paid for more than once.
+For memory to save anything, the record has to hold answers worth retrieving, and it does. Across the three codebases, about 99% of findings marked resolved carry a written resolution a later session could reuse instead of re-deriving; no codebase fell below 97%. The record also holds findings that recur across tasks and findings reopened after being closed, and session starts repeat the same orientation queries. All of it is work that has been paid for more than once.
 
 What this settles is the write path: the library is stocked and the shelving is consistent. Whether an agent pulls the right volume at the right moment, and whether that changes what it spends, is the part production history cannot certify.
 
-### Portability pays out now
+### Portability is already in hand
 
-The same record carries rows written by several different agent tools, and any of them can read the decisions and review evidence the others left behind. For a technologist weighing adoption, this is the return that waits on no experiment: an audit trail and portable project state are worth having even if the token savings turn out small.
+The same record carries rows written by several different agent tools, and any of them can read the decisions and review evidence the others left behind. For a technologist weighing adoption, this benefit needs no experiment to confirm: the audit trail and portable project state exist today, whatever the trial ends up saying about token savings.
 
 ## The record cannot settle the benefit
 
@@ -85,12 +85,12 @@ Then the run:
 3. **Matched pairs.** Each task runs twice from the same starting commit, one run with the frozen packet and one cold, assigned at random. Fixed token and time bounds keep either side from running away, and neither run writes back to the shared record until its pair closes.
 4. **Readout.** The primary metric is total tokens per task, reported as a confidence interval on the paired difference alongside the blinded quality scores. Failed tasks stay in the denominator.
 
-The success bar is set before the first pair runs: the packet has to cut token spend by at least a fifth, at quality no worse than the cold arm. Fixing the bar in advance is what keeps the eventual result honest, because a threshold chosen after seeing the data can always be argued into place. A fifth is where the saving justifies engineering attention. If the measured interval clears it, the claim stands; if it falls short, the claim closes and the packet keeps its job as an audit trail only. The trial covers one repository's workload, so anything broader would need replication.
+The success bar is set before the first pair runs: the packet has to cut token spend by at least a fifth, while the blinded quality scores stay within a declared margin of the cold arm's. Fixing the bar in advance is what keeps the eventual result honest, because a threshold chosen after seeing the data can always be argued into place. A fifth is where the saving justifies engineering attention. If the measured interval clears it, the claim stands; if it falls short, the claim closes and the packet keeps its job as an audit trail only. The trial covers one repository's workload, so anything broader would need replication.
 
-The stance going in comes from the [Heuristics Canon](/research/heuristics-canon/) epistemics rule [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01): `require a controlled evaluation and a prior that most ideas are flat or negative`. Most interventions of this shape do nothing. The audit above justifies running the experiment; it does not justify predicting its result.
+The stance going in comes from the [Heuristics Canon](/research/heuristics-canon/) epistemics rule [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01): `require a controlled evaluation … and a prior that most ideas are flat or negative`. Most interventions of this shape do nothing. The audit above justifies running the experiment; it does not justify predicting its result.
 
 ## The decision in the meantime
 
-A technologist deciding today whether a persistent memory system earns its keep has settled facts and one open question. The direct cost is negligible against the work it precedes. The audit trail and portability across agent tools pay out from the first week. The material worth reusing demonstrably exists. What stays open until the trial reports is whether reuse lowers spend at equal quality.
+A technologist deciding today whether a persistent memory system earns its keep has settled facts and one open question. The direct cost is negligible against the work it precedes. The audit trail and portability across agent tools are usable today. The material worth reusing demonstrably exists. What stays open until the trial reports is whether reuse lowers spend at equal quality.
 
 My own position is cheap insurance: the packet stays on while the instrumentation lands, since its measured price is small and its side benefits are already real. The controlled comparison decides whether it is also making the work cheaper.

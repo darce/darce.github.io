@@ -55,6 +55,10 @@ const DiagramPair = ({ children }: { children: React.ReactNode }) => (
     <div className={styles.diagramPair}>{children}</div>
 )
 
+const PullQuote = ({ children }: { children: React.ReactNode }) => (
+    <blockquote className={styles.pullQuote}>{children}</blockquote>
+)
+
 // ASCII wireframes read as noise character-by-character; expose them as a
 // single labelled image and hide the box-drawing from assistive tech
 const AsciiScreen = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -73,6 +77,7 @@ const mdxComponents = {
     Cube: MDXCube,
     Diagram,
     DiagramPair,
+    PullQuote,
     AsciiScreen,
     hr: () => null,
 }

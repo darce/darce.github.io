@@ -384,41 +384,66 @@ Blockers and abandoned approaches persist past the session that hit them. An exp
 What this note does not show: that any of this saves money or tokens. Observational reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).
 
 ### The Economics of Remembering
-*A pre-registered claim about durable memory and token spend*
+*The cost is measured; the return still needs a trial*
 Tags: Agents, Economics, Research
-Summary: The claim that durable, vendor-agnostic agent memory reduces token spend, stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
+Summary: A production audit shows that durable agent memory is cheap to inject and rich in reusable fixes. A controlled trial still has to measure whether it reduces token spend without lowering outcome quality.
 
 ## The claim
 
-Injecting a bounded memory packet at session start reduces the tokens an agent spends to reach the same completion and review outcome. Tokens are the metered unit of model work; everything an agent reads or writes is counted in them. This entry registers that claim before measuring it. Everything below is argument, not measurement. The status on this page stays `registered` until the measurement in the last section has been run; it then moves to `measured` if the claim survives, or to `closed` if it does not.
+[WorkBay](/projects/workbay/) gives a new coding-agent session a bounded packet drawn from durable project state: prior decisions, review findings, resolutions, blockers, and verified tests. My registered claim is that this packet reduces total tokens per assigned task while preserving the same outcome quality.
 
-## The argument
+The packet's direct price is already measurable, while its benefit remains open. Keeping those statements separate matters because a cheap intervention can still distract the agent, surface stale context, or degrade the work. The evidence supports continued use during measurement; a controlled comparison will decide the claim.
 
-The mechanisms below are ordered by my confidence in them. Together they are why I put p ≈ 0.7 on the criterion at the end of this page being met.
+## What the record already proves
 
-### Repeated mistakes are pure token cost
+I audited three production `handoff.db` files used by different codebases. Because WorkBay stores workflow events as structured SQLite rows instead of burying them in vendor transcripts, the audit could inspect the system's history after the fact.
 
-A mistake an agent cannot see is a mistake it will re-make at full price: the exploration, the wrong fix, the failing review, the retry. The [interrogation note](/research/interrogating-agent-memory/) shows the record holds exactly this class of information, failed reviews stored together with their resolutions. Each one retrieved replaces a full re-derivation; the saving is that re-derivation's tokens, net of the injected packet's own cost. Settling that balance is what the measurement below is for.
+### The direct token cost is small
 
-### The memory outlives the context window
+A compact memory packet averages about 300 tokens. The measured tasks range from roughly 10³ to 10⁸ tokens, with a median near 3 × 10⁵. At the median, the task consumes about one thousand times the packet's token budget. The packet therefore clears the direct-cost adoption hurdle.
 
-Context is a per-session budget; the database is cumulative. Re-establishing project state at the top of every session is a recurring tax, and a bounded projection from durable state replaces it at a fraction of the size.
+The remaining possible costs are retrieval latency, stale or irrelevant context, privacy, and worse decisions. The trial must watch outcome quality as well as token spend.
 
-### Portable project state is paid for once
+### The record contains material worth retrieving
 
-Because the record is [plain SQLite](/research/agent-memory/), every agent tool reads the same accumulated state. Work done under one vendor stays legible to others. Wider WorkBay primitives, cross-harness review, and the [Heuristics Canon](/research/heuristics-canon/) may also change token spend, but this experiment does not isolate all of them. It tests only the memory packet.
+The earlier phrase `about 99% of resolved findings carry a written resolution a later session could retrieve instead of re-deriving` is a write-path completeness measure. The three repositories recorded resolution rates of 99.1%, 97.6%, and 99.5%; combined, 98.5% of findings marked resolved had resolution text.
 
-### Subscription seats change where waste lands
+This is evidence that WorkBay is being used correctly in one important sense: when a finding closes, its resolution is almost always captured. Retrieval accuracy, agent consultation, and token savings belong to later stages of the pipeline. The records also contain thousands of cross-task duplicate-finding fingerprints, reopened findings, and recurring session-start orientation reads. Together, they establish a large class of potentially reusable work while leaving realized savings to the trial.
 
-Agent work is billed two ways. Through a metered API, every token appears on the bill, so every exploration, wrong turn, and retry costs real money. On a subscription seat, the same work is prepaid: the monthly price is fixed whether the agent works efficiently or wastefully, up to the plan's limits. The tokens are never free. What differs is whether waste shows up as a larger bill or as less useful work extracted from a fixed one. Durable memory helps under either scheme. On a meter it takes re-exploration off the bill; on a seat it stretches how much finished work fits inside the same fixed price and plan limits.
+### Portability and auditability already have value
 
-## What would settle it
+The same record has rows written by several agent backends. One tool can inspect decisions and review evidence written by another without inheriting its transcript. That is an operational benefit today, even if the token-saving effect turns out to be smaller than 20%.
 
-The measurement is cheap because the instrumentation already exists: every orchestrated turn writes its token counts to a metrics table, tagged by task and source.
+## Why the probability was removed
 
-Design: ten task pairs in the same repository, matched at assignment on task type and the expected size of the change, before any outcome is visible. Within each pair, random assignment chooses which twin receives the bounded memory packet described in [Memory Outside the Model](/research/agent-memory/) at session start; the other starts cold. Fixed N; no early stopping; no peeking at interim results. Pairs share one repository and one accumulating record; each memory arm reads the record as it stood at assignment, and the repository interference that remains is stated here rather than modeled. Primary metric: total tokens per completed task, read directly from the metrics table. Secondary: repeats of review failures already present in the record. Pre-stated success criterion: the claim survives if the memory arm spends at least 20% fewer tokens for the same outcome, at an equal or better review pass rate. Anything less, and this entry closes negative. The readout will report the confidence interval on the token difference, not only pass or fail against the criterion.
+The previous draft assigned the experiment a probability of 0.7. That number looked quantitative but had no defined reference class, calibration record, or model behind it. Removing it makes the uncertainty more honest.
 
-If the measurement has not run by 2026-12-31, this entry closes unresolved. Publishing the design first is the point: the number, when it arrives, has to live with the criterion written here.
+The relevant [Heuristics Canon rule, EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01), says to `require a controlled evaluation and a prior that most ideas are flat or negative`. The audit raises confidence in the mechanism because reusable records exist and are cheap to inject. It cannot turn that mechanism into a calibrated probability of success.
+
+## What remains unmeasured
+
+The production record cannot estimate the causal benefit. Every interactive session receives a packet, so there is no untreated group. Packet injections happen in interactive sessions, while usable token measurements mostly come from orchestrated worker lanes. The two instruments have no session-level overlap, and most metered rows omit token counts or contain totals that disagree with their components.
+
+That is enough explanation for the missing answer: the historical data has treatment without a reliable meter, and metering without treatment variation. More retrospective mining cannot manufacture the comparison.
+
+## The future test
+
+Before the trial, the interactive harness must record one audited token quantity per assigned task. The packet selection rule, size, and format must be versioned. Task type and expected change size must be recorded before assignment. Both arms must run from the same base commit under the same limits, and a reviewer who cannot see the assignment must score outcome quality against a frozen rubric.
+
+The run has four stages:
+
+1. **A/A calibration.** Identical cold pairs estimate within-pair noise. That observed variance sets the sample size needed for 80% power to detect a 20% token reduction.
+2. **Content probe.** A relevant packet is compared with an equal-size packet from an unrelated project. A detectable relevance effect is the readiness criterion for proceeding to the trial.
+3. **Matched randomized pairs.** Within each pair, one twin receives the frozen memory packet and one starts cold. Fixed token, step, and time bounds prevent either arm from running indefinitely. Neither twin writes back to the shared record until the pair closes.
+4. **Readout.** The primary metric is total tokens per assigned task. The result is an interval on the paired effect, guarded by non-inferior blinded review quality. Failed tasks stay in the denominator.
+
+The pre-registered 20% threshold remains useful because it distinguishes a merely detectable effect from one large enough to matter. If the interval clears 20% and quality is no worse, the claim survives. If it lies below 20%, this claim closes. If it crosses 20%, the result remains unresolved. The study covers one repository's workload, so any broader claim would need replication.
+
+## The decision now
+
+The evidence supports a narrower focus than either “memory is beneficial” or “memory is so cheap there is no reason to skip it.” WorkBay's direct memory cost is small, its durable record already provides auditability and portable project state, and its causal effect on token spend remains open.
+
+I will keep the bounded packet on while instrumenting the comparison. That provisional product decision rests on a low direct cost and benefits already observed in the record. The controlled comparison will determine whether the packet makes agent work cheaper at the same quality.
 
 ### Heuristics Canon
 *Source-linked decision rules for product and engineering review*

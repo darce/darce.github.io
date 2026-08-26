@@ -81,7 +81,7 @@ def econ_scale() -> str:
     # a typical task, three decades above the packet
     b.append(sq(at(3.5) - 5, 102, 10, INK))
     b.append(line(at(3.5), 102, at(3.5), 96, width=1))
-    b.append(text(at(3.5), 88, "a typical task", size=12, anchor="middle"))
+    b.append(text(at(3.5), 88, "the median task", size=12, anchor="middle"))
     # the observed spread of tasks
     b.append(line(at(1), 140, at(6), 140, width=1))
     b.append(line(at(1), 134, at(1), 140, width=1))

@@ -20,7 +20,7 @@
 ## Research
 - /research/agent-memory/ — How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
 - /research/interrogating-agent-memory/ — An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually gets asked, each grounded in what the record holds.
-- /research/economics-of-agent-memory/ — The claim that durable, vendor-agnostic agent memory reduces token spend, stated as a falsifiable hypothesis with its measurement design, registered before the measurement has been run.
+- /research/economics-of-agent-memory/ — A production audit shows that durable agent memory is cheap to inject and rich in reusable fixes. A controlled trial still has to measure whether it reduces token spend without lowering outcome quality.
 - /research/heuristics-canon/ — A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
 - /research/rotation-matrices/ — A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
 - /research/order-book/ — An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
