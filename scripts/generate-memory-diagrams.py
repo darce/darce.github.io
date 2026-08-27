@@ -186,8 +186,38 @@ def memory_window() -> str:
     return svg(380, 360, "win", "".join(b))
 
 
+def memory_vector() -> str:
+    b = []
+    # a question becomes numbers
+    b.append(box(24, 78, 122, 74))
+    b.append(text(85, 102, "why was the", size=11, anchor="middle"))
+    b.append(text(85, 117, "retry approach", size=11, anchor="middle"))
+    b.append(text(85, 132, "rejected?", size=11, anchor="middle"))
+    b.append(line(146, 115, 186, 115, end="vec-ink"))
+    b.append(text(166, 170, "embedding", size=11, fill=INK2, anchor="middle"))
+    b.append(text(166, 184, "model", size=11, fill=INK2, anchor="middle"))
+    b.append(box(190, 94, 162, 42))
+    b.append(text(271, 119, "[ 0.12  -0.83  0.44  ... ]", size=12, anchor="middle"))
+    b.append(text(271, 156, "a vector: coordinates", size=11, fill=INK2, anchor="middle"))
+    b.append(line(352, 115, 392, 115, end="vec-ink"))
+    # the numbers place it in a space where distance is meaning
+    b.append(line(412, 202, 412, 40, width=1))
+    b.append(line(412, 202, 620, 202, width=1))
+    b.append(f'<rect x="516" y="92" width="7" height="7" fill="{CORAL}"/>')
+    b.append(text(512, 84, "the question", size=11, fill=CORAL, anchor="middle"))
+    b.append(f'<rect x="548" y="112" width="7" height="7" fill="{INK}"/>')
+    b.append(text(560, 132, "the rationale that", size=11))
+    b.append(text(560, 146, "rejected it", size=11))
+    b.append(line(523, 99, 548, 115, stroke=CORAL, width=1, dash="3 3"))
+    b.append(f'<rect x="434" y="178" width="7" height="7" fill="{INK2}"/>')
+    b.append(text(448, 185, "an unrelated note", size=11, fill=INK2))
+    b.append(text(516, 224, "near in space, near in meaning", size=12, fill=INK2, anchor="middle"))
+    return svg(700, 244, "vec", "".join(b))
+
+
 PLATES = {
     "memory-loop.svg": memory_loop,
+    "memory-vector.svg": memory_vector,
     "memory-layers.svg": memory_layers,
     "memory-boundary.svg": memory_boundary,
     "memory-window.svg": memory_window,
