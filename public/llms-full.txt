@@ -353,35 +353,41 @@ The status on this entry is `running` because daily use is testimony, and testim
 The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.
 
 ### Five Questions an Agent Cannot Answer from Context
-*What semantic search over durable state gets used for in practice*
+*What coding agents actually ask a durable project record*
 Tags: Agents, Embeddings, Research
-Summary: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually gets asked, each grounded in what the record holds.
+Summary: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, each grounded in what the record holds.
 
-Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational field note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose. Because the same structured rows are readable by different agents and models, the record also supports cross-evaluation: one harness can review what another wrote without inheriting its session transcript.
+## The record behind the questions
 
-## Where is the core problem?
+[WorkBay](/projects/workbay/) gives coding agents a durable project record: the decisions, review verdicts, blockers, and test results of every past session, stored as structured rows that outlive the sessions that wrote them. How the record works has [its own entry](/research/agent-memory/); this note reports what it gets used for.
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture.
+An agent's working memory is its context window, the bounded transcript it can see at once. Close the session and the window is gone. The questions below recur in real work, and every one of them has its answer outside the window. Everything reported here is read from `handoff.db` files in daily production use. The patterns are measured; the claims about usefulness are testimony from that use, and the two are kept apart on purpose. Because the rows are plain structured data, any agent tool can read what another wrote, so one harness can check another's work without inheriting its transcript.
 
-## Has this fix been found before?
+## The questions
 
-The index covers accepted fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns. A second agent can ask the same question against the same rows and see whether the proposed fix still holds.
+### Where is the core problem?
 
-## Are we relitigating a settled decision?
+Review verdicts accumulate per repository, and their distribution is diagnostic. One small project stood out precisely because of this: roughly three of every four of its recorded reviews failed. A session working there sees one failing review and fixes it in place; the record sees a streak, and in this project the streak pointed at the architecture.
 
-Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+### Has this fix been found before?
 
-## Is "done" actually done?
+The object of this search is a solution that worked. The record indexes accepted fixes, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix.
 
-A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. Cross-evaluation here means a different model can re-check the same completion evidence without trusting the original agent's self-report.
+### Are we relitigating a settled decision?
 
-## What has already been tried?
+The object of this search is a judgment rather than a piece of code. Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and in use the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, nothing stops a model from being talked back into a position the project already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
-Blockers and abandoned approaches persist past the session that hit them. An expensive sentence in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw.
+### Is "done" actually done?
+
+A claim of completion checks against rows: verified test results and recorded review verdicts, not the agent's own report. The search by meaning covers the softer half of the question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. A different model can re-check the same completion evidence.
+
+### What has already failed?
+
+The object of this search is a dead end. Blockers and abandoned approaches persist past the session that hit them. A recurring failure in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup.
 
 ## Scope
 
-What this note does not show: that any of this saves money or tokens. Observational reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).
+This note does not show that any of this saves money or tokens. Whether reuse lowers what an agent spends is a causal question, and it is the subject of [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/).
 
 ### The Economics of Remembering
 *The cost is measured; the return still needs a trial*
@@ -390,7 +396,7 @@ Summary: A production audit shows that durable agent memory is cheap to inject a
 
 ## The claim
 
-[WorkBay](/projects/workbay/) hands a new coding-agent session a bounded packet drawn from the project's durable record: prior decisions, review findings, resolutions, blockers, and verified tests. How that record works has [its own entry](/research/agent-memory/); this one is about whether it pays. The claim under test is that starting from the packet lowers the total tokens an agent spends per task while preserving the same outcome quality. Tokens are the metered unit of model work, so tokens per task is the closest thing agent work has to a unit price.
+[WorkBay](/projects/workbay/) hands a new coding-agent session a bounded packet drawn from the project's durable record: prior decisions, review findings, resolutions, blockers, and verified tests. How that record works is [described here](/research/agent-memory/); this one is about whether it pays. The claim under test is that starting from the packet lowers the total tokens an agent spends per task while preserving the same outcome quality. Tokens are the metered unit of model work, so tokens per task is the closest thing agent work has to a unit price.
 
 The two halves of that claim are in different states. The packet's price is measured; its effect is not. The distinction matters because a cheap intervention can still hurt: it can distract the agent, or surface stale context that steers the work wrong.
 
