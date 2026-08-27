@@ -41,7 +41,7 @@
         .subtitle {
             font-size: 1.8rem;
             font-weight: 600;
-            line-height: 3rem;
+            line-height: $type-lh-title;
 
 
             @include themeComponent($themes) {
@@ -50,7 +50,7 @@
 
             @media(max-width: $tabletMax) {
                 font-size: 1rem;
-                line-height: 1.3rem;
+                line-height: $type-lh-title-mobile;
                 margin: 0;
             }
         }
