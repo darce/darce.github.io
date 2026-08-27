@@ -4,7 +4,7 @@ year: 2026
 title: 'WorkBay: State for Coding Agents'
 subtitle: 'Durable workflow and interaction state for coding agents'
 description: 'Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.'
-details: 'WorkBay keeps the active task, unresolved review findings, recorded decisions, and test evidence in the repository so a later session in a supported agent tool can pick the work up. The adjacent Design Map (`/ux-map`) turns jobs, screens, states, and flows into version-controlled artifacts that can be rendered and critiqued before implementation.'
+details: 'WorkBay keeps the active task, open review findings, recorded decisions, and test evidence in the repository, so a later session in any supported agent tool picks the work up. Its Design Map turns screens and flows into version-controlled artifacts that are critiqued against a rulebook before implementation.'
 links:
 - url: https://github.com/darce/workbay
   label: github.com/darce/workbay
@@ -24,26 +24,75 @@ tags:
 - Python
 ---
 
-A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, in any of the supported agent tools, picks it up where the last one left off.
+A coding agent is a language model driving developer tools: it edits files and runs tests, and it reasons inside a context window, the model's short-term working memory, which vanishes when the session ends. What vanishes with it is the working state of a project: which task was active, which review findings are still open, why a decision went one way, and what evidence backs it. WorkBay keeps that state in the repository, so the next session, in any of the supported agent tools, picks the work up where the last one left off.
+
+<PullQuote>
+The agent forgets; the repository remembers.
+</PullQuote>
 
 ## One journey
 
-`Plan → Task → Work → Review → Findings → Gate → Merge`
+Work moves through a fixed sequence: a plan becomes a task, the task gets worked, the work gets reviewed, and findings from the review persist until a gate, a recorded check with authority over the branch, decides whether it merges. Every stage writes to one durable record, so the sequence survives any number of session endings along the way.
 
-A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state. Re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
+<Diagram
+    src="/images/projects/workbay-journey.svg"
+    alt="Six boxes in a row labeled plan, task, work, review, gate, and merge, with the gate drawn in coral. Dashed vertical lines cross the row where sessions end mid-journey. A findings box below the row feeds the gate. A caption line underneath reads 'one durable record under every stage'."
+    caption="Sessions end anywhere along the journey; the record underneath persists."
+/>
 
-## Three product decisions
+A cold session loads its active task and continues it. Claude Code, Codex, Cursor, grok, and VS Code Copilot all attach to the same record. Re-entry still carries friction: each tool surfaces the record differently, and context that was never recorded stays lost.
 
-1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads recorded decisions directly, with no prose recap required.
-2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
-3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops and reports the failure.
+## What the record holds
 
-## Design Map
+The record is workflow state: it lives in the project, and a new session reloads recorded decisions directly, with no prose recap. Author and reviewer stay separate, so findings carry their own status and commit provenance while merge authority stays with the parent task. The history is vendor-neutral: one manifest keeps commands consistent across tools, and when a chosen backend is unavailable, dispatch stops and reports the failure.
 
-The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. The inventory and critique steps are deterministic; model reasoning happens outside them. The tooling is public. The consumer maps I keep for my own products are private R&D.
+## A map of the product before the code
+
+WorkBay ships a Design Map tool as the `/ux-map` command. It asks for an inventory first: the jobs a user comes to do, the screens they meet, the zones and states inside each screen, the actions available, and the flows that chain them, each entry carrying a reference into the real code. The inventory lives in one JSON file per surface, checked into the repository like any other source.
+
+<Diagram
+    src="/images/projects/workbay-uxmap.svg"
+    alt="An inventory box listing jobs, screens, states, and flows feeds a deterministic render step, which fans out to ASCII wireframes, Mermaid flows, and Markdown tables. A coral arrow leads from the artifacts to a box reading 'critique by canon rule ID', with a note reading 'all before implementation'."
+    caption="The inventory is the source of truth. The artifacts exist to be judged."
+/>
+
+From that file a renderer emits wireframes and flow diagrams deterministically: the same inventory produces byte-identical output, so a diff in a render means a change in the design. The wireframe below is drawn from this site's own map.
+
+<AsciiScreen label="The site chrome screen from this site's Design Map render: a boxed wireframe listing its zones (skip link, masthead, decorative cube, primary nav, theme swatch, breadcrumb, page canvas, footer), its actions marked primary or secondary, and its states.">
+
+```text
++------------------------------------------------------------+
+| Site chrome  [screen]  *                                   |
+| Fully-connected escape hatch on every page: skip link, ma… |
++------------------------------------------------------------+
+| ZONES                                                      |
+|   - Skip to main content (nav) states=[default]            |
+|   - Masthead wordmark + subtitle → home (nav) states=[def… |
+|   - Decorative 3D cube (other) states=[default]            |
+|   - Primary nav: home / work / research / about (nav) sta… |
+|   - 2×2 theme swatch (form) states=[default]               |
+|   - Detail breadcrumb prev / title / next (nav) states=[d… |
+|   - Page canvas + main landmark (content) states=[default] |
+|   - Footer: name, résumé, privacy, contact (content) stat… |
++------------------------------------------------------------+
+| ACTIONS                                                    |
+|   [secondary] Go home -> landing                           |
+|   [PRIMARY] Open about -> about                            |
+|   [PRIMARY] Open work hub -> work-index                    |
+|   [PRIMARY] Open research index -> research-index          |
+|   [secondary] Open privacy notice -> privacy               |
+|   [secondary] Toggle light / dark -> appearance            |
++------------------------------------------------------------+
+| states: default                                            |
++------------------------------------------------------------+
+```
+
+</AsciiScreen>
+
+The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/semantic-image-search/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
 
 ## Under the hood
 
-WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows; the memory design has [its own research entry](/research/agent-memory/).
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP, the Model Context Protocol, a standard interface that lets agent tools call external services. Git hooks protect the main branch during development, and a bounded `/offload` command sends a task to an isolated worktree, a separate working copy of the repository, under a fixed token budget, a cap on how much text the model may consume. Optional embeddings add search by meaning over the recorded rows. The memory design has [its own research entry](/research/agent-memory/), the questions agents bring to the record are collected in [a field note from production use](/research/interrogating-agent-memory/), and whether remembering pays for itself is [an open controlled trial](/research/economics-of-agent-memory/).
 
 Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
