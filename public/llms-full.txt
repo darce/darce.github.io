@@ -30,57 +30,82 @@ Summary: Native macOS product for semantic search and visual exploration, with o
 
 **How do you make local AI search useful when the system cannot assume the library is complete?**
 
-Missing, partial, and unavailable data each get a state that names which one it is, so an incomplete view of the library never reads as a complete one.
+Missing, partial, and unavailable data each get a named state. An incomplete view of the library never reads as a complete one.
+
+> A workbench for pictures that already live in folders, and stay there.
 
 ## Final product
 
-> **Screenshots: pending.** The screens in this case are ASCII, drawn from the shipped code at `fec9fa6` and pinned to shipped strings by a test in the product repository (every quoted string must occur verbatim in the named Swift file). Screenshots are being captured; this note stays visible so the case does not imply media that does not exist.
+> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels.
+
+![Search for "flowers" over a film-scan library: a ranked grid of pink cosmos photos, the selected photo open with its details and an experimental cutout layer, and the Similarity map expanded above the results.](/images/work/sis-search-layer.png)
 
 ## At a glance
 
-- **Platform** — Native macOS. The models run on the Mac, within 8 GB of memory.
-- **Library access** — Reads only the folders the person has chosen. Gallery images stay on the device.
-- **Surfaces** — Search, plus Similarity, Places, and Timeline for relationships a query did not express.
+- **Platform:** Native macOS. The models run on the Mac, within 8 GB of memory.
+- **Library access:** Reads only the folders the person has chosen. Gallery images stay on the device.
+- **Query:** Text, or an image dropped from anywhere. Any photo can pivot to its visual neighbours.
+- **Surfaces:** Search, plus Similarity, Places, and Timeline for relationships a query did not express.
 
 ## Problem
 
-Photo libraries contain more meaning than filenames and folders expose, but cloud search creates a privacy boundary and local models introduce their own limits. A useful local product has to answer two questions at once: can the system find meaningful relationships, and can the interface tell the truth when its view of the library is incomplete?
+Photo libraries hold more meaning than filenames and folders expose. Cloud search creates a privacy boundary, and local models have their own limits. A useful local product must find meaningful relationships, and it must tell the truth about how much of the library it can see.
 
 ## Core journey
 
-Choose a folder, index it, search by meaning, inspect a result, then move into Similarity, Places, or Timeline to explore relationships the original query did not express.
+Choose a folder, index it, and search by text or by image. Inspect a result. Then explore Similarity, Places, or Timeline for relationships the query did not express.
 
 ### Cold start and indexing
 
-**Screen 1 — Cold start.** Before a folder is chosen, Search says "No folder yet. Use File → Open Folder to enroll photos, then search here," Layers says there are no layer packs yet, and no zero-result count is shown.
+**Screen 1 — Cold start.** Before a folder is chosen, Search says "Choose a folder to search. Your photos stay where they are." The Layers panel is empty, and no zero-result count is drawn.
 
-The start state is kept apart from an empty result. A count of zero before any library exists would imply that a library had been searched and held nothing.
+The start state is kept apart from an empty result. A count of zero before any library exists would imply a search that found nothing. The first line also states what the app does with the files: it reads them where they sit, and it does not import or copy them.
 
-**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1,284" above a two-row photo grid.
+**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1284…" above a two-row photo grid.
 
-The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index that is labelled as partial rather than presented as complete.
+The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index, and the interface labels it partial.
 
 ### Ranked results
 
 **Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
 
-Results are ordered by nearness to the query. Position carries the ranking; raw cosine scores are not shown as if they were confidence. When nothing is near, the grid gives way to a "No close matches" state instead of a weakly ranked list.
+Results are ordered by nearness to the query. Position carries the ranking. Raw cosine scores are not shown as confidence. When nothing is near, the grid shows a "No close matches" state instead of a weakly ranked list.
+
+### Search with an image
+
+A query does not have to be words. "Search with image…" embeds a picture with the same encoder that indexed the library. A file dropped on the window does the same. Every photo is then ranked by nearness to it. Find similar starts the same search from any selected photo. Both query kinds land in the one embedding space the index was built in ([EMB-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#emb-01)), so their rankings mean the same thing.
+
+![Find-similar mode: a banner reads "Results are photos visually similar to 56740009.JPG — not a text search" with a Back to text results button, above the numbered nearest neighbours of a pink-flower film photo.](/images/work/sis-similarity-search.png)
+
+The mode announces itself. The banner states "Results are photos visually similar to 56740009.JPG — not a text search" and offers a way back. An image-ranked grid is never mistaken for an answer to the text in the search field.
 
 ### Inspection
 
-Selecting a photo opens the facts behind the result, so a machine ranking can be checked against what the file itself records.
+Selecting a photo opens the facts behind the result. A machine ranking can be checked against what the file records.
 
-**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected and can be opened by double-clicking. The open details panel shows the file's size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00) and GPS position (64.1466°, -21.9426°) above an offline mini-map, with the surrounding result thumbnails below.
+**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected; double-click opens it. The details panel shows size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00), and GPS (64.1466°, -21.9426°) above an offline mini-map.
 
-Each label sits with its value, and the details panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule; it never fetches tiles.
+Each label sits with its value. The panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule and never fetches tiles.
+
+### Layers
+
+Segmentation gives each photo a strip of cutout layers, named by what the detector saw: cat, plant, left plant, person, structure. Every name carries the experimental marker. A machine-drawn matte does not get the same authority as the file facts above it. A click opens a layer full-size on an alpha checkerboard with one action, Save this layer…. Save layers… exports the set for composition in other tools.
+
+![The layer strip for a photo of a cat in a garden: three cutouts on alpha checkerboards labelled cat, plant, and left plant, each marked experimental, beneath the photo's details.](/images/work/sis-cat-layers-detail.png)
+
+![An enlarged layer titled "cat · experimental": the cat cut out on an alpha checkerboard, above a Save this layer button and a Close button.](/images/work/sis-cat-layer.png)
+
+The app groups people without identifying them: chips read Person 1, Person 2, Person 3; a file with none says "No person names in this file"; and no chip resolves to a name.
+
+![A photo of three costumed people whose details show chips Person 1, Person 2, and Person 3, above four separate person layers cut out on alpha checkerboards.](/images/work/sis-persons-layer-layout.png)
 
 ## Designing incomplete truth
 
 "No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim.
 
-Each condition below is worded for its cause and offers a way out of it. Two rules from the [Heuristics Canon](/research/heuristics-canon/) decided the split: [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02), which holds that abstention is a valid result rather than a forced classification, and [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04), which treats an undesigned state as a bug. Six states got copy of their own because those two rules said an undifferentiated blank was the defect, not the fallback.
+The split follows the [Heuristics Canon](/research/heuristics-canon/). [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02) holds that abstention is a valid result rather than a forced classification. [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04) treats an undesigned state as a bug: an undifferentiated blank is itself a defect. So each condition below is worded for its cause and offers a way out.
 
-No folder yet is the start state, held apart from an empty result for the reason Screen 1 gives.
+No folder chosen is the start state, held apart from an empty result for the reason Screen 1 gives.
 
 No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
 
@@ -92,59 +117,78 @@ Unavailable volume or permission covers an offline disk and a folder the app was
 
 Experimental marks machine-derived behaviour that is still preliminary, so it does not carry the same authority as the rest of the app.
 
-**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are missing, usually on an unplugged volume, so dates and places describe only the rest of the library.
+**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are on an unplugged disk, which the caveat names, so dates and places describe the rest of the library.
 
-The caveat qualifies all three plots and names why the library is partial. Its visible text and its VoiceOver text come from the same string, so they cannot drift apart.
+The caveat qualifies every plot and names why the library is partial. The visible text and the VoiceOver text come from one string, so they cannot drift apart.
 
-**Screen 8 — Missing model and settings recovery.** The model panel says detection still works but search does not when the exported CLIP and MobileSAM folder is unreadable, names `/Volumes/Butter/cache/sis-coreml-export`, and offers Choose and Reset controls; Settings lists `~/Pictures/2021-iceland`, states that content is neither filtered nor certified safe, and shows an off-by-default option that may send 256px crops to local Ollama at 127.0.0.1 while gallery bytes stay on-device.
+**Screen 8 — Missing model and settings recovery.** The model panel names `/Volumes/Butter/cache/sis-coreml-export` and says that detection still works when the folder is unreadable, but search does not. Settings lists `~/Pictures/2021-iceland`, states that no photo is filtered or certified safe, and shows the off-by-default local Ollama option.
 
-The model path and whether it can be read are shown as two facts, and a missing package is named when search cannot run. Settings states that no photo is filtered or certified safe, and the one optional network hop, to a local Ollama socket, is off by default and named by address.
+The model path and its readability are shown as separate facts. When search cannot run, the missing package is named. The one optional network hop goes to a local Ollama socket. It is off by default and named by address (127.0.0.1).
 
 ## Similarity, Places, and Timeline
 
-Three views share one selection. Moving between them keeps the selection, so the frame changes while the anchor does not, and each view reports how much of the selection it can show.
+Similarity, Places, and Timeline share one selection. Moving between them keeps it: the frame changes while the anchor does not. Each view reports how much of the selection it can show.
 
 ### Similarity
 
 The Similarity badge starts at 47, matching the selected set. After the Places map selection narrows, it reads 38.
 
+The view lays the whole indexed library out as a two-dimensional map, projected by UMAP from the same embeddings that answer queries. Photos near the current results appear as thumbnails; the rest stay points. Drag pans. Shift-drag selects a region, and the selection carries into the grid below.
+
+![The Similarity map for a 2,314-photo library: a wide point cloud with a cluster of photo thumbnails outlined in blue, above select-area, zoom, and Reset view controls.](/images/work/sis-layers-umap.png)
+
+The map is drawn for selection, and its geometry stays inside what a projection can say. A UMAP layout preserves neighbourhoods rather than distances ([McInnes, Healy & Melville 2018](https://arxiv.org/abs/1802.03426)). So the surface has no axes and no distance readout, and a gap between two clusters is not a fact about the library. VIZ-18 and VIZ-19, canon rules distilled from that paper, set the boundary: claims from the layout stop at local contiguity, and a visible cluster is only as real as its persistence across neighbourhood scales.
+
 ### Places
 
-**Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47 because only 41 selected photos have coordinates; the Places state then reads 38, 41, and 41, shows 41 of 1,284 photos with 1,198 lacking coordinates and 45 unreadable, and lists a 41-photo map selection outside the search results last in place order rather than by rank.
+**Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47: only 41 of the selected photos have coordinates. The Places state then reads 38, 41, 41. It shows 41 of 1284 photos, with 1198 lacking coordinates and 45 unreadable. A 41-photo map selection outside the search results is listed last, in place order.
 
-The badge counts differ on purpose: 47 photos are selected and 41 of them have coordinates. Photos without coordinates, files that could not be read, and files that were never opened stay as separate explanations rather than one total. A map selection that falls outside the search results is listed after the ranked results and labelled as unranked.
+The badge counts differ on purpose: 47 photos are selected, and 41 of them have coordinates. Photos without coordinates, unreadable files, and never-opened files stay separate explanations. A map selection outside the search results is listed after the ranked results and labelled unranked.
 
 ### Timeline
 
-**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025, separates 94 undated photos, and identifies 1,190 dated photos: 1,104 from exposure time and 86 from file write time; July 2021 zoom uses daily GMT periods and keeps the 94 undated photos off-axis; the truncated view says three photos before 1962 lie off the left and offers a Before 1962 action.
+**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025 and holds 94 undated photos off the axis. A legend names each bar's date source: EXIF exposure date, file write time, or source unknown. The July 2021 zoom uses daily GMT periods. The truncated view says 3 photos dated before 1962 are off the left of the axis and offers a Before 1962 action.
 
-The breadcrumb records the window that was asked for; the range line states what the chart draws. Undated photos sit beside the axis with their own count; they are not dropped. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
+The breadcrumb records the window that was asked for. The range line states what the chart draws. Undated photos sit beside the axis with their own count. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
+
+## Next to Apple Photos
+
+macOS Photos already searches by meaning: Apple's [search guide](https://support.apple.com/kn-in/guide/photos/pht64de33e5a/11.0/mac/26) covers natural-language queries, text inside images, dates, and detected people, pets, and objects. "Semantic search" alone would be a parity claim. This product is positioned on what Photos does not offer.
+
+- **Image as query.** Photos search starts from words and built-in categories. Here the query can be a picture from anywhere, and any photo pivots to its visual neighbours.
+- **Folders as the corpus.** Photos can keep [referenced originals](https://support.apple.com/en-ca/guide/photos/pht1ed9b966d/mac) outside its library at the cost of managed-library features, and [separate libraries](https://support.apple.com/en-gb/guide/photos/pht211de786/mac) require switching. Here the library is the chosen folders searched together, and the index is disposable metadata beside them: deleting it changes nothing about the files.
+- **Inspectable retrieval.** Ranking is cosine nearness in one pinned, openly licensed embedding space, recorded in the product's architecture decisions, so a wrong result can be reasoned about. Photos' pipeline cannot be examined from outside.
+- **Layers out.** Photos lifts one subject as a sticker. Here segmentation writes typed, saveable alpha layers meant for composition elsewhere.
+
+Together those make the product a visual-search workbench for folders. It is aimed at people whose pictures live outside a managed library: photographers' archives, scan sets, design assets, external volumes. The [Heuristics Canon](/research/heuristics-canon/)'s strategy rules shaped the framing: name the incumbent the product sits beside ([STRAT-16](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#strat-16), [STRAT-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#strat-18)), and let the advantage come from a coordinated set of workflow choices for that segment ([PROD-06](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#prod-06), [GTM-03](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#gtm-03)).
 
 ## Evaluation
 
 ### Technical evidence
 
-Memory and runtime behaviour were measured against an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed, and automated tests cover the core behaviour.
+Memory and runtime were measured on an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed. Automated tests cover the core behaviour.
 
 ### Interaction and accessibility review
 
-A whole-product UX map framed the review, with a question attached to each screen to isolate one interaction risk at a time. Adversarial review went after the privacy claims and the failure states. Automated checks that changed state and then read the view caught places where the display had not followed the change.
+A whole-product UX map framed the review. Each screen carried one question, to isolate one interaction risk at a time. Adversarial review targeted the privacy claims and the failure states. Automated checks changed state, then read the view, and caught displays that had not followed the change.
 
-Keyboard operation and VoiceOver were designed in from the start rather than added afterwards. Every state above has spoken wording, the partial-library caveat is announced when it appears, and the Explore views keep their viewpoint across tab changes so a keyboard user is not returned to the top of the map or chart on every switch.
+Keyboard operation and VoiceOver were designed in from the start. Every state above has spoken wording. The partial-library caveat is announced when it appears. The Explore views keep their viewpoint across tab changes, so a keyboard user is not returned to the top of the map or chart.
 
 ### External usability evidence
 
-Not yet run.
+A study with users outside the review has not yet run.
 
-## What changed
+## Under real use
 
-- Switching Explore tabs reset the viewpoint, so orientation was lost on every switch. Viewpoint state moved to the container, and a regression check now covers tab changes.
-- Partial-library plots read as complete-library truth. They gained the scoped, cause-specific caveat above, with a VoiceOver announcement, which the accessibility review then confirmed.
-- A timeline selection could outlive the axis it referred to and point at nothing. Selection state is now cleared whenever the axis changes, and a mutation check covers it.
+Trust in the Explore surfaces comes down to how they behave in the middle of a task. Each behaviour below is held by a test.
+
+- The frame you set up survives the move. Similarity, Places, and Timeline hold their zoom and pan across tab changes. Looking at the same photos another way costs one click and no reorientation. A regression check covers tab changes.
+- A partial view says so. When files cannot be read, the plot names the cause, the disk, and the number of photos it leaves out. VoiceOver speaks the caveat when it appears. Without it, a partial chart looks exactly like a complete one.
+- A selection cannot outlive what it pointed at. Changing the timeline axis clears the selection. A count on screen always refers to a range the chart draws now. A mutation check covers it.
 
 ## Current evidence gap
 
-The app works end to end on the machine it was designed for. It has been reviewed against implementation, accessibility, and adversarial criteria, but it has never been measured on a library larger than the test corpus and never used by anyone outside that review. The next step is a task-based study with three to five people, and its first question is whether people can form useful queries and read the caveats correctly.
+The app works end to end on the machine it was designed for. It has been reviewed against implementation, accessibility, and adversarial criteria. It has not been measured on a library larger than the test corpus, and no one outside that review has used it. The next step is a task-based study. It will show whether people outside the review can form useful queries and read the caveats as written.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Product R&D and accessibility for a large DAM platform*
@@ -465,7 +509,7 @@ The test of a rule corpus is whether it reverses decisions that were already mad
 
 A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, names a rule and source, and narrows or withdraws the proposal before a false claim lands.
 
-The same corpus reviews this site. [Semantic Image Search](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and the same review put the visible media-pending note on that case instead of letting it imply screenshots that do not exist. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
+The same corpus reviews this site. [Semantic Image Search](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
 
 The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 
