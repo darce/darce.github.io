@@ -160,6 +160,34 @@
     .source {
         min-width: 0;
 
+        // Hierarchical section typography: a major section opens with a 2px
+        // rule; subsections rely on scale and weight alone
+        h2 {
+            margin: $s-x-large 0 $s-medium;
+            padding-top: $s-large;
+            border-top: 2px solid;
+            font-size: 1.4rem;
+            line-height: 1.3;
+            font-variation-settings: 'wght' 650;
+
+            @include themeComponent($themes) {
+                border-top-color: t('text');
+            }
+        }
+
+        h3 {
+            margin: $s-large 0 $s-small;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            font-variation-settings: 'wght' 600;
+        }
+
+        @media (max-width: $tabletMax) {
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
+
         .diagram,
         :global(figure.diagram) {
             margin: $s-large 0;

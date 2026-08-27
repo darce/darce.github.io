@@ -75,6 +75,14 @@ describe('research entries stay concept-first', () => {
         )
     })
 
+    it('frames the five-questions note as a WorkBay field note', () => {
+        const note = read('interrogating-agent-memory')
+        expect(note).toContain('[WorkBay](/projects/workbay/)')
+        expect(note).toContain('<PullQuote>')
+        expect(note).toMatch(/context window/i)
+        expect(note).not.toMatch(/registered claim|previous draft|earlier phrase|pre-registered/i)
+    })
+
     it('names the audit trail and cross-harness boundary without claiming free switching', () => {
         const memory = read('agent-memory')
         expect(memory).toMatch(/audit trail/i)

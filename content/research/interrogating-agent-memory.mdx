@@ -2,11 +2,11 @@
 index: 2
 year: 2026
 title: 'Five Questions an Agent Cannot Answer from Context'
-subtitle: 'What semantic search over durable state gets used for in practice'
+subtitle: 'What coding agents actually ask a durable project record'
 type: 'note'
 status: 'measured'
-description: An observational readout of production handoff databases. The five recurring questions that semantic search over durable agent state actually gets asked, each grounded in what the record holds.
-details: An observational readout of production handoff databases in daily use. Five recurring uses of semantic search over durable state, each grounded in what the record holds.
+description: A field note from the production records of WorkBay, a system that gives coding agents a durable project memory. Five questions agents keep asking that no single session can answer, each grounded in what the record holds.
+details: A field note from the production records of WorkBay, a system that gives coding agents a durable project memory. Five questions agents keep asking that no single session can answer, and what the record shows about each.
 thumbnail:
   src: research/swimmers-under-orange-moon-katherine-bradford.jpg
   alt: "Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford."
@@ -20,11 +20,21 @@ tags:
   - Research
 ---
 
-Everything below is read from `handoff.db` files in daily production use; [the system itself is described separately](/research/agent-memory/). This is an observational field note. The patterns are measured, the usefulness claims are testimony, and the two are kept apart on purpose. Because the same structured rows are readable by different agents and models, the record also supports cross-evaluation: one harness can review what another wrote without inheriting its session transcript.
+## The record behind the questions
 
-## Where is the core problem?
+This is a field note about [WorkBay](/projects/workbay/), a system that gives coding agents a durable project record: the decisions, review verdicts, blockers, and test results of every past session, stored as structured rows that outlive the sessions that wrote them. How the record works has [its own entry](/research/agent-memory/); this note reports what it gets used for.
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. Any single session working there sees one failing review and fixes it in place. The record sees a streak, and a streak points at the architecture.
+An agent's working memory is its context window, the bounded transcript it can see at once. Close the session and the window is gone. The questions below arrive constantly in real work, and every one of them has its answer outside the window. Everything reported here is read from `handoff.db` files in daily production use. The patterns are measured; the claims about usefulness are testimony from that use, and the two are kept apart on purpose. Because the rows are plain structured data, any agent tool can read what another wrote, so one harness can check another's work without inheriting its transcript.
+
+<PullQuote>
+An agent that cannot see a past debate will happily argue both sides of it.
+</PullQuote>
+
+## The five questions
+
+### Where is the core problem?
+
+Review verdicts accumulate per repository, and their distribution is diagnostic. In one small project, roughly three of every four recorded reviews failed. A session working there sees one failing review and fixes it in place; the record sees a streak, and a streak points at the architecture. The everyday version: a contractor who patches one crack fixes a wall, and the one who has seen the ledger of every past crack asks about the foundation.
 
 <Diagram
     src="/images/research/memory-window.svg?v=1"
@@ -32,22 +42,22 @@ Review verdicts accumulate per repository, and their distribution is diagnostic.
     caption="The cluster does not exist inside any single session. It only exists in the record."
 />
 
-## Has this fix been found before?
+### Has this fix been found before?
 
-The index covers accepted fixes as well as failures. When a new finding lands, semantic search runs over past resolutions, so a defensive check or a test pattern discovered once is findable by meaning when a differently-worded version of the same problem returns. A second agent can ask the same question against the same rows and see whether the proposed fix still holds.
+The record indexes accepted fixes as well as failures, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix. A second agent can ask the same question against the same rows and see whether the fix still holds.
 
-## Are we relitigating a settled decision?
+### Are we relitigating a settled decision?
 
-Before an agent re-opens an architectural question, the decision record is searched. If the question was settled, the agent receives the ruling with its reasoning and cites it; the debate stays closed. The failure this guards against is specific to agents: a model that cannot see a past debate will happily reprise both sides of it. Human teams have a version of the same failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, a model can be talked into reversing a decision by the same reasoning it already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
-## Is "done" actually done?
+### Is "done" actually done?
 
-A claim of completion checks against rows: verified test results and recorded review verdicts. Semantic search covers the softer half of the same question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. Cross-evaluation here means a different model can re-check the same completion evidence without trusting the original agent's self-report.
+A claim of completion checks against rows: verified test results and recorded review verdicts, not the agent's own report. The search by meaning covers the softer half of the question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. A different model can re-check the same completion evidence, which turns "trust me" into "look it up."
 
-## What has already been tried?
+### What has already been tried?
 
-Blockers and abandoned approaches persist past the session that hit them. An expensive sentence in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw.
+Blockers and abandoned approaches persist past the session that hit them. The most expensive sentence in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup: tried, failed, here is why.
 
 ## Scope
 
-What this note does not show: that any of this saves money or tokens. Observational reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own pre-registered entry](/research/economics-of-agent-memory/).
+What this note does not show: that any of this saves money or tokens. Observed reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own entry](/research/economics-of-agent-memory/).
