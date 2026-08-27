@@ -5,8 +5,8 @@ title: 'Five Questions an Agent Cannot Answer from Context'
 subtitle: 'What coding agents actually ask a durable project record'
 type: 'note'
 status: 'measured'
-description: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. Five questions agents keep asking that no single session can answer, each grounded in what the record holds.
-details: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. Five questions agents keep asking that no single session can answer, and what the record shows about each.
+description: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, each grounded in what the record holds.
+details: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, and what the record shows about each.
 thumbnail:
   src: research/swimmers-under-orange-moon-katherine-bradford.jpg
   alt: "Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford."
@@ -30,7 +30,7 @@ An agent's working memory is its context window, the bounded transcript it can s
 An agent that cannot see a past debate will happily argue both sides of it.
 </PullQuote>
 
-## The five questions
+## The questions
 
 ### Where is the core problem?
 
@@ -44,20 +44,20 @@ Review verdicts accumulate per repository, and their distribution is diagnostic.
 
 ### Has this fix been found before?
 
-The record indexes accepted fixes as well as failures, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix.
+The object of this search is a solution that worked. The record indexes accepted fixes, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix.
 
 ### Are we relitigating a settled decision?
 
-Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and in use the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, nothing stops a model from being talked back into a position the project already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+The object of this search is a judgment rather than a piece of code. Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and in use the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, nothing stops a model from being talked back into a position the project already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
 
 ### Is "done" actually done?
 
 A claim of completion checks against rows: verified test results and recorded review verdicts, not the agent's own report. The search by meaning covers the softer half of the question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. A different model can re-check the same completion evidence.
 
-### What has already been tried?
+### What has already failed?
 
-Blockers and abandoned approaches persist past the session that hit them. A recurring failure in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup: tried, failed, here is why.
+The object of this search is a dead end. Blockers and abandoned approaches persist past the session that hit them. A recurring failure in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup.
 
 ## Scope
 
-This note does not show that any of this saves money or tokens. Observed reuse is not a causal savings claim. That claim needs a different tier of evidence, and it has [its own entry](/research/economics-of-agent-memory/).
+This note does not show that any of this saves money or tokens. Whether reuse lowers what an agent spends is a causal question, and it is the subject of [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/).
