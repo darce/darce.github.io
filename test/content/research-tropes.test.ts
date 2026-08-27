@@ -86,8 +86,17 @@ describe('research entries stay concept-first', () => {
     it('names the audit trail and cross-harness boundary without claiming free switching', () => {
         const memory = read('agent-memory')
         expect(memory).toMatch(/audit trail/i)
+        expect(memory).toMatch(/timestamped/)
         expect(memory).toMatch(/harness/i)
         expect(memory).toMatch(/switching/i)
         expect(memory).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
+    })
+
+    it('keeps the memory entry scoped by prose, not a what-this-is block', () => {
+        const memory = read('agent-memory')
+        expect(memory).not.toMatch(/What this is:|What this is not:/)
+        expect(memory).toContain('[WorkBay](/projects/workbay/)')
+        expect(memory).toContain('<PullQuote>')
+        expect(memory).not.toMatch(/this entry|this page|registered separately/i)
     })
 })
