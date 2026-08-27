@@ -190,27 +190,29 @@ Year: 2026
 Tags: Product Design, AI Workflow Design, Developer Tooling, Coding Agents, MCP, Python
 Summary: Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
 
-A coding session ends and the agent loses the thread: which task was active, which review findings are still open, why a decision went one way, and what evidence exists for it. WorkBay keeps that state in the repository so the next session, in any of the supported agent tools, picks it up where the last one left off.
+A coding agent is a language model driving developer tools: it edits files and runs tests, and it reasons inside a context window, the model's short-term working memory, which vanishes when the session ends. What vanishes with it is the working state of a project: which task was active, which review findings are still open, why a decision went one way, and what evidence backs it. WorkBay keeps that state in the repository, so the next session, in any of the supported agent tools, picks the work up where the last one left off.
 
 ## One journey
 
-`Plan → Task → Work → Review → Findings → Gate → Merge`
+Work moves through a fixed sequence: a plan becomes a task, the task gets worked, the work gets reviewed, and findings from the review persist until a gate, a recorded check with authority over the branch, decides whether it merges. Every stage writes to one durable record, so the sequence survives any number of session endings along the way.
 
-A cold session loads its active task and continues it. An independent reviewer records findings that persist, then a gate decides whether the work merges. Claude Code, Codex, Cursor, grok, and VS Code Copilot attach to that same state. Re-entry still takes some friction: each tool surfaces the record differently, and context that was never recorded stays lost.
+A cold session loads its active task and continues it. Claude Code, Codex, Cursor, grok, and VS Code Copilot all attach to the same record. Re-entry still carries friction: each tool surfaces the record differently, and context that was never recorded stays lost.
 
-## Three product decisions
+## What the record holds
 
-1. **Workflow state, not transcript memory.** The record lives in the project. A new session reloads recorded decisions directly, with no prose recap required.
-2. **Independent author and reviewer.** Findings have their own status and commit provenance. Merge authority stays with the parent task.
-3. **Vendor-neutral, durable project history.** One manifest keeps commands consistent across tools. If a chosen backend is unavailable, dispatch stops and reports the failure.
+The record is workflow state: it lives in the project, and a new session reloads recorded decisions directly, with no prose recap. Author and reviewer stay separate, so findings carry their own status and commit provenance while merge authority stays with the parent task. The history is vendor-neutral: one manifest keeps commands consistent across tools, and when a chosen backend is unavailable, dispatch stops and reports the failure.
 
-## Design Map
+## A map of the product before the code
 
-The adjacent Design Map ships as the `/ux-map` command, which turns an inventory of jobs, screens, zones, states, actions, flows, and code references into deterministic ASCII, Mermaid, and Markdown artifacts for critique against stable Heuristics Canon rule IDs before implementation. The inventory and critique steps are deterministic; model reasoning happens outside them. The tooling is public. The consumer maps I keep for my own products are private R&D.
+WorkBay ships a Design Map tool as the `/ux-map` command. It asks for an inventory first: the jobs a user comes to do, the screens they meet, the zones and states inside each screen, the actions available, and the flows that chain them, each entry carrying a reference into the real code. The inventory lives in one JSON file per surface, checked into the repository like any other source.
+
+From that file a renderer emits wireframes and flow diagrams deterministically: the same inventory produces byte-identical output, so a diff in a render means a change in the design. The wireframe below is drawn from this site's own map.
+
+The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/semantic-image-search/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
 
 ## Under the hood
 
-WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP. Git hooks guard `main` and branch rules as development safeguards. Bounded `/offload` sends a task to an isolated worktree within a token budget. Optional embeddings add semantic recall over recorded rows; the memory design has [its own research entry](/research/agent-memory/).
+WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP, the Model Context Protocol, a standard interface that lets agent tools call external services. Git hooks protect the main branch during development, and a bounded `/offload` command sends a task to an isolated worktree, a separate working copy of the repository, under a fixed token budget, a cap on how much text the model may consume. Optional embeddings add search by meaning over the recorded rows. The memory design has [its own research entry](/research/agent-memory/), the questions agents bring to the record are collected in [a field note from production use](/research/interrogating-agent-memory/), and whether remembering pays for itself is [an open controlled trial](/research/economics-of-agent-memory/).
 
 Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
 
@@ -315,42 +317,39 @@ I built a custom WordPress theme on top of [Underscores](https://underscores.me/
 Tags: Agents, SQLite, Embeddings, Research
 Summary: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
 
-> **What this is:** a description of the memory my coding agents share: a small database that outlives their sessions, and the rules that keep it trustworthy.
-> **What this is not:** a measured claim that it saves money. That claim is [registered separately](/research/economics-of-agent-memory/), with a criterion it has to survive.
-
 ## A session forgets everything
 
-A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
+A coding agent works inside a context window: the bounded transcript the model can see at once. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. That write path is the inspectable audit trail. The next session starts from a small packet drawn out of that record instead of starting cold.
+[WorkBay](/projects/workbay/), an orchestration layer that runs coding agents across repositories and gives them a durable shared record, answers with a database instead of a bigger window. Every repository it manages carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run and nothing exotic required to read it. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. Each write lands as a timestamped row attributed to the session and agent that made it, so the record doubles as an inspectable audit trail of what was concluded and when. The next session starts from a small packet, a bounded selection drawn out of that record, instead of starting cold.
 
 ## An index card is not the book
 
 The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." The embedding is a fallible index: it retrieves candidates, never authoritative answers. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+So selected fields are also embedded. An embedding model reads a piece of text and produces a vector: a list of numbers, usually several hundred of them, that works as coordinates. Each number scores the text along one learned dimension of meaning, and together they place the text as a point in a space where nearby points say similar things. Distance between points stands in for distance between meanings, so asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject."
+
+The vector works like a card in a library catalog: it finds the book, and authority stays with the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
 
 ## Layers of authority
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session. That packet is an intentional allocation of a bounded context budget to the next task, not a dump of everything the database holds.
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically, through database queries and plain word search. When you only know the meaning, similarity search over the embeddings proposes candidates. Whatever is found gets cut down to a bounded packet sized to fit at the top of a session, a deliberate spend of scarce context on the task at hand.
 
-The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema.
+Similarity search has a failure mode exact search lacks: it never returns nothing. It answers "here is the closest thing I have," and as the index grows, the closest thing is always something. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema, where no query can forget to apply it. Left unfenced, recall degrades into suggestion.
 
-## What the memory leans toward
+## The record leans toward failure
 
-The weighting of the embedded record is deliberate. Roughly four of every five entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. These are exactly the things a fresh session cannot see and would otherwise re-derive at full cost.
+Across the repositories indexed so far, review findings make up about four fifths of the embedded entries: what broke, and what resolution survived review. Most of the rest are decision rationales. These are the things a fresh session cannot see and would otherwise re-derive. Anyone building their own version can take the bias before taking any of the machinery: index failures and rulings ahead of summaries.
 
-## Portable state, not free switching
+## Private by default, portable on purpose
 
-The memory is private by default. `handoff.db` never enters version control; the record holds reasoning traces, and reasoning traces hold whatever the agent saw. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
+The record is private by default. `handoff.db` stays out of version control, because the record holds reasoning traces, and reasoning traces hold whatever the agent saw, including whatever secrets crossed its screen. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
 
-Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Harness switching still costs authentication, installation, capability gaps, and re-orientation; the durable record removes the cost of abandoning accumulated project history, not every switching cost.
+Because the record is plain SQLite, reading it takes only the file and its schema. A harness, the tool that runs the agent, is interchangeable at that layer: Claude Code and Codex both read the same rows today. The record belongs to the repository. That is portable state, and it should not be mistaken for free switching: moving between harnesses still costs authentication, installation, capability gaps, and re-orientation. The durable record removes one cost from that list, the loss of accumulated project history.
 
-## Status
+## Where the evidence stands
 
-The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. Explicit evidence tiers matter here: observational notes and registered experiments sit above testimony, and this page does not claim either. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
-
-The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.
+Daily use is testimony, and testimony is the weakest tier of evidence worth naming. That is the ceiling for any description of a running mechanism. The counterexample sits close to home: the youngest database in the fleet holds a few dozen decisions and has no embedding index switched on yet. What agents actually ask a record like this is read out of production data in [a companion field note on the questions agents bring to the record](/research/interrogating-agent-memory/). Whether remembering saves more than it costs is a causal question, and it belongs to [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/), where the claim has a criterion it must survive.
 
 ### Five Questions an Agent Cannot Answer from Context
 *What coding agents actually ask a durable project record*
