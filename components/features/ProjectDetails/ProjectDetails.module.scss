@@ -232,11 +232,14 @@
             padding: 0 0 0 $s-large;
         }
 
+        // White plate opened by a coral rule, same treatment as the diagram
+        // plates: the paper stays white in both themes, so the ink does too
         .pullQuote {
             margin: $s-x-large 0;
-            padding: $s-large 0;
+            padding: $s-large;
             border-top: 2px solid;
-            border-bottom: $s-line solid;
+            background-color: #fff;
+            color: $ink;
             font-size: clamp(1.35rem, 3vw, 2rem);
             line-height: 1.25;
             font-weight: 500;
@@ -244,8 +247,6 @@
 
             @include themeComponent($themes) {
                 border-top-color: t('border');
-                border-bottom-color: t('text');
-                color: t('text');
             }
         }
 
