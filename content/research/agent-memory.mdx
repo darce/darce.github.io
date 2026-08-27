@@ -6,7 +6,7 @@ subtitle: 'Durable agent state in SQLite, with embeddings as the index'
 type: 'method'
 status: 'running'
 description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
-details: WorkBay stores canonical agent workflow state in a per-repo SQLite database and indexes selected fields as embeddings. The structured row stays authoritative; the vector is only a way to find it again.
+details: WorkBay keeps agent memory in one SQLite file per repository, `handoff.db`. It stays private by default, keeps what sessions learned after they close, and any harness that knows the schema can read it.
 thumbnail:
   src: research/dec-29-1977-on-kawara.jpg
   alt: "On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm. Solomon R. Guggenheim Museum, New York. © One Million Years Foundation."
@@ -21,14 +21,11 @@ tags:
   - Research
 ---
 
-> **What this is:** a description of the memory my coding agents share: a small database that outlives their sessions, and the rules that keep it trustworthy.
-> **What this is not:** a measured claim that it saves money. That claim is [registered separately](/research/economics-of-agent-memory/), with a criterion it has to survive.
-
 ## A session forgets everything
 
-A coding agent works inside a context window: the model's working memory, large but strictly per-session. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
+A coding agent works inside a context window: the bounded transcript the model can see at once. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
 
-[WorkBay](/projects/workbay/), the orchestration layer I use across my repositories, answers with a database instead of a bigger window. Every repository carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. That write path is the inspectable audit trail. The next session starts from a small packet drawn out of that record instead of starting cold.
+[WorkBay](/projects/workbay/), an orchestration layer that runs coding agents across repositories and gives them a durable shared record, answers with a database instead of a bigger window. Every repository it manages carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run and nothing exotic required to read it. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. Each write lands as a timestamped row attributed to the session and agent that made it, so the record doubles as an inspectable audit trail of what was concluded and when. The next session starts from a small packet, a bounded selection drawn out of that record, instead of starting cold.
 
 <Diagram
     src="/images/research/memory-loop.svg?v=1"
@@ -40,27 +37,39 @@ A coding agent works inside a context window: the model's working memory, large 
 
 The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
 
-So selected fields are also embedded. An embedding model reads a piece of text and places it as a point in a space where nearby points carry similar meaning. Asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject." The embedding is a fallible index: it retrieves candidates, never authoritative answers. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+So selected fields are also embedded. An embedding model reads a piece of text and produces a vector: a list of numbers, usually several hundred of them, that works as coordinates. Each number scores the text along one learned dimension of meaning, and together they place the text as a point in a space where nearby points say similar things. Distance between points stands in for distance between meanings, so asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject."
+
+<Diagram
+    src="/images/research/memory-vector.svg?v=1"
+    alt="A question about a rejected retry approach passes through an embedding model and becomes a vector, a bracketed list of numbers labeled as coordinates. On a plane beside it, the question is plotted as a coral point close to the rationale that rejected it, while an unrelated note sits far away. A note reads 'near in space, near in meaning'."
+    caption="Meaning becomes coordinates. Distance does the searching."
+/>
+
+The vector works like a card in a library catalog: it finds the book, and authority stays with the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+
+<PullQuote>
+An embedding can find the answer. It cannot be the answer.
+</PullQuote>
 
 ## Layers of authority
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically: database queries and plain word search. When you only know the meaning, similarity search over the embeddings finds candidates. Whatever is found gets cut down to a bounded packet, sized to fit at the top of a session. That packet is an intentional allocation of a bounded context budget to the next task, not a dump of everything the database holds.
+What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically, through database queries and plain word search. When you only know the meaning, similarity search over the embeddings proposes candidates. Whatever is found gets cut down to a bounded packet sized to fit at the top of a session, a deliberate spend of scarce context on the task at hand.
 
 <Diagram
     src="/images/research/memory-layers.svg?v=1"
-    alt="Four stacked layers narrowing downward: rows as the canonical record, exact search with SQL and full text, meaning search with embeddings, and the packet the next session reads. A small card beside the embeddings layer points back up to the rows."
+    alt="Four stacked layers narrowing downward: rows as the canonical record, exact search with SQL and full text, meaning search with embeddings, and the packet the next session reads. A small box beside the embeddings layer, annotated 'each vector points back to a row', with an arrow curving up to the rows layer."
     caption="Authority flows downward. Every layer below the rows resolves back to them."
 />
 
-The order is the point. Similarity search never says "no results." It says "here is the closest thing I have," and as the index grows, the closest thing is always something. Left unfenced, that permissiveness turns memory into suggestion. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema.
+Similarity search has a failure mode exact search lacks: it never returns nothing. It answers "here is the closest thing I have," and as the index grows, the closest thing is always something. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema, where no query can forget to apply it. Left unfenced, recall degrades into suggestion.
 
-## What the memory leans toward
+## The record leans toward failure
 
-The weighting of the embedded record is deliberate. Roughly four of every five entries index review findings: what went wrong, how it was resolved, why the fix was accepted. Most of the rest are decision rationales. These are exactly the things a fresh session cannot see and would otherwise re-derive at full cost.
+Across the repositories indexed so far, review findings make up about four fifths of the embedded entries: what broke, and what resolution survived review. Most of the rest are decision rationales. These are the things a fresh session cannot see and would otherwise re-derive. Anyone building their own version can take the bias before taking any of the machinery: index failures and rulings ahead of summaries.
 
-## Portable state, not free switching
+## Private by default, portable on purpose
 
-The memory is private by default. `handoff.db` never enters version control; the record holds reasoning traces, and reasoning traces hold whatever the agent saw. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
+The record is private by default. `handoff.db` stays out of version control, because the record holds reasoning traces, and reasoning traces hold whatever the agent saw, including whatever secrets crossed its screen. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
 
 <Diagram
     src="/images/research/memory-boundary.svg?v=1"
@@ -68,10 +77,8 @@ The memory is private by default. `handoff.db` never enters version control; the
     caption="One gate out, and it is deliberate. The path into the public repository stays closed."
 />
 
-Because the record is plain SQLite, any tool that runs an agent and can read a database file reads the same memory, and several different agent CLIs currently do. The memory belongs to the repository. Harness switching still costs authentication, installation, capability gaps, and re-orientation; the durable record removes the cost of abandoning accumulated project history, not every switching cost.
+Because the record is plain SQLite, reading it takes only the file and its schema. A harness, the tool that runs the agent, is interchangeable at that layer: Claude Code and Codex both read the same rows today. The record belongs to the repository. That is portable state, and it should not be mistaken for free switching: moving between harnesses still costs authentication, installation, capability gaps, and re-orientation. The durable record removes one cost from that list, the loss of accumulated project history.
 
-## Status
+## Where the evidence stands
 
-The status on this entry is `running` because daily use is testimony, and testimony is the weakest tier of evidence this program accepts. Explicit evidence tiers matter here: observational notes and registered experiments sit above testimony, and this page does not claim either. This repository's own database is the honest counterexample: still young, a few dozen decisions, no semantic index switched on yet. What the memory gets asked in practice is read out in [Five Questions an Agent Cannot Answer from Context](/research/interrogating-agent-memory/); whether it pays for itself is [a registered experiment](/research/economics-of-agent-memory/) with a criterion and a deadline.
-
-The entry also sits in a program with one recurring habit: making invisible structure inspectable. [The rotation study](/research/rotation-matrices/) renders the math a graphics engine hides. This method renders the state an agent loses.
+Daily use is testimony, and testimony is the weakest tier of evidence worth naming. That is the ceiling for any description of a running mechanism. The counterexample sits close to home: the youngest database in the fleet holds a few dozen decisions and has no embedding index switched on yet. What agents actually ask a record like this is read out of production data in [a companion field note on the questions agents bring to the record](/research/interrogating-agent-memory/). Whether remembering saves more than it costs is a causal question, and it belongs to [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/), where the claim has a criterion it must survive.
