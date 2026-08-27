@@ -6,9 +6,11 @@
 
     >h2 {
         font-size: 2rem;
+        line-height: $type-lh-title;
 
         @media (max-width: $tabletMax) {
             font-size: 1.2rem;
+            line-height: $type-lh-title-mobile;
         }
     }
 
