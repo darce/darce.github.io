@@ -22,7 +22,7 @@ Portrait by [Liam Maloney](https://www.liammaloneyphotos.com/)
 
 ## Projects
 
-### Semantic Image Search
+### Visual Search Workbench
 *Local-first semantic and visual photo search*
 Year: 2026
 Tags: Product Design, Interaction Design, Human-AI Interaction, SwiftUI, Core ML, Accessibility
@@ -36,7 +36,7 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 ## Final product
 
-> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels.
+> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels. The window title in that build still reads Semantic Image Search, the product's working name; the rename to Visual Search Workbench ships in the next build, and the screens here stay faithful to the build they came from.
 
 ![Search for "flowers" over a film-scan library: a ranked grid of pink cosmos photos, the selected photo open with its details and an experimental cutout layer, and the Similarity map expanded above the results.](/images/work/sis-search-layer.png)
 
@@ -481,9 +481,9 @@ My own position is cheap insurance: the packet stays on while the instrumentatio
 ### A Map and a Canon
 *How a text-first UX map and a source-linked rule corpus shaped a visual-search product*
 Tags: Process, Interaction Design, Human-AI Interaction, Research
-Summary: Process notes from building Semantic Image Search: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.
+Summary: Process notes from building Visual Search Workbench: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.
 
-> **What this is:** the working method behind [Semantic Image Search](/projects/semantic-image-search/), a native macOS app that searches photo folders by text or by picture. That page shows what shipped. This one shows how it was designed and reviewed.
+> **What this is:** the working method behind [Visual Search Workbench](/projects/semantic-image-search/), a native macOS app that searches photo folders by text or by picture, named Semantic Image Search through its 0.2.0 build. That page shows what shipped. This one shows how it was designed and reviewed.
 > **What this is not:** a general methodology claim. One product has been through this process end to end; the method is reported, not proven.
 
 ## The map comes first
@@ -526,13 +526,35 @@ The no-dual-writes rule reached all the way into accessibility. The caveat a sig
 
 The latency book contributed a habit of budgeting the slow path rather than the average one. On-device search has no network to blame, so the budget was set against the worst case that matters, a cold start over the full library on the smallest supported machine, and measured there.
 
+## The critique ran against the code, too
+
+The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the critique pack ran again, this time holding the canon's interaction rules against the code itself. One late pass caught three defects that pixel-level review had walked past.
+
+A cancel button lied. While the search model loaded, a progress banner offered Cancel, but pressing it could not stop the load it appeared to govern. Worse, the handler was borrowed from the indexing banner, so it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past.
+
+A fresh launch showed two explanations of the same empty screen at once: an invitation to choose a folder stacked above a preparing-search meter. Each message came from its own independent condition, so nothing prevented both from being true together. The fix was structural rather than cosmetic: one state now decides what the empty screen is, instead of parallel conditionals each deciding for themselves.
+
+And two visually identical progress banners could stack, each with its own Cancel. Their accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
+
+Each finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement. All three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
+
+## What the build remembered about itself
+
+The build ran inside a task-memory harness, tooling that records the process the way the map records the design, in a database that travels with the repository. Decisions are stored with the rationale behind them, and review findings with how each was resolved and why. The commands that actually verified a change are stored too, so a later session can rerun proof instead of trusting a summary.
+
+That record is blunt about how machine review behaves. Review findings outnumbered recorded decisions roughly two to one, and only about a third of them ended as integrated changes; more than half were superseded or withdrawn on the way. Keeping the written reason each finding died is what stops the next review from raising it again.
+
+The work itself fanned out across short-lived isolated copies of the repository, with several different coding models doing the writing. None of their output merged on trust: every working copy ended in a report that a review had to accept. Even the blockers are part of the record. Most are budget exhaustions, a session stopped when it spent past its token allowance, and one remote reviewer that overran its time bound was excluded from the merge decision instead of being waited on. That is the engineering book's bounded-wait rule applied to the reviewers themselves.
+
 ## The same discipline in the tools
 
 The product was built with agent tooling, and one tool made the parallel unmissable. **Codemap** is a graph index over the app's own source code, mapping functions and their call relationships, with a co-occurrence signal that lets agents search code by meaning. It is, structurally, the same object as the photo index — a lossy, derived snapshot of a corpus, useful precisely because it is smaller than what it summarizes.
 
 It fails the same ways, too. A truncated result list can read as a complete one. A malformed query can come back empty and read as "nothing exists." Its semantic signal is co-occurrence within one repository, not a trained model, so it returns weak nearest neighbours for terms it has never seen instead of saying no match. The tooling's guardrails answer each of those with the same move the product makes: only a surface that can actually check completeness may license a claim of absence, freshness is reported rather than assumed, and the underlying corpus stays the authority over its index.
 
-That convergence is the finding these notes record. Rules written for databases and servers produced the product's caveat states, and the same rules kept the build tooling honest about its own index. A derived index, whatever it indexes, must say how much of its corpus it can see.
+The parallel runs deeper than codemap. The task memory embeds what it stores: each decision and finding is turned into a vector by a small local text-embedding model, and a fresh session recalls prior work by nearness to whatever it is working on now. The workbench ranks photographs by nearness in an embedding space; the memory that built the workbench ranks its own past the same way, under the same rules. One embedding space per comparison, and whatever retrieval surfaces is a candidate to verify against the source, never an authority.
+
+That convergence is the finding these notes record. Rules written for databases and servers produced the product's caveat states, and the same rules governed how the build examined and remembered itself. A derived index, whatever it indexes, must say how much of its corpus it can see.
 
 ### Heuristics Canon
 *Source-linked decision rules for product and engineering review*
@@ -553,7 +575,7 @@ The test of a rule corpus is whether it reverses decisions that were already mad
 
 A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, names a rule and source, and narrows or withdraws the proposal before a false claim lands.
 
-The same corpus reviews this site. [Semantic Image Search](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
+The same corpus reviews this site. [Visual Search Workbench](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
 
 The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 

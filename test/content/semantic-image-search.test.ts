@@ -13,7 +13,7 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
     it('exists with schema-valid frontmatter that sorts first', () => {
         expect(fs.existsSync(file)).toBe(true)
         expect(() => contentItemSchema.parse(data)).not.toThrow()
-        expect(data.title).toMatch(/Semantic Image Search/)
+        expect(data.title).toMatch(/Visual Search Workbench/)
         // "sorts first" means first: every sibling project must sort after it
         const siblings = fs.readdirSync(path.join(process.cwd(), 'content/projects'))
             .filter(f => f.endsWith('.mdx') && f !== 'semantic-image-search.mdx')
