@@ -26,7 +26,7 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 ## Final product
 
-> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels. The window title in that build still reads Semantic Image Search, the product's working name; the rename to Visual Search Workbench ships in the next build, and the screens here stay faithful to the build they came from.
+> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels. The window title in those screenshots still reads Semantic Image Search, the product's working name; the rename landed in 0.2.1, the build below. The screenshots stay faithful to the build they came from, and the drawings track the code as it now stands, so the two disagree about the title on purpose.
 
 ![Search for "flowers" over a film-scan library: a ranked grid of pink cosmos photos, the selected photo open with its details and an experimental cutout layer, and the Similarity map expanded above the results.](/images/work/sis-search-layer.png)
 
@@ -36,6 +36,19 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 - **Library access:** Reads only the folders the person has chosen. Gallery images stay on the device.
 - **Query:** Text, or an image dropped from anywhere. Any photo can pivot to its visual neighbours. Searching *by picture* is the capability macOS Photos does not offer.
 - **Surfaces:** Search, plus Similarity, Places, and Timeline for relationships a query did not express.
+
+## Download
+
+**[Visual Search Workbench 0.2.1 for macOS](https://github.com/darce/visual-search-workbench/releases/latest)** — Apple Silicon, macOS 14 or later.
+
+The disk image is about 290 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
+
+Two things to know before you download, both of which follow from this being independent work rather than a shipped commercial product:
+
+- **It is not notarized by Apple.** Notarization needs a paid developer membership this project does not hold, so macOS will refuse the first double-click. Apple's own override — System Settings, Privacy & Security, *Open Anyway* — opens it, once. If you would rather not run software Apple has not checked, that is a reasonable place to stop.
+- **Check the bytes.** Each release publishes a `SHA256SUMS` file beside the image; `shasum -a 256 -c SHA256SUMS` confirms you received what was built. GitHub serves the download, not this site, and the digest is the only end-to-end check across that hop.
+
+Both caveats, and the licences of the bundled models, are written out on the [download page](https://github.com/darce/visual-search-workbench).
 
 ## Problem
 
@@ -52,7 +65,7 @@ Choose a folder, index it, and search by text or by image. Inspect a result. The
 <AsciiScreen label="Screen 1, cold start: window with an empty Layers panel and a search pane reading 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn.">
 
 ```text
-┌─ Semantic Image Search ──────────────────────────────────────────────────┐
+┌─ Visual Search Workbench ────────────────────────────────────────────────┐
 │ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
 │ │                   │ │ [ Search query                      ] (Search) │ │
 │ │                   │ │ Choose a folder to search. Your photos stay    │ │

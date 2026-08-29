@@ -61,7 +61,7 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
                   {
                             "screen": 1,
                             "title": "Cold start",
-                            "drawing": "┌─ Semantic Image Search ──────────────────────────────────────────────────┐\n│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │\n│ │                   │ │ [ Search query                      ] (Search) │ │\n│ │                   │ │ Choose a folder to search. Your photos stay    │ │\n│ │                   │ │ where they are.                                │ │\n│ │                   │ ├────────────────────────────────────────────────┤ │\n│ │                   │ │                                                │ │\n│ │                   │ │                                                │ │\n│ └───────────────────┘ └────────────────────────────────────────────────┘ │\n└──────────────────────────────────────────────────────────────────────────┘"
+                            "drawing": "┌─ Visual Search Workbench ────────────────────────────────────────────────┐\n│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │\n│ │                   │ │ [ Search query                      ] (Search) │ │\n│ │                   │ │ Choose a folder to search. Your photos stay    │ │\n│ │                   │ │ where they are.                                │ │\n│ │                   │ ├────────────────────────────────────────────────┤ │\n│ │                   │ │                                                │ │\n│ │                   │ │                                                │ │\n│ └───────────────────┘ └────────────────────────────────────────────────┘ │\n└──────────────────────────────────────────────────────────────────────────┘"
                   },
                   {
                             "screen": 2,
@@ -112,6 +112,48 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
         }
 
         expect(content).not.toMatch(/Figure pending/i)
+    })
+
+    it('offers the download with the two caveats a reader needs before clicking', () => {
+        // The page sends people to a binary. Everything a reasonable person
+        // would want to know before running an unsigned app has to be on this
+        // side of the click, not only on the far side of it.
+        expect(content).toContain('## Download')
+
+        // The link, and the version it claims, pinned together. A stale version
+        // beside a "latest" link is the failure that looks fine in review: the
+        // link keeps working while the number beside it quietly stops being true.
+        const download = content.slice(
+            content.indexOf('## Download'),
+            content.indexOf('## Problem'),
+        )
+        expect(download).toContain(
+            'https://github.com/darce/visual-search-workbench/releases/latest')
+        expect(download).toMatch(/Visual Search Workbench \d+\.\d+\.\d+ for macOS/)
+
+        // The platform floor. "Native macOS" elsewhere on the page does not
+        // tell an Intel owner that this build will not start for them.
+        expect(download).toMatch(/Apple Silicon/)
+        expect(download).toMatch(/macOS 14/)
+
+        // The build is ad-hoc signed and cannot be notarized without a paid
+        // membership, so Gatekeeper refuses the first double-click. Saying so
+        // here is the difference between a caveat and a bug report.
+        expect(download).toMatch(/not notarized/i)
+        expect(download).toMatch(/Open Anyway/)
+
+        // A download served by a third party needs an end-to-end digest, and
+        // the page has to name the file that carries it (DDIA ch-12).
+        expect(download).toContain('SHA256SUMS')
+        expect(download).toContain('shasum -a 256 -c')
+    })
+
+    it('never tells a reader to strip the quarantine flag', () => {
+        // Apple's Open Anyway override is the supported path and leaves the
+        // decision inside a system dialog. `xattr -dr com.apple.quarantine` is
+        // the same instruction an attacker wants a reader trained to obey, and
+        // a portfolio page is exactly where that training would come from.
+        expect(raw).not.toMatch(/xattr/i)
     })
 
     it('keeps the external-user evaluation gap explicit and avoids inflated claims', () => {
