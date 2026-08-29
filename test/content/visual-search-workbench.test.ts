@@ -159,6 +159,28 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
         expect(download).toContain('shasum -a 256 -c')
     })
 
+    it('reaches the download from the top of the page, not only from the case study', () => {
+        // The `links` slot renders in the header aside, above the MDX body —
+        // where every other project puts "Live Site". Someone who came for the
+        // app should not have to read a case study to find out it is downloadable.
+        const link = data.links?.[0]
+        expect(link, 'frontmatter needs a links entry').toBeTruthy()
+        expect(link.url).toBe('https://dl.darce.xyz/')
+        expect(link.label).toMatch(/download/i)
+
+        // Apple Silicon rides in the link text itself. It is the one fact that
+        // wastes the entire 294 MB if it is learned after the click, and the
+        // header slot has no room for the paragraph that would otherwise carry it.
+        expect(link.label).toMatch(/Apple Silicon/i)
+
+        // The header link is deliberately NOT the only one: the Download
+        // section below still holds the caveats and the digest check, and its
+        // link is what those paragraphs are attached to. Losing it would leave
+        // the top-of-page link as the only route to the binary, with the
+        // not-notarized warning stranded on a part of the page nobody reached.
+        expect(content).toMatch(/\]\(https:\/\/dl\.darce\.xyz\/?\)/)
+    })
+
     it('never tells a reader to strip the quarantine flag', () => {
         // Apple's Open Anyway override is the supported path and leaves the
         // decision inside a system dialog. `xattr -dr com.apple.quarantine` is

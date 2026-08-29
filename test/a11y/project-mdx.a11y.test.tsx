@@ -44,6 +44,24 @@ describe('visual-search-workbench through the shipped MDX pipeline', () => {
         })
     })
 
+    it('renders the download link ahead of the case study (top of page)', () => {
+        const container = mount()
+        const download = container.querySelector<HTMLAnchorElement>('a[href^="https://dl.darce.xyz"]')
+        expect(download, 'a download link must render').not.toBeNull()
+
+        // "Top of the page" is a claim about document order, not about which
+        // file the URL sits in. Assert it against the first body heading, so
+        // moving the link back down into the prose fails here rather than
+        // passing on the strength of the frontmatter alone.
+        const heading = Array.from(container.querySelectorAll('h2, h3'))
+            .find(h => /Final product/i.test(h.textContent || ''))
+        expect(heading, 'the case study must still start with Final product').toBeTruthy()
+
+        // DOCUMENT_POSITION_FOLLOWING: the heading comes after the link.
+        expect(download!.compareDocumentPosition(heading!) & Node.DOCUMENT_POSITION_FOLLOWING)
+            .toBeTruthy()
+    })
+
     it('has no axe violations', async () => {
         const results = await axe(mount())
         expect(results).toHaveNoViolations()
