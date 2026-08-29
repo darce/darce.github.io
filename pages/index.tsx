@@ -9,10 +9,10 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-export const FEATURED_SLUGS = ['semantic-image-search', 'photoshelter', 'workbay', 'msnbc']
+export const FEATURED_SLUGS = ['visual-search-workbench', 'photoshelter', 'workbay', 'msnbc']
 
 export const FEATURED_METRICS: Record<string, string> = {
-    'semantic-image-search': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
+    'visual-search-workbench': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
     photoshelter: 'Workflow prototyping that exposed integration constraints before production work, plus a WCAG audit and remediation on contracts that required demonstrated compliance.',
     workbay: 'Cross-agent workflow state and adjacent design tooling that stores interaction structure as versioned data before implementation.',
     msnbc: 'Working interface prototypes and reusable components for a live-video product shipped under a six-month deadline.',

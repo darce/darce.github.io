@@ -10,19 +10,19 @@ import type { MarkdownData } from '../../types'
 // the same pipeline pages/projects/[slug] uses — so these assertions can fail
 // when the shipped rendering regresses (A11Y-COVERAGE-004 / ENGA-A11Y-FIXTURE-BINDING-003).
 
-const MDX_PATH = path.join(process.cwd(), 'content', 'projects', 'semantic-image-search.mdx')
+const MDX_PATH = path.join(process.cwd(), 'content', 'projects', 'visual-search-workbench.mdx')
 
 const asciiPres = (container: HTMLElement): HTMLPreElement[] =>
     Array.from(container.querySelectorAll('pre')).filter(pre =>
         pre.textContent?.includes('┌'))
 
-describe('semantic-image-search through the shipped MDX pipeline', () => {
+describe('visual-search-workbench through the shipped MDX pipeline', () => {
     let project: MarkdownData
 
     beforeAll(async () => {
         const { metaData, mdxSource } = await parseMarkdownFile(MDX_PATH)
         if (!mdxSource) throw new Error('mdxSource missing')
-        project = { slug: 'semantic-image-search', metaData, mdxSource }
+        project = { slug: 'visual-search-workbench', metaData, mdxSource }
     })
 
     // testing-library auto-cleanup unmounts after each test, so render per test

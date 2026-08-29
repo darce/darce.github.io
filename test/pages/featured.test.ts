@@ -5,7 +5,7 @@ import { FEATURED_SLUGS, FEATURED_METRICS } from '../../pages/index'
 
 describe('homepage featured order (QM-REPOSITION-01 s3)', () => {
     it('orders evidence SIS → PhotoShelter → WorkBay → MSNBC', () => {
-        expect(FEATURED_SLUGS).toEqual(['semantic-image-search', 'photoshelter', 'workbay', 'msnbc'])
+        expect(FEATURED_SLUGS).toEqual(['visual-search-workbench', 'photoshelter', 'workbay', 'msnbc'])
     })
 
     it('every featured slug has a blurb and a content file', () => {

@@ -4,7 +4,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import { contentItemSchema } from '../../lib/schemas'
 
-const file = path.join(process.cwd(), 'content/projects/semantic-image-search.mdx')
+const file = path.join(process.cwd(), 'content/projects/visual-search-workbench.mdx')
 
 describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
     const raw = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
@@ -16,12 +16,12 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
         expect(data.title).toMatch(/Visual Search Workbench/)
         // "sorts first" means first: every sibling project must sort after it
         const siblings = fs.readdirSync(path.join(process.cwd(), 'content/projects'))
-            .filter(f => f.endsWith('.mdx') && f !== 'semantic-image-search.mdx')
+            .filter(f => f.endsWith('.mdx') && f !== 'visual-search-workbench.mdx')
         expect(siblings.length).toBeGreaterThan(0)
         for (const sibling of siblings) {
             const siblingData = matter(fs.readFileSync(
                 path.join(process.cwd(), 'content/projects', sibling), 'utf8')).data
-            expect(data.index, `${sibling} must sort after semantic-image-search`)
+            expect(data.index, `${sibling} must sort after visual-search-workbench`)
                 .toBeLessThan(siblingData.index)
         }
     })

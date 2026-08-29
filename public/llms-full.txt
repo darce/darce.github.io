@@ -240,7 +240,7 @@ WorkBay ships a Design Map tool as the `/ux-map` command. It asks for an invento
 
 From that file a renderer emits wireframes and flow diagrams deterministically: the same inventory produces byte-identical output, so a diff in a render means a change in the design. The wireframe below is drawn from this site's own map.
 
-The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/semantic-image-search/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
+The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/visual-search-workbench/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
 
 ## Under the hood
 
@@ -483,7 +483,7 @@ My own position is cheap insurance: the packet stays on while the instrumentatio
 Tags: Process, Interaction Design, Human-AI Interaction, Research
 Summary: Process notes from building Visual Search Workbench: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.
 
-> **What this is:** the working method behind [Visual Search Workbench](/projects/semantic-image-search/), a native macOS app that searches photo folders by text or by picture, named Semantic Image Search through its 0.2.0 build. That page shows what shipped. This one shows how it was designed and reviewed.
+> **What this is:** the working method behind [Visual Search Workbench](/projects/visual-search-workbench/), a native macOS app that searches photo folders by text or by picture, named Semantic Image Search through its 0.2.0 build. That page shows what shipped. This one shows how it was designed and reviewed.
 > **What this is not:** a general methodology claim. One product has been through this process end to end; the method is reported, not proven.
 
 ## The map comes first
@@ -520,7 +520,7 @@ Searching pictures by meaning rests on **embeddings**. An embedding model turns 
 
 The most direct transfer came from rules that were never about interfaces.
 
-*Release It!* holds that an undesigned state is a bug in itself. Applied to a search product, that rule turns every blank into a question: what does the app claim when no folder is chosen, when the model file is unreadable, when a disk is unplugged mid-index? Each condition got its own named state and its own wording, which the [product page](/projects/semantic-image-search/) walks through screen by screen. The same book's insistence that a system assumes its dependencies will fail shaped what those states say: the missing model is named by path, the unplugged disk by name, so recovery is an action rather than a guess.
+*Release It!* holds that an undesigned state is a bug in itself. Applied to a search product, that rule turns every blank into a question: what does the app claim when no folder is chosen, when the model file is unreadable, when a disk is unplugged mid-index? Each condition got its own named state and its own wording, which the [product page](/projects/visual-search-workbench/) walks through screen by screen. The same book's insistence that a system assumes its dependencies will fail shaped what those states say: the missing model is named by path, the unplugged disk by name, so recovery is an action rather than a guess.
 
 The no-dual-writes rule reached all the way into accessibility. The caveat a sighted person reads and the caveat VoiceOver speaks come from one string, because two copies of the same sentence would drift exactly the way two writable databases do.
 
@@ -528,15 +528,44 @@ The latency book contributed a habit of budgeting the slow path rather than the 
 
 ## The critique ran against the code, too
 
-The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the critique pack ran again, this time holding the canon's interaction rules against the code itself. One late pass caught three defects that pixel-level review had walked past.
+The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the ux-map workflow from [WorkBay](/projects/workbay/), the task harness that carried the build, rendered the map again as ASCII screens, this time anchored line by line to the running code, and the critique pack was held against that render. One late pass caught three defects that pixel-level review had walked past. This is the screen the render exposed, drawn from the map artifact in the product repository:
 
-A cancel button lied. While the search model loaded, a progress banner offered Cancel, but pressing it could not stop the load it appeared to govern. Worse, the handler was borrowed from the indexing banner, so it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past.
+```
+┌─ Search ──────────────────────────────────────────────────────────────┐
+│ [ query…                              ] (or drop an image)            │
+│                                                                       │
+│   No library yet — open a folder to search.                           │
+│ ┌───────────────────────────────────────────────────────────────────┐ │
+│ │ Preparing search…                                      [Cancel]   │ │
+│ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  (indeterminate)                   │ │
+│ └───────────────────────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────┘
+    two competing "nothing here yet" messages, rendered at the same time
+    this [Cancel] cancels nothing
+```
 
-A fresh launch showed two explanations of the same empty screen at once: an invitation to choose a folder stacked above a preparing-search meter. Each message came from its own independent condition, so nothing prevented both from being true together. The fix was structural rather than cosmetic: one state now decides what the empty screen is, instead of parallel conditionals each deciding for themselves.
+Both messages describe the same fresh launch, and each came from its own independent condition, so nothing prevented both from being true together. The Cancel is worse than redundant: it could not stop the model load it appeared to govern, and its handler was borrowed from the indexing banner, so pressing it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past. A third defect sat one state away: the layout meter for the similarity map could stack on top of this banner as a second, visually identical bar with its own Cancel, and only their spoken accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
 
-And two visually identical progress banners could stack, each with its own Cancel. Their accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
+The fix was structural rather than cosmetic. The status region became a single function that returns exactly one state, tested in a precedence order that puts what a person can act on ahead of what they can only wait for:
 
-Each finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement. All three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
+```
+   indexing ───────►  live work first
+   error ──────────►  then why it stopped
+   empty library ──►  then what to do
+   preparing ──────►  then just wait
+   otherwise ──────►  ready
+```
+
+The rebuilt waiting state names its subject and offers no button it cannot honor:
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
+│ Preparing search   Loading the search model…       (no Cancel) │
+└────────────────────────────────────────────────────────────────┘
+```
+
+A unit test now walks every combination of those inputs and asserts that exactly one state renders and only indexing offers Cancel. Each critique finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement; all three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
 
 ## What the build remembered about itself
 
@@ -575,7 +604,7 @@ The test of a rule corpus is whether it reverses decisions that were already mad
 
 A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, names a rule and source, and narrows or withdraws the proposal before a false claim lands.
 
-The same corpus reviews this site. [Visual Search Workbench](/projects/semantic-image-search/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
+The same corpus reviews this site. [Visual Search Workbench](/projects/visual-search-workbench/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
 
 The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
 

@@ -7,9 +7,6 @@ type: 'method'
 status: 'running'
 description: 'Process notes from building Visual Search Workbench: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.'
 details: 'Process notes from building Visual Search Workbench. A text-first UX map inventoried every screen, state, and flow before interface code existed, and a source-linked rule corpus reviewed each one. The same retrieval discipline governed the product and the tools that built it.'
-links:
-  - url: https://github.com/darce/heuristics-canon
-    label: Heuristics Canon on GitHub
 thumbnail:
   src: work/sis-search-layer.png
   alt: "Visual Search Workbench ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details open beside it."
@@ -21,7 +18,7 @@ tags:
   - Research
 ---
 
-> **What this is:** the working method behind [Visual Search Workbench](/projects/semantic-image-search/), a native macOS app that searches photo folders by text or by picture, named Semantic Image Search through its 0.2.0 build. That page shows what shipped. This one shows how it was designed and reviewed.
+> **What this is:** the working method behind [Visual Search Workbench](/projects/visual-search-workbench/), a native macOS app that searches photo folders by text or by picture, named Semantic Image Search through its 0.2.0 build. That page shows what shipped. This one shows how it was designed and reviewed.
 > **What this is not:** a general methodology claim. One product has been through this process end to end; the method is reported, not proven.
 
 ## The map comes first
@@ -58,7 +55,7 @@ Searching pictures by meaning rests on **embeddings**. An embedding model turns 
 
 The most direct transfer came from rules that were never about interfaces.
 
-*Release It!* holds that an undesigned state is a bug in itself. Applied to a search product, that rule turns every blank into a question: what does the app claim when no folder is chosen, when the model file is unreadable, when a disk is unplugged mid-index? Each condition got its own named state and its own wording, which the [product page](/projects/semantic-image-search/) walks through screen by screen. The same book's insistence that a system assumes its dependencies will fail shaped what those states say: the missing model is named by path, the unplugged disk by name, so recovery is an action rather than a guess.
+*Release It!* holds that an undesigned state is a bug in itself. Applied to a search product, that rule turns every blank into a question: what does the app claim when no folder is chosen, when the model file is unreadable, when a disk is unplugged mid-index? Each condition got its own named state and its own wording, which the [product page](/projects/visual-search-workbench/) walks through screen by screen. The same book's insistence that a system assumes its dependencies will fail shaped what those states say: the missing model is named by path, the unplugged disk by name, so recovery is an action rather than a guess.
 
 The no-dual-writes rule reached all the way into accessibility. The caveat a sighted person reads and the caveat VoiceOver speaks come from one string, because two copies of the same sentence would drift exactly the way two writable databases do.
 
@@ -66,15 +63,44 @@ The latency book contributed a habit of budgeting the slow path rather than the 
 
 ## The critique ran against the code, too
 
-The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the critique pack ran again, this time holding the canon's interaction rules against the code itself. One late pass caught three defects that pixel-level review had walked past.
+The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the ux-map workflow from [WorkBay](/projects/workbay/), the task harness that carried the build, rendered the map again as ASCII screens, this time anchored line by line to the running code, and the critique pack was held against that render. One late pass caught three defects that pixel-level review had walked past. This is the screen the render exposed, drawn from the map artifact in the product repository:
 
-A cancel button lied. While the search model loaded, a progress banner offered Cancel, but pressing it could not stop the load it appeared to govern. Worse, the handler was borrowed from the indexing banner, so it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past.
+```
+┌─ Search ──────────────────────────────────────────────────────────────┐
+│ [ query…                              ] (or drop an image)            │
+│                                                                       │
+│   No library yet — open a folder to search.                           │
+│ ┌───────────────────────────────────────────────────────────────────┐ │
+│ │ Preparing search…                                      [Cancel]   │ │
+│ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  (indeterminate)                   │ │
+│ └───────────────────────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────┘
+    two competing "nothing here yet" messages, rendered at the same time
+    this [Cancel] cancels nothing
+```
 
-A fresh launch showed two explanations of the same empty screen at once: an invitation to choose a folder stacked above a preparing-search meter. Each message came from its own independent condition, so nothing prevented both from being true together. The fix was structural rather than cosmetic: one state now decides what the empty screen is, instead of parallel conditionals each deciding for themselves.
+Both messages describe the same fresh launch, and each came from its own independent condition, so nothing prevented both from being true together. The Cancel is worse than redundant: it could not stop the model load it appeared to govern, and its handler was borrowed from the indexing banner, so pressing it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past. A third defect sat one state away: the layout meter for the similarity map could stack on top of this banner as a second, visually identical bar with its own Cancel, and only their spoken accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
 
-And two visually identical progress banners could stack, each with its own Cancel. Their accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
+The fix was structural rather than cosmetic. The status region became a single function that returns exactly one state, tested in a precedence order that puts what a person can act on ahead of what they can only wait for:
 
-Each finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement. All three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
+```
+   indexing ───────►  live work first
+   error ──────────►  then why it stopped
+   empty library ──►  then what to do
+   preparing ──────►  then just wait
+   otherwise ──────►  ready
+```
+
+The rebuilt waiting state names its subject and offers no button it cannot honor:
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
+│ Preparing search   Loading the search model…       (no Cancel) │
+└────────────────────────────────────────────────────────────────┘
+```
+
+A unit test now walks every combination of those inputs and asserts that exactly one state renders and only indexing offers Cancel. Each critique finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement; all three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
 
 ## What the build remembered about itself
 
