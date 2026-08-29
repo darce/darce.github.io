@@ -127,8 +127,19 @@ describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
             content.indexOf('## Download'),
             content.indexOf('## Problem'),
         )
-        expect(download).toContain(
-            'https://github.com/darce/visual-search-workbench/releases/latest')
+        // The published link is dl.darce.xyz, not the GitHub URL underneath it.
+        // That redirect exists so the bytes can move — different host, different
+        // release layout — by editing one line of proxy config instead of every
+        // page that ever linked them. Hardcoding the GitHub URL in prose forfeits
+        // exactly the property the redirect was built to buy, and a page is the
+        // one place where a link outlives the decision that put it there.
+        expect(download).toMatch(/\]\(https:\/\/dl\.darce\.xyz\/?\)/)
+
+        // GitHub still has to be *named*, because the digest paragraph below
+        // leans on the reader knowing a third party serves the file. A branded
+        // redirect that hides whose CDN you are trusting would be worse than
+        // the bare link it replaced.
+        expect(download).toContain('github.com/darce/visual-search-workbench')
         expect(download).toMatch(/Visual Search Workbench \d+\.\d+\.\d+ for macOS/)
 
         // The platform floor. "Native macOS" elsewhere on the page does not

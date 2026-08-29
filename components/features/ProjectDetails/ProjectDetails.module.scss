@@ -314,13 +314,32 @@
         .asciiScreen {
             margin: 0;
 
+            // The drawings stand in for application surfaces, so they get their
+            // own white field instead of the page canvas ($paper, a blue-grey).
+            //
+            // Paper and ink are pinned together on purpose. Setting only the
+            // background would leave `color` inherited, and under the dark theme
+            // that is $terminal-ink (#cbcdd2) on #fff — 1.7:1, failing WCAG AA
+            // for precisely the readers who chose dark mode, and invisible in a
+            // way no light-mode review would ever surface. #171920 on #fff is
+            // 17.6:1. The border keeps the field from bleeding into the canvas
+            // in light mode and from glaring as an unbounded slab in dark mode.
             pre {
+                background-color: #fff;
+                color: $ink;
+                border: 1px solid $paper-sunk;
+                font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
                 white-space: pre;
                 word-wrap: normal;
                 overflow-x: auto;
             }
 
+            // The prose `code` rule paints its own chip background for inline
+            // spans; inside a drawing that would tile behind every character.
             code {
+                background-color: transparent;
+                color: inherit;
+                font-family: inherit;
                 white-space: pre;
                 word-break: normal;
             }

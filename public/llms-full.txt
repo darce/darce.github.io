@@ -49,9 +49,9 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 ## Download
 
-**[Visual Search Workbench 0.2.1 for macOS](https://github.com/darce/visual-search-workbench/releases/latest)** — Apple Silicon, macOS 14 or later.
+**[Download Visual Search Workbench 0.2.1 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later. The link resolves to the current release on GitHub, which serves the file.
 
-The disk image is about 290 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
+The disk image is about 294 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
 
 Two things to know before you download, both of which follow from this being independent work rather than a shipped commercial product:
 
@@ -72,15 +72,58 @@ Choose a folder, index it, and search by text or by image. Inspect a result. The
 
 **Screen 1 — Cold start.** Before a folder is chosen, Search says "Choose a folder to search. Your photos stay where they are." The Layers panel is empty, and no zero-result count is drawn.
 
+```text
+┌─ Visual Search Workbench ────────────────────────────────────────────────┐
+│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
+│ │                   │ │ [ Search query                      ] (Search) │ │
+│ │                   │ │ Choose a folder to search. Your photos stay    │ │
+│ │                   │ │ where they are.                                │ │
+│ │                   │ ├────────────────────────────────────────────────┤ │
+│ │                   │ │                                                │ │
+│ │                   │ │                                                │ │
+│ └───────────────────┘ └────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 1, cold start: window with an empty Layers panel and a search pane reading 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn._
+
 The start state is kept apart from an empty result. A count of zero before any library exists would imply a search that found nothing. The first line also states what the app does with the files: it reads them where they sit, and it does not import or copy them.
 
 **Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1284…" above a two-row photo grid.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ Search query                                          ] (Search)       │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 2, indexing: a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders._
 
 The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index, and the interface labels it partial.
 
 ### Ranked results
 
 **Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ red bicycle                                           ] (Search)       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ▸ Explore                                                                │
+├──────────────────────────────────────────────────────────────────────────┤
+│ red bicycle                                                              │
+│ 64 search results · nearest 64                                           │
+│  ●  ●  ●  ●  ●  ●                                                        │
+│  ●  ●  ●  ●  ●  ●                                                        │
+│  ●  ●  ●  ●  ●  ●                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails._
 
 Results are ordered by nearness to the query. Position carries the ranking. Raw cosine scores are not shown as confidence. When nothing is near, the grid shows a "No close matches" state instead of a weakly ranked list.
 
@@ -97,6 +140,28 @@ The mode announces itself. The banner states "Results are photos visually simila
 Selecting a photo opens the facts behind the result. A machine ranking can be checked against what the file records.
 
 **Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected; double-click opens it. The details panel shows size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00), and GPS (64.1466°, -21.9426°) above an offline mini-map.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ┌────────────────┐  IMG_4417.HEIC                                        │
+│ │                │  Selected photo · double-click to open                │
+│ │   [ preview ]  │  ▾ Photo details                                      │
+│ │                │        Size  4032 × 3024                              │
+│ │                │      Camera  Apple iPhone 13 Pro                      │
+│ └────────────────┘        Lens  26 mm f/1.5                              │
+│                          Taken  2021:07:14 18:22:00                      │
+│                            GPS  64.1466°, -21.9426°                      │
+│                                 ┌──────────────────────────┐             │
+│                                 │        ·   ·             │             │
+│                                 │      ────●───────        │             │
+│                                 │            ·             │             │
+│                                 └──────────────────────────┘             │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ●  ●  ●  ●  ●  ●                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map, result thumbnails below._
 
 Each label sits with its value. The panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule and never fetches tiles.
 
@@ -130,9 +195,63 @@ Experimental marks machine-derived behaviour that is still preliminary, so it do
 
 **Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are on an unplugged disk, which the caveat names, so dates and places describe the rest of the library.
 
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity | Places | Timeline ]                                       │
+│ ⚠ 312 photos were never opened: their files are on Chimay, which is      │
+│   not plugged in. Dates and places describe the rest of the library,     │
+│   not all of it.                                                         │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram._
+
 The caveat qualifies every plot and names why the library is partial. The visible text and the VoiceOver text come from one string, so they cannot drift apart.
 
 **Screen 8 — Missing model and settings recovery.** The model panel names `/Volumes/Butter/cache/sis-coreml-export` and says that detection still works when the folder is unreadable, but search does not. Settings lists `~/Pictures/2021-iceland`, states that no photo is filtered or certified safe, and shows the off-by-default local Ollama option.
+
+```text
+┌─ Model folder ───────────────────────────────────────────────────────────┐
+│ Where the exported CLIP and MobileSAM packages live. The object detector │
+│ ships inside the app, so detection works even when this folder is        │
+│ missing; search does not.                                                │
+│                                                                          │
+│ /Volumes/Butter/cache/sis-coreml-export                                  │
+│ This folder is not readable — an unmounted disk, or models that were     │
+│ never exported there. Search will report the missing package by name.    │
+│                                                                          │
+│ ( Choose model folder… )   ( Reset to default )                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ Settings ───────────────────────────────────────────────────────────────┐
+│ Library folders                                                          │
+│   ~/Pictures/2021-iceland                              (Remove)          │
+│   + Open Folder…                                                         │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Memory                                                                   │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Models                                                                   │
+│                                                                          │
+│ Content                                                                  │
+│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
+│   depicts. This app has no explicit-content classifier, so nothing is    │
+│   filtered out and nothing is certified safe — search matches every      │
+│   indexed photo on the same terms, and a generated layer name may        │
+│   describe a photo plainly.                                              │
+│                                                                          │
+│ Local layer names                                                        │
+│   ☐ Ask local Ollama to name unsure layers                               │
+│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
+│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
+│     device.                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option._
 
 The model path and its readability are shown as separate facts. When search cannot run, the missing package is named. The one optional network hop goes to a local Ollama socket. It is off by default and named by address (127.0.0.1).
 
@@ -154,11 +273,94 @@ The map is drawn for selection, and its geometry stays inside what a projection 
 
 **Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47: only 41 of the selected photos have coordinates. The Places state then reads 38, 41, 41. It shows 41 of 1284 photos, with 1198 lacking coordinates and 45 unreadable. A 41-photo map selection outside the search results is listed last, in place order.
 
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
+│                              ↑           ↑                               │
+│            41 of the 47 selected photos have coordinates.                │
+│            The gap between those two numbers IS the finding.             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
+│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
+│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
+│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
+│ │ 90°S └──────────────────┴──────────────────┘                         │ │
+│ │      180°W               0°              180°E                       │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
+│ Showing 41 of 1284 photos. 1198 have no coordinates, 45 could not be     │
+│ read.                                                                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
+│   not in your search results, so they are listed last rather than ranked.│
+│                                                       ( Clear region )   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked._
+
 The badge counts differ on purpose: 47 photos are selected, and 41 of them have coordinates. Photos without coordinates, unreadable files, and never-opened files stay separate explanations. A map selection outside the search results is listed after the ranked results and labelled unranked.
 
 ### Timeline
 
 **Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025 and holds 94 undated photos off the axis. A legend names each bar's date source: EXIF exposure date, file write time, or source unknown. The July 2021 zoom uses daily GMT periods. The truncated view says 3 photos dated before 1962 are off the left of the axis and offers a Before 1962 action.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates                                                                │
+│ Photos by capture year                             Square-root count scale│
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │ 1284┤                                            │ │ Off the time    │ │
+│ │  722┤        ▅█                                  │ │ axis            │ │
+│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
+│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
+│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
+│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 94 photos have no date and are not on this axis.                       │
+│ ■ EXIF exposure date  ■ File write time  ■ Source unknown                │
+│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
+│    (Gregorian).                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
+│ Photos by capture day                              Square-root count scale│
+│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
+│ Bars per   Year ○──────────● Day    Day                                  │
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
+│ │                 ╌  ╌                             │ │ axis            │ │
+│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
+│ └──────────────────────────────────────────────────┘ │      94         │ │
+│                                                      │ Undated photos  │ │
+│                                                      └─────────────────┘ │
+│ ⚠ 94 photos have no date and are not on this axis.                       │
+│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT        │
+│    (Gregorian).                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Photos by capture year                                                   │
+│ ┌──────────────────────────────────────────────────┐                     │
+│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
+│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
+│                                       [ Before 1962 ]                    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+_Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action._
 
 The breadcrumb records the window that was asked for. The range line states what the chart draws. Undated photos sit beside the axis with their own count. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
 
@@ -252,6 +454,35 @@ The record is workflow state: it lives in the project, and a new session reloads
 WorkBay ships a Design Map tool as the `/ux-map` command. It asks for an inventory first: the jobs a user comes to do, the screens they meet, the zones and states inside each screen, the actions available, and the flows that chain them, each entry carrying a reference into the real code. The inventory lives in one JSON file per surface, checked into the repository like any other source.
 
 From that file a renderer emits wireframes and flow diagrams deterministically: the same inventory produces byte-identical output, so a diff in a render means a change in the design. The wireframe below is drawn from this site's own map.
+
+```text
++------------------------------------------------------------+
+| Site chrome  [screen]  *                                   |
+| Fully-connected escape hatch on every page: skip link, ma… |
++------------------------------------------------------------+
+| ZONES                                                      |
+|   - Skip to main content (nav) states=[default]            |
+|   - Masthead wordmark + subtitle → home (nav) states=[def… |
+|   - Decorative 3D cube (other) states=[default]            |
+|   - Primary nav: home / work / research / about (nav) sta… |
+|   - 2×2 theme swatch (form) states=[default]               |
+|   - Detail breadcrumb prev / title / next (nav) states=[d… |
+|   - Page canvas + main landmark (content) states=[default] |
+|   - Footer: name, résumé, privacy, contact (content) stat… |
++------------------------------------------------------------+
+| ACTIONS                                                    |
+|   [secondary] Go home -> landing                           |
+|   [PRIMARY] Open about -> about                            |
+|   [PRIMARY] Open work hub -> work-index                    |
+|   [PRIMARY] Open research index -> research-index          |
+|   [secondary] Open privacy notice -> privacy               |
+|   [secondary] Toggle light / dark -> appearance            |
++------------------------------------------------------------+
+| states: default                                            |
++------------------------------------------------------------+
+```
+
+_The site chrome screen from this site's Design Map render: a boxed wireframe listing its zones (skip link, masthead, decorative cube, primary nav, theme swatch, breadcrumb, page canvas, footer), its actions marked primary or secondary, and its states._
 
 The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/visual-search-workbench/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
 
@@ -543,7 +774,7 @@ The latency book contributed a habit of budgeting the slow path rather than the 
 
 The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the ux-map workflow from [WorkBay](/projects/workbay/), the task harness that carried the build, rendered the map again as ASCII screens, this time anchored line by line to the running code, and the critique pack was held against that render. One late pass caught three defects that pixel-level review had walked past. This is the screen the render exposed, drawn from the map artifact in the product repository:
 
-```
+```text
 ┌─ Search ──────────────────────────────────────────────────────────────┐
 │ [ query…                              ] (or drop an image)            │
 │                                                                       │
@@ -557,11 +788,13 @@ The map was written before the interface existed, which means the built interfac
     this [Cancel] cancels nothing
 ```
 
+_Search screen as first built: a query field above the message “No library yet — open a folder to search.”, and directly beneath it a second panel reading “Preparing search…” with an indeterminate progress bar and a Cancel button. Two competing empty-state messages are drawn at the same time, and that Cancel cancels nothing._
+
 Both messages describe the same fresh launch, and each came from its own independent condition, so nothing prevented both from being true together. The Cancel is worse than redundant: it could not stop the model load it appeared to govern, and its handler was borrowed from the indexing banner, so pressing it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past. A third defect sat one state away: the layout meter for the similarity map could stack on top of this banner as a second, visually identical bar with its own Cancel, and only their spoken accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
 
 The fix was structural rather than cosmetic. The status region became a single function that returns exactly one state, tested in a precedence order that puts what a person can act on ahead of what they can only wait for:
 
-```
+```text
    indexing ───────►  live work first
    error ──────────►  then why it stopped
    empty library ──►  then what to do
@@ -569,14 +802,18 @@ The fix was structural rather than cosmetic. The status region became a single f
    otherwise ──────►  ready
 ```
 
+_Precedence order for the rebuilt status region, tested top to bottom: indexing shows live work first, then error explains why it stopped, then empty library says what to do, then preparing asks the reader to wait, and otherwise the region reads ready._
+
 The rebuilt waiting state names its subject and offers no button it cannot honor:
 
-```
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
 │ Preparing search   Loading the search model…       (no Cancel) │
 └────────────────────────────────────────────────────────────────┘
 ```
+
+_The rebuilt waiting state: a single indeterminate bar over the label “Preparing search” and the subtitle “Loading the search model…”, with no Cancel button, because nothing in this state can be cancelled._
 
 A unit test now walks every combination of those inputs and asserts that exactly one state renders and only indexing offers Cancel. Each critique finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement; all three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
 

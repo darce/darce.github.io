@@ -65,7 +65,9 @@ The latency book contributed a habit of budgeting the slow path rather than the 
 
 The map was written before the interface existed, which means the built interface could still betray it. So after the screens were running, the ux-map workflow from [WorkBay](/projects/workbay/), the task harness that carried the build, rendered the map again as ASCII screens, this time anchored line by line to the running code, and the critique pack was held against that render. One late pass caught three defects that pixel-level review had walked past. This is the screen the render exposed, drawn from the map artifact in the product repository:
 
-```
+<AsciiScreen label="Search screen as first built: a query field above the message “No library yet — open a folder to search.”, and directly beneath it a second panel reading “Preparing search…” with an indeterminate progress bar and a Cancel button. Two competing empty-state messages are drawn at the same time, and that Cancel cancels nothing.">
+
+```text
 ┌─ Search ──────────────────────────────────────────────────────────────┐
 │ [ query…                              ] (or drop an image)            │
 │                                                                       │
@@ -79,11 +81,15 @@ The map was written before the interface existed, which means the built interfac
     this [Cancel] cancels nothing
 ```
 
+</AsciiScreen>
+
 Both messages describe the same fresh launch, and each came from its own independent condition, so nothing prevented both from being true together. The Cancel is worse than redundant: it could not stop the model load it appeared to govern, and its handler was borrowed from the indexing banner, so pressing it wrote a cancelled entry into the job history for an indexing run that had never started. The interface was fabricating a past. A third defect sat one state away: the layout meter for the similarity map could stack on top of this banner as a second, visually identical bar with its own Cancel, and only their spoken accessibility names told them apart, so a screen-reader user could tell which Cancel stopped which job while a sighted user could not.
 
 The fix was structural rather than cosmetic. The status region became a single function that returns exactly one state, tested in a precedence order that puts what a person can act on ahead of what they can only wait for:
 
-```
+<AsciiScreen label="Precedence order for the rebuilt status region, tested top to bottom: indexing shows live work first, then error explains why it stopped, then empty library says what to do, then preparing asks the reader to wait, and otherwise the region reads ready.">
+
+```text
    indexing ───────►  live work first
    error ──────────►  then why it stopped
    empty library ──►  then what to do
@@ -91,14 +97,20 @@ The fix was structural rather than cosmetic. The status region became a single f
    otherwise ──────►  ready
 ```
 
+</AsciiScreen>
+
 The rebuilt waiting state names its subject and offers no button it cannot honor:
 
-```
+<AsciiScreen label="The rebuilt waiting state: a single indeterminate bar over the label “Preparing search” and the subtitle “Loading the search model…”, with no Cancel button, because nothing in this state can be cancelled.">
+
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
 │ Preparing search   Loading the search model…       (no Cancel) │
 └────────────────────────────────────────────────────────────────┘
 ```
+
+</AsciiScreen>
 
 A unit test now walks every combination of those inputs and asserts that exactly one state renders and only indexing offers Cancel. Each critique finding cites the file and lines it checked, states which claims were verified by reading the code, and flags what was asserted without measurement; all three were fixed before release. The lesson repeats the map's founding one: interface states written as independent conditionals will eventually all be true at once, and only an inventory of states catches that before a person does.
 

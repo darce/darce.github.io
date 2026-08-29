@@ -47,6 +47,16 @@ function stripMdxComponents(content) {
     return content
         // Remove JSX component tags like <OrderBook />, <Cube />, etc.
         .replace(/<[A-Z][A-Za-z]*\b[^>]*\/>/g, '')
+        // AsciiScreen is unwrapped, not dropped. The prose points straight at
+        // these drawings ("This is the screen the render exposed:"), so removing
+        // them with the other components leaves sentences aimed at nothing, and
+        // a machine reader is told a defect is visible in a picture it cannot
+        // see. Keep the fence, and keep the label after it as the caption — on
+        // the page that label is the figure's accessible name, and here it is
+        // the only text saying what the box-drawing depicts.
+        .replace(
+            /<AsciiScreen\s+label="([^"]*)"\s*>\s*([\s\S]*?)\s*<\/AsciiScreen>/g,
+            (_match, label, body) => `${body}\n\n_${label}_`)
         // Remove JSX opening/closing tags
         .replace(/<[A-Z][A-Za-z]*\b[^>]*>[\s\S]*?<\/[A-Z][A-Za-z]*>/g, '')
         // Remove import statements
