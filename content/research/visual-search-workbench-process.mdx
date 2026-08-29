@@ -1,0 +1,73 @@
+---
+index: 4
+year: 2026
+title: 'A Map and a Canon'
+subtitle: 'How a text-first UX map and a source-linked rule corpus shaped a visual-search product'
+type: 'method'
+status: 'running'
+description: 'Process notes from building Semantic Image Search: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.'
+details: 'Process notes from building Semantic Image Search. A text-first UX map inventoried every screen, state, and flow before interface code existed, and a source-linked rule corpus reviewed each one. The same retrieval discipline governed the product and the tools that built it.'
+links:
+  - url: https://github.com/darce/heuristics-canon
+    label: Heuristics Canon on GitHub
+thumbnail:
+  src: work/sis-search-layer.png
+  alt: "Semantic Image Search ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details open beside it."
+  position: center
+tags:
+  - Process
+  - Interaction Design
+  - Human-AI Interaction
+  - Research
+---
+
+> **What this is:** the working method behind [Semantic Image Search](/projects/semantic-image-search/), a native macOS app that searches photo folders by text or by picture. That page shows what shipped. This one shows how it was designed and reviewed.
+> **What this is not:** a general methodology claim. One product has been through this process end to end; the method is reported, not proven.
+
+## The map comes first
+
+Before any interface code, the whole product was written down as a **UX map**: a plain-text inventory of screens, the zones inside each screen, the states each zone can be in, and the flows that connect them. The map is a version-controlled file whose review renderings come out as ASCII drawings, so it can be diffed and cited like any other source file.
+
+Text-first sounds austere, but it forces a useful discipline. A drawing can leave a state vague. A map cannot: every zone must list what it shows when the data is missing, loading, partial, or wrong, and an unlisted state is visible as a gap in the file. The final delivery map for this product names flows with titles like *partial census disclosure* and *what is not done to you*, because those journeys had to exist as designed things before they could be built.
+
+Each screen in the map carries one question. The cold-start screen asks how a person knows their photos will not be copied anywhere. The indexing screen asks what a half-finished index claims to be. Holding one question per screen kept reviews from sliding into general impressions.
+
+The map is the single source of truth. It can be projected onto a spatial canvas for review, but the projection is one-way: nothing drawn on the canvas flows back. Two writable copies of the same design would drift apart silently, which is the same failure a database book warns about when one change is written to two stores.
+
+## Rules with names
+
+The second instrument is the [Heuristics Canon](/research/heuristics-canon/), a corpus of decision rules distilled from published sources. Each rule carries a stable ID and a link to the work it rests on, so a design critique can say exactly which rule it leans on and where that rule came from.
+
+Three of the distilled sources did the most work here, and none of them is a design book. *Designing Data-Intensive Applications* is about how data systems keep derived copies honest. *Release It!* is about how software survives the failure of things it depends on. *Latency* is about why delay behaves the way it does. Distilling them into rules made their lessons portable: a principle written for a server farm can be held against a search box, because the rule states its trigger and the trigger either fires or it does not.
+
+The review loop was mechanical. Update the map, run the critique pack against it, and resolve what fires before any interface work starts. Findings cite rule IDs, so a disagreement becomes an argument over whether a named rule applies to this screen.
+
+## What the rules said about search
+
+Searching pictures by meaning rests on **embeddings**. An embedding model turns a picture, or a phrase, into a point in an abstract space, placed so that similar things land near each other. Search is then just nearness: embed the query, rank the library by distance. The canon's machine-learning rules take that simple picture and put boundaries on it, and each boundary became an interface decision.
+
+**Points are only comparable inside one space.** Vectors from different models, or the same model with different preprocessing, cannot be ranked against each other. The product pins one embedding contract covering the model and everything done to a picture or phrase on its way to becoming a vector, and every gallery and query vector lives under that contract. During development the contract ID stayed literally unset until the model's license and conversion checks passed: the index refused to exist before its provenance did.
+
+**Nearest-k always answers.** Ranking by nearness returns the k nearest photos even when all of them are far. Research on the shipped model found no trustworthy distance threshold to draw a line with, so the product does not pretend to have one. Results are captioned *nearest*, never *matches*; raw similarity scores are never shown as confidence; and a ranking that comes back nearly flat is treated as the designed unknown state, shown as "no close matches" rather than a weakly ordered grid. The canon calls this abstention: unknown is a valid result, and the below-threshold action is designed rather than left to chance.
+
+**The index is derived data.** The embedding index sits beside the photo folders as disposable metadata: delete it and nothing about the files changes. That is the database book's discipline applied to pictures. A derived copy is rebuilt from its source, never treated as an authority, and when the embedding contract changes, the index is rebuilt rather than patched, because vectors from the new contract cannot be compared with the old ones.
+
+**Measure the plain path before approximating.** Fast approximate indexes admit misses by design, and the canon requires that cost to be measured before it is paid. On this library scale, a measured exhaustive scan over a memory-mapped matrix met the budget on the target machine, so no approximation shipped at all.
+
+## Engineering rules that reached the screen
+
+The most direct transfer came from rules that were never about interfaces.
+
+*Release It!* holds that an undesigned state is a bug in itself. Applied to a search product, that rule turns every blank into a question: what does the app claim when no folder is chosen, when the model file is unreadable, when a disk is unplugged mid-index? Each condition got its own named state and its own wording, which the [product page](/projects/semantic-image-search/) walks through screen by screen. The same book's insistence that a system assumes its dependencies will fail shaped what those states say: the missing model is named by path, the unplugged disk by name, so recovery is an action rather than a guess.
+
+The no-dual-writes rule reached all the way into accessibility. The caveat a sighted person reads and the caveat VoiceOver speaks come from one string, because two copies of the same sentence would drift exactly the way two writable databases do.
+
+The latency book contributed a habit of budgeting the slow path rather than the average one. On-device search has no network to blame, so the budget was set against the worst case that matters, a cold start over the full library on the smallest supported machine, and measured there.
+
+## The same discipline in the tools
+
+The product was built with agent tooling, and one tool made the parallel unmissable. **Codemap** is a graph index over the app's own source code, mapping functions and their call relationships, with a co-occurrence signal that lets agents search code by meaning. It is, structurally, the same object as the photo index — a lossy, derived snapshot of a corpus, useful precisely because it is smaller than what it summarizes.
+
+It fails the same ways, too. A truncated result list can read as a complete one. A malformed query can come back empty and read as "nothing exists." Its semantic signal is co-occurrence within one repository, not a trained model, so it returns weak nearest neighbours for terms it has never seen instead of saying no match. The tooling's guardrails answer each of those with the same move the product makes: only a surface that can actually check completeness may license a claim of absence, freshness is reported rather than assumed, and the underlying corpus stays the authority over its index.
+
+That convergence is the finding these notes record. Rules written for databases and servers produced the product's caveat states, and the same rules kept the build tooling honest about its own index. A derived index, whatever it indexes, must say how much of its corpus it can see.

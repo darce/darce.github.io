@@ -2,8 +2,8 @@
 index: 1
 year: 2026
 title: 'Semantic Image Search'
-subtitle: 'Local-first AI photo search and exploration'
-description: 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.'
+subtitle: 'Local-first semantic and visual photo search'
+description: 'Native macOS product for semantic and visual search, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.'
 details: 'Semantic Image Search is a local visual-search workbench for folders: a native macOS app that searches the folders you choose by text or by a picture, and keeps gallery bytes on the machine. I designed and built it as independent product R&D, from the interaction design through the SwiftUI implementation. It has been through expert and adversarial review on 8 GB Apple Silicon. Testing with outside users has not yet run.'
 thumbnail:
   src: work/sis-search-layer.png
@@ -34,7 +34,7 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 - **Platform:** Native macOS. The models run on the Mac, within 8 GB of memory.
 - **Library access:** Reads only the folders the person has chosen. Gallery images stay on the device.
-- **Query:** Text, or an image dropped from anywhere. Any photo can pivot to its visual neighbours.
+- **Query:** Text, or an image dropped from anywhere. Any photo can pivot to its visual neighbours. Searching *by picture* is the capability macOS Photos does not offer.
 - **Surfaces:** Search, plus Similarity, Places, and Timeline for relationships a query did not express.
 
 ## Problem
@@ -112,7 +112,7 @@ Results are ordered by nearness to the query. Position carries the ranking. Raw 
 
 ### Search with an image
 
-A query does not have to be words. "Search with image…" embeds a picture with the same encoder that indexed the library. A file dropped on the window does the same. Every photo is then ranked by nearness to it. Find similar starts the same search from any selected photo. Both query kinds land in the one embedding space the index was built in ([EMB-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#emb-01)), so their rankings mean the same thing.
+A query does not have to be words. "Search with image…" embeds a picture with the same encoder that indexed the library. A file dropped on the window does the same. Every photo is then ranked by nearness to it. Find similar starts the same search from any selected photo. Both query kinds land in the one embedding space the index was built in, so their rankings mean the same thing.
 
 ![Find-similar mode: a banner reads "Results are photos visually similar to 56740009.JPG — not a text search" with a Back to text results button, above the numbered nearest neighbours of a pink-flower film photo.](/images/work/sis-similarity-search.png)
 
@@ -164,9 +164,7 @@ The app groups people without identifying them: chips read Person 1, Person 2, P
 
 ## Designing incomplete truth
 
-"No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim.
-
-The split follows the [Heuristics Canon](/research/heuristics-canon/). [CAL-02](https://github.com/darce/heuristics-canon/blob/main/lexicons/ml-systems.md#cal-02) holds that abstention is a valid result rather than a forced classification. [RLSE-04](https://github.com/darce/heuristics-canon/blob/main/lexicons/engineering.md#rlse-04) treats an undesigned state as a bug: an undifferentiated blank is itself a defect. So each condition below is worded for its cause and offers a way out.
+"No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim. Every condition below is worded for its cause and offers a way out; the rules behind that split, and the process that applied them, are the subject of [A Map and a Canon](/research/visual-search-workbench-process/).
 
 No folder chosen is the start state, held apart from an empty result for the reason Screen 1 gives.
 
@@ -258,7 +256,7 @@ The view lays the whole indexed library out as a two-dimensional map, projected 
 
 ![The Similarity map for a 2,314-photo library: a wide point cloud with a cluster of photo thumbnails outlined in blue, above select-area, zoom, and Reset view controls.](/images/work/sis-layers-umap.png)
 
-The map is drawn for selection, and its geometry stays inside what a projection can say. A UMAP layout preserves neighbourhoods rather than distances ([McInnes, Healy & Melville 2018](https://arxiv.org/abs/1802.03426)). So the surface has no axes and no distance readout, and a gap between two clusters is not a fact about the library. VIZ-18 and VIZ-19, canon rules distilled from that paper, set the boundary: claims from the layout stop at local contiguity, and a visible cluster is only as real as its persistence across neighbourhood scales.
+The map is drawn for selection, and its geometry stays inside what a projection can say. A UMAP layout preserves neighbourhoods rather than distances ([McInnes, Healy & Melville 2018](https://arxiv.org/abs/1802.03426)). So the surface has no axes and no distance readout, and a gap between two clusters is not a fact about the library: claims from the layout stop at local contiguity.
 
 ### Places
 
@@ -361,39 +359,29 @@ The breadcrumb records the window that was asked for. The range line states what
 
 ## Next to Apple Photos
 
-macOS Photos already searches by meaning: Apple's [search guide](https://support.apple.com/kn-in/guide/photos/pht64de33e5a/11.0/mac/26) covers natural-language queries, text inside images, dates, and detected people, pets, and objects. "Semantic search" alone would be a parity claim. This product is positioned on what Photos does not offer.
+macOS Photos already searches by meaning: Apple's [search guide](https://support.apple.com/kn-in/guide/photos/pht64de33e5a/11.0/mac/26) covers natural-language queries, text inside images, dates, and detected people, pets, and objects. "Semantic search" alone would be a parity claim. What Photos does not offer is **visual search**: a picture as the query, and any result as the start of the next search. That is the differentiator, and the rest of the product is arranged around it.
 
-- **Image as query.** Photos search starts from words and built-in categories. Here the query can be a picture from anywhere, and any photo pivots to its visual neighbours.
+- **Image as query.** Photos search starts from words and built-in categories. Here the query can be a picture from anywhere, and any photo pivots to its visual neighbours. The Similarity map extends the same idea to the whole library at once.
 - **Folders as the corpus.** Photos can keep [referenced originals](https://support.apple.com/en-ca/guide/photos/pht1ed9b966d/mac) outside its library at the cost of managed-library features, and [separate libraries](https://support.apple.com/en-gb/guide/photos/pht211de786/mac) require switching. Here the library is the chosen folders searched together, and the index is disposable metadata beside them: deleting it changes nothing about the files.
 - **Inspectable retrieval.** Ranking is cosine nearness in one pinned, openly licensed embedding space, recorded in the product's architecture decisions, so a wrong result can be reasoned about. Photos' pipeline cannot be examined from outside.
 - **Layers out.** Photos lifts one subject as a sticker. Here segmentation writes typed, saveable alpha layers meant for composition elsewhere.
 
-Together those make the product a visual-search workbench for folders. It is aimed at people whose pictures live outside a managed library: photographers' archives, scan sets, design assets, external volumes. The [Heuristics Canon](/research/heuristics-canon/)'s strategy rules shaped the framing: name the incumbent the product sits beside ([STRAT-16](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#strat-16), [STRAT-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#strat-18)), and let the advantage come from a coordinated set of workflow choices for that segment ([PROD-06](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#prod-06), [GTM-03](https://github.com/darce/heuristics-canon/blob/main/lexicons/business-marketing.md#gtm-03)).
-
-## Evaluation
-
-### Technical evidence
-
-Memory and runtime were measured on an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed. Automated tests cover the core behaviour.
-
-### Interaction and accessibility review
-
-A whole-product UX map framed the review. Each screen carried one question, to isolate one interaction risk at a time. Adversarial review targeted the privacy claims and the failure states. Automated checks changed state, then read the view, and caught displays that had not followed the change.
-
-Keyboard operation and VoiceOver were designed in from the start. Every state above has spoken wording. The partial-library caveat is announced when it appears. The Explore views keep their viewpoint across tab changes, so a keyboard user is not returned to the top of the map or chart.
-
-### External usability evidence
-
-A study with users outside the review has not yet run.
+Together those make the product a visual-search workbench for folders. It is aimed at people whose pictures live outside a managed library: photographers' archives, scan sets, design assets, external volumes.
 
 ## Under real use
 
 Trust in the Explore surfaces comes down to how they behave in the middle of a task. Each behaviour below is held by a test.
 
 - The frame you set up survives the move. Similarity, Places, and Timeline hold their zoom and pan across tab changes. Looking at the same photos another way costs one click and no reorientation. A regression check covers tab changes.
-- A partial view says so. When files cannot be read, the plot names the cause, the disk, and the number of photos it leaves out. VoiceOver speaks the caveat when it appears. Without it, a partial chart looks exactly like a complete one.
+- A partial view says so. When files cannot be read, the plot names which disk is unreachable and how many photos that leaves out. VoiceOver speaks the caveat when it appears. Without it, a partial chart looks exactly like a complete one.
 - A selection cannot outlive what it pointed at. Changing the timeline axis clears the selection. A count on screen always refers to a range the chart draws now. A mutation check covers it.
 
-## Current evidence gap
+Keyboard operation and VoiceOver were designed in from the start. Every state above has spoken wording, and the partial-library caveat is announced when it appears.
 
-The app works end to end on the machine it was designed for. It has been reviewed against implementation, accessibility, and adversarial criteria. It has not been measured on a library larger than the test corpus, and no one outside that review has used it. The next step is a task-based study. It will show whether people outside the review can form useful queries and read the caveats as written.
+## Evaluation and evidence
+
+Memory and runtime were measured on an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed. Automated tests cover the core behaviour, and adversarial review targeted the privacy claims and the failure states.
+
+How the product was designed and reviewed, from the whole-product UX map to the rule corpus that vetted each screen, is its own article: [A Map and a Canon](/research/visual-search-workbench-process/).
+
+The app works end to end on the machine it was designed for. It has not been measured on a library larger than the test corpus, and a task-based study with users outside the review has not yet run. That study is the next step: it will show whether people beyond the review can form useful queries and read the caveats as written.
