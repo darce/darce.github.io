@@ -174,3 +174,7 @@ dist
 /.workbay-cache
 /config/lane-orchestration/
 /scripts/remote_agent.sh
+
+# Derived image variants + manifest (rebuilt by `npm run images`)
+public/images/_gen/
+lib/generated/

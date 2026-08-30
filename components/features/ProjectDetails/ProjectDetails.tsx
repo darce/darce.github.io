@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
-import Image from 'next/image'
+import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
@@ -112,13 +112,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
             <div className={styles.lede}>
                 {project.metaData.masthead && (
                     <figure className={styles.masthead}>
-                        <Image
-                            src={`/images/${project.metaData.masthead.src}`}
+                        <ResponsiveImage
+                            src={project.metaData.masthead.src}
                             alt={project.metaData.masthead.alt}
-                            width={646}
-                            height={900}
+                            priority
+                            sizes="(max-width: 1024px) 100vw, 640px"
                             style={{ width: '100%', height: 'auto' }}
-                            sizes="(max-width: 1024px) 100vw, 50vw"
                         />
                         <figcaption>{project.metaData.masthead.alt}</figcaption>
                     </figure>
@@ -139,13 +138,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                         if (failedImages.has(index)) return null
                         return (
                             <figure className={styles.imgWrapper} key={index}>
-                                <Image
-                                    src={`/images/${image.src}`}
+                                <ResponsiveImage
+                                    src={image.src}
                                     alt={image.alt}
-                                    width={1200}
-                                    height={800}
-                                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                                     sizes="(max-width: 768px) 100vw, 45vw"
+                                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                                     onError={() => handleImageError(index)}
                                 />
                                 <figcaption>{image.alt}</figcaption>

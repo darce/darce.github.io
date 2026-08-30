@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
 import { ContentIndexData } from '../../../types'
 import { ContentSection, buildItemPath } from '../../../lib/routes'
 import { formatResearchBadge } from '../../../lib/researchEvidenceLabels'
@@ -11,6 +11,8 @@ interface SectionCardsProps {
     items: ContentIndexData[]
     className?: string
 }
+
+const EAGER_CARDS = 3
 
 const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }) => {
     if (!items || items.length === 0) {
@@ -24,7 +26,7 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
     return (
         <section className={`contentCards ${className || ''}`}>
             <div className={styles.cardGrid}>
-                {items.map((item) => {
+                {items.map((item, index) => {
                     const thumb = item.metaData.thumbnail ?? item.metaData.images?.[0]
 
                     return (
@@ -36,11 +38,11 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
                             <article className={styles.cardInner}>
                                 <div className={styles.imageWrapper}>
                                     {thumb ? (
-                                        <Image
-                                            src={`/images/${thumb.src}`}
+                                        <ResponsiveImage
+                                            src={thumb.src}
                                             alt={thumb.alt}
-                                            width={600}
-                                            height={450}
+                                            priority={index < EAGER_CARDS}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 384px"
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
@@ -51,7 +53,6 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
                                                     transformOrigin: thumb.position || 'center',
                                                 } : {}),
                                             }}
-                                            sizes="(max-width: 1024px) 50vw, 33vw"
                                         />
                                     ) : (
                                         <div className={styles.placeholder} aria-hidden="true" />

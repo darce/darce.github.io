@@ -29,6 +29,14 @@ jobs:
       - name: Setup Node.js, cache dependencies, install dependencies
         uses: ./.github/workflows/setup-node
 
+      - name: Cache derived image variants
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/images/_gen
+            lib/generated
+          key: image-variants-${{ hashFiles('public/images/**', 'scripts/generate-image-variants.js') }}
+
       - name: Typecheck
         run: npm run check
 
@@ -46,6 +54,14 @@ jobs:
 
       - name: Setup Node.js, cache dependencies, install dependencies
         uses: ./.github/workflows/setup-node
+
+      - name: Cache derived image variants
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/images/_gen
+            lib/generated
+          key: image-variants-${{ hashFiles('public/images/**', 'scripts/generate-image-variants.js') }}
 
       - name: Setup pages
         uses: actions/configure-pages@v4
