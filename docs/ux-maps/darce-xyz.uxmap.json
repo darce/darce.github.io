@@ -256,6 +256,7 @@
       "primary_action_id": "act-open-research",
       "states": [
         "default",
+        "loading",
         "empty",
         "dark"
       ],
@@ -266,10 +267,13 @@
           "role": "queue",
           "states": [
             "default",
+            "loading",
+            "error",
             "empty",
             "dark"
           ],
-          "notes": "Same token set as z-work-grid. Two items today: order-book, rotation-matrices."
+          "notes": "Same token set as z-work-grid. Seven items today. Image path: SectionCards renders next/image with images.unoptimized, so one full-size raster per card (1.74 MB total for the grid) and no srcset; every card is loading=lazy, including the above-the-fold first row. Target: build-time derived variants (avif/webp/fallback, 320-1280w) via a ResponsiveImage <picture>; first row eager + fetchpriority=high, rows 2+ lazy. loading = dithered checkerboard in t('text') under the 4/3 (16/9 mobile) box, CSS-owned so no layout shift; media_error = existing .placeholder in t('link'), alt stays. Rules: PERF-16 transmission dominates; PERF-09 GH Pages max-age=600 fixed, content-hash filenames instead; STOR-07/FLOW-06 originals stay the source, _gen is rebuilt every prebuild; RES-13 missing manifest entry degrades to the plain <img>; A11Y-24 loading/error states keep alt and focus.",
+          "code_ref": "components/features/SectionCards/SectionCards.tsx"
         }
       ]
     },
@@ -506,6 +510,19 @@
             "dark"
           ],
           "notes": "Same Menu tokens as z-sibling-menu"
+        },
+        {
+          "id": "z-research-masthead",
+          "label": "Research masthead figure + credit caption",
+          "role": "content",
+          "states": [
+            "default",
+            "loading",
+            "error",
+            "dark"
+          ],
+          "code_ref": "components/features/ProjectDetails/ProjectDetails.tsx",
+          "notes": "Same full-size file as the index thumbnail (e.g. 1600x2387 JPEG at 646px wide). Target: ResponsiveImage, eager + fetchpriority=high (it is the LCP element), sizes 100vw mobile / 50vw desktop. Caption is the alt text, so a failed image still leaves the credit readable."
         },
         {
           "id": "z-research-mdx",
