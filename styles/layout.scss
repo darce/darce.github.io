@@ -100,15 +100,11 @@
     }
 
     .aboutPage {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: $s-x-large;
+        display: block;
+        max-width: 1200px;
         padding: $s-x-large;
 
         @media (max-width: $tabletMax) {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: $s-large;
         }
     }

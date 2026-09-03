@@ -57,6 +57,13 @@ function stripMdxComponents(content) {
         .replace(
             /<AsciiScreen\s+label="([^"]*)"\s*>\s*([\s\S]*?)\s*<\/AsciiScreen>/g,
             (_match, label, body) => `${body}\n\n_${label}_`)
+        // The About page is authored as cards. Intro and CardGrid are layout
+        // wrappers; an AboutCard is a titled section of the bio. Unwrap them
+        // so the prose survives instead of being dropped with the tags.
+        .replace(
+            /<AboutCard\b[^>]*\btitle="([^"]*)"[^>]*>\s*([\s\S]*?)\s*<\/AboutCard>/g,
+            (_match, title, body) => `### ${title}\n\n${body}`)
+        .replace(/<\/?(Intro|CardGrid)>/g, '')
         // Remove JSX opening/closing tags
         .replace(/<[A-Z][A-Za-z]*\b[^>]*>[\s\S]*?<\/[A-Z][A-Za-z]*>/g, '')
         // Remove import statements

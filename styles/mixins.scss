@@ -17,7 +17,8 @@
         $offset: $s-small,
         $offset-hover: $s-medium,
         $opacity: 0.5,
-        $dot-size: 2px
+        $dot-size: 2px,
+        $hover: true
     ) {
         &::after {
             content: '';
@@ -40,19 +41,23 @@
             }
         }
 
-        @media (hover: hover) {
-            &:hover {
-                animation: dither-bob 3s ease-in-out infinite;
+        /// $hover: false keeps the shadow but drops the bob and lift, for
+        /// blocks that carry the card idiom without being a link (INT-01).
+        @if $hover {
+            @media (hover: hover) {
+                &:hover {
+                    animation: dither-bob 3s ease-in-out infinite;
 
-                @media (prefers-reduced-motion: reduce) {
-                    animation: none;
+                    @media (prefers-reduced-motion: reduce) {
+                        animation: none;
+                    }
                 }
-            }
 
-            &:hover::after {
-                translate: $offset-hover $offset-hover;
-                transition: translate 200ms $ease-decel,
-                            opacity 200ms $ease-decel;
+                &:hover::after {
+                    translate: $offset-hover $offset-hover;
+                    transition: translate 200ms $ease-decel,
+                                opacity 200ms $ease-decel;
+                }
             }
         }
     }
