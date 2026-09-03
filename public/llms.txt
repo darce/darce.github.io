@@ -1,6 +1,6 @@
 # darce.xyz
 > Portfolio and case studies for Daniel Arcé.
-> Design technologist building AI and data-rich products across interaction design, accessibility, prototyping, and implementation.
+> Product engineer who designs and builds accessible software and AI features, from interaction design and prototyping through implementation.
 
 ## Pages
 - / — Home

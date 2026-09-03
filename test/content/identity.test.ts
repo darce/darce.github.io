@@ -6,14 +6,13 @@ import matter from 'gray-matter'
 const mastheadPath = path.join(process.cwd(), 'content/header/masthead.mdx')
 const footerPath = path.join(process.cwd(), 'content/footer/footer.mdx')
 const seoPath = path.join(process.cwd(), 'lib/seo.ts')
+const workPath = path.join(process.cwd(), 'pages/work.tsx')
 
-describe('site identity (Design Technologist)', () => {
-    it('masthead subtitle fuses the role with its problem class', () => {
+describe('site identity (Product Engineer)', () => {
+    it('masthead subtitle names the role and its two practices', () => {
         const raw = fs.readFileSync(mastheadPath, 'utf8')
         const { data } = matter(raw)
-        expect(data.subtitle).toBe(
-            'Design Technologist — AI products, complex systems, accessible interaction'
-        )
+        expect(data.subtitle).toBe('Product Engineer\nA11y, Design Tech')
     })
 
     it('footer is utility chrome, not a second bio', () => {
@@ -22,7 +21,7 @@ describe('site identity (Design Technologist)', () => {
         // would restate it directly beneath the hero (WRIT-40).
         expect(raw).toContain('](/privacy/)')
         expect(raw).toContain('mailto:daniel.arce@gmail.com')
-        expect(raw).not.toMatch(/design technologist\./i)
+        expect(raw).not.toMatch(/product engineer\./i)
     })
 
     it('no MDX links a local file that is not in public/', () => {
@@ -50,9 +49,17 @@ describe('site identity (Design Technologist)', () => {
     })
 
     it('does not retain the two-headed identity string', () => {
-        const retired = 'Product Designer & Design Technologist'
+        const retired = ['Product Designer & Design', 'Technologist'].join(' ')
         expect(fs.readFileSync(mastheadPath, 'utf8')).not.toContain(retired)
         expect(fs.readFileSync(footerPath, 'utf8')).not.toContain(retired)
         expect(fs.readFileSync(seoPath, 'utf8')).not.toContain(retired)
+    })
+
+    it('work metadata uses the current role and product name', () => {
+        const raw = fs.readFileSync(workPath, 'utf8')
+        expect(raw).toContain('Product engineering work by Daniel Arcé')
+        expect(raw).toContain('Visual Search Workbench')
+        expect(raw).not.toContain('Product design and design-technology')
+        expect(raw).not.toContain('Semantic Image Search')
     })
 })

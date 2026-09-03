@@ -9,13 +9,13 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-export const FEATURED_SLUGS = ['visual-search-workbench', 'photoshelter', 'workbay', 'msnbc']
+export const FEATURED_SLUGS = ['visual-search-workbench', 'altcontext', 'photoshelter', 'workbay']
 
 export const FEATURED_METRICS: Record<string, string> = {
     'visual-search-workbench': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
+    altcontext: 'WordPress alt text generated from the image and its editorial context, with a name admitted only when a confirmed face backs it and nothing written until a person accepts the draft.',
     photoshelter: 'Workflow prototyping that exposed integration constraints before production work, plus a WCAG audit and remediation on contracts that required demonstrated compliance.',
     workbay: 'Cross-agent workflow state and adjacent design tooling that stores interaction structure as versioned data before implementation.',
-    msnbc: 'Working interface prototypes and reusable components for a live-video product shipped under a six-month deadline.',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -67,7 +67,7 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
-                                I design and build AI and data-rich products where interaction, accessibility, and implementation have to be solved together. My work spans product R&D, interface systems, and working prototypes for media, enterprise software, and independent AI products.
+                                I design and build AI-assisted, data-heavy software where interaction, accessibility, and implementation have to be solved together. My work spans product R&D, interface systems, and working prototypes for media, enterprise software, and independent AI products.
                             </p>
                             <a
                                 className={styles.cta}

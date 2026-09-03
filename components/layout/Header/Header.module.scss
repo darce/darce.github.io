@@ -42,6 +42,7 @@
             font-size: 1.8rem;
             font-weight: 600;
             line-height: $type-lh-title;
+            white-space: pre-line;
 
 
             @include themeComponent($themes) {

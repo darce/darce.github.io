@@ -6,7 +6,7 @@ import { contentItemSchema } from '../../lib/schemas'
 
 const file = path.join(process.cwd(), 'content/projects/visual-search-workbench.mdx')
 
-describe('Semantic Image Search case (QM-REPOSITION-01 s2)', () => {
+describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
     const raw = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
     const { data, content } = matter(raw)
 
