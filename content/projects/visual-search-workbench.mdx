@@ -2,9 +2,9 @@
 index: 1
 year: 2026
 title: 'Visual Search Workbench'
-subtitle: 'Local-first semantic and visual photo search'
-description: 'Native macOS product for semantic and visual search, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.'
-details: 'Visual Search Workbench is a native macOS app that searches the folders you choose by text or by a picture, and keeps gallery bytes on the machine. I designed and built it as independent product R&D, from the interaction design through the SwiftUI implementation. It has been through expert and adversarial review on 8 GB Apple Silicon. Testing with outside users has not yet run.'
+subtitle: 'Find photos by describing them or starting with a picture'
+description: 'A macOS app for finding and exploring photos in your own folders, with search by words or pictures and clear explanations when part of the library is missing.'
+details: 'I designed and built Visual Search Workbench for people who keep photos in folders: film scans, reference collections, and design assets. It searches on the Mac and keeps the originals where they are.'
 links:
 - url: 'https://dl.darce.xyz/'
   label: 'Download for macOS — Apple Silicon'
@@ -21,390 +21,82 @@ tags:
   - Accessibility
 ---
 
-**How do you make local AI search useful when the system cannot assume the library is complete?**
+Imagine looking for a flower photo in a folder of film scans. You remember the pink petals, but the filename is just a number. You could open each scan, or describe what you remember and start from the closest results.
 
-Missing, partial, and unavailable data each get a named state. An incomplete view of the library never reads as a complete one.
+Visual Search Workbench makes that second path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by place or date, and save experimental cutouts for use elsewhere.
 
-> A workbench for pictures that already live in folders, and stay there.
+I designed and built the native macOS app as independent product research. The design centres on three things: finding a starting point, following visual relationships, and understanding what the results leave out.
 
-## Final product
+![A search for flowers returns pink cosmos photos from a film-scan library, with one result selected for inspection.](/images/work/sis-search-layer.png)
 
-> **About the screens.** The ASCII screens are drawn from the shipped code as it stands at 0.2.3, the release linked above. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file, so a drawing that stops matching the app fails a build rather than ageing quietly. The drawings are the checkable contract. The pixel screenshots come from the 0.2.0 build (27 August 2026) and have not been retaken. Their window title still reads Semantic Image Search, the product's working name; the rename landed in 0.2.1. A screenshot is faithful to the build it came from and a drawing tracks the code as it now stands, so the two disagree on purpose — about the title, and about the thumbnail states in Screen 3, which 0.2.3 added.
+*Screenshots show version 0.2.0, when the app was called Semantic Image Search. The current download is 0.2.3; the [screen reference](/research/visual-search-workbench-screen-reference/) documents that version.*
 
-![Search for "flowers" over a film-scan library: a ranked grid of pink cosmos photos, the selected photo open with its details and an experimental cutout layer, and the Similarity map expanded above the results.](/images/work/sis-search-layer.png)
+## Find a starting point
 
-## At a glance
+Start by choosing a folder. The app reads the photos where they are and builds a search index: a separate catalogue it can use to compare pictures. The originals stay in their folders, and the image processing runs on your Mac.
 
-- **Platform:** Native macOS. The models run on the Mac, within 8 GB of memory.
-- **Library access:** Reads only the folders the person has chosen. Gallery images stay on the device.
-- **Query:** Text, or an image dropped from anywhere. Any photo can pivot to its visual neighbours. Searching *by picture* is the capability macOS Photos does not offer.
-- **Surfaces:** Search, plus Similarity, Places, and Timeline for relationships a query did not express.
+Once the folder is indexed, you can search for something like “flowers” or “red bicycle.” The app compares the meaning of the phrase with the pictures, so a useful result does not depend on someone having named or tagged the file.
+
+Sometimes a picture is easier than a description. Drop a reference image onto the window, or choose **Find similar** on a photo you already have. The results now follow that picture. A banner names the reference image and gives you a way back to the text results, so you can tell which search you are looking at.
+
+![Find similar uses a pink-flower photo as the reference, names it above the results, and offers a Back to text results button.](/images/work/sis-similarity-search.png)
+
+These results are suggestions ordered by similarity. A high position does not prove that a picture contains what you asked for. The interface avoids turning similarity scores into confidence percentages, and it can show “No close matches” when the ranking gives too little useful distinction between results. The nearest photos remain available to inspect.
+
+## Follow the pictures
+
+A useful result can lead somewhere the original query did not. Perhaps a flower photo reminds you of a trip, or its colours suggest a direction for a design. Three views let you explore those connections: **Similarity**, **Places**, and **Timeline**.
+
+**Similarity** groups visually related photos on a map. You can select a cluster and inspect its pictures in the grid. The map is a way to browse neighbourhoods; the size of a gap between clusters is not a precise measure of how different the pictures are.
+
+![The Similarity view groups a 2,314-photo library into a point cloud, with photos in the selected region shown as thumbnails.](/images/work/sis-layers-umap.png)
+
+**Places** shows photos with recorded coordinates. Select a region to find pictures taken there. **Timeline** groups photos by date, letting you narrow a collection to a year, month, or smaller period. It distinguishes recorded capture dates from file dates and keeps undated photos visible as a separate count.
+
+Your selection carries between these views. Their zoom and pan also survive tab changes, so you can examine the same set from another angle without rebuilding your view.
+
+Selecting a photo opens its details, including the camera, capture time, and location when those are available. Those details give you another way to judge whether a suggested picture is the one you need.
+
+## Know what is missing
+
+A photo map can look convincing while leaving out most of a collection. Some files have no location data. Others live on a drive that is unplugged. If the interface hides that difference, you could mistake “the app cannot see these photos” for “these photos do not exist.”
+
+The Places view makes the difference explicit. In one documented screen, it shows 41 of 1,284 photos: 1,198 have no coordinates and 45 could not be read. Those counts explain both what the map contains and why the rest is absent.
+
+An unavailable drive gets a more specific explanation. The app names the drive and says how many photos it could not open. That warning qualifies the dates and places on screen. VoiceOver announces the same warning, using the same wording.
+
+The same principle applies throughout the search journey:
+
+- **No folder chosen:** explain how to start, before showing a result count.
+- **No matches:** explain the search outcome.
+- **Partial library:** show that indexing stopped before it finished.
+- **Unavailable volume:** name the disconnected drive and the photos left out.
+- **Model unavailable:** explain which search component is missing so the person can recover.
+
+Thumbnails follow this rule too. A photo that is still loading has a placeholder. A file that is gone is marked “Picture unavailable.” Waiting and failure need different explanations.
+
+## Take a cutout into another project
+
+Once you find a useful picture, the app can separate subjects into layers with transparent backgrounds. You can inspect a layer and save it for composition elsewhere.
+
+![A cat photo has three proposed cutout layers, labelled cat, plant, and left plant, each marked experimental.](/images/work/sis-cat-layers-detail.png)
+
+These layers are labelled **experimental** because a proposed cutout still needs inspection. A recognisable subject does not guarantee a clean edge or a useful separation from its background.
+
+## What I have checked
+
+The app has been exercised on an 8 GB Apple Silicon Mac. Automated tests cover search behaviour and the states described here; expert and adversarial reviews examined the interface, failure handling, and privacy claims. Network checks found no gallery data leaving the device in the tested flows.
+
+A task-based study with outside users has **not yet run**, and larger libraries remain unmeasured. The next evaluation needs to establish whether people can find useful photos and correctly interpret the missing-data explanations.
+
+The [process article](/research/visual-search-workbench-process/) explains how I designed and reviewed those states. The [screen reference](/research/visual-search-workbench-screen-reference/) preserves the detailed drawings and release-specific behaviour.
 
 ## Download
 
-**[Download Visual Search Workbench 0.2.3 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later. The link resolves to the current release on GitHub, which serves the file. Take the one asset named `VisualSearchWorkbench-0.2.3.dmg`; the Source code archives beside it are attached by GitHub to every tag and hold no source.
+**[Download Visual Search Workbench 0.2.3 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later.
 
-The disk image is about 295 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
+The download is hosted on GitHub. Choose `VisualSearchWorkbench-0.2.3.dmg`, about 295 MB. The search and cutout models are bundled, so no model download is needed on first launch.
 
-Two things to know before you download, both of which follow from this being independent work rather than a shipped commercial product:
+The app is **not notarized by Apple**, so macOS may block the first launch. To open it, use **System Settings → Privacy & Security → Open Anyway**.
 
-- **It is not notarized by Apple.** Notarization needs a paid developer membership this project does not hold, so macOS will refuse the first double-click. Apple's own override — System Settings, Privacy & Security, *Open Anyway* — opens it, once. If you would rather not run software Apple has not checked, that is a reasonable place to stop.
-- **Check the bytes.** Each release publishes a `SHA256SUMS` file beside the image; `shasum -a 256 -c SHA256SUMS` confirms you received what was built. GitHub serves the download, not this site, and the digest is the only end-to-end check across that hop.
-
-Both caveats, and the licences of the bundled models, are written out on the [download page](https://github.com/darce/visual-search-workbench).
-
-## Problem
-
-Photo libraries hold more meaning than filenames and folders expose. Cloud search creates a privacy boundary, and local models have their own limits. A useful local product must find meaningful relationships, and it must tell the truth about how much of the library it can see.
-
-## Core journey
-
-Choose a folder, index it, and search by text or by image. Inspect a result. Then explore Similarity, Places, or Timeline for relationships the query did not express.
-
-### Cold start and indexing
-
-**Screen 1 — Cold start.** Before a folder is chosen, Search says "Choose a folder to search. Your photos stay where they are." Add Folder… sits directly under the query, the one way in. The left pane is Assets — the photos you have matted, each owning its layers — and it says so when it is empty rather than showing a bare frame. No zero-result count is drawn.
-
-<AsciiScreen label="Screen 1, cold start: window with an empty Assets pane reading 'Photos you have matted appear here. Open a folder to get started.' beside a search pane with an Add Folder button and the line 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn.">
-
-```text
-┌─ Visual Search Workbench ────────────────────────────────────────────────┐
-│ ┌─ Assets ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │ ▾ Assets          │ │ [ Search query                      ] (Search) │ │
-│ │   Photos you have │ │ [ Add Folder… ]                                │ │
-│ │   matted appear   │ │ Choose a folder to search. Your photos stay    │ │
-│ │   here. Open a    │ │ where they are.                                │ │
-│ │   folder to get   │ ├────────────────────────────────────────────────┤ │
-│ │   started.        │ │                                                │ │
-│ │ ▸ Jobs            │ │                                                │ │
-│ └───────────────────┘ └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The start state is kept apart from an empty result. A count of zero before any library exists would imply a search that found nothing. The first line also states what the app does with the files: it reads them where they sit, and it does not import or copy them.
-
-**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1284…" above a two-row photo grid. Add Folder… stays put while it runs: a job in progress is not a reason to hide the way in.
-
-<AsciiScreen label="Screen 2, indexing: an Add Folder button and a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ Search query                                          ] (Search)       │
-│ [ Add Folder… ]                                                          │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index, and the interface labels it partial.
-
-### Ranked results
-
-**Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results, mid-decode. Four thumbnails decode at a time and a tile stops waiting after two seconds, so on first paint most tiles are still placeholders. Each one asks again on a jittered backoff. A tile whose file is genuinely gone stops asking and says "Picture unavailable" — grey means working, and a frame still claiming to work half a minute later would be lying.
-
-<AsciiScreen label="Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails — some decoded, several still placeholders waiting on a retry, and one marked Picture unavailable.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ red bicycle                                           ] (Search)       │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ▸ Explore                                                                │
-├──────────────────────────────────────────────────────────────────────────┤
-│ red bicycle                                                              │
-│ 64 search results · nearest 64                                           │
-│  ●  ●  ▢  ●  ▢  ●    ▢ decoding; asks again on a jittered backoff        │
-│  ●  ▢  ●  ●  ●  ▢                                                        │
-│  ●  ●  ●  ×  ●  ●    × Picture unavailable                               │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-Results are ordered by nearness to the query. Position carries the ranking. Raw cosine scores are not shown as confidence. When nothing is near, the grid shows a "No close matches" state instead of a weakly ranked list.
-
-### Search with an image
-
-A query does not have to be words. "Search with image…" embeds a picture with the same encoder that indexed the library. A file dropped on the window does the same. Every photo is then ranked by nearness to it. Find similar starts the same search from any selected photo. Both query kinds land in the one embedding space the index was built in, so their rankings mean the same thing.
-
-![Find-similar mode: a banner reads "Results are photos visually similar to 56740009.JPG — not a text search" with a Back to text results button, above the numbered nearest neighbours of a pink-flower film photo.](/images/work/sis-similarity-search.png)
-
-The mode announces itself. The banner states "Results are photos visually similar to 56740009.JPG — not a text search" and offers a way back. An image-ranked grid is never mistaken for an answer to the text in the search field.
-
-### Inspection
-
-Selecting a photo opens the facts behind the result. A machine ranking can be checked against what the file records.
-
-**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected; double-click opens it. The details panel shows size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00), and GPS (64.1466°, -21.9426°) above an offline mini-map. The map is drawn from the bundled coastline, and the two lines under it say where on Earth this is and how wide the window is, because a grid with no stated scale cannot be read.
-
-<AsciiScreen label="Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map drawn from a bundled coastline, captioned 'Northern high latitudes, western hemisphere' and 'Area shown: 60.15° N–68.15° N, 25.94° W–17.94° W'; result thumbnails below.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ┌────────────────┐  IMG_4417.HEIC                                        │
-│ │                │  Selected photo · double-click to open                │
-│ │   [ preview ]  │  ▾ Photo details                                      │
-│ │                │        Size  4032 × 3024                              │
-│ │                │      Camera  Apple iPhone 13 Pro                      │
-│ └────────────────┘        Lens  26 mm f/1.5                              │
-│                          Taken  2021:07:14 18:22:00                      │
-│                            GPS  64.1466°, -21.9426°                      │
-│                                 ┌──────────────────────────┐             │
-│                                 │ ∿∿∿∿   ·   ·      ∿∿∿∿∿∿ │             │
-│                                 │  ∿∿∿─────●───────∿∿∿     │             │
-│                                 │    ∿∿∿∿∿∿· ∿∿∿∿∿∿∿       │             │
-│                                 └──────────────────────────┘             │
-│                                 Northern high latitudes, western         │
-│                                 hemisphere                               │
-│                                 Area shown: 60.15° N–68.15° N,           │
-│                                 25.94° W–17.94° W                        │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ●  ●  ●  ●  ●  ●                                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-Each label sits with its value. The panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule and the bundled Natural Earth coastline, and never fetches tiles. Where the shipped coastline fails to load it says so, because a blank shoreline reads as an inland photograph.
-
-### Layers
-
-Segmentation gives each photo a strip of cutout layers, named by what the detector saw: cat, plant, left plant, person, structure. Every name carries the experimental marker. A machine-drawn matte does not get the same authority as the file facts above it. A click opens a layer full-size on an alpha checkerboard with one action, Save this layer…. Save layers… exports the set for composition in other tools.
-
-![The layer strip for a photo of a cat in a garden: three cutouts on alpha checkerboards labelled cat, plant, and left plant, each marked experimental, beneath the photo's details.](/images/work/sis-cat-layers-detail.png)
-
-![An enlarged layer titled "cat · experimental": the cat cut out on an alpha checkerboard, above a Save this layer button and a Close button.](/images/work/sis-cat-layer.png)
-
-The app groups people without identifying them: chips read Person 1, Person 2, Person 3; a file with none says "No person names in this file"; and no chip resolves to a name.
-
-![A photo of three costumed people whose details show chips Person 1, Person 2, and Person 3, above four separate person layers cut out on alpha checkerboards.](/images/work/sis-persons-layer-layout.png)
-
-## Designing incomplete truth
-
-"No result" is not the same state as "I cannot currently see the whole library." The product keeps those conditions separate because collapsing them would turn missing evidence into a product claim. Every condition below is worded for its cause and offers a way out; the rules behind that split, and the process that applied them, are the subject of [A Map and a Canon](/research/visual-search-workbench-process/).
-
-No folder chosen is the start state, held apart from an empty result for the reason Screen 1 gives.
-
-No matches means the query ran across the chosen folders and found nothing near. The interface still shows what was searched, so the person can widen the folders or change the query.
-
-Model unavailable means the local model is absent or unreadable. Search names the missing package. A bare "no results" would blame the photos for a missing file.
-
-Partial library covers an index interrupted before it finished and metadata that exists for only part of the collection. The affected views are scoped to what was read and say why the rest is missing.
-
-Unavailable volume or permission covers an offline disk and a folder the app was denied. Either is reported as unreachable, which is different from searched and irrelevant.
-
-Experimental marks machine-derived behaviour that is still preliminary, so it does not carry the same authority as the rest of the app.
-
-**Screen 6 — Partial-library caveat.** A warning says 312 photos were never opened because their files are on an unplugged disk, which the caveat names, so dates and places describe the rest of the library.
-
-<AsciiScreen label="Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are on Chimay, which is      │
-│   not plugged in. Dates and places describe the rest of the library,     │
-│   not all of it.                                                         │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The caveat qualifies every plot and names why the library is partial. The visible text and the VoiceOver text come from one string, so they cannot drift apart.
-
-**Screen 8 — Missing model and settings recovery.** The model panel names `/Volumes/Butter/cache/sis-coreml-export` and says that detection still works when the folder is unreadable, but search does not. Settings lists `~/Pictures/2021-iceland`, states that no photo is filtered or certified safe, and shows the off-by-default local Ollama option.
-
-<AsciiScreen label="Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option.">
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The model path and its readability are shown as separate facts. When search cannot run, the missing package is named. The one optional network hop goes to a local Ollama socket. It is off by default and named by address (127.0.0.1).
-
-## Similarity, Places, and Timeline
-
-Similarity, Places, and Timeline share one selection. Moving between them keeps it: the frame changes while the anchor does not. Each view reports how much of the selection it can show.
-
-### Similarity
-
-The Similarity badge starts at 47, matching the selected set. After the Places map selection narrows, it reads 38.
-
-The view lays the whole indexed library out as a two-dimensional map, projected by UMAP from the same embeddings that answer queries. Photos near the current results appear as thumbnails; the rest stay points. Drag pans. Shift-drag selects a region, and the selection carries into the grid below.
-
-![The Similarity map for a 2,314-photo library: a wide point cloud with a cluster of photo thumbnails outlined in blue, above select-area, zoom, and Reset view controls.](/images/work/sis-layers-umap.png)
-
-The map is drawn for selection, and its geometry stays inside what a projection can say. A UMAP layout preserves neighbourhoods rather than distances ([McInnes, Healy & Melville 2018](https://arxiv.org/abs/1802.03426)). So the surface has no axes and no distance readout, and a gap between two clusters is not a fact about the library: claims from the layout stop at local contiguity.
-
-### Places
-
-**Screen 5 — Explore: Similarity / Places / Timeline.** The first badges read Similarity 47, Places 41, and Timeline 47: only 41 of the selected photos have coordinates. The Places state then reads 38, 41, 41. It shows 41 of 1284 photos, with 1198 lacking coordinates and 45 unreadable. A 41-photo map selection outside the search results is listed last, in place order.
-
-<AsciiScreen label="Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
-│                              ↑           ↑                               │
-│            41 of the 47 selected photos have coordinates.                │
-│            The gap between those two numbers IS the finding.             │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
-│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
-│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
-│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
-│ │ 90°S └──────────────────┴──────────────────┘                         │ │
-│ │      180°W               0°              180°E                       │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
-│ Showing 41 of 1284 photos. 1198 have no coordinates, 45 could not be     │
-│ read.                                                                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
-│   not in your search results, so they are listed last rather than ranked.│
-│                                                       ( Clear region )   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The badge counts differ on purpose: 47 photos are selected, and 41 of them have coordinates. Photos without coordinates, unreadable files, and never-opened files stay separate explanations. A map selection outside the search results is listed after the ranked results and labelled unranked.
-
-### Timeline
-
-**Screen 7 — Timeline: rest, zoom, truncation.** The all-dates view spans 2019–2025 and holds 94 undated photos off the axis. A legend names each bar's date source: EXIF exposure date, file write time, or source unknown. The July 2021 zoom uses daily GMT periods. The truncated view says 3 photos dated before 1962 are off the left of the axis and offers a Before 1962 action.
-
-<AsciiScreen label="Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates                                                                │
-│ Photos by capture year                             Square-root count scale│
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │ 1284┤                                            │ │ Off the time    │ │
-│ │  722┤        ▅█                                  │ │ axis            │ │
-│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
-│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
-│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
-│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ ■ EXIF exposure date  ■ File write time  ■ Source unknown                │
-│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
-│ Photos by capture day                              Square-root count scale│
-│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
-│ Bars per   Year ○──────────● Day    Day                                  │
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
-│ │                 ╌  ╌                             │ │ axis            │ │
-│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
-│ └──────────────────────────────────────────────────┘ │      94         │ │
-│                                                      │ Undated photos  │ │
-│                                                      └─────────────────┘ │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT        │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ Photos by capture year                                                   │
-│ ┌──────────────────────────────────────────────────┐                     │
-│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
-│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
-│                                       [ Before 1962 ]                    │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-The breadcrumb records the window that was asked for. The range line states what the chart draws. Undated photos sit beside the axis with their own count. When the axis is cut, the chart says how many photos lie beyond it and offers a button that goes there.
-
-## Next to Apple Photos
-
-macOS Photos already searches by meaning: Apple's [search guide](https://support.apple.com/kn-in/guide/photos/pht64de33e5a/11.0/mac/26) covers natural-language queries, text inside images, dates, and detected people, pets, and objects. "Semantic search" alone would be a parity claim. What Photos does not offer is **visual search**: a picture as the query, and any result as the start of the next search. That is the differentiator, and the rest of the product is arranged around it.
-
-- **Image as query.** Photos search starts from words and built-in categories. Here the query can be a picture from anywhere, and any photo pivots to its visual neighbours. The Similarity map extends the same idea to the whole library at once.
-- **Folders as the corpus.** Photos can keep [referenced originals](https://support.apple.com/en-ca/guide/photos/pht1ed9b966d/mac) outside its library at the cost of managed-library features, and [separate libraries](https://support.apple.com/en-gb/guide/photos/pht211de786/mac) require switching. Here the library is the chosen folders searched together, and the index is disposable metadata beside them: deleting it changes nothing about the files.
-- **Inspectable retrieval.** Ranking is cosine nearness in one pinned, openly licensed embedding space, recorded in the product's architecture decisions, so a wrong result can be reasoned about. Photos' pipeline cannot be examined from outside.
-- **Layers out.** Photos lifts one subject as a sticker. Here segmentation writes typed, saveable alpha layers meant for composition elsewhere.
-
-Together those make the product a visual-search workbench for folders. It is aimed at people whose pictures live outside a managed library: photographers' archives, scan sets, design assets, external volumes.
-
-## Under real use
-
-Trust in the Explore surfaces comes down to how they behave in the middle of a task. Each behaviour below is held by a test.
-
-- The frame you set up survives the move. Similarity, Places, and Timeline hold their zoom and pan across tab changes. Looking at the same photos another way costs one click and no reorientation. A regression check covers tab changes.
-- A partial view says so. When files cannot be read, the plot names which disk is unreachable and how many photos that leaves out. VoiceOver speaks the caveat when it appears. Without it, a partial chart looks exactly like a complete one.
-- A selection cannot outlive what it pointed at. Changing the timeline axis clears the selection. A count on screen always refers to a range the chart draws now. A mutation check covers it.
-- Every tile arrives, or says why not. A grid of 64 results decodes four thumbnails at a time and a tile stops waiting after two seconds, so most tiles are still grey on first paint. A tile that lost its place in that queue asks again, on a spread-out backoff so the grid does not retry in lockstep, rather than staying grey for as long as it is on screen. A photo whose file is genuinely gone ends up marked unavailable. Grey means working, and a frame still claiming to work half a minute later would be lying. Fixed in 0.2.3; the retry schedule and the wiring are both held by tests.
-
-Keyboard operation and VoiceOver were designed in from the start. Every state above has spoken wording, and the partial-library caveat is announced when it appears.
-
-## Evaluation and evidence
-
-Memory and runtime were measured on an 8 GB Apple Silicon machine. Network checks found no egress of gallery data in the tested flows. Model licences were reviewed. Automated tests cover the core behaviour, and adversarial review targeted the privacy claims and the failure states.
-
-How the product was designed and reviewed, from the whole-product UX map to the rule corpus that vetted each screen, is its own article: [A Map and a Canon](/research/visual-search-workbench-process/).
-
-The app works end to end on the machine it was designed for. It has not been measured on a library larger than the test corpus, and a task-based study with users outside the review has not yet run. That study is the next step: it will show whether people beyond the review can form useful queries and read the caveats as written.
+The [release page](https://github.com/darce/visual-search-workbench) includes model licences and a `SHA256SUMS` file for checking download integrity. If you use Terminal, put that file beside the disk image and run `shasum -a 256 -c SHA256SUMS`.

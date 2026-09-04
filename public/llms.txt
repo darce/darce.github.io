@@ -9,7 +9,7 @@
 - /research/ — Index of technical writing and experiments
 
 ## Projects
-- /projects/visual-search-workbench/ — Native macOS product for semantic and visual search, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.
+- /projects/visual-search-workbench/ — A macOS app for finding and exploring photos in your own folders, with search by words or pictures and clear explanations when part of the library is missing.
 - /projects/altcontext/ — A WordPress plugin and hosted service that writes alt text from the image and the page around it, names a person only when a confirmed face backs the name, and commits nothing until a human accepts it.
 - /projects/photoshelter/ — R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.
 - /projects/workbay/ — Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
@@ -22,8 +22,9 @@
 - /research/agent-memory/ — How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
 - /research/interrogating-agent-memory/ — A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, each grounded in what the record holds.
 - /research/economics-of-agent-memory/ — A production audit shows that durable agent memory is cheap to inject and rich in reusable fixes. A controlled trial still has to measure whether it reduces token spend without lowering outcome quality.
-- /research/visual-search-workbench-process/ — Process notes from building Visual Search Workbench: inventory every screen and state before code, then hold each one against decision rules distilled from engineering and machine-learning sources.
+- /research/visual-search-workbench-process/ — A practical account of designing incomplete-data states: map the screens, review the decisions, and check the built interface against both.
 - /research/heuristics-canon/ — A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
+- /research/visual-search-workbench-screen-reference/ — Eight accessible screen drawings documenting search, exploration, missing data, and recovery in Visual Search Workbench 0.2.3.
 - /research/rotation-matrices/ — A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
 - /research/order-book/ — An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
 

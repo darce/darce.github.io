@@ -1,0 +1,299 @@
+---
+index: 8
+year: 2026
+title: 'Visual Search Workbench: Screen Reference'
+subtitle: 'Detailed interface states for version 0.2.3'
+type: 'method'
+status: 'running'
+description: 'Eight accessible screen drawings documenting search, exploration, missing data, and recovery in Visual Search Workbench 0.2.3.'
+details: 'A release-specific companion to the product story and design process, preserving the screen drawings used to check interface wording against the app source.'
+tags:
+  - Interaction Design
+  - Accessibility
+---
+
+This reference accompanies the [product story](/projects/visual-search-workbench/) and the [design process](/research/visual-search-workbench-process/). It records the detailed states for version 0.2.3, rather than serving as a step-by-step introduction.
+
+The drawings were checked against the 0.2.3 source. A test in the product repository checks quoted interface strings against their named Swift files. The screenshots in the product story show 0.2.0, before the rename from Semantic Image Search and the thumbnail changes in 0.2.3.
+
+The paths, filenames, and counts below are examples from the documented states. In particular, the missing-model screen shows recovery from an unreadable custom model folder; the downloadable app bundles its models.
+
+## 1. Cold start
+
+**Screen 1 — Cold start.**
+
+The first launch explains how to begin. It does not report zero results before a library exists.
+
+<AsciiScreen label="Screen 1, cold start: window with an empty Assets pane reading 'Photos you have matted appear here. Open a folder to get started.' beside a search pane with an Add Folder button and the line 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn.">
+
+```text
+┌─ Visual Search Workbench ────────────────────────────────────────────────┐
+│ ┌─ Assets ──────────┐ ┌────────────────────────────────────────────────┐ │
+│ │ ▾ Assets          │ │ [ Search query                      ] (Search) │ │
+│ │   Photos you have │ │ [ Add Folder… ]                                │ │
+│ │   matted appear   │ │ Choose a folder to search. Your photos stay    │ │
+│ │   here. Open a    │ │ where they are.                                │ │
+│ │   folder to get   │ ├────────────────────────────────────────────────┤ │
+│ │   started.        │ │                                                │ │
+│ │ ▸ Jobs            │ │                                                │ │
+│ └───────────────────┘ └────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 2. Indexing
+
+**Screen 2 — Indexing.**
+
+Indexing reports completed work against a total. Cancelling leaves a partial index.
+
+<AsciiScreen label="Screen 2, indexing: an Add Folder button and a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ Search query                                          ] (Search)       │
+│ [ Add Folder… ]                                                          │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 3. Semantic results
+
+**Screen 3 — Semantic results.**
+
+Results are ordered by similarity. In 0.2.3, thumbnails load four at a time, with a two-second wait limit and staggered retries. A missing file gets a permanent explanation.
+
+<AsciiScreen label="Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails — some decoded, several still placeholders waiting on a retry, and one marked Picture unavailable.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ [ red bicycle                                           ] (Search)       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ▸ Explore                                                                │
+├──────────────────────────────────────────────────────────────────────────┤
+│ red bicycle                                                              │
+│ 64 search results · nearest 64                                           │
+│  ●  ●  ▢  ●  ▢  ●    ▢ decoding; asks again on a jittered backoff        │
+│  ●  ▢  ●  ●  ●  ▢                                                        │
+│  ●  ●  ●  ×  ●  ●    × Picture unavailable                               │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 4. A photo selected, details open
+
+**Screen 4 — A photo selected, details open.**
+
+File metadata gives the reader facts to inspect alongside the search ranking. The location map uses bundled coastline data and states the area shown.
+
+<AsciiScreen label="Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map drawn from a bundled coastline, captioned 'Northern high latitudes, western hemisphere' and 'Area shown: 60.15° N–68.15° N, 25.94° W–17.94° W'; result thumbnails below.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ┌────────────────┐  IMG_4417.HEIC                                        │
+│ │                │  Selected photo · double-click to open                │
+│ │   [ preview ]  │  ▾ Photo details                                      │
+│ │                │        Size  4032 × 3024                              │
+│ │                │      Camera  Apple iPhone 13 Pro                      │
+│ └────────────────┘        Lens  26 mm f/1.5                              │
+│                          Taken  2021:07:14 18:22:00                      │
+│                            GPS  64.1466°, -21.9426°                      │
+│                                 ┌──────────────────────────┐             │
+│                                 │ ∿∿∿∿   ·   ·      ∿∿∿∿∿∿ │             │
+│                                 │  ∿∿∿─────●───────∿∿∿     │             │
+│                                 │    ∿∿∿∿∿∿· ∿∿∿∿∿∿∿       │             │
+│                                 └──────────────────────────┘             │
+│                                 Northern high latitudes, western         │
+│                                 hemisphere                               │
+│                                 Area shown: 60.15° N–68.15° N,           │
+│                                 25.94° W–17.94° W                        │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ●  ●  ●  ●  ●  ●                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 5. Explore: Similarity / Places / Timeline
+
+**Screen 5 — Explore: Similarity / Places / Timeline.**
+
+The counts describe different subsets. A location selection can include photos outside the search results; those photos are labelled and listed without a search rank.
+
+<AsciiScreen label="Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
+│                              ↑           ↑                               │
+│            41 of the 47 selected photos have coordinates.                │
+│            The gap between those two numbers IS the finding.             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
+│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
+│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
+│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
+│ │ 90°S └──────────────────┴──────────────────┘                         │ │
+│ │      180°W               0°              180°E                       │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
+│ Showing 41 of 1284 photos. 1198 have no coordinates, 45 could not be     │
+│ read.                                                                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
+│   not in your search results, so they are listed last rather than ranked.│
+│                                                       ( Clear region )   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 6. Partial-library caveat
+
+**Screen 6 — Partial-library caveat.**
+
+The warning names the unavailable drive and qualifies the whole view. Visible and VoiceOver wording come from one string.
+
+<AsciiScreen label="Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore                                                                │
+│ [ Similarity | Places | Timeline ]                                       │
+│ ⚠ 312 photos were never opened: their files are on Chimay, which is      │
+│   not plugged in. Dates and places describe the rest of the library,     │
+│   not all of it.                                                         │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 7. Timeline: rest, zoom, truncation
+
+**Screen 7 — Timeline: rest, zoom, truncation.**
+
+The timeline names its date sources, keeps undated photos off the axis with their own count, and offers a way to reach dates outside the displayed range.
+
+<AsciiScreen label="Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action.">
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates                                                                │
+│ Photos by capture year                             Square-root count scale│
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │ 1284┤                                            │ │ Off the time    │ │
+│ │  722┤        ▅█                                  │ │ axis            │ │
+│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
+│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
+│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
+│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 94 photos have no date and are not on this axis.                       │
+│ ■ EXIF exposure date  ■ File write time  ■ Source unknown                │
+│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
+│    (Gregorian).                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
+│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
+│ Photos by capture day                              Square-root count scale│
+│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
+│ Bars per   Year ○──────────● Day    Day                                  │
+│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
+│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
+│ │                 ╌  ╌                             │ │ axis            │ │
+│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
+│ └──────────────────────────────────────────────────┘ │      94         │ │
+│                                                      │ Undated photos  │ │
+│                                                      └─────────────────┘ │
+│ ⚠ 94 photos have no date and are not on this axis.                       │
+│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT        │
+│    (Gregorian).                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Photos by capture year                                                   │
+│ ┌──────────────────────────────────────────────────┐                     │
+│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
+│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
+│ └──────────────────────────────────────────────────┘                     │
+│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
+│                                       [ Before 1962 ]                    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## 8. Missing model and settings recovery
+
+**Screen 8 — Missing model and settings recovery.**
+
+Settings explains library access, model recovery, content handling, and the optional local layer-naming service. Ollama naming is off by default; when enabled, it sends small crops to a service on the same Mac.
+
+<AsciiScreen label="Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option.">
+
+```text
+┌─ Model folder ───────────────────────────────────────────────────────────┐
+│ Where the exported CLIP and MobileSAM packages live. The object detector │
+│ ships inside the app, so detection works even when this folder is        │
+│ missing; search does not.                                                │
+│                                                                          │
+│ /Volumes/Butter/cache/sis-coreml-export                                  │
+│ This folder is not readable — an unmounted disk, or models that were     │
+│ never exported there. Search will report the missing package by name.    │
+│                                                                          │
+│ ( Choose model folder… )   ( Reset to default )                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ Settings ───────────────────────────────────────────────────────────────┐
+│ Library folders                                                          │
+│   ~/Pictures/2021-iceland                              (Remove)          │
+│   + Open Folder…                                                         │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Memory                                                                   │
+│ ──────────────────────────────────────────────────────────────────────── │
+│ Models                                                                   │
+│                                                                          │
+│ Content                                                                  │
+│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
+│   depicts. This app has no explicit-content classifier, so nothing is    │
+│   filtered out and nothing is certified safe — search matches every      │
+│   indexed photo on the same terms, and a generated layer name may        │
+│   describe a photo plainly.                                              │
+│                                                                          │
+│ Local layer names                                                        │
+│   ☐ Ask local Ollama to name unsure layers                               │
+│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
+│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
+│     device.                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+</AsciiScreen>
+
+## Additional cutout screenshots
+
+These captures are from 0.2.0. They show the inspection and saving steps described in the product story.
+
+![An enlarged layer titled "cat · experimental": the cat cut out on an alpha checkerboard, above a Save this layer button and a Close button.](/images/work/sis-cat-layer.png)
+
+![A photo of three costumed people whose details show chips Person 1, Person 2, and Person 3, above four separate person layers cut out on alpha checkerboards.](/images/work/sis-persons-layer-layout.png)

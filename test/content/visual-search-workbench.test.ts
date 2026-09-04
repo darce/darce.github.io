@@ -9,6 +9,9 @@ const file = path.join(process.cwd(), 'content/projects/visual-search-workbench.
 describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
     const raw = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
     const { data, content } = matter(raw)
+    const reference = matter(fs.readFileSync(path.join(process.cwd(),
+        'content/research/visual-search-workbench-screen-reference.mdx'), 'utf8'))
+    const screenContent = reference.content
 
     it('exists with schema-valid frontmatter that sorts first', () => {
         expect(fs.existsSync(file)).toBe(true)
@@ -39,14 +42,16 @@ describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
         }
     })
 
-    it('embeds all eight ASCII screens beside captured screenshots that resolve', () => {
+    it('preserves all eight release drawings in the linked screen reference', () => {
+        expect(() => contentItemSchema.parse(reference.data)).not.toThrow()
+        expect(content).toContain('/research/visual-search-workbench-screen-reference/')
         expect(data.images ?? []).toHaveLength(0)
         // pixel screenshots landed 2026-08-27; the pending note must be gone
         expect(content).not.toMatch(/Screenshots:\s*pending/i)
         expect(content).not.toMatch(/Screens:\s*pending/i)
 
         // every inline screenshot must resolve to a real file and carry alt text
-        const inlineImages = [...content.matchAll(/!\[([^\]]*)\]\((\/images\/[^)\s]+)\)/g)]
+        const inlineImages = [...(content + screenContent).matchAll(/!\[([^\]]*)\]\((\/images\/[^)\s]+)\)/g)]
         expect(inlineImages.length).toBeGreaterThanOrEqual(6)
         for (const [, alt, src] of inlineImages) {
             expect(alt.trim().length, `${src} needs descriptive alt text`).toBeGreaterThan(20)
@@ -54,7 +59,7 @@ describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
                 `${src} must exist under public/`).toBe(true)
         }
 
-        const textFences = content.match(/```text\n[\s\S]*?\n```/g) ?? []
+        const textFences = screenContent.match(/```text\n[\s\S]*?\n```/g) ?? []
         expect(textFences).toHaveLength(8)
 
         const screens = [
@@ -102,13 +107,13 @@ describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
 
         for (const { screen, title, drawing } of screens) {
             const caption = `**Screen ${screen} — ${title}.**`
-            expect(content.split(caption)).toHaveLength(2)
+            expect(screenContent.split(caption)).toHaveLength(2)
 
-            const fenceStart = content.indexOf('```text\n', content.indexOf(caption) + caption.length)
+            const fenceStart = screenContent.indexOf('```text\n', screenContent.indexOf(caption) + caption.length)
             expect(fenceStart).toBeGreaterThanOrEqual(0)
-            const fenceEnd = content.indexOf('\n```', fenceStart + 8)
+            const fenceEnd = screenContent.indexOf('\n```', fenceStart + 8)
             expect(fenceEnd).toBeGreaterThan(fenceStart)
-            expect(content.slice(fenceStart, fenceEnd + 4)).toBe('```text\n' + drawing + '\n```')
+            expect(screenContent.slice(fenceStart, fenceEnd + 4)).toBe('```text\n' + drawing + '\n```')
         }
 
         expect(content).not.toMatch(/Figure pending/i)
@@ -125,7 +130,7 @@ describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
         // link keeps working while the number beside it quietly stops being true.
         const download = content.slice(
             content.indexOf('## Download'),
-            content.indexOf('## Problem'),
+            content.length,
         )
         // The published link is dl.darce.xyz, not the GitHub URL underneath it.
         // That redirect exists so the bytes can move — different host, different
