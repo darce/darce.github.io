@@ -42,9 +42,9 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 ## Download
 
-**[Download Visual Search Workbench 0.2.2 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later. The link resolves to the current release on GitHub, which serves the file.
+**[Download Visual Search Workbench 0.2.3 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later. The link resolves to the current release on GitHub, which serves the file.
 
-The disk image is about 298 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
+The disk image is about 295 MB. The embedding, segmentation, and detection models are inside it, so nothing is fetched on first launch and the app has no reason to open a socket.
 
 Two things to know before you download, both of which follow from this being independent work rather than a shipped commercial product:
 
@@ -391,6 +391,7 @@ Trust in the Explore surfaces comes down to how they behave in the middle of a t
 - The frame you set up survives the move. Similarity, Places, and Timeline hold their zoom and pan across tab changes. Looking at the same photos another way costs one click and no reorientation. A regression check covers tab changes.
 - A partial view says so. When files cannot be read, the plot names which disk is unreachable and how many photos that leaves out. VoiceOver speaks the caveat when it appears. Without it, a partial chart looks exactly like a complete one.
 - A selection cannot outlive what it pointed at. Changing the timeline axis clears the selection. A count on screen always refers to a range the chart draws now. A mutation check covers it.
+- Every tile arrives, or says why not. A grid of 64 results decodes four thumbnails at a time and a tile stops waiting after two seconds, so most tiles are still grey on first paint. A tile that lost its place in that queue asks again, on a spread-out backoff so the grid does not retry in lockstep, rather than staying grey for as long as it is on screen. A photo whose file is genuinely gone ends up marked unavailable. Grey means working, and a frame still claiming to work half a minute later would be lying. Fixed in 0.2.3; the retry schedule and the wiring are both held by tests.
 
 Keyboard operation and VoiceOver were designed in from the start. Every state above has spoken wording, and the partial-library caveat is announced when it appears.
 
