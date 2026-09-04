@@ -25,7 +25,7 @@ Imagine looking for a flower photo in a folder of film scans. You remember the p
 
 Visual Search Workbench makes that second path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by place or date, and save experimental cutouts for use elsewhere.
 
-I designed and built the native macOS app as independent product research. The design centres on three things: finding a starting point, following visual relationships, and understanding what the results leave out.
+I designed and built the native macOS app as independent product research. I wanted a useful result to lead to further exploration, with enough context to judge what the search might have missed.
 
 ![A search for flowers returns pink cosmos photos from a film-scan library, with one result selected for inspection.](/images/work/sis-search-layer.png)
 
@@ -45,7 +45,7 @@ These results are suggestions ordered by similarity. A high position does not pr
 
 ## Follow the pictures
 
-A useful result can lead somewhere the original query did not. Perhaps a flower photo reminds you of a trip, or its colours suggest a direction for a design. Three views let you explore those connections: **Similarity**, **Places**, and **Timeline**.
+A useful result can lead somewhere the original query did not. Perhaps a flower photo reminds you of a trip, or its colours suggest a direction for a design. You can explore those connections through **Similarity**, **Places**, and **Timeline**.
 
 **Similarity** groups visually related photos on a map. You can select a cluster and inspect its pictures in the grid. The map is a way to browse neighbourhoods; the size of a gap between clusters is not a precise measure of how different the pictures are.
 
@@ -63,15 +63,9 @@ A photo map can look convincing while leaving out most of a collection. Some fil
 
 The Places view makes the difference explicit. In one documented screen, it shows 41 of 1,284 photos: 1,198 have no coordinates and 45 could not be read. Those counts explain both what the map contains and why the rest is absent.
 
-An unavailable drive gets a more specific explanation. The app names the drive and says how many photos it could not open. That warning qualifies the dates and places on screen. VoiceOver announces the same warning, using the same wording.
+An unavailable volume gets a specific explanation. The app names the disconnected drive and says how many photos it could not open. That warning qualifies the dates and places on screen. VoiceOver announces the same warning, using the same wording.
 
-The same principle applies throughout the search journey:
-
-- **No folder chosen:** explain how to start, before showing a result count.
-- **No matches:** explain the search outcome.
-- **Partial library:** show that indexing stopped before it finished.
-- **Unavailable volume:** name the disconnected drive and the photos left out.
-- **Model unavailable:** explain which search component is missing so the person can recover.
+With no folder chosen, the app explains how to start before showing a result count. A search that returns no matches needs a different explanation from one that searched only a partial library because indexing stopped early. With the model unavailable, the app identifies the missing search component so the person can recover.
 
 Thumbnails follow this rule too. A photo that is still loading has a placeholder. A file that is gone is marked “Picture unavailable.” Waiting and failure need different explanations.
 
