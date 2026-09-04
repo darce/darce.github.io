@@ -48,7 +48,7 @@ Missing, partial, and unavailable data each get a named state. An incomplete vie
 
 ## Final product
 
-> **About the screens.** The pixel screenshots come from the 0.2.0 build (27 August 2026). The ASCII screens beside them are drawn from the shipped code. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file. The drawings are the checkable contract. The screenshots show the same surfaces as pixels. The window title in those screenshots still reads Semantic Image Search, the product's working name; the rename landed in 0.2.1, before the build below. The screenshots stay faithful to the build they came from, and the drawings track the code as it now stands, so the two disagree about the title on purpose.
+> **About the screens.** The ASCII screens are drawn from the shipped code as it stands at 0.2.3, the release linked above. A test in the product repository pins each quoted string: it must occur verbatim in the named Swift file, so a drawing that stops matching the app fails a build rather than ageing quietly. The drawings are the checkable contract. The pixel screenshots come from the 0.2.0 build (27 August 2026) and have not been retaken. Their window title still reads Semantic Image Search, the product's working name; the rename landed in 0.2.1. A screenshot is faithful to the build it came from and a drawing tracks the code as it now stands, so the two disagree on purpose — about the title, and about the thumbnail states in Screen 3, which 0.2.3 added.
 
 ![Search for "flowers" over a film-scan library: a ranked grid of pink cosmos photos, the selected photo open with its details and an experimental cutout layer, and the Similarity map expanded above the results.](/images/work/sis-search-layer.png)
 
@@ -82,30 +82,32 @@ Choose a folder, index it, and search by text or by image. Inspect a result. The
 
 ### Cold start and indexing
 
-**Screen 1 — Cold start.** Before a folder is chosen, Search says "Choose a folder to search. Your photos stay where they are." The Layers panel is empty, and no zero-result count is drawn.
+**Screen 1 — Cold start.** Before a folder is chosen, Search says "Choose a folder to search. Your photos stay where they are." Add Folder… sits directly under the query, the one way in. The left pane is Assets — the photos you have matted, each owning its layers — and it says so when it is empty rather than showing a bare frame. No zero-result count is drawn.
 
 ```text
 ┌─ Visual Search Workbench ────────────────────────────────────────────────┐
-│ ┌─ Layers ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │                   │ │ [ Search query                      ] (Search) │ │
-│ │                   │ │ Choose a folder to search. Your photos stay    │ │
-│ │                   │ │ where they are.                                │ │
-│ │                   │ ├────────────────────────────────────────────────┤ │
-│ │                   │ │                                                │ │
-│ │                   │ │                                                │ │
+│ ┌─ Assets ──────────┐ ┌────────────────────────────────────────────────┐ │
+│ │ ▾ Assets          │ │ [ Search query                      ] (Search) │ │
+│ │   Photos you have │ │ [ Add Folder… ]                                │ │
+│ │   matted appear   │ │ Choose a folder to search. Your photos stay    │ │
+│ │   here. Open a    │ │ where they are.                                │ │
+│ │   folder to get   │ ├────────────────────────────────────────────────┤ │
+│ │   started.        │ │                                                │ │
+│ │ ▸ Jobs            │ │                                                │ │
 │ └───────────────────┘ └────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-_Screen 1, cold start: window with an empty Layers panel and a search pane reading 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn._
+_Screen 1, cold start: window with an empty Assets pane reading 'Photos you have matted appear here. Open a folder to get started.' beside a search pane with an Add Folder button and the line 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn._
 
 The start state is kept apart from an empty result. A count of zero before any library exists would imply a search that found nothing. The first line also states what the app does with the files: it reads them where they sit, and it does not import or copy them.
 
-**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1284…" above a two-row photo grid.
+**Screen 2 — Indexing.** A determinate meter reports "Embedding 812 of 1284…" above a two-row photo grid. Add Folder… stays put while it runs: a job in progress is not a reason to hide the way in.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ [ Search query                                          ] (Search)       │
+│ [ Add Folder… ]                                                          │
 │ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
@@ -113,13 +115,13 @@ The start state is kept apart from an empty result. A count of zero before any l
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-_Screen 2, indexing: a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders._
+_Screen 2, indexing: an Add Folder button and a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders._
 
 The meter shows how far indexing has got and how far it has to go. Cancelling leaves a partial index, and the interface labels it partial.
 
 ### Ranked results
 
-**Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results.
+**Screen 3 — Semantic results.** This screen shows a semantic query for a red bicycle and a grid of 64 nearest results, mid-decode. Four thumbnails decode at a time and a tile stops waiting after two seconds, so on first paint most tiles are still placeholders. Each one asks again on a jittered backoff. A tile whose file is genuinely gone stops asking and says "Picture unavailable" — grey means working, and a frame still claiming to work half a minute later would be lying.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -129,13 +131,13 @@ The meter shows how far indexing has got and how far it has to go. Cancelling le
 ├──────────────────────────────────────────────────────────────────────────┤
 │ red bicycle                                                              │
 │ 64 search results · nearest 64                                           │
-│  ●  ●  ●  ●  ●  ●                                                        │
-│  ●  ●  ●  ●  ●  ●                                                        │
-│  ●  ●  ●  ●  ●  ●                                                        │
+│  ●  ●  ▢  ●  ▢  ●    ▢ decoding; asks again on a jittered backoff        │
+│  ●  ▢  ●  ●  ●  ▢                                                        │
+│  ●  ●  ●  ×  ●  ●    × Picture unavailable                               │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-_Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails._
+_Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails — some decoded, several still placeholders waiting on a retry, and one marked Picture unavailable._
 
 Results are ordered by nearness to the query. Position carries the ranking. Raw cosine scores are not shown as confidence. When nothing is near, the grid shows a "No close matches" state instead of a weakly ranked list.
 
@@ -151,7 +153,7 @@ The mode announces itself. The banner states "Results are photos visually simila
 
 Selecting a photo opens the facts behind the result. A machine ranking can be checked against what the file records.
 
-**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected; double-click opens it. The details panel shows size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00), and GPS (64.1466°, -21.9426°) above an offline mini-map.
+**Screen 4 — A photo selected, details open.** IMG_4417.HEIC is selected; double-click opens it. The details panel shows size (4032 × 3024), camera (Apple iPhone 13 Pro), lens (26 mm f/1.5), capture time (2021:07:14 18:22:00), and GPS (64.1466°, -21.9426°) above an offline mini-map. The map is drawn from the bundled coastline, and the two lines under it say where on Earth this is and how wide the window is, because a grid with no stated scale cannot be read.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -164,18 +166,22 @@ Selecting a photo opens the facts behind the result. A machine ranking can be ch
 │                          Taken  2021:07:14 18:22:00                      │
 │                            GPS  64.1466°, -21.9426°                      │
 │                                 ┌──────────────────────────┐             │
-│                                 │        ·   ·             │             │
-│                                 │      ────●───────        │             │
-│                                 │            ·             │             │
+│                                 │ ∿∿∿∿   ·   ·      ∿∿∿∿∿∿ │             │
+│                                 │  ∿∿∿─────●───────∿∿∿     │             │
+│                                 │    ∿∿∿∿∿∿· ∿∿∿∿∿∿∿       │             │
 │                                 └──────────────────────────┘             │
+│                                 Northern high latitudes, western         │
+│                                 hemisphere                               │
+│                                 Area shown: 60.15° N–68.15° N,           │
+│                                 25.94° W–17.94° W                        │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  ●  ●  ●  ●  ●  ●                                                        │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-_Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map, result thumbnails below._
+_Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map drawn from a bundled coastline, captioned 'Northern high latitudes, western hemisphere' and 'Area shown: 60.15° N–68.15° N, 25.94° W–17.94° W'; result thumbnails below._
 
-Each label sits with its value. The panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule and never fetches tiles.
+Each label sits with its value. The panel keeps its open or closed state as the selection changes. The mini-map draws an offline graticule and the bundled Natural Earth coastline, and never fetches tiles. Where the shipped coastline fails to load it says so, because a blank shoreline reads as an inland photograph.
 
 ### Layers
 
