@@ -12,6 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
     const masthead = headerData[0]?.metaData
+    const [role, ...practices] = masthead?.subtitle?.split('\n') ?? []
 
     return (
         <header className={`${styles.header} ${className || ''}`}>
@@ -19,8 +20,12 @@ const Header: React.FC<HeaderProps> = ({ headerData, className }) => {
                 <Link href="/" className={styles.masthead}>
                     <h1 className={styles.title}>
                         {masthead?.title}</h1>
-                    <p className={styles.subtitle}
-                    >{masthead?.subtitle}</p>
+                    <p className={styles.subtitle}>
+                        <span className={styles.role}>{role}</span>
+                        {practices.length > 0 && (
+                            <span className={styles.practices}>{practices.join('\n')}</span>
+                        )}
+                    </p>
                 </Link>
 
                 <section className={styles.decoration} aria-hidden="true">
