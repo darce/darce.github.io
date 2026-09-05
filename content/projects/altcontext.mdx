@@ -1,10 +1,10 @@
 ---
 index: 3
 year: 2026
-title: 'AltContext: Alt Text for WordPress'
-subtitle: 'Image descriptions informed by the page and reviewed by an editor'
-description: 'A WordPress tool that drafts image descriptions using the picture and its editorial context, checks names against confirmed people, and lets an editor decide what to save.'
-details: 'I designed and built AltContext to help editors add useful alt text to WordPress images. My work covers the product, review interface, description rules, hosted service, and plugin. It is in development, before public release.'
+title: 'AltContext: Recognising People in Image Descriptions'
+subtitle: 'Facial recognition and image description for richer context in WordPress'
+description: 'AltContext combines facial recognition with image description to give blind readers more context about who is pictured, with editorial review and control over site-owned identity data.'
+details: 'A WordPress product that brings confirmed identities into image descriptions. Recognition runs on Oracle Cloud Infrastructure, while the site keeps authority over names and editorial decisions. Currently in development, before public release.'
 links:
 - url: 'https://altcontext.com'
   label: 'altcontext.com'
@@ -18,64 +18,62 @@ tags:
   - React
 ---
 
-An editor adds a photograph of the founder to a company website. An image model might describe “a person in a red jacket.” The caption supplies a name, but that name could belong to someone mentioned in the article rather than the person in the picture.
+A blind reader listening to a photograph described as “a person speaking at a lectern” knows what is happening, but may still be missing the point of the picture: who is speaking. If it shows someone the reader knows, a name can make the scene more meaningful.
 
-AltContext uses the image and the information WordPress holds around it to draft alt text. It checks proposed names against people the site has confirmed, then puts the description in a queue for an editor to accept, change, or reject.
-
-I designed and built the product to make that review practical across a media library. The work is still in development, before public release. The [AltContext site](https://altcontext.com) offers early-access signup.
+AltContext combines facial recognition with image description to bring that identity into the text. It matches faces against people the site has confirmed, then uses those identities alongside the image and its page context to draft a description. An editor reviews the result before applying it in WordPress.
 
 <PullQuote>
-A name in a caption needs checking before it becomes a name in the description.
+Knowing who is in the picture can change what the picture means.
 </PullQuote>
 
-## Start with the image in its page
+## Put a name into the scene
 
-Alt text gives people a text alternative when they cannot see an image. What it needs to convey depends on why the image is there. A photograph used to identify the founder has a different purpose from the same photograph used to show a jacket. The [W3C image guidance](https://www.w3.org/WAI/tutorials/images/) explains this relationship between an image and its context.
+Consider a photograph of a familiar speaker at an event. An image model can describe the lectern, the red jacket, and the audience. Facial recognition can connect the speaker to a name in the site's roster. Together, they can produce a description that tells the reader who is speaking and what that person is doing.
 
-WordPress already holds clues to that purpose: an image title, caption, filename, and the post around it. AltContext brings those clues into the description request so an editor does not have to re-enter them for every picture.
+That combination is the core of AltContext. The roster supplies the identity; the picture supplies the scene. The post and caption can add relevant context, such as a person's role, where the image supports its use. For a blind reader, the intended benefit is a description that preserves more of the information a sighted reader might recognise immediately.
 
-Those clues can also be misleading. A caption might describe an event without describing anything visible in the photograph. The model is instructed to use the page information as reference material, check it against the picture, and leave out details that conflict with what it sees. Text inside a caption is treated as editorial data, so it is not supposed to become an instruction to the model.
+The editor establishes the roster in WordPress. Groups of faces can be associated with a person, and mistaken groupings can be corrected. Those confirmed identities give the description system a site-specific reference for deciding which names it may use.
 
-This gives the editor a more informed starting point. It still leaves a judgment to make: does the proposed description serve this image on this page?
+A name in the surrounding text is not sufficient on its own. The system checks whether a recognised face supports it before retaining it in the description. Recognition can still be wrong, so a proposed identity remains part of the editor's review.
 
-## Review a draft before saving it
+## Make the description useful on the page
 
-The review workflow lets an editor inspect generated drafts before applying them to the library. The editor can accept a description or change the wording before saving. Accepting saves the description to the WordPress image; editing saves the editor's version. In this review workflow, generating a draft and applying it are separate actions.
+Identity is useful when it helps explain the picture's purpose. A speaker's name may matter in an event report, while a photograph used to demonstrate the cut of a jacket may need different wording. The [W3C image guidance](https://www.w3.org/WAI/tutorials/images/) describes how an image's use and context shape its text alternative.
 
-The editor can also mark an image as decorative. That choice is appropriate when the image adds no information that needs a text alternative, such as a purely ornamental flourish. Decorative images use an empty alt attribute, as [W3C recommends](https://www.w3.org/WAI/tutorials/images/decorative/). AltContext keeps that deliberate choice separate from an image still waiting for a description, and does not send decorative images to the model.
+AltContext draws on information WordPress already holds, including the image caption and the post around it. The model is instructed to check that material against the picture. It should not turn an unrelated sentence from the article into something supposedly visible in the image.
 
-The review interface includes a character count and a suggested length of 125 characters. That suggestion does not block saving, and [WCAG does not set that limit](https://www.w3.org/TR/WCAG22/#non-text-content). The editor still has to decide how much wording the image's purpose requires.
+In the review workflow, the editor reads the proposed description and checks the identity, visible details, and relevance to the page. The editor can accept the draft or change its wording before saving it to the WordPress image. Generating a draft and applying it are separate actions in this workflow.
 
-An optional mode also saves a longer description alongside the alt text. Keeping these separate gives an editor room for detail without making every image alternative lengthy.
+An optional mode saves a longer description alongside the alt text, giving the editor room for detail. The suggested 125-character length for alt text is advisory; [WCAG sets no such limit](https://www.w3.org/TR/WCAG22/#non-text-content). Images that serve only a decorative purpose can be marked accordingly and skip description generation, using the [empty alternative W3C recommends](https://www.w3.org/WAI/tutorials/images/decorative/).
 
-## Check who is in the picture
+## Alongside PhotoShelter PeopleID
 
-A person's identity needs more support than a plausible sentence. AltContext maintains a roster of people the site has confirmed. In the People screen, an editor can review the groups of faces associated with each name and correct groups that have been combined or separated incorrectly.
+[PhotoShelter PeopleID](https://go.photoshelter.com/brands/blog/facial-recognition-auto-tagging-peopleid/) is a relevant comparison. It matches faces to reference headshots and supplied metadata, helping teams tag and find people in a digital asset library. PhotoShelter also offers [AI-generated alt text](https://go.photoshelter.com/brands/blog/photoshelter-launches-new-ai-generated-alt-text-capability-makes-visual-content-more-accessible/), with options to apply suggestions automatically or review them first.
 
-That roster limits which names a description may use. The system checks whether a recognised face supports a proposed name before retaining it in the text. A name supplied only by the caption is meant to be removed.
+AltContext focuses this work on the WordPress publishing workflow: using confirmed identities as input to a description of the scene, with blind readers as a primary audience. The site's own roster and editorial context inform the text, and the editor can correct the identity or wording where the image is published.
 
-Recognition can still be wrong. The automated check gives the editor evidence to review; it cannot settle whether the person was identified correctly. A name that passes the check still needs scrutiny in the draft.
+PhotoShelter's published descriptions do not explain how recognised identities feed into its generated alt text. A direct comparison would need to examine the resulting descriptions and the effort required to correct them. The documented distinction here is AltContext's focus on bringing site-confirmed identities into the WordPress description workflow.
 
-## Keep existing work available
+## Keep control of identity data
 
-Image recognition and description generation run on a hosted service. The plugin sends images for processing, so this product has a different privacy boundary from an app that works entirely on the editor's computer.
+Facial recognition creates sensitive data about the people in a collection. Control over that data is part of the product design: the site should retain authority over names and editorial decisions, and be able to inspect and remove the recognition data held by the service.
 
-If the service becomes unavailable, the plugin cannot produce new results. Saved descriptions and locally stored results remain available.
+AltContext's recognition and description services run on Oracle Cloud Infrastructure (OCI). Images leave the WordPress host for that processing. WordPress remains the source of record for names and editorial corrections. The hosted service handles recognition and stores the biometric representations used to compare faces.
 
-A separate connection to a third-party model provider was built for evaluation. That connection is disabled by default and requires an explicit opt-in before images are sent through it.
+Database access rules keep each site's recognition records separate. Retention settings let the operator choose how hosted recognition data is kept. Data is retained by default; disposal after synchronisation and on-demand purge are available alternatives. Exports let the operator inspect recognition records, and export and purge operations leave an audit trail. Purging recognition data does not erase the audit records themselves.
 
-## What the model comparisons showed
+The naming controls also let the site withhold a person's name from generated text. A separate connection to an external model provider, built for evaluation, is disabled unless explicitly enabled on the server. These controls explain where processing happens and give the operator concrete ways to manage retained data.
 
-Model comparisons tested whether descriptions used the names supplied in the context. Some candidates produced fluent wording but omitted names. Later evaluations showed that smaller models could preserve them too, so model size alone was not a useful way to choose.
+GDPR compliance depends on how the service is operated as well as how it is built. Biometric identification has [additional legal requirements](https://www.edpb.europa.eu/sme/be-compliant/process-personal-data-lawfully_en), including an applicable basis for processing sensitive data. Hosting on OCI does not itself establish compliance: [Oracle shares responsibility with the application operator](https://www.oracle.com/a/ocom/docs/corporate/oci-gdpr-updated.pdf). The controls described here are evidence of the implementation, not a completed legal assessment or a claim of full data sovereignty.
 
-These comparisons helped assess a specific behaviour. Including an expected name does not establish that a model can reject a false one, describe unfamiliar images reliably, or produce useful alt text across a whole website.
+If the service becomes unavailable, new recognition and descriptions must wait. Saved descriptions and locally stored results remain available in WordPress, so existing editorial work does not depend on a live recognition request.
 
-An early comparison also exposed a more subtle problem. One draft repeated a caption's claim about a research residency, adding background that could not be seen in the photograph. That example led to clearer instructions about describing the image and avoiding unsupported background information.
+## What the evidence shows
 
-## What still needs evidence
+Model comparisons have checked whether descriptions preserve the identities supplied in the context. Some candidates omitted names despite producing fluent sentences; later evaluations showed that smaller models could retain them. An early draft also repeated a caption's background claim about a research residency, prompting clearer rules about what belongs in a description of the image.
 
-Automated checks cover the plugin and service, including accessibility checks on the admin interface. The screens were also reviewed against a written inventory of their actions and states, using the [process described here](/research/visual-search-workbench-process/). These checks help catch implementation defects, but they cannot establish whether the descriptions are useful to the people reading them.
+These tests examine specific behaviours. They do not establish whether a blind reader receives the right context, or whether an editor reliably catches an incorrect identity. Those questions need evaluation with the people using the descriptions and the review workflow.
 
-A useful evaluation needs to examine both kinds of identity error: keeping a name that does not belong in the picture, and inventing one when none was supplied. A score for including expected names cannot answer either question on its own.
+Automated checks cover the plugin and service, including accessibility checks on the admin interface. The screens have also been reviewed against a written inventory of their actions and states, using the [process described here](/research/visual-search-workbench-process/).
 
-The product also needs evidence from use. Can an editor spot a wrong description, correct a mistaken identity, and understand what will be saved? Do the descriptions give people who rely on alt text the information they need? The model comparisons and automated interface checks do not answer those questions.
+The product is in development, before public release. The [AltContext site](https://altcontext.com) offers early-access signup.
