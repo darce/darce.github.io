@@ -8,11 +8,11 @@ const footerPath = path.join(process.cwd(), 'content/footer/footer.mdx')
 const seoPath = path.join(process.cwd(), 'lib/seo.ts')
 const workPath = path.join(process.cwd(), 'pages/work.tsx')
 
-describe('site identity (Product Engineer)', () => {
-    it('masthead subtitle names the role and its two practices', () => {
+describe('site identity (Product Designer & Design Technologist)', () => {
+    it('masthead subtitle names the role and practices', () => {
         const raw = fs.readFileSync(mastheadPath, 'utf8')
         const { data } = matter(raw)
-        expect(data.subtitle).toBe('Product Engineer\nA11y, Design Tech')
+        expect(data.subtitle).toBe('Product Designer & Design Technologist\nProduct R&D, prototyping, accessibility')
     })
 
     it('footer is utility chrome, not a second bio', () => {
@@ -48,16 +48,16 @@ describe('site identity (Product Engineer)', () => {
         expect(missing).toEqual([])
     })
 
-    it('does not retain the two-headed identity string', () => {
-        const retired = ['Product Designer & Design', 'Technologist'].join(' ')
-        expect(fs.readFileSync(mastheadPath, 'utf8')).not.toContain(retired)
-        expect(fs.readFileSync(footerPath, 'utf8')).not.toContain(retired)
-        expect(fs.readFileSync(seoPath, 'utf8')).not.toContain(retired)
+    it('masthead and search metadata agree on the role', () => {
+        const role = 'Product Designer & Design Technologist'
+        expect(fs.readFileSync(mastheadPath, 'utf8')).toContain(role)
+        expect(fs.readFileSync(seoPath, 'utf8')).toContain(role)
+        expect(fs.readFileSync(seoPath, 'utf8')).not.toContain('Product Engineer')
     })
 
     it('work metadata uses the current role and product name', () => {
         const raw = fs.readFileSync(workPath, 'utf8')
-        expect(raw).toContain('Product engineering work by Daniel Arcé')
+        expect(raw).toContain('Product design and design technology work by Daniel Arcé')
         expect(raw).toContain('Visual Search Workbench')
         expect(raw).not.toContain('Product design and design-technology')
         expect(raw).not.toContain('Semantic Image Search')

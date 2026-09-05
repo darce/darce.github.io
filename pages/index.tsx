@@ -9,13 +9,17 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-export const FEATURED_SLUGS = ['visual-search-workbench', 'altcontext', 'photoshelter', 'workbay']
+export const FEATURED_SLUGS = ['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc']
 
 export const FEATURED_METRICS: Record<string, string> = {
     'visual-search-workbench': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
     altcontext: 'WordPress alt text generated from the image and its editorial context, with a name admitted only when a confirmed face backs it and nothing written until a person accepts the draft.',
     photoshelter: 'Workflow prototyping that exposed integration constraints before production work, plus a WCAG audit and remediation on contracts that required demonstrated compliance.',
-    workbay: 'Cross-agent workflow state and adjacent design tooling that stores interaction structure as versioned data before implementation.',
+    msnbc: 'Helped take a dedicated video experience from concept through working prototypes to launch in six months, collaborating across internal teams and external partners.',
+}
+
+const FEATURED_TITLES: Record<string, string> = {
+    msnbc: 'MSNBC: Video Platform Prototyping & Launch',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -116,7 +120,7 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                 </span>
                                                 <div className={styles.projectText}>
                                                     <h3 className={styles.projectTitle}>
-                                                        {project.metaData.title}
+                                                        {FEATURED_TITLES[project.slug] ?? project.metaData.title}
                                                     </h3>
                                                     <p className={styles.projectMeta}>
                                                         {project.metaData.subtitle}

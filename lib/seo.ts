@@ -2,7 +2,7 @@ import siteMeta from './siteMeta.json'
 
 export const SITE_URL = 'https://darce.xyz'
 export const SITE_NAME = 'Daniel Arcé'
-export const SITE_TITLE = 'Daniel Arcé — Product Engineer'
+export const SITE_TITLE = 'Daniel Arcé — Product Designer & Design Technologist'
 export const SITE_DESCRIPTION = siteMeta.description
 
 export const personJsonLd = {
@@ -10,7 +10,7 @@ export const personJsonLd = {
     '@type': 'Person',
     name: 'Daniel Arcé',
     url: SITE_URL,
-    jobTitle: 'Product Engineer',
+    jobTitle: 'Product Designer & Design Technologist',
     description: SITE_DESCRIPTION,
     email: 'mailto:daniel.arce@gmail.com',
     sameAs: [
