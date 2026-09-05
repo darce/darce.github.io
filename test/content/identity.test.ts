@@ -12,7 +12,7 @@ describe('site identity (Product Designer & Design Technologist)', () => {
     it('masthead subtitle names the role and practices', () => {
         const raw = fs.readFileSync(mastheadPath, 'utf8')
         const { data } = matter(raw)
-        expect(data.subtitle).toBe('Product Designer & Design Technologist\nProduct R&D, prototyping, accessibility')
+        expect(data.subtitle).toBe('Product\u00a0Designer\u00a0& Design\u00a0Technologist\nProduct R&D, prototyping, accessibility')
     })
 
     it('footer is utility chrome, not a second bio', () => {
@@ -50,7 +50,7 @@ describe('site identity (Product Designer & Design Technologist)', () => {
 
     it('masthead and search metadata agree on the role', () => {
         const role = 'Product Designer & Design Technologist'
-        expect(fs.readFileSync(mastheadPath, 'utf8')).toContain(role)
+        expect(fs.readFileSync(mastheadPath, 'utf8').replace(/\u00a0/g, ' ')).toContain(role)
         expect(fs.readFileSync(seoPath, 'utf8')).toContain(role)
         expect(fs.readFileSync(seoPath, 'utf8')).not.toContain('Product Engineer')
     })
