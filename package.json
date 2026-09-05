@@ -7,7 +7,7 @@
         "test": "vitest run",
         "pretest": "npm run images",
         "test:watch": "vitest",
-        "test:a11y": "vitest run --testPathPattern=a11y",
+        "test:a11y": "vitest run test/a11y",
         "images": "node scripts/generate-image-variants.js",
         "predev": "npm run images",
         "dev": "next dev",

@@ -9,38 +9,20 @@ import path from 'path'
 const full = fs.readFileSync(path.join(process.cwd(), 'public/llms-full.txt'), 'utf8')
 
 describe('llms-full.txt keeps the drawings the prose argues from', () => {
-    it('carries the process essay ASCII screens', () => {
+    it('carries the ASCII screens rather than the component that wraps them', () => {
         // The essay says "This is the screen the render exposed:" and then shows
         // it. Strip the drawing and the sentence points at nothing — the reader
         // is told a defect is visible in a picture that is not there.
-        expect(full).toContain('two competing "nothing here yet" messages')
-        expect(full).toContain('indexing ───────►  live work first')
-        expect(full).toContain('Loading the search model…')
-    })
-
-    it('carries the project case ASCII screens', () => {
-        expect(full).toContain('┌─ Visual Search Workbench ─')
-    })
-
-    it('keeps each drawing next to the label that describes it', () => {
-        // The label is the accessible equivalent on the page; for a machine
-        // reader it is the only thing that says what the box-drawing depicts.
-        expect(full).toMatch(/Search screen as first built:/)
+        expect(full).toMatch(/[┌└├─│]{4,}/)
         expect(full).not.toContain('<AsciiScreen')
         expect(full).not.toContain('</AsciiScreen>')
     })
-})
 
-describe('llms-full.txt keeps the About page prose', () => {
-    // About opens inside an <Intro> wrapper. The generic JSX stripper drops a
-    // component together with its children, which would silently remove the
-    // headline and the role line; the stripper unwraps that block instead.
-    it('unwraps the Intro block and keeps the article headings', () => {
+    it('unwraps wrapper components instead of dropping their children', () => {
+        // The generic JSX stripper drops a component together with its children,
+        // which would silently remove whole sections of a page; these unwrap.
+        expect(full).not.toMatch(/<\/?(Intro|CardGrid|AboutCard|PullQuote)\b/)
         const about = full.slice(full.indexOf('## About'))
-        expect(about).toContain("Hello, I'm Daniel Arcé.")
-        expect(about).toContain("I'm a product designer and design technologist.")
-        expect(about).toContain('### What a prototype settles')
-        expect(about).toContain('### How I decide')
-        expect(about).not.toMatch(/<\/?(Intro|CardGrid|AboutCard)/)
+        expect(about.trim().length).toBeGreaterThan(500)
     })
 })

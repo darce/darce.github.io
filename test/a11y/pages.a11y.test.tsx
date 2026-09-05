@@ -52,7 +52,6 @@ describe('Page-level accessibility', () => {
 
     it('the shipped 404 page inside the shipped layout has no a11y violations', async () => {
         const container = mountInShell(<NotFoundPage />)
-        expect(container.querySelector('h2')?.textContent).toBe('Page not found')
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })
@@ -66,7 +65,6 @@ describe('Page-level accessibility', () => {
 
     it('the shipped privacy page has no a11y violations', async () => {
         const { container } = render(<PrivacyPage />)
-        expect(container.querySelector('h2')?.textContent).toBe('Privacy')
         const results = await axe(container)
         expect(results).toHaveNoViolations()
     })

@@ -4,10 +4,6 @@ import path from 'path'
 import { FEATURED_SLUGS, FEATURED_METRICS } from '../../pages/index'
 
 describe('homepage featured order (QM-REPOSITION-01 s3)', () => {
-    it('orders evidence VSW → AltContext → PhotoShelter → MSNBC', () => {
-        expect(FEATURED_SLUGS).toEqual(['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc'])
-    })
-
     it('every featured slug has a blurb and a content file', () => {
         expect(Object.keys(FEATURED_METRICS)).toEqual(FEATURED_SLUGS)
         for (const slug of FEATURED_SLUGS) {

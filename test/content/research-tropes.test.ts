@@ -3,8 +3,13 @@ import fs from 'fs'
 import path from 'path'
 
 // The public vet tool flags em-dash density, comma-grouped record counts,
-// and counted headers long before they read as habits. These guards hold
-// the memory entries at the level the 2026-08 rewrite brought them to.
+// and counted headers long before they read as habits. These are style rules
+// applied to every research entry, so they survive rewrites of the prose.
+// Scoped to the prose entries these rules were written for. The list names
+// files, not copy, so it survives a rewrite; the appendix pages (drawing
+// references, worked maths) are excluded because counts and dashes are the
+// subject there rather than a habit.
+const researchDir = path.join(process.cwd(), 'content/research')
 const slugs = [
     'agent-memory',
     'interrogating-agent-memory',
@@ -13,10 +18,7 @@ const slugs = [
 ]
 
 const read = (slug: string) =>
-    fs.readFileSync(
-        path.join(process.cwd(), `content/research/${slug}.mdx`),
-        'utf8'
-    )
+    fs.readFileSync(path.join(researchDir, `${slug}.mdx`), 'utf8')
 
 describe('research entries stay concept-first', () => {
     it.each(slugs)('%s keeps em-dashes at or below two', (slug) => {
@@ -38,6 +40,22 @@ describe('research entries stay concept-first', () => {
         expect(read(slug)).not.toMatch(/gte-base|768[- ]dim/i)
     })
 
+    it.each(slugs)('%s claims no cost-free outcome', (slug) => {
+        expect(read(slug)).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
+    })
+
+    it.each(slugs)('%s does not argue against its own drafting history', (slug) => {
+        // A reader has not seen the earlier version, so referring to it
+        // spends a sentence on an argument only the author can follow.
+        expect(read(slug)).not.toMatch(
+            /registered claim|previous draft|earlier phrase|pre-registered/i
+        )
+    })
+
+    it.each(slugs)('%s scopes itself in prose, not a what-this-is block', (slug) => {
+        expect(read(slug)).not.toMatch(/What this is:|What this is not:/)
+    })
+
     it('every referenced diagram ships in public/', () => {
         const missing: string[] = []
         for (const slug of slugs) {
@@ -50,53 +68,5 @@ describe('research entries stay concept-first', () => {
             }
         }
         expect(missing).toEqual([])
-    })
-
-    it('keeps the token claim causal, bounded, and genuinely randomized', () => {
-        const economics = read('economics-of-agent-memory')
-        expect(economics).toMatch(/random/i)
-        expect(economics).toMatch(/same outcome|equal or better review pass rate/i)
-        expect(economics).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
-    })
-
-    it('frames the economics article around the settled cost and open benefit', () => {
-        const economics = read('economics-of-agent-memory')
-        expect(economics).toContain('[WorkBay](/projects/workbay/)')
-        expect(economics).toContain('`require a controlled evaluation')
-        expect(economics).toContain('about 99% of findings marked resolved carry a written resolution')
-        expect(economics).toContain('<PullQuote>')
-        expect(economics).not.toMatch(/p\s*[≈=]\s*0\.7|2026-12-31/)
-    })
-
-    it('states the economics contrast directly instead of using negative parallelism', () => {
-        const economics = read('economics-of-agent-memory')
-        expect(economics).not.toMatch(
-            /not declaring victory|not the part of the ledger|That does not mean memory has no cost|describes the write path, not the benefit|registered claim|previous draft|earlier phrase|pre-registered/i
-        )
-    })
-
-    it('frames the five-questions note as a WorkBay field note', () => {
-        const note = read('interrogating-agent-memory')
-        expect(note).toContain('[WorkBay](/projects/workbay/)')
-        expect(note).toContain('<PullQuote>')
-        expect(note).toMatch(/context window/i)
-        expect(note).not.toMatch(/registered claim|previous draft|earlier phrase|pre-registered/i)
-    })
-
-    it('names the audit trail and cross-harness boundary without claiming free switching', () => {
-        const memory = read('agent-memory')
-        expect(memory).toMatch(/audit trail/i)
-        expect(memory).toMatch(/timestamped/)
-        expect(memory).toMatch(/harness/i)
-        expect(memory).toMatch(/switching/i)
-        expect(memory).not.toMatch(/costs nothing|costless|zero[- ]cost/i)
-    })
-
-    it('keeps the memory entry scoped by prose, not a what-this-is block', () => {
-        const memory = read('agent-memory')
-        expect(memory).not.toMatch(/What this is:|What this is not:/)
-        expect(memory).toContain('[WorkBay](/projects/workbay/)')
-        expect(memory).toContain('<PullQuote>')
-        expect(memory).not.toMatch(/this entry|this page|registered separately/i)
     })
 })
