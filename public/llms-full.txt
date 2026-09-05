@@ -4,31 +4,33 @@ Product designer and design technologist who designs and builds accessible softw
 ## About
 Hello, I'm Daniel Arcé.
 
-I'm a product designer and design technologist. I work from early product questions through interaction design, functional prototypes, and production, with accessibility built into those decisions.
+I work in product design, from early ideas and working prototypes through to launch. My background in interactive media and front-end development lets me contribute to both the experience and the software behind it.
 
-### What a prototype settles
+### Working with prototypes
 
-My background is in interactive media and front-end development. That experience lets me turn a proposed interaction into something a team can try, question, and refine. A working prototype shows what an interaction costs to build and how much work it leaves to the person using it. A description of the interaction settles neither.
+I build prototypes so a team can try a proposed flow and compare alternatives. Using real content lets us check how the layout handles long titles or images in different proportions. I also use these prototypes to explore details such as loading and keyboard navigation with the people who will build and maintain the product.
 
-### Two products of my own
+### Independent products
 
-Both show a person what a model made of a picture. [Visual Search Workbench](/projects/visual-search-workbench/) searches the photo folders you choose, by words or by a reference picture, so you can begin with an image you like and follow the collection toward an idea you cannot yet name. [AltContext](/projects/altcontext/) matches faces against a roster the site has confirmed, so a description can name who is at the lectern rather than report an anonymous figure. That gives blind readers the recognition a sighted reader gets in an instant, and it gives every description on the site a name that has been checked. In each, the software proposes and the person accepts, changes, or refuses.
+[Visual Search Workbench](/projects/visual-search-workbench/) is a macOS app I'm developing for exploring photo collections. You can search with words or start with a picture you like, then follow similar images to find a direction for a creative project. It searches folders on your Mac and connected drives, with processing kept local.
+
+[AltContext](/projects/altcontext/) combines facial recognition with image description to give blind readers more context about who is pictured. In a photograph of a band performing, for example, a description could name the singer as well as describe the scene. It uses identities confirmed by the publisher, with descriptions reviewed in WordPress. Processing runs on Oracle Cloud Infrastructure, with controls to export or delete the site's hosted recognition data.
 
 ### Bringing the work to launch
 
-At [PhotoShelter](/projects/photoshelter/), I combined product R&D with accessibility work on a large digital-asset-management platform. A workflow prototype exposed integration problems before production development, while my WCAG audit and remediation work helped address the requirements of enterprise customers. The case study gives the figures and the evidence behind them.
+At [PhotoShelter](/projects/photoshelter/), I combined product R&D with accessibility work on a large platform for managing digital media. A workflow prototype exposed integration problems before production development. I also audited the interface against WCAG accessibility guidelines and worked on fixes to meet enterprise customers' requirements.
 
-At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition to launch in six months. I proposed collapsible panes that kept the player, the conversation around it, and the rest of the coverage on one screen, so a viewer could follow comments and choose the next clip without stopping playback. That layout is ordinary now. It was not in 2013, when I proposed it.
+At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition to launch in six months, working with the internal team and external vendors. I proposed collapsible panes so viewers could read comments and browse coverage while the video kept playing, then carried those interactions through working prototypes into production.
 
-### How I decide
+### How I approach decisions
 
-I write the constraints down before the build starts. Accessibility enters the plan alongside the feature, not as an audit afterwards. Deterministic tests go in at the same time, and they steer what gets built next: a check I cannot write yet marks a feature I have not defined yet.
+During planning, I work through accessibility requirements and the behaviour a feature needs to support. I record those decisions and use automated checks to catch regressions as the implementation changes.
 
-I maintain [Heuristics Canon](/research/heuristics-canon/), a set of rules tied to published sources, so a decision can point at a rule and at the book behind it. [WorkBay](/projects/workbay/) puts that prior work in front of the coding agents I direct, so an implementation starts from what the project already settled rather than from a blank page.
+I maintain [Heuristics Canon](/research/heuristics-canon/), a collection of principles drawn from published work on design and software. I use it when reviewing a proposed solution and looking for alternatives. [WorkBay](/projects/workbay/) keeps project decisions and review findings available across sessions with AI coding tools, so I can continue the work without reconstructing its history.
 
 ### Get in touch
 
-I'm interested in senior and lead product-design roles where I can help define a new experience, work closely with the people building it, and carry it through delivery.
+I'm interested in senior and lead product design roles where I can stay involved from early exploration through delivery.
 
 [Email me](mailto:daniel.arce@gmail.com) about a role or a project you would like to discuss.
 

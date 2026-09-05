@@ -18,7 +18,7 @@ describe('about page reading flow', () => {
         expect(container.querySelector('h2')?.textContent).toBe("Hello, I'm Daniel Arcé.")
         expect(container.querySelector('figure img')?.getAttribute('alt')).toBe('Daniel Arcé, portrait by Liam Maloney')
         const intro = container.querySelector('h2')?.parentElement
-        expect(intro?.querySelector('p')?.textContent).toMatch(/^I'm a product designer and design technologist\./)
+        expect(intro?.querySelector('p')?.textContent).toMatch(/^I work in product design,/)
         expect(container.textContent).not.toMatch(/product engineer/i)
     })
 
@@ -26,10 +26,10 @@ describe('about page reading flow', () => {
         const container = mount()
         expect(Array.from(container.querySelectorAll('h2, h3')).map(h => h.textContent)).toEqual([
             "Hello, I'm Daniel Arcé.",
-            'What a prototype settles',
-            'Two products of my own',
+            'Working with prototypes',
+            'Independent products',
             'Bringing the work to launch',
-            'How I decide',
+            'How I approach decisions',
             'Get in touch',
         ])
         expect(container.querySelectorAll('h4, h5, h6')).toHaveLength(0)
