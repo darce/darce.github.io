@@ -9,5 +9,5 @@ dependencies = []
 package = false
 
 [tool.workbay.remote_test]
-runner_commands = ["npm", "npx", "node"]
+runner_commands = ["npm", "make"]
 runner_selecting_wrappers = ["npx"]

@@ -8,25 +8,25 @@ I work in product design, from early ideas and working prototypes through to lau
 
 ### Working with prototypes
 
-I build prototypes so a team can try a proposed flow and compare alternatives. Using real content lets us check how the layout handles long titles or images in different proportions. I also use these prototypes to explore details such as loading and keyboard navigation with the people who will build and maintain the product.
+I build prototypes so a team can try a proposed flow and compare alternatives. Often, seeing a low-fidelity prototype can inform engineering solutions that prevent expensive mistakes down the road. Higher-fidelity prototypes present interactions that can be validated, and developers get a better feel of what designers intend to build in a way that static documentation cannot.
 
 ### Independent products
 
-[Visual Search Workbench](/projects/visual-search-workbench/) is a macOS app I'm developing for exploring photo collections. You can search with words or start with a picture you like, then follow similar images to find a direction for a creative project. It searches folders on your Mac and connected drives, with processing kept local.
+[Visual Search Workbench](/projects/visual-search-workbench/) is a macOS app I'm developing for exploring photo collections. You can search with words, or start with a picture you like, then follow similar images to find a direction for a creative project. It searches folders on your Mac, with all processing kept local; nothing gets uploaded anywhere.
 
-[AltContext](/projects/altcontext/) combines facial recognition with image description to give blind readers more context about who is pictured. In a photograph of a band performing, for example, a description could name the singer as well as describe the scene. It uses identities confirmed by the publisher, with descriptions reviewed in WordPress. Processing runs on Oracle Cloud Infrastructure, with controls to export or delete the site's hosted recognition data.
+[AltContext](/projects/altcontext/) combines facial recognition with image description to generate captions with context about who is pictured. In a photograph of a band performing, for example, a description could name the singer as well as describe the scene. It uses identities confirmed by the publisher, with descriptions reviewed in a WordPress admin page. Processing runs on Oracle Cloud Infrastructure (it's not yet practical to describe images locally), with controls to delete the site's hosted recognition data. Publishers maintain control of their data.
 
 ### Bringing the work to launch
 
-At [PhotoShelter](/projects/photoshelter/), I combined product R&D with accessibility work on a large platform for managing digital media. A workflow prototype exposed integration problems before production development. I also audited the interface against WCAG accessibility guidelines and worked on fixes to meet enterprise customers' requirements.
+At [PhotoShelter](/projects/photoshelter/), I combined product R&D with accessibility work on a large platform for managing digital media. A workflow prototype exposed integration problems before production development. I audited the interface against WCAG accessibility guidelines and worked on fixes to meet enterprise customers' requirements.
 
-At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition to launch in six months, working with the internal team and external vendors. I proposed collapsible panes so viewers could read comments and browse coverage while the video kept playing, then carried those interactions through working prototypes into production.
+At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition to launch in six months, working with the internal team and external vendors. Though video content interfaces that combine a social interactivity axis are common today, there were few examples to guied us back then. One soluition I prototyped were collapsible panes so viewers could read comments and browse coverage while the video kept playing, then iterated those interactions through working front-end prototypes to help define backend requirements into production.
 
-### How I approach decisions
+### Support tools in the age of A.I. prototyping
 
-During planning, I work through accessibility requirements and the behaviour a feature needs to support. I record those decisions and use automated checks to catch regressions as the implementation changes.
+I maintain [WorkBay](/projects/workbay/) keeps project decisions and review findings available across sessions with AI coding tools. The main advantage is avoiding vendor lock-in, I can seamlessly switch a session from Codex, Claude, Grok, etc. WorkBay also has a [semantic search](/research/agent-memory/) feature that surfaces previous failures and design decisions, and expands the context during planning sessions [well beyond the immediate task horizon](/research/interrogating-agent-memory/).
 
-I maintain [Heuristics Canon](/research/heuristics-canon/), a collection of principles drawn from published work on design and software. I use it when reviewing a proposed solution and looking for alternatives. [WorkBay](/projects/workbay/) keeps project decisions and review findings available across sessions with AI coding tools, so I can continue the work without reconstructing its history.
+Another project I upkeep is [Heuristics Canon](/research/heuristics-canon/), a collection of principles drawn from published work on design and software. It's proven helpful when reviewing a proposed solution and looking for alternatives. 
 
 ### Get in touch
 
@@ -178,7 +178,13 @@ These tests examine specific behaviours. They do not establish whether a blind r
 
 Automated checks cover the plugin and service, including accessibility checks on the admin interface. The screens have also been reviewed against a written inventory of their actions and states, using the [process described here](/research/visual-search-workbench-process/).
 
-The product is in development, before public release. The [AltContext site](https://altcontext.com) offers early-access signup.
+## Walk through the review yourself
+
+The review step can be tried in a [guided walkthrough inside the demo WordPress site](https://demo.altcontext.com/wp-admin/admin.php?page=alt-context-dashboard#/guided-prototype). It presents one illustrative photograph with its page context, a face the site has matched to a roster entry, and a proposed description. Confirming or rejecting the identity changes the draft; editing, saving, and applying the text remain separate decisions, and an undo restores the previous value.
+
+The walkthrough is a practice copy. It does not run live recognition or description generation, and it does not write to a published page. Refreshing the browser starts a fresh practice. The demo site asks for a sign-in; early-access signup on the [AltContext site](https://altcontext.com) is the way to request one.
+
+The product is in development, before public release.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Product R&D and accessibility for a large DAM platform*
