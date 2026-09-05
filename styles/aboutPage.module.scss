@@ -1,19 +1,32 @@
 @import '../styles/vars.scss';
-@import '../styles/mixins.scss';
-
-// The About page borrows the Work / Research index grammar: an intro row,
-// then a grid of dithered cards. Grid, badge, and title metrics come from
-// SectionCards.module.scss so the three indexes share one scale.
 
 .about {
     .source {
         min-width: 0;
+        max-width: 880px;
+        font-size: 1rem;
+        line-height: 1.75;
 
-        // The only bare top-level paragraph is the portrait credit.
+        > h3,
+        > p,
+        > small {
+            max-width: 68ch;
+        }
+
+        > h3 {
+            margin: $s-x-large 0 $s-medium;
+            font-size: 1.25rem;
+            line-height: 1.4;
+        }
+
         > p {
-            margin: $s-large 0 0 0;
-            font-size: 0.8rem;
-            font-variation-settings: 'wght' 300;
+            margin: 0 0 $s-large;
+        }
+
+        > small {
+            display: block;
+            margin-top: $s-x-large;
+            font-size: 0.85rem;
         }
     }
 }
@@ -23,14 +36,10 @@
     grid-template-columns: auto minmax(0, 1fr);
     gap: $s-x-large;
     align-items: center;
-    max-width: 880px;
-    margin: 0 0 $s-x-large 0;
+    margin-bottom: $s-x-large;
 
     @media (max-width: $mobileMax) {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+        grid-template-columns: minmax(0, 1fr);
         gap: $s-large;
     }
 }
@@ -60,78 +69,12 @@
     min-width: 0;
 
     h2 {
-        margin: 0 0 $s-medium 0;
+        margin: 0 0 $s-medium;
     }
 
     p {
         margin: 0;
-        font-size: 1.2rem;
-        line-height: 2rem;
-
-        @media (max-width: $tabletMax) {
-            font-size: 1.1rem;
-            line-height: 1.8rem;
-        }
-    }
-}
-
-.card {
-    display: block;
-    height: 100%;
-    box-sizing: border-box;
-    text-decoration: none;
-    color: inherit;
-}
-
-// Static card: same border and dither as a link card, no lift or bob, so the
-// surface does not promise a click it cannot honour.
-.cardStatic {
-    position: relative;
-    border: $s-line solid;
-
-    @include themeComponent($themes) {
-        border-color: t('text');
-    }
-
-    @include ditheredShadow($hover: false);
-}
-
-// One card on the page is a link (contact); it gets the full interactive idiom.
-.cardLink {
-    @include ditheredCard;
-
-    @include themeComponent($themes) {
-        $outline-color: t('castShadow');
-        @include isFocused($outline-color);
-    }
-}
-
-.cardInner {
-    height: 100%;
-    box-sizing: border-box;
-    padding: $s-medium;
-    overflow: hidden;
-
-    @include themeComponent($themes) {
-        background-color: t('surface');
-    }
-}
-
-.cardBody {
-    margin: $s-small 0 0 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    font-variation-settings: 'wght' 300;
-
-    p {
-        margin: 0 0 $s-small 0;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    @media (max-width: $tabletMax) {
-        font-size: 0.85rem;
+        font-size: 1.15rem;
+        line-height: 1.7;
     }
 }
