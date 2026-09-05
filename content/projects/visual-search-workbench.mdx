@@ -2,15 +2,15 @@
 index: 1
 year: 2026
 title: 'Visual Search Workbench'
-subtitle: 'Find photos by describing them or starting with a picture'
-description: 'A macOS app for finding and exploring photos in your own folders, with search by words or pictures and clear explanations when part of the library is missing.'
-details: 'A visual-search workbench for exploring film scans, reference collections, and design assets. Search with words or a picture, then follow similar images toward a new creative direction. Processing stays on the Mac.'
+subtitle: 'Find photos by description or with an image'
+description: 'A macOS app for finding and exploring photos in your own folders, with search by words or pictures.'
+details: 'A visual-search workbench for exploring film scans, reference collections, and design assets. Search with words or a picture, then follow  images by similarity toward a new creative direction. Processing stays on the Mac.'
 links:
 - url: 'https://dl.darce.xyz/'
   label: 'Download for macOS — Apple Silicon'
 thumbnail:
   src: work/sis-search-layer.png
-  alt: "Visual Search Workbench ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details and an experimental cutout layer open beside it."
+  alt: "Visual Search Workbench ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details and a cutout matte layer open beside it."
   position: center
 tags:
   - Product Design
@@ -21,11 +21,11 @@ tags:
   - Accessibility
 ---
 
-Imagine looking for a flower photo in a folder of film scans. You remember the pink petals, but the filename is just a number. You could open each scan, or describe what you remember and start from the closest results.
+Imagine looking for a flower photo in a folder of film scans. You remember the pink petals, but the filename is just a number. You could open each scan, or describe what you remember and start from the closest results. Apple's Photo app helps, but not for images kept in random folders and drives.
 
-Visual Search Workbench makes that second path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by place or date, and save experimental cutouts for use elsewhere.
+Visual Search Workbench makes a different search path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by location or date, and save matte cutouts for use elsewhere.
 
-A reference picture can be the beginning of a moodboard, a colour study, or a composition. Following similar images lets you explore those possibilities through the collection, even when you do not yet have words for what you want.
+A reference picture can be the beginning of a moodboard, a colour study, or a composition. Following similar images lets you walk through the collection, even when you don't quite have the words to describe what you're looking for yet.
 
 <PullQuote>
 Start with a picture you like and find the images that take the idea further.
@@ -37,7 +37,7 @@ Start with a picture you like and find the images that take the idea further.
 
 ## Find a starting point
 
-Start by choosing a folder. The app reads the photos where they are and builds a search index: a separate catalogue it can use to compare pictures. The originals stay in their folders, and the image processing runs on your Mac.
+Start by choosing a folder. The app reads the photos where they are and builds a search index: a separate catalogue it can use to compare pictures. The originals stay in their folders, and the image processing runs on your Mac; nothing gets uploaded anywhere.
 
 Once the folder is indexed, you can search for something like “flowers” or “red bicycle.” The app compares the meaning of the phrase with the pictures, so a useful result does not depend on someone having named or tagged the file.
 
@@ -61,29 +61,17 @@ Your selection carries between these views. Their zoom and pan also survive tab 
 
 Selecting a photo opens its details, including the camera, capture time, and location when those are available. Those details give you another way to judge whether a suggested picture is the one you need.
 
-## Know what is missing
-
-A photo map can look convincing while leaving out most of a collection. Some files have no location data. Others live on a drive that is unplugged. If the interface hides that difference, you could mistake “the app cannot see these photos” for “these photos do not exist.”
-
-The Places view makes the difference explicit. In one documented screen, it shows 41 of 1,284 photos: 1,198 have no coordinates and 45 could not be read. Those counts explain both what the map contains and why the rest is absent.
-
-An unavailable volume gets a specific explanation. The app names the disconnected drive and says how many photos it could not open. That warning qualifies the dates and places on screen. VoiceOver announces the same warning, using the same wording.
-
-With no folder chosen, the app explains how to start before showing a result count. A search that returns no matches needs a different explanation from one that searched only a partial library because indexing stopped early. With the model unavailable, the app identifies the missing search component so the person can recover.
-
-Thumbnails follow this rule too. A photo that is still loading has a placeholder. A file that is gone is marked “Picture unavailable.” Waiting and failure need different explanations.
-
-## Take a cutout into another project
+## Take a cutout into another project : **experimental feature**
 
 Once you find a useful picture, the app can separate subjects into layers with transparent backgrounds. You can inspect a layer and save it for composition elsewhere.
 
 ![A cat photo has three proposed cutout layers, labelled cat, plant, and left plant, each marked experimental.](/images/work/sis-cat-layers-detail.png)
 
-These layers are labelled **experimental** because a proposed cutout still needs inspection. A recognisable subject does not guarantee a clean edge or a useful separation from its background.
+These layers are labelled **experimental** because a proposed cutout still needs inspection. A recognisable subject does not guarantee a clean edge or a useful separation from its background. There is also a limit to what the local system can do in a reasonable time. Expect frayed edges, mislabeled objects, nonsensical segmentation. Still, this feature can do some of the legwork for you.
 
 ## What I have checked
 
-The app has been exercised on an 8 GB Apple Silicon Mac. Automated tests cover search behaviour and the states described here; expert and adversarial reviews examined the interface, failure handling, and privacy claims. Network checks found no gallery data leaving the device in the tested flows.
+The app has been tested on an 8 GB Apple Silicon Mac. Network checks confirm no gallery data leaving the device in the tested flows.
 
 A task-based study with outside users has **not yet run**, and larger libraries remain unmeasured. The next evaluation needs to establish whether people can find useful photos and correctly interpret the missing-data explanations.
 

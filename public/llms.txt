@@ -9,7 +9,7 @@
 - /research/ — Index of technical writing and experiments
 
 ## Projects
-- /projects/visual-search-workbench/ — A macOS app for finding and exploring photos in your own folders, with search by words or pictures and clear explanations when part of the library is missing.
+- /projects/visual-search-workbench/ — A macOS app for finding and exploring photos in your own folders, with search by words or pictures.
 - /projects/altcontext/ — AltContext combines facial recognition with image description to give blind readers more context about who is pictured, with editorial review and control over site-owned identity data.
 - /projects/photoshelter/ — R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.
 - /projects/msnbc/ — Helped take MSNBC’s dedicated video experience from initial product definition through functional prototypes, interaction design, production development, and an on-schedule launch.
