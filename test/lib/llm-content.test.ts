@@ -32,16 +32,15 @@ describe('llms-full.txt keeps the drawings the prose argues from', () => {
 })
 
 describe('llms-full.txt keeps the About page prose', () => {
-    // About is authored as <Intro> / <CardGrid> / <AboutCard> blocks. The
-    // generic JSX stripper drops a component with its children, which would
-    // silently remove the whole bio; the stripper unwraps these three instead.
-    it('unwraps each AboutCard into a titled section', () => {
+    // About opens inside an <Intro> wrapper. The generic JSX stripper drops a
+    // component together with its children, which would silently remove the
+    // headline and the role line; the stripper unwraps that block instead.
+    it('unwraps the Intro block and keeps the article headings', () => {
         const about = full.slice(full.indexOf('## About'))
         expect(about).toContain("Hello, I'm Daniel Arcé.")
-        expect(about).toContain("I'm a product engineer.")
-        expect(about).toContain('### PhotoShelter')
-        expect(about).toContain('### Heuristics Canon')
-        expect(about).toContain('I started in interactive media and design technology')
+        expect(about).toContain("I'm a product designer and design technologist.")
+        expect(about).toContain('### What a prototype settles')
+        expect(about).toContain('### How I decide')
         expect(about).not.toMatch(/<\/?(Intro|CardGrid|AboutCard)/)
     })
 })

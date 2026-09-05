@@ -26,20 +26,21 @@ describe('about page reading flow', () => {
         const container = mount()
         expect(Array.from(container.querySelectorAll('h2, h3')).map(h => h.textContent)).toEqual([
             "Hello, I'm Daniel Arcé.",
-            'Making an idea tangible',
+            'What a prototype settles',
+            'Two products of my own',
             'Bringing the work to launch',
-            'How I make design decisions',
+            'How I decide',
             'Get in touch',
         ])
         expect(container.querySelectorAll('h4, h5, h6')).toHaveLength(0)
         expect(container.querySelectorAll('article > p').length).toBeGreaterThan(0)
-        expect(container.querySelectorAll('article > h3').length).toBe(4)
+        expect(container.querySelectorAll('article > h3').length).toBe(5)
     })
 
     it('connects the bio to the selected work and supporting research', () => {
         const container = mount()
         const hrefs = Array.from(container.querySelectorAll('a')).map(a => a.getAttribute('href'))
-        for (const slug of ['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc']) {
+        for (const slug of ['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc', 'workbay']) {
             expect(hrefs).toContain(`/projects/${slug}/`)
         }
         expect(hrefs).toContain('/research/heuristics-canon/')
