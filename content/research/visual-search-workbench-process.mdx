@@ -27,6 +27,22 @@ A useful picture can change what you are looking for. You may start with a subje
 
 The design brings together **search**, a **map**, and an **image grid**. Search finds a starting point. The map offers a view of relationships beyond a ranked list. The image grid makes a selected region available for judgment.
 
+<AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
+
+```text
+Photo folders you choose
+          |
+      Search index
+          |
+  Words or reference image
+          |
+    Candidate photographs
+       [A] [B] [C]
+       [D] [E] [F]
+```
+
+</AsciiScreen>
+
 ![The Similarity map in Visual Search Workbench, with photographs from a selected region available in the grid.](/images/work/sis-layers-umap.png)
 
 *Application capture from version 0.2.0. The companion interaction reference draws on the 0.2.3 product record.*
@@ -38,6 +54,22 @@ Search often starts with a fairly definite task: find a photograph you remember.
 Visual exploration has a less definite endpoint. A photograph can be useful because it suggests what to look for next. In a reference collection, for example, you might follow a visual resemblance toward a composition you had not yet formulated. The value of that next image depends on the idea you are developing, not only on its match to the original words.
 
 VSW lets a result become the next query through **Find similar**. The chosen image becomes the reference for a new ranking, with its name visible above the results. **Back to text results** provides a return to the earlier search. These controls make it possible to follow an image without treating every query as an unrelated start.
+
+<AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
+
+```text
+Text query --> [A] [B] [C] [D]
+                    |
+               Find similar
+                    |
+              B is the reference
+                    |
+                [E] [F] [G]
+                    |
+             Back to text results
+```
+
+</AsciiScreen>
 
 ![A photograph used as a Find similar reference, with the reference named and a return to text results available.](/images/work/sis-similarity-search.png)
 
@@ -66,6 +98,30 @@ Two settings help explain why maps can look different: **neighbourhood size** an
 A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
 
 This connection gives the map a role in the interaction. The map helps you choose where to look; the grid shows what is there. Without the grid, a point cloud would reveal an arrangement but provide little basis for deciding whether the pictures suit your work.
+
+<AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
+
+```text
+Similarity overview
++---------------------------+
+|   . .              . .    |
+|  +---------+              |
+|  | A  B  C |      . .     |
+|  +---------+              |
+|       . .                 |
++---------------------------+
+       Selected region
+              |
+              v
+      Linked image grid
+      +-------------------+
+      | [A]  [B]  [C]     |
+      | Inspect these     |
+      | photographs       |
+      +-------------------+
+```
+
+</AsciiScreen>
 
 The grid and map also need distinct interpretations. A search ranking compares the query with the image representations. The distance between marks on the displayed map is not that ranking. Keeping those roles clear lets the map support browsing without asking it to be a precise measuring instrument.
 
