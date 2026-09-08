@@ -12,14 +12,14 @@ import styles from '../styles/landingPage.module.scss'
 export const FEATURED_SLUGS = ['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc']
 
 export const FEATURED_METRICS: Record<string, string> = {
-    'visual-search-workbench': 'Native macOS product for semantic search and visual exploration, with on-device processing and explicit states for incomplete data, indexing, model availability, and partial library access.',
-    altcontext: 'WordPress alt text generated from the image and its editorial context, with a name admitted only when a confirmed face backs it and nothing written until a person accepts the draft.',
-    photoshelter: 'Workflow prototyping that exposed integration constraints before production work, plus a WCAG audit and remediation on contracts that required demonstrated compliance.',
-    msnbc: 'Helped take a dedicated video experience from concept through working prototypes to launch in six months, collaborating across internal teams and external partners.',
+    "visual-search-workbench": "Search your photo folders with words or a picture, then follow related images through a map and linked grid. Processing stays on the Mac.",
+    "altcontext": "Use the photograph, confirmed identities, and page context to draft an image description. The editor decides what to apply in WordPress. In development.",
+    "photoshelter": "A workflow-automation prototype exposed integration issues before production development. My work also included a WCAG audit and front-end accessibility remediation.",
+    "msnbc": "Collapsible panels let viewers browse coverage and comments while the video kept playing. I helped take the experience from concept to launch in six months."
 }
 
 const FEATURED_TITLES: Record<string, string> = {
-    msnbc: 'MSNBC: Video Platform Prototyping & Launch',
+    msnbc: 'MSNBC: From Video Concept to Launch',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -71,12 +71,9 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
-                                I design and build AI-assisted, data-heavy software where interaction, accessibility, and implementation have to be solved together. My work spans product R&D, interface systems, and working prototypes for media, enterprise software, and independent AI products.
+                                I work across interaction design and front-end development, using working software to explore how people find information and act on it. That practice connects my work at MSNBC and PhotoShelter with my independent products for visual exploration and image description.
                             </p>
-                            <a
-                                className={styles.cta}
-                                href="mailto:daniel.arce@gmail.com"
-                            >
+                            <a className={styles.cta} href="mailto:daniel.arce@gmail.com">
                                 <span className={styles.ctaInner}>Get in touch</span>
                             </a>
                         </div>
@@ -88,18 +85,13 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                     <ul className={styles.projectList}>
                         {featuredProjects.map((project) => {
                             const icon = cardIconFor(project)
-
                             return (
                                 <li key={project.slug} className={styles.projectItem}>
                                     <Link href={`/projects/${project.slug}/`} className={styles.projectLink}>
                                         <div className={styles.projectItemInner}>
                                             <div className={styles.projectHead}>
                                                 <span
-                                                    className={
-                                                        icon
-                                                            ? styles.projectIcon
-                                                            : `${styles.projectIcon} ${styles.projectIconPending}`
-                                                    }
+                                                    className={icon ? styles.projectIcon : `${styles.projectIcon} ${styles.projectIconPending}`}
                                                     aria-hidden="true"
                                                 >
                                                     {icon && (
@@ -111,9 +103,7 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                             sizes="120px"
                                                             style={{
                                                                 objectFit: 'cover',
-                                                                ...(icon.position
-                                                                    ? { objectPosition: icon.position }
-                                                                    : {}),
+                                                                ...(icon.position ? { objectPosition: icon.position } : {}),
                                                             }}
                                                         />
                                                     )}
@@ -122,12 +112,8 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                     <h3 className={styles.projectTitle}>
                                                         {FEATURED_TITLES[project.slug] ?? project.metaData.title}
                                                     </h3>
-                                                    <p className={styles.projectMeta}>
-                                                        {project.metaData.subtitle}
-                                                    </p>
-                                                    <p className={styles.projectDesc}>
-                                                        {FEATURED_METRICS[project.slug]}
-                                                    </p>
+                                                    <p className={styles.projectMeta}>{project.metaData.subtitle}</p>
+                                                    <p className={styles.projectDesc}>{FEATURED_METRICS[project.slug]}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,38 +122,28 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                             )
                         })}
                     </ul>
-                    <Link href="/work/" className={styles.viewAll}>
-                        View all projects &rarr;
-                    </Link>
+                    <Link href="/work/" className={styles.viewAll}>View all projects &rarr;</Link>
                 </section>
             </div>
         </>
     )
 }
 
-Landing.getLayout = (page: ReactElement) => {
-    return (
-        <Layout>
-            {page}
-        </Layout>
-    )
-}
+Landing.getLayout = (page: ReactElement) => <Layout>{page}</Layout>
 
 export const getStaticProps = async () => {
     const projectsProps = await getMdxIndexContent({ subDir: 'projects' })
     const headerProps = await getMdxIndexContent({ subDir: 'header' })
     const footerProps = await getMdxContent({ subDir: 'footer' })
-
     const featuredProjects = FEATURED_SLUGS
         .map(slug => projectsProps.parsedMdxArray.find(p => p.slug === slug))
         .filter((p): p is ContentIndexData => p !== undefined)
-
     return {
         props: {
             featuredProjects,
             headerData: headerProps.parsedMdxArray,
             footerData: footerProps.parsedMdxArray,
-        }
+        },
     }
 }
 

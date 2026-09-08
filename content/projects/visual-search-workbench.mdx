@@ -1,88 +1,82 @@
 ---
 index: 1
 year: 2026
-title: 'Visual Search Workbench'
-subtitle: 'Find photos by description or with an image'
-description: 'A macOS app for finding and exploring photos in your own folders, with search by words or pictures.'
-details: 'A visual-search workbench for exploring film scans, reference collections, and design assets. Search with words or a picture, then follow  images by similarity toward a new creative direction. Processing stays on the Mac.'
+title: Visual Search Workbench
+subtitle: Find a picture, then follow its visual neighbours
+description: Search your photo folders by words or an example image, then explore related pictures on a UMAP map.
+  Processing stays on the Mac.
+details: I designed and built this macOS app. Release 0.2.3 is available for Apple Silicon Macs.
 links:
-- url: 'https://dl.darce.xyz/'
-  label: 'Download for macOS — Apple Silicon'
+- url: https://dl.darce.xyz/
+  label: Download for macOS — Apple Silicon
 thumbnail:
   src: work/sis-search-layer.png
-  alt: "Visual Search Workbench ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details and a cutout matte layer open beside it."
+  alt: Visual Search Workbench showing flower photographs in a search-results grid, with a selected image open beside
+    it.
   position: center
 tags:
-  - Product Design
-  - Interaction Design
-  - Human-AI Interaction
-  - SwiftUI
-  - Core ML
-  - Accessibility
+- Product Design
+- Interaction Design
+- Visual Search
+- UMAP
+- SwiftUI
+- Core ML
 ---
 
-Imagine looking for a flower photo in a folder of film scans. You remember the pink petals, but the filename is just a number. You could open each scan, or describe what you remember and start from the closest results. Apple's Photo app helps, but not for images kept in random folders and drives.
+Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. A similarity map offers another route through the collection, without requiring you to tag the photographs first.
 
-Visual Search Workbench makes a different search path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by location or date, and save matte cutouts for use elsewhere.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon Macs, keeps image processing on-device, and has been tested on an 8 GB machine.
 
-A reference picture can be the beginning of a moodboard, a colour study, or a composition. Following similar images lets you walk through the collection, even when you don't quite have the words to describe what you're looking for yet.
+![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
-<PullQuote>
-Start with a picture you like and find the images that take the idea further.
-</PullQuote>
+*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.3.*
 
-![A search for flowers returns pink cosmos photos from a film-scan library, with one result selected for inspection.](/images/work/sis-search-layer.png)
+## Give the search a starting point
 
-*Screenshots show version 0.2.0, when the app was called Semantic Image Search. The current download is 0.2.3; the [screen reference](/research/visual-search-workbench-screen-reference/) documents that version.*
+The search begins with the folders you choose. The app reads their photographs into a separate search index and leaves the originals where they are. That index lets you search by what a picture depicts even when its filename is a camera number.
 
-## Find a starting point
+You can give the search two kinds of query: a description or a reference picture. A description is useful when you remember a subject but not the filename. A reference picture is useful when showing what interests you is easier than putting it into words.
 
-Start by choosing a folder. The app reads the photos where they are and builds a search index: a separate catalogue it can use to compare pictures. The originals stay in their folders, and the image processing runs on your Mac; nothing gets uploaded anywhere.
+Drop a reference picture into the app, or choose **Find similar** on a photograph in the collection. That photograph becomes the query for the next set of results. A banner names the reference, and **Back to text results** returns to the earlier query.
 
-Once the folder is indexed, you can search for something like “flowers” or “red bicycle.” The app compares the meaning of the phrase with the pictures, so a useful result does not depend on someone having named or tagged the file.
+![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
 
-Sometimes a picture is easier than a description. Drop a reference image onto the window, or choose **Find similar** on a photo you already have. The results now follow that picture. A banner names the reference image and gives you a way back to the text results, so you can tell which search you are looking at.
+A result can therefore become a new direction. You might begin by looking for flowers and continue because a particular image suggests something useful for a colour study. That is the kind of exploration I wanted the app to support.
 
-![Find similar uses a pink-flower photo as the reference, names it above the results, and offers a Back to text results button.](/images/work/sis-similarity-search.png)
+## Explore the collection on a map
 
-These results are suggestions ordered by similarity. A high position does not prove that a picture contains what you asked for. The interface avoids turning similarity scores into confidence percentages, and it can show “No close matches” when the ranking gives too little useful distinction between results. The nearest photos remain available to inspect.
+The **Similarity** view arranges related images on a map using UMAP. UMAP takes the images’ numerical representations and looks for a layout that keeps neighbours near one another. The result gives you regions to explore instead of a list to read from top to bottom.
 
-## Follow the pictures
+A region becomes useful when you can see the photographs behind it. Select a region, and its pictures appear in the linked grid. The grid lets you judge the images themselves and choose another one to follow.
 
-A useful result can lead somewhere the original query did not. Perhaps a flower photo reminds you of a trip, or its colours suggest a direction for a design. You can explore those connections through **Similarity**, **Places**, and **Timeline**.
+![A Similarity map of a 2,314-photo collection, with photographs from a selected region shown in the grid.](/images/work/sis-layers-umap.png)
 
-**Similarity** groups visually related photos on a map. You can select a cluster and inspect its pictures in the grid. The map is a way to browse neighbourhoods; the size of a gap between clusters is not a precise measure of how different the pictures are.
+*Selecting a region connects the overview to the photographs it contains.*
 
-![The Similarity view groups a 2,314-photo library into a point cloud, with photos in the selected region shown as thumbnails.](/images/work/sis-layers-umap.png)
+The map suggests where to look. Its groups are not automatically named categories, and the gaps between them are not exact measures of visual difference. [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) explains the method and the design idea; the [interaction reference](/research/visual-search-workbench-screen-reference/) follows the controls and views.
 
-**Places** shows photos with recorded coordinates. Select a region to find pictures taken there. **Timeline** groups photos by date, letting you narrow a collection to a year, month, or smaller period. It distinguishes recorded capture dates from file dates and keeps undated photos visible as a separate count.
+## Look at the selection by place or time
 
-Your selection carries between these views. Their zoom and pan also survive tab changes, so you can examine the same set from another angle without rebuilding your view.
+A selection can be explored through **Similarity**, **Places**, or **Timeline**. Similarity organises the images by relationships in their representations. Places uses recorded coordinates. Timeline uses dates to show broader or narrower periods.
 
-Selecting a photo opens its details, including the camera, capture time, and location when those are available. Those details give you another way to judge whether a suggested picture is the one you need.
+The selection carries between those views, and each view retains its zoom and pan when you change tabs. You can examine the same material from another angle without rebuilding the view. Selecting an individual photograph opens its available file metadata, including camera information, capture time, and location.
 
-## Take a cutout into another project : **experimental feature**
+## Take a cutout into another project
 
-Once you find a useful picture, the app can separate subjects into layers with transparent backgrounds. You can inspect a layer and save it for composition elsewhere.
+A useful photograph may contain a subject you want to use in a composition. The app’s experimental cutout feature proposes subject layers with transparent backgrounds. Those layers can be inspected and saved for use elsewhere.
 
-![A cat photo has three proposed cutout layers, labelled cat, plant, and left plant, each marked experimental.](/images/work/sis-cat-layers-detail.png)
+![A cat photograph with proposed cutout layers, each marked experimental.](/images/work/sis-cat-layers-detail.png)
 
-These layers are labelled **experimental** because a proposed cutout still needs inspection. A recognisable subject does not guarantee a clean edge or a useful separation from its background. There is also a limit to what the local system can do in a reasonable time. Expect frayed edges, mislabeled objects, nonsensical segmentation. Still, this feature can do some of the legwork for you.
+The layers still require judgment: an edge can be rough, a label can be wrong, or the proposed separation may not suit the composition. Cutouts remain a secondary experiment alongside search and exploration.
 
-## What I have checked
+## Keep the work on the Mac
 
-The app has been tested on an 8 GB Apple Silicon Mac. Network checks confirm no gallery data leaving the device in the tested flows.
+The app bundles the search and cutout models, so they are available without a first-launch model download. The models process the photographs locally. My network checks found no gallery data leaving the device in the tested flows.
 
-A task-based study with outside users has **not yet run**, and larger libraries remain unmeasured. The next evaluation needs to establish whether people can find useful photos and correctly interpret the missing-data explanations.
-
-The [process article](/research/visual-search-workbench-process/) explains how I designed and reviewed those states. The [screen reference](/research/visual-search-workbench-screen-reference/) preserves the detailed drawings and release-specific behaviour.
+The 8 GB test establishes a working configuration rather than a memory requirement for every library. Larger collections still need measurement, and an outside-user study has not yet run. That study needs to examine both finding a remembered image and discovering useful material for a creative brief.
 
 ## Download
 
-**[Download Visual Search Workbench 0.2.3 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later.
+[Download Visual Search Workbench 0.2.3](https://dl.darce.xyz/) for Apple Silicon, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.3.dmg`, approximately 295 MB.
 
-The download is hosted on GitHub. Choose `VisualSearchWorkbench-0.2.3.dmg`, about 295 MB. The search and cutout models are bundled, so no model download is needed on first launch.
-
-The app is **not notarized by Apple**, so macOS may block the first launch. To open it, use **System Settings → Privacy & Security → Open Anyway**.
-
-The [release page](https://github.com/darce/visual-search-workbench) includes model licences and a `SHA256SUMS` file for checking download integrity. If you use Terminal, put that file beside the disk image and run `shasum -a 256 -c SHA256SUMS`.
+The app is not notarized by Apple, so macOS may block its first launch. The release instructions explain the **Privacy & Security → Open Anyway** option. The [GitHub release repository](https://github.com/darce/visual-search-workbench) provides the built app, model-licence information, and a `SHA256SUMS` file. It does not publish the application source.

@@ -1,0 +1,67 @@
+.index {
+    width: 100%;
+    min-width: 0;
+    padding-block: 1rem 3rem;
+}
+
+.intro,
+.groupIntro {
+    max-width: 65ch;
+    margin-inline: 0;
+
+    p {
+        line-height: 1.65;
+        margin-block: 0.75rem 1.5rem;
+    }
+}
+
+.intro h1 {
+    margin-block: 0 1rem;
+}
+
+.topics {
+    margin-block: 1rem 2.75rem;
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem 1.5rem;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    a {
+        display: inline-block;
+        padding-block: 0.3rem;
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+
+    a:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+    }
+}
+
+.group {
+    margin-block: 0 3.5rem;
+    min-width: 0;
+
+    h2 {
+        scroll-margin-top: 2rem;
+        margin-block: 0 0.6rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .topics ul {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .group {
+        margin-block-end: 2.5rem;
+    }
+}
