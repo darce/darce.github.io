@@ -69,9 +69,11 @@ const PortfolioGroups: React.FC<PortfolioGroupsProps> = ({ section, title, descr
         <div className={styles.index}>
             {/* tabIndex lets focus, not just the scroll position, come back
                 here — a fragment jump to a non-focusable element leaves a
-                keyboard user where they were. */}
+                keyboard user where they were. The site name in the header is
+                the page's single h1, so the title sits at h2 and the outline
+                reads site > page > group > card. */}
             <header className={styles.intro} id={topId} tabIndex={-1}>
-                <h1>{title}</h1>
+                <h2>{title}</h2>
                 <p>{description}</p>
             </header>
             {showJumpNav && (
@@ -84,10 +86,10 @@ const PortfolioGroups: React.FC<PortfolioGroupsProps> = ({ section, title, descr
             {groups.map(group => (
                 <section key={group.id} className={styles.group} aria-labelledby={group.id}>
                     <header className={styles.groupIntro}>
-                        <h2 id={group.id}>{group.title}</h2>
+                        <h3 id={group.id}>{group.title}</h3>
                         <p>{group.description}</p>
                     </header>
-                    <SectionCards section={section} items={group.items} />
+                    <SectionCards section={section} items={group.items} headingLevel={4} />
                     {showJumpNav && (
                         <p className={styles.backToTop}>
                             <a href={`#${topId}`}>Back to top</a>

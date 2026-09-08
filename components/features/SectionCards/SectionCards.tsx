@@ -10,11 +10,14 @@ interface SectionCardsProps {
     section: ContentSection
     items: ContentIndexData[]
     className?: string
+    /** Heading level for card titles; one below whatever heading introduces the grid. */
+    headingLevel?: 3 | 4
 }
 
 const EAGER_CARDS = 3
 
-const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }) => {
+const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className, headingLevel = 3 }) => {
+    const CardHeading = `h${headingLevel}` as const
     if (!items || items.length === 0) {
         return (
             <section className={`contentCards ${className || ''}`}>
@@ -75,7 +78,7 @@ const SectionCards: React.FC<SectionCardsProps> = ({ section, items, className }
                                             )}
                                         </p>
                                     )}
-                                    <h3 className={styles.cardTitle}>{item.metaData.title}</h3>
+                                    <CardHeading className={styles.cardTitle}>{item.metaData.title}</CardHeading>
                                     <p className={styles.cardSubtitle}>{item.metaData.subtitle}</p>
                                 </div>
                             </article>

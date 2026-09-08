@@ -77,7 +77,7 @@ describe('PortfolioGroups navigation', () => {
         expect(topics.length).toBe(GROUPS.length)
         topics.forEach(link => {
             const id = link.getAttribute('href')!.slice(1)
-            expect(container.querySelector(`h2#${id}`), `no heading for ${id}`).not.toBeNull()
+            expect(container.querySelector(`h3#${id}`), `no heading for ${id}`).not.toBeNull()
         })
     })
 
