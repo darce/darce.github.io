@@ -58,30 +58,46 @@ interface PortfolioGroupsProps {
     groups: PortfolioGroup[]
 }
 
-const PortfolioGroups: React.FC<PortfolioGroupsProps> = ({ section, title, description, groups }) => (
-    <div className={styles.index}>
-        <header className={styles.intro}>
-            <h1>{title}</h1>
-            <p>{description}</p>
-        </header>
-        {groups.length > 1 && (
-            <nav aria-label={`${title} topics`} className={styles.topics}>
-                <ul>
-                    {groups.map(group => <li key={group.id}><a href={`#${group.id}`}>{group.title}</a></li>)}
-                </ul>
-            </nav>
-        )}
-        {groups.map(group => (
-            <section key={group.id} className={styles.group} aria-labelledby={group.id}>
-                <header className={styles.groupIntro}>
-                    <h2 id={group.id}>{group.title}</h2>
-                    <p>{group.description}</p>
-                </header>
-                <SectionCards section={section} items={group.items} />
-            </section>
-        ))}
-        {!groups.length && <p>No entries are available yet.</p>}
-    </div>
-)
+const PortfolioGroups: React.FC<PortfolioGroupsProps> = ({ section, title, description, groups }) => {
+    const topId = `${section}-index-top`
+    // The topic list sends the reader down the page; without a matching return
+    // the top-level navigation is off-screen from the last group onward, which
+    // is the longest part of the page on a phone.
+    const showJumpNav = groups.length > 1
+
+    return (
+        <div className={styles.index}>
+            {/* tabIndex lets focus, not just the scroll position, come back
+                here — a fragment jump to a non-focusable element leaves a
+                keyboard user where they were. */}
+            <header className={styles.intro} id={topId} tabIndex={-1}>
+                <h1>{title}</h1>
+                <p>{description}</p>
+            </header>
+            {showJumpNav && (
+                <nav aria-label={`${title} topics`} className={styles.topics}>
+                    <ul>
+                        {groups.map(group => <li key={group.id}><a href={`#${group.id}`}>{group.title}</a></li>)}
+                    </ul>
+                </nav>
+            )}
+            {groups.map(group => (
+                <section key={group.id} className={styles.group} aria-labelledby={group.id}>
+                    <header className={styles.groupIntro}>
+                        <h2 id={group.id}>{group.title}</h2>
+                        <p>{group.description}</p>
+                    </header>
+                    <SectionCards section={section} items={group.items} />
+                    {showJumpNav && (
+                        <p className={styles.backToTop}>
+                            <a href={`#${topId}`}>Back to top</a>
+                        </p>
+                    )}
+                </section>
+            ))}
+            {!groups.length && <p>No entries are available yet.</p>}
+        </div>
+    )
+}
 
 export default PortfolioGroups

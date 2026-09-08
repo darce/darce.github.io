@@ -1,7 +1,26 @@
+@import '../../../styles/vars.scss';
+
+// The index owns the page shell inside #main-content, matching .contentCards /
+// .aboutPage / .singleColumn in styles/layout.scss. Before the grouping landed,
+// SectionCards was the direct child of <main> and carried that padding itself.
 .index {
+    display: block;
     width: 100%;
     min-width: 0;
-    padding-block: 1rem 3rem;
+    max-width: 1200px;
+    padding: $s-x-large;
+
+    @media (max-width: $tabletMax) {
+        padding: $s-large;
+    }
+
+    // SectionCards still ships the global .contentCards shell for standalone
+    // use. Nested in a group it would inset the cards a second time and pull
+    // them out of line with the heading and description above them.
+    :global(.contentCards) {
+        max-width: none;
+        padding: 0;
+    }
 }
 
 .intro,
@@ -11,21 +30,34 @@
 
     p {
         line-height: 1.65;
-        margin-block: 0.75rem 1.5rem;
+        margin-block: $s-medium $s-large;
     }
 }
 
-.intro h1 {
-    margin-block: 0 1rem;
+.intro {
+    // Focus target for the per-group "Back to top" links; -1 keeps it out of
+    // the tab sequence while letting focus actually land here on the jump.
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: $s-small;
+    }
+
+    h1 {
+        margin-block: 0 $s-medium;
+    }
 }
 
 .topics {
-    margin-block: 1rem 2.75rem;
+    margin-block: $s-large $s-x-large;
 
     ul {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.65rem 1.5rem;
+        gap: $s-small $s-large;
         padding: 0;
         margin: 0;
         list-style: none;
@@ -33,35 +65,49 @@
 
     a {
         display: inline-block;
-        padding-block: 0.3rem;
-        color: inherit;
+        // Keeps the hit area past the 24x24 CSS px floor at body line height.
+        padding-block: $s-small;
         text-decoration: underline;
         text-underline-offset: 0.2em;
     }
 
     a:focus-visible {
         outline: 2px solid currentColor;
-        outline-offset: 4px;
+        outline-offset: $s-small;
     }
 }
 
+// Intervals climb with distance: heading to description, description to cards,
+// then group to group. The largest gap is the one between groups.
 .group {
-    margin-block: 0 3.5rem;
+    margin-block: 0 $s-x-large;
     min-width: 0;
 
     h2 {
-        scroll-margin-top: 2rem;
-        margin-block: 0 0.6rem;
+        scroll-margin-top: $s-large;
+        margin-block: 0 $s-medium;
+    }
+}
+
+.backToTop {
+    margin-block: $s-large 0;
+
+    a {
+        display: inline-block;
+        padding-block: $s-small;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+
+    a:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: $s-small;
     }
 }
 
 @media (max-width: 640px) {
     .topics ul {
         flex-direction: column;
-        gap: 0.4rem;
-    }
-
-    .group {
-        margin-block-end: 2.5rem;
+        gap: $s-small;
     }
 }
