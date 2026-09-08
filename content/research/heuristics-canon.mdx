@@ -1,42 +1,83 @@
 ---
-index: 5
+index: 6
 year: 2026
-title: 'Heuristics Canon'
-subtitle: 'Source-linked decision rules for product and engineering review'
-type: 'method'
-status: 'running'
-description: A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
-details: A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance. Each rule carries a stable ID, so a critique can name the exact rule it leans on and the source behind it.
+title: Heuristics Canon
+subtitle: Connect a review finding to a reason for changing the work
+type: method
+status: running
+description: Heuristics Canon gives design, engineering, and writing reviews specific triggers and questions, with
+  references that let another reviewer examine the reasoning.
+details: I maintain this collection for human and AI reviews. The rules support critique; they do not replace judgment.
 links:
 - url: https://github.com/darce/heuristics-canon
   label: Heuristics Canon on GitHub
 thumbnail:
   src: research/ventriloquist-jasper-johns.jpg
-  alt: "Jasper Johns, Ventriloquist, 1986. Lithograph with chalk additions, proof before the edition. Museum of Modern Art, New York, gift of the artist. © Jasper Johns / Licensed by VAGA at Artists Rights Society (ARS), NY."
+  alt: Jasper Johns, Ventriloquist, 1986. Lithograph with chalk additions, proof before the edition. Museum of Modern
+    Art, New York, gift of the artist. © Jasper Johns / Licensed by VAGA at Artists Rights Society (ARS), NY.
   position: center
 masthead:
   src: research/ventriloquist-jasper-johns.jpg
-  alt: "Jasper Johns, Ventriloquist, 1986. Lithograph with chalk additions, proof before the edition. Museum of Modern Art, New York, gift of the artist. © Jasper Johns / Licensed by VAGA at Artists Rights Society (ARS), NY."
+  alt: Jasper Johns, Ventriloquist, 1986. Lithograph with chalk additions, proof before the edition. Museum of Modern
+    Art, New York, gift of the artist. © Jasper Johns / Licensed by VAGA at Artists Rights Society (ARS), NY.
+  position: center
 tags:
-  - Design Systems
-  - Accessibility
-  - Research
+- Design Review
+- Engineering
+- Writing
+- Research
 ---
 
-## A review instrument, not a style guide
+A review becomes useful when its finding is specific enough to examine. “Improve the navigation” leaves the problem open to interpretation. A finding that identifies two conflicting destinations gives the designer something to inspect and a decision to make.
 
-The Heuristics Canon is a review instrument. It forces a claim to name three things before it ships: the rule being applied, the source that earns that rule its place, and the artifact the claim would change. A source can be a published study or a shipped artifact; a rule with no source does not enter the corpus. Source linkage is provenance for the rule, not evidence that users already validated the product.
+Heuristics Canon is a collection I maintain to support that kind of critique in design, engineering, and writing. I use it with people and AI tools to connect an observed issue to a reason for changing it. A cited rule makes that reason available to challenge as well as to apply.
 
-## The IDs hold still
+## Make the rule inspectable
 
-Rules never get renumbered, so a critique written against an earlier revision still resolves. That is the difference between advice and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the changed artifact records which rule moved it.
+A Canon rule has an observable **trigger**, a proposed **action**, and a **question** that tests whether it applies. The trigger identifies a situation in the artifact under review. The action suggests what to do about it. The question helps the reviewer decide whether the situation actually warrants that response.
 
-## Rules that changed the work
+A stable ID identifies the rule, and a source reference records its basis. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
 
-The test of a rule corpus is whether it reverses decisions that were already made. The agent workflow records described in [Memory Outside the Model](/research/agent-memory/) keep those reversals on file, and they are the strongest evidence the canon has.
+The rules are grouped into lexicons, including interaction design, accessibility, engineering, and writing. These are parts of the same review practice: an interface decision may depend on implementation constraints, while a claim about that interface may need a different kind of evidence. A review retrieves the relevant rules rather than applying the whole collection as a checklist.
 
-A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, names a rule and source, and narrows or withdraws the proposal before a false claim lands.
+## Review a map and the images it represents
 
-The same corpus reviews this site. [Visual Search Workbench](/projects/visual-search-workbench/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
+Visual Search Workbench connects a Similarity map with an image grid. Reviewing that connection raises two separate questions: **does the selection remain recognisable across the views**, and **does the explanation describe the map accurately**?
 
-The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
+**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-15).
+
+**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-18) supplies a check on that inference.
+
+These examples show how a rule can focus a critique. They do not establish that the map helps people explore a collection. The [VSW design article](/research/visual-search-workbench-process/) treats that as a separate evaluation question.
+
+## Carry the finding into the work
+
+My workflow combines the Canon with [WorkBay](/projects/workbay/). An interface can be inventoried in a UX map and rendered as text screens or flow diagrams. A reviewer examines those representations and records a finding with the rule and artifact it concerns.
+
+The finding can then be stored against the task. A change addresses it, and a later review checks the result. Keeping the finding available allows the reviewer to ask whether the change resolved the original issue instead of relying on a broad statement that the interface was improved.
+
+The running interface remains part of that review. A map can expose an action or flow, but it does not reproduce the entire visual and interactive experience.
+
+## Question the finding before changing the product
+
+A critique can be wrong even when it cites a rule. The finding itself needs scrutiny before it justifies a change.
+
+In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. This is a field example of testing a finding, not an accuracy measurement for the Canon.
+
+Another recorded correction concerned a failure described as present in shipped work. The failure existed only in a constructed test input, so the claim had to be narrowed before it could justify a production change. In both cases, examining the basis of the finding changed the proposed work.
+
+## Keep the source and version with the reasoning
+
+A source reference establishes where a rule came from. It does not establish that the rule applies to every artifact or that a product has passed user validation. The trigger and any relevant exception still require judgment.
+
+The writing lexicon makes this boundary explicit: some rules are provisional editorial checks, not proof of AI authorship. Repeating a topic can help a reader follow an explanation, for example; repetition alone does not establish that the prose should be changed. The effect on the passage matters.
+
+A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. The [consumer guide](https://github.com/darce/heuristics-canon/blob/main/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
+
+## Measure review quality, not the number of citations
+
+The field examples show findings leading to revisions or being withdrawn. They do not establish that the full collection improves review outcomes compared with a smaller checklist or another reviewer.
+
+A comparison would need to examine consequential findings, missed defects, false positives, and reviewer effort on comparable artifacts. Those measures concern the quality of the review. The number of rule IDs cited concerns only its activity.
+
+The [public repository](https://github.com/darce/heuristics-canon) contains the rules, source references, and longer reasoning cards for decisions that need more context.

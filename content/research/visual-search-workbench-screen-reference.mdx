@@ -1,299 +1,137 @@
 ---
-index: 8
+index: 2
 year: 2026
-title: 'Visual Search Workbench: Screen Reference'
-subtitle: 'Detailed interface states for version 0.2.3'
-type: 'method'
-status: 'running'
-description: 'Eight accessible screen drawings documenting search, exploration, missing data, and recovery in Visual Search Workbench 0.2.3.'
-details: 'A release-specific companion to the product story and design process, preserving the screen drawings used to check interface wording against the app source.'
+title: 'Visual Search Workbench: Search and Exploration'
+subtitle: Follow a query into similar images, a map selection, and further exploration
+type: method
+status: running
+description: 'An interaction reference for Visual Search Workbench: begin with words or a picture, follow similar
+  images, and inspect a UMAP map selection in the image grid.'
+details: This selective interaction reference combines existing application captures with clearly labelled explanatory
+  schematics.
+thumbnail:
+  src: work/sis-layers-umap.png
+  alt: Visual Search Workbench showing its Similarity map and photographs from the selected region.
+  position: center
 tags:
-  - Interaction Design
-  - Accessibility
+- Visual Search
+- UMAP
+- Interaction Design
+- Interface Reference
 ---
 
-This reference accompanies the [product story](/projects/visual-search-workbench/) and the [design process](/research/visual-search-workbench-process/). It records the detailed states for version 0.2.3, rather than serving as a step-by-step introduction.
+This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
-The drawings were checked against the 0.2.3 source. A test in the product repository checks quoted interface strings against their named Swift files. The screenshots in the product story show 0.2.0, before the rename from Semantic Image Search and the thumbnail changes in 0.2.3.
+The application captures are the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
-The paths, filenames, and counts below are examples from the documented states. In particular, the missing-model screen shows recovery from an unreadable custom model folder; the downloadable app bundles its models.
+## 1. Give the search a starting point
 
-## 1. Cold start
+The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
 
-**Screen 1 — Cold start.**
+A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
 
-The first launch explains how to begin. It does not report zero results before a library exists.
-
-<AsciiScreen label="Screen 1, cold start: window with an empty Assets pane reading 'Photos you have matted appear here. Open a folder to get started.' beside a search pane with an Add Folder button and the line 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn.">
+<AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
 
 ```text
-┌─ Visual Search Workbench ────────────────────────────────────────────────┐
-│ ┌─ Assets ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │ ▾ Assets          │ │ [ Search query                      ] (Search) │ │
-│ │   Photos you have │ │ [ Add Folder… ]                                │ │
-│ │   matted appear   │ │ Choose a folder to search. Your photos stay    │ │
-│ │   here. Open a    │ │ where they are.                                │ │
-│ │   folder to get   │ ├────────────────────────────────────────────────┤ │
-│ │   started.        │ │                                                │ │
-│ │ ▸ Jobs            │ │                                                │ │
-│ └───────────────────┘ └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
+Photo folders you choose
+          |
+      Search index
+          |
+  Words or reference image
+          |
+    Candidate photographs
+       [A] [B] [C]
+       [D] [E] [F]
 ```
 
 </AsciiScreen>
 
-## 2. Indexing
+## 2. Make a result the next query
 
-**Screen 2 — Indexing.**
+A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search. The new view names the reference and offers **Back to text results**, keeping the change of query visible.
 
-Indexing reports completed work against a total. Cancelling leaves a partial index.
+![Find similar results with a flower photograph identified as the reference image.](/images/work/sis-similarity-search.png)
 
-<AsciiScreen label="Screen 2, indexing: an Add Folder button and a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders.">
+<AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ Search query                                          ] (Search)       │
-│ [ Add Folder… ]                                                          │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-└──────────────────────────────────────────────────────────────────────────┘
+Text query --> [A] [B] [C] [D]
+                    |
+               Find similar
+                    |
+              B is the reference
+                    |
+                [E] [F] [G]
+                    |
+             Back to text results
 ```
 
 </AsciiScreen>
 
-## 3. Semantic results
+The result has become a direction through the collection. Following it can bring useful material into view even when that material was difficult to describe in the first query.
 
-**Screen 3 — Semantic results.**
+## 3. Explore a region on the Similarity map
 
-Results are ordered by similarity. In 0.2.3, thumbnails load four at a time, with a two-second wait limit and staggered retries. A missing file gets a permanent explanation.
+The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
 
-<AsciiScreen label="Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails — some decoded, several still placeholders waiting on a retry, and one marked Picture unavailable.">
+In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
+
+![The Similarity view and the photographs associated with a selected region.](/images/work/sis-layers-umap.png)
+
+A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
+
+<AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ red bicycle                                           ] (Search)       │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ▸ Explore                                                                │
-├──────────────────────────────────────────────────────────────────────────┤
-│ red bicycle                                                              │
-│ 64 search results · nearest 64                                           │
-│  ●  ●  ▢  ●  ▢  ●    ▢ decoding; asks again on a jittered backoff        │
-│  ●  ▢  ●  ●  ●  ▢                                                        │
-│  ●  ●  ●  ×  ●  ●    × Picture unavailable                               │
-└──────────────────────────────────────────────────────────────────────────┘
+Similarity overview
++---------------------------+
+|   . .              . .    |
+|  +---------+              |
+|  | A  B  C |      . .     |
+|  +---------+              |
+|       . .                 |
++---------------------------+
+       Selected region
+              |
+              v
+      Linked image grid
+      +-------------------+
+      | [A]  [B]  [C]     |
+      | Inspect these     |
+      | photographs       |
+      +-------------------+
 ```
 
 </AsciiScreen>
 
-## 4. A photo selected, details open
+Nearby marks suggest material to inspect. Their spacing is not an exact measure of how different the photographs are. Judging the photographs in the grid is what gives the map selection a purpose.
 
-**Screen 4 — A photo selected, details open.**
+## 4. Examine the selection by place or time
 
-File metadata gives the reader facts to inspect alongside the search ranking. The location map uses bundled coastline data and states the area shown.
+The selected material can be examined through **Similarity**, **Places**, and **Timeline**. Each view organises the collection using different information.
 
-<AsciiScreen label="Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map drawn from a bundled coastline, captioned 'Northern high latitudes, western hemisphere' and 'Area shown: 60.15° N–68.15° N, 25.94° W–17.94° W'; result thumbnails below.">
+| View | Basis of the view |
+| --- | --- |
+| Similarity | Relationships between numerical image representations. |
+| Places | Recorded coordinates, explored geographically. |
+| Timeline | Dates, explored across broader or narrower periods. |
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ┌────────────────┐  IMG_4417.HEIC                                        │
-│ │                │  Selected photo · double-click to open                │
-│ │   [ preview ]  │  ▾ Photo details                                      │
-│ │                │        Size  4032 × 3024                              │
-│ │                │      Camera  Apple iPhone 13 Pro                      │
-│ └────────────────┘        Lens  26 mm f/1.5                              │
-│                          Taken  2021:07:14 18:22:00                      │
-│                            GPS  64.1466°, -21.9426°                      │
-│                                 ┌──────────────────────────┐             │
-│                                 │ ∿∿∿∿   ·   ·      ∿∿∿∿∿∿ │             │
-│                                 │  ∿∿∿─────●───────∿∿∿     │             │
-│                                 │    ∿∿∿∿∿∿· ∿∿∿∿∿∿∿       │             │
-│                                 └──────────────────────────┘             │
-│                                 Northern high latitudes, western         │
-│                                 hemisphere                               │
-│                                 Area shown: 60.15° N–68.15° N,           │
-│                                 25.94° W–17.94° W                        │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ●  ●  ●  ●  ●  ●                                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+Selection carries between the views, and each view retains its zoom and pan when you change tabs. The views therefore offer different routes through related material without requiring you to rebuild the view each time.
 
-</AsciiScreen>
+A place-based selection can also include photographs outside the current text results. Those photographs are listed without a search rank, keeping the geographic selection distinct from the query’s ranking.
 
-## 5. Explore: Similarity / Places / Timeline
+## 5. Inspect a photograph or use a cutout
 
-**Screen 5 — Explore: Similarity / Places / Timeline.**
+An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
 
-The counts describe different subsets. A location selection can include photos outside the search results; those photos are labelled and listed without a search rank.
+![A cat image with experimental cutout layers available for inspection.](/images/work/sis-cat-layers-detail.png)
 
-<AsciiScreen label="Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked.">
+The proposed layers can be inspected and saved for use elsewhere. A recognisable subject does not guarantee a usable separation or edge, so the cutout still needs checking. This remains a secondary workflow alongside search and exploration.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
-│                              ↑           ↑                               │
-│            41 of the 47 selected photos have coordinates.                │
-│            The gap between those two numbers IS the finding.             │
-└──────────────────────────────────────────────────────────────────────────┘
+## Use the reference to review the interaction
 
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
-│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
-│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
-│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
-│ │ 90°S └──────────────────┴──────────────────┘                         │ │
-│ │      180°W               0°              180°E                       │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
-│ Showing 41 of 1284 photos. 1198 have no coordinates, 45 could not be     │
-│ read.                                                                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
-│   not in your search results, so they are listed last rather than ranked.│
-│                                                       ( Clear region )   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+This sequence connects a query to a result, a result to another query, and a map region to the images it contains. I use representations like these to examine whether the next action follows clearly from the current selection.
 
-</AsciiScreen>
+A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
 
-## 6. Partial-library caveat
-
-**Screen 6 — Partial-library caveat.**
-
-The warning names the unavailable drive and qualifies the whole view. Visible and VoiceOver wording come from one string.
-
-<AsciiScreen label="Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are on Chimay, which is      │
-│   not plugged in. Dates and places describe the rest of the library,     │
-│   not all of it.                                                         │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-## 7. Timeline: rest, zoom, truncation
-
-**Screen 7 — Timeline: rest, zoom, truncation.**
-
-The timeline names its date sources, keeps undated photos off the axis with their own count, and offers a way to reach dates outside the displayed range.
-
-<AsciiScreen label="Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action.">
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates                                                                │
-│ Photos by capture year                             Square-root count scale│
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │ 1284┤                                            │ │ Off the time    │ │
-│ │  722┤        ▅█                                  │ │ axis            │ │
-│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
-│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
-│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
-│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ ■ EXIF exposure date  ■ File write time  ■ Source unknown                │
-│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
-│ Photos by capture day                              Square-root count scale│
-│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
-│ Bars per   Year ○──────────● Day    Day                                  │
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
-│ │                 ╌  ╌                             │ │ axis            │ │
-│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
-│ └──────────────────────────────────────────────────┘ │      94         │ │
-│                                                      │ Undated photos  │ │
-│                                                      └─────────────────┘ │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT        │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ Photos by capture year                                                   │
-│ ┌──────────────────────────────────────────────────┐                     │
-│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
-│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
-│                                       [ Before 1962 ]                    │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-## 8. Missing model and settings recovery
-
-**Screen 8 — Missing model and settings recovery.**
-
-Settings explains library access, model recovery, content handling, and the optional local layer-naming service. Ollama naming is off by default; when enabled, it sends small crops to a service on the same Mac.
-
-<AsciiScreen label="Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option.">
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-</AsciiScreen>
-
-## Additional cutout screenshots
-
-These captures are from 0.2.0. They show the inspection and saving steps described in the product story.
-
-![An enlarged layer titled "cat · experimental": the cat cut out on an alpha checkerboard, above a Save this layer button and a Close button.](/images/work/sis-cat-layer.png)
-
-![A photo of three costumed people whose details show chips Person 1, Person 2, and Person 3, above four separate person layers cut out on alpha checkerboards.](/images/work/sis-persons-layer-layout.png)
+Read [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) for the design idea, or return to the [product page](/projects/visual-search-workbench/) for installation and release status.

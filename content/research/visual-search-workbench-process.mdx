@@ -1,124 +1,86 @@
 ---
-index: 4
+index: 1
 year: 2026
-title: 'Designing Search That Explains What Is Missing'
-subtitle: 'How a screen inventory and explicit review rules shaped Visual Search Workbench'
-type: 'method'
-status: 'running'
-description: 'A practical account of designing incomplete-data states: map the screens, review the decisions, and check the built interface against both.'
-details: 'A contradictory loading screen revealed a gap between the design and the implementation. This article follows how a written screen inventory and source-linked review rules helped expose and fix it.'
+title: Finding a Visual Direction with UMAP
+subtitle: How similarity search becomes a way to explore a photo collection
+type: method
+status: running
+description: How Visual Search Workbench connects search, a UMAP map, and an image grid to help people explore a
+  photo collection and develop a visual direction.
+details: 'A design study of the implemented interaction: how a search, a UMAP map, and an image grid support visual
+  exploration.'
 thumbnail:
-  src: work/sis-search-layer.png
-  alt: "Visual Search Workbench ranking a film-scan library for the query 'flowers': a grid of pink cosmos photos with the selected photo's details open beside it."
+  src: work/sis-layers-umap.png
+  alt: Visual Search Workbench showing its Similarity map and photographs from the selected region.
   position: center
 tags:
-  - Process
-  - Interaction Design
-  - Human-AI Interaction
-  - Research
+- Visual Search
+- UMAP
+- Interaction Design
+- On-Device ML
+- Research
 ---
 
-On a fresh launch, an early build of [Visual Search Workbench](/projects/visual-search-workbench/) told the person two things at once: choose a folder, and wait while search prepares. It also offered a Cancel button that could not cancel the preparation.
+A useful picture can change what you are looking for. You may start with a subject in mind, then notice a colour relationship or composition worth following. That shift interests me because it turns search into part of developing an idea.
 
-Each message made sense in isolation. Together, they left the person without a clear next step.
+[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
 
-That defect is a useful example of the method behind the app. I used three connected practices: **map the states**, **review the decisions**, and **check the built interface**. This is an account of using them on one product; their value beyond this project still needs testing.
+The design brings together **search**, a **map**, and an **image grid**. Search finds a starting point. The map offers a view of relationships beyond a ranked list. The image grid makes a selected region available for judgment.
 
-## Map the states
+![The Similarity map in Visual Search Workbench, with photographs from a selected region available in the grid.](/images/work/sis-layers-umap.png)
 
-A screen has more to communicate than its successful result. A search screen must also explain an empty library, work in progress, an unreadable file, or a missing drive. Those conditions determine what the person can do next.
+*Application capture from version 0.2.0. The companion interaction reference draws on the 0.2.3 product record.*
 
-Before building the interface, I recorded its screens, regions, states, and connecting journeys in a written **UX map**. For each region, the map described what appears when data is missing, loading, partial, or wrong. This made omissions available for review before they became gaps in the app.
+## Search can lead somewhere you did not expect
 
-Each screen also had a question to answer. On first launch: how does someone start, and will their photos be copied? During indexing: what does a half-finished collection allow the interface to claim? Those questions gave each review a specific purpose.
+Search often starts with a fairly definite task: find a photograph you remember. A description can bring likely candidates into view even when you have forgotten the filename. Once you recognise the picture, the search has done its job.
 
-The map lived in a version-controlled file. Changes could be compared, and the file could be rendered as simple text drawings for discussion. The drawings helped people inspect the layout while the written map remained the place to update the design.
+Visual exploration has a less definite endpoint. A photograph can be useful because it suggests what to look for next. In a reference collection, for example, you might follow a visual resemblance toward a composition you had not yet formulated. The value of that next image depends on the idea you are developing, not only on its match to the original words.
 
-## Review the decisions
+VSW lets a result become the next query through **Find similar**. The chosen image becomes the reference for a new ranking, with its name visible above the results. **Back to text results** provides a return to the earlier search. These controls make it possible to follow an image without treating every query as an unrelated start.
 
-A map records a decision, but it does not establish whether the decision is sound. For that, I used the [Heuristics Canon](/research/heuristics-canon/): a collection of review rules linked to their published sources. A finding could name a rule and explain why it applied, giving me something concrete to accept, challenge, or revise.
+![A photograph used as a Find similar reference, with the reference named and a return to text results available.](/images/work/sis-similarity-search.png)
 
-Some useful rules came from engineering books. *Designing Data-Intensive Applications* informed how the app treats its search index as a rebuildable copy of information. *Release It!* informed the handling of dependencies that can fail. *Latency* informed the decision to measure slow operations on the target machine.
+## The map makes related images browsable
 
-Those ideas reached the interface through ordinary product questions. If a drive is unplugged, what is missing from the map? If the search model cannot load, what still works? If indexing is unfinished, what does the result count describe?
+A ranked list arranges candidates around one query. A map provides a different way to look through the material: inspect a region, see which pictures it contains, and choose where to go next. UMAP supplies the arrangement for VSW’s Similarity view.
 
-### Similarity needs an explanation
+### How UMAP works, in plain terms
 
-The search model turns each picture and query into a numerical representation called an **embedding**. The app compares these representations to find nearby candidates. Their usefulness depends on a few constraints that shaped the product.
+The app’s image model turns each photograph into an **embedding**, a list of numbers used to compare images. Those numbers work together as a representation; individual entries are not labels such as “red,” “flower,” or “portrait.” Comparing the representations gives the software a way to find nearby images without consulting manually assigned tags.
 
-First, the representations must be comparable. The app uses one defined model and preparation process for its search index and queries. If that definition changes, the index must be rebuilt. The photo files remain the source from which it can be rebuilt.
+Those nearby images form **neighbourhoods**. UMAP represents neighbourhood relationships as a weighted graph: a network of connections whose strengths reflect the local relationships in the input. It then looks for a lower-dimensional arrangement that preserves those relationships as well as possible. This is the graph-and-layout process described in the [UMAP authors’ explanation](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html).
 
-Second, the nearest pictures are not necessarily good answers. A ranking can return its closest candidates even when none is relevant. The interface therefore avoids confidence percentages. It also warns “No close matches” for a nearly flat ranking while still showing the nearest photos. That check does not establish a reliable relevance threshold for every query.
+The arrangement becomes the map on screen. Its purpose is to make some of those relationships available to explore while accepting that a compact layout loses information. The image model supplies the representations; UMAP arranges them; the person decides which pictures are worth following.
 
-Third, faster search can introduce its own costs. An approximate search may miss candidates. Measurements on the target machine supported comparing the query with every indexed picture at the tested library size, so that simpler approach shipped. Larger libraries remain an open measurement question.
+### What the arrangement means
 
-## Check the built interface
+A neighbourhood is a place to investigate, not a category the app has established. Its pictures may be useful together, or their resemblance may be unimportant to the current brief. The photographs themselves let you make that distinction.
 
-Once the app ran, I checked it against the map again. The [WorkBay](/projects/workbay/) review workflow produced text drawings anchored to the implementation. One drawing exposed the contradictory first-launch state:
+The layout also changes how relationships look. A wide gap between groups is not an exact measure of their difference, and a dense patch does not establish the density of the original representations. Apparent splits can arise during the reduction, as the [UMAP clustering guide](https://umap-learn.readthedocs.io/en/latest/clustering.html) explains.
 
-<AsciiScreen label="Search screen as first built: a query field above the message “No library yet — open a folder to search.”, and directly beneath it a second panel reading “Preparing search…” with an indeterminate progress bar and a Cancel button. Two competing empty-state messages are drawn at the same time, and that Cancel cancels nothing.">
+Two settings help explain why maps can look different: **neighbourhood size** and **minimum distance**. Neighbourhood size determines how broadly the method looks around each item, shifting emphasis between fine local detail and a wider arrangement. Minimum distance affects how tightly points can pack in the layout. The [parameter guide](https://umap-learn.readthedocs.io/en/latest/parameters.html) illustrates both effects. These are explanations of the method, not controls I am claiming the current app exposes.
 
-```text
-┌─ Search ──────────────────────────────────────────────────────────────┐
-│ [ query…                              ] (or drop an image)            │
-│                                                                       │
-│   No library yet — open a folder to search.                           │
-│ ┌───────────────────────────────────────────────────────────────────┐ │
-│ │ Preparing search…                                      [Cancel]   │ │
-│ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  (indeterminate)                   │ │
-│ └───────────────────────────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────────────┘
-    two competing "nothing here yet" messages, rendered at the same time
-    this [Cancel] cancels nothing
-```
+## The image grid makes the map usable
 
-</AsciiScreen>
+A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
 
-The two messages were controlled independently. Both conditions could be true, so both messages appeared. The Cancel button reused an indexing action: pressing it recorded a cancelled indexing job even though no indexing job had started.
+This connection gives the map a role in the interaction. The map helps you choose where to look; the grid shows what is there. Without the grid, a point cloud would reveal an arrangement but provide little basis for deciding whether the pictures suit your work.
 
-A nearby state had a related problem. Search preparation and the Similarity layout could show two almost identical progress bars, each with a Cancel button. Their accessibility names distinguished the jobs, but their visible labels did not.
+The grid and map also need distinct interpretations. A search ranking compares the query with the image representations. The distance between marks on the displayed map is not that ranking. Keeping those roles clear lets the map support browsing without asking it to be a precise measuring instrument.
 
-The fix was to make the status region choose one state at a time. The order gives priority to active work, then errors and instructions, before a request to wait:
+## Keep the exploration on an everyday Mac
 
-<AsciiScreen label="Precedence order for the rebuilt status region, tested top to bottom: indexing shows live work first, then error explains why it stopped, then empty library says what to do, then preparing asks the reader to wait, and otherwise the region reads ready.">
+Local processing was a design constraint for the app. The photographs stay in the folders the person chooses, and the models ship with the application. I tested that arrangement on an 8 GB Apple Silicon Mac.
 
-```text
-   indexing ───────►  live work first
-   error ──────────►  then why it stopped
-   empty library ──►  then what to do
-   preparing ──────►  then just wait
-   otherwise ──────►  ready
-```
+That constraint extends beyond running the model. A selected region must also deliver photographs that can be inspected. Release 0.2.3 addressed thumbnail retries, a change recorded in the [release repository](https://github.com/darce/visual-search-workbench). The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
 
-</AsciiScreen>
+## Test retrieval and exploration separately
 
-The waiting state now names what is loading and offers no Cancel button, because that operation cannot be cancelled:
+The design now has an implementation to evaluate. I use screen inventories and the running app to check the relationship between a query, a selection, and the next action. The [interaction reference](/research/visual-search-workbench-screen-reference/) records that relationship. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support these reviews, but outside-user evaluation remains to be done.
 
-<AsciiScreen label="The rebuilt waiting state: a single indeterminate bar over the label “Preparing search” and the subtitle “Loading the search model…”, with no Cancel button, because nothing in this state can be cancelled.">
+That evaluation needs to distinguish **retrieval** from **exploration**. Retrieval asks whether someone can find a remembered photograph. Exploration asks whether someone can assemble useful references for a creative brief, including pictures that change the direction of the brief.
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
-│ Preparing search   Loading the search model…       (no Cancel) │
-└────────────────────────────────────────────────────────────────┘
-```
+For retrieval, I would examine completion, mistakes, and effort. For exploration, I would examine the images people keep, the paths they take, and their reasons for continuing from one picture to another. Comparing the map with the grid and image-to-image search would help establish what the map contributes.
 
-</AsciiScreen>
-
-A unit test checks the combinations of inputs and confirms that this region chooses one state, with Cancel available only for indexing. The [screen reference](/research/visual-search-workbench-screen-reference/) records the other release-specific states, including disconnected drives and unavailable models.
-
-The lesson for a product builder is practical: review the combinations as well as the individual messages. A well-written loading message can still be confusing when another region tells the person to do something incompatible.
-
-## Keep the evidence behind a decision
-
-The review process also needed a memory. WorkBay recorded decisions, their rationale, review findings, and the commands used to check changes. A later session could revisit that evidence instead of relying on a summary that said the work was finished.
-
-Recorded findings still needed judgment. Some led to changes; others were withdrawn or superseded. Keeping the reason for each resolution helped prevent later reviews from reopening the same issue without new evidence.
-
-The build tools used search too. Codemap indexed source-code structure, while local text embeddings helped retrieve earlier decisions and findings. Both produced candidates to inspect against the original code or record. A search result alone could not prove that a feature was absent or a decision had never been made.
-
-That is the same constraint the photo interface has to communicate. A view built from part of a collection must explain what it covers. In the app, that explanation helps someone interpret a map. In the build process, it helps a reviewer judge the evidence behind a change.
-
-## What remains to test
-
-This process found concrete defects and led to testable fixes. It has not yet shown how well people outside the reviews understand the resulting interface. A task-based study is the next step: can someone find a useful photo, recognise an incomplete result, and recover when part of the library is unavailable?
+The question is whether visual navigation helps someone develop an idea. A surprising selection may be useful even when it takes them beyond the subject they first searched for.

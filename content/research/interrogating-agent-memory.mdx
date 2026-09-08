@@ -1,63 +1,77 @@
 ---
-index: 2
+index: 4
 year: 2026
-title: 'Five Questions an Agent Cannot Answer from Context'
-subtitle: 'What coding agents actually ask a durable project record'
-type: 'note'
-status: 'measured'
-description: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, each grounded in what the record holds.
-details: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, and what the record shows about each.
+title: Five Questions I Ask the Project Record
+subtitle: Look for recurring trouble, earlier fixes, decision reasons, completion evidence, and failed approaches
+type: note
+status: running
+description: Five recurring questions show how I use WorkBay’s project record to examine an earlier decision before
+  making the next one.
+details: These are field observations from my development practice, not a controlled productivity study.
 thumbnail:
   src: research/swimmers-under-orange-moon-katherine-bradford.jpg
-  alt: "Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford."
+  alt: Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum
+    of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford.
   position: center
 masthead:
   src: research/swimmers-under-orange-moon-katherine-bradford.jpg
-  alt: "Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford."
+  alt: Katherine Bradford, Swimmers Under Orange Moon, 2025. Acrylic on canvas, 203.4 × 172.7 cm. Whitney Museum
+    of American Art, New York; gift of Avo Samuelian and Hector Manuel Gonzalez. © Katherine Bradford.
+  position: center
 tags:
-  - Agents
-  - Embeddings
-  - Research
+- Agent Workflows
+- Project Memory
+- Field Notes
 ---
 
-## The record behind the questions
+I use the project record when the next coding decision depends on work outside the current conversation. The record can bring back an earlier rationale or show that a new-looking failure has already occurred across several tasks.
 
-[WorkBay](/projects/workbay/) gives coding agents a durable project record: the decisions, review verdicts, blockers, and test results of every past session, stored as structured rows that outlive the sessions that wrote them. How the record works has [its own entry](/research/agent-memory/); this note reports what it gets used for.
+Five questions recur in my use of [WorkBay](/projects/workbay/): **where trouble repeats**, **whether a fix exists**, **why an approach was chosen**, **what supports completion**, and **what has already failed**. Each question calls for a different part of the record.
 
-An agent's working memory is its context window, the bounded transcript it can see at once. Close the session and the window is gone. The questions below recur in real work, and every one of them has its answer outside the window. Everything reported here is read from `handoff.db` files in daily production use. The patterns are measured; the claims about usefulness are testimony from that use, and the two are kept apart on purpose. Because the rows are plain structured data, any agent tool can read what another wrote, so one harness can check another's work without inheriting its transcript.
+The examples below are field observations from my development practice, not a controlled productivity study. [Project Memory Outside the Conversation](/research/agent-memory/) explains the storage and retrieval mechanism.
 
-<PullQuote>
-An agent that cannot see a past debate will happily argue both sides of it.
-</PullQuote>
+## Where does trouble repeat?
 
-## The questions
+A review usually concerns the work in front of it. A sequence of reviews can reveal trouble that keeps returning across tasks. The project record makes that sequence available even when no single session has seen all of it.
 
-### Where is the core problem?
+In one earlier audit, roughly three quarters of the recorded reviews in a small project had failed. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. One small project stood out precisely because of this: roughly three of every four of its recorded reviews failed. A session working there sees one failing review and fixes it in place; the record sees a streak, and in this project the streak pointed at the architecture.
+The findings behind the count were the material to inspect. Their shared constraints could suggest a broader problem, while differences between them could show that the apparent pattern had several causes. The count directed the investigation; the findings had to support the diagnosis.
 
-<Diagram
-    src="/images/research/memory-window.svg?v=1"
-    alt="A tall column of stacked records with failed reviews marked in coral, clustered in one band. A small bracket spans the two records one session sees; a bracket down the whole column spans what the record holds."
-    caption="The cluster does not exist inside any single session. It only exists in the record."
-/>
+## Does a useful fix already exist?
 
-### Has this fix been found before?
+A new finding may resemble a problem recorded under different wording. Semantic retrieval can surface an earlier resolution, which a human or agent can compare with the current code.
 
-The object of this search is a solution that worked. The record indexes accepted fixes, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix.
+The resolution may contain more than a patch. It can preserve the constraint that made the patch necessary or the reason a simpler change failed. That explanation helps determine whether the earlier fix applies now.
 
-### Are we relitigating a settled decision?
+An earlier fix remains a candidate until its conditions and recorded status have been checked. Copying the patch without that check would replace repeated investigation with a different risk: applying the right answer to the wrong problem.
 
-The object of this search is a judgment rather than a piece of code. Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and in use the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, nothing stops a model from being talked back into a position the project already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+## Why was this approach chosen?
 
-### Is "done" actually done?
+A decision record preserves the reasons behind a choice. Those reasons give a later discussion a starting point even when the people or tools involved were absent from the original conversation.
 
-A claim of completion checks against rows: verified test results and recorded review verdicts, not the agent's own report. The search by meaning covers the softer half of the question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. A different model can re-check the same completion evidence.
+For example, a later session may question why a site uses static output rather than server rendering. The recorded rationale can identify the requirements the choice addressed. Those requirements can then be compared with the needs of the current work.
 
-### What has already failed?
+A changed requirement may justify a changed decision. The record should make that change deliberate, not keep the original choice closed forever. Its value is distinguishing a new reason from an old debate whose reasoning has been forgotten.
 
-The object of this search is a dead end. Blockers and abandoned approaches persist past the session that hit them. A recurring failure in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup.
+## What supports the completion claim?
 
-## Scope
+A completion claim needs evidence tied to the work being assessed. WorkBay can preserve review verdicts and test records alongside task and commit information. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
 
-This note does not show that any of this saves money or tokens. Whether reuse lowers what an agent spends is a causal question, and it is the subject of [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/).
+The revision matters because a test result from earlier code does not automatically establish the state of the current code. A useful review follows the evidence back to the change instead of relying on a summary saying that the task passed.
+
+Another model can perform that review without inheriting the author’s conversation. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
+
+## What has already failed?
+
+A failed approach leaves information that can disappear from a recap of the eventual success. Blockers and abandoned attempts preserve that information, including why the approach was set aside.
+
+The reason distinguishes an option that was temporarily unavailable from one that produced incorrect results. An unavailable dependency may later become usable. An incorrect result may expose a constraint that still applies.
+
+The history therefore does not forbid another attempt. It makes the next attempt answer a specific question: what has changed since this failed?
+
+## From a useful lookup to an evaluated benefit
+
+These questions give the record a practical role in the next decision. The examples show what can be inspected; they do not establish how often retrieval finds the right material or how much work it saves.
+
+That benefit needs a comparison that measures both effort and the resulting work. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed comparison, keeping the evaluation separate from these observations of use.

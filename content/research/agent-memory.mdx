@@ -1,84 +1,76 @@
 ---
-index: 1
+index: 3
 year: 2026
-title: 'Memory Outside the Model'
-subtitle: 'Durable agent state in SQLite, with embeddings as the index'
-type: 'method'
-status: 'running'
-description: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
-details: WorkBay keeps agent memory in one SQLite file per repository, `handoff.db`. It stays private by default, keeps what sessions learned after they close, and any harness that knows the schema can read it.
+title: Project Memory Outside the Conversation
+subtitle: The record, retrieval layer, and context packet behind WorkBay
+type: method
+status: running
+description: WorkBay separates the stored project record from the retrieval layer that finds it and the context
+  packet a coding session reads.
+details: This article describes the implementation. Its use and proposed evaluation have separate companion articles.
 thumbnail:
   src: research/dec-29-1977-on-kawara.jpg
-  alt: "On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm. Solomon R. Guggenheim Museum, New York. © One Million Years Foundation."
+  alt: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
+    Solomon R. Guggenheim Museum, New York. © One Million Years Foundation.
   position: center
 masthead:
   src: research/dec-29-1977-on-kawara.jpg
-  alt: "On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm. Solomon R. Guggenheim Museum, New York. © One Million Years Foundation."
+  alt: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
+    Solomon R. Guggenheim Museum, New York. © One Million Years Foundation.
+  position: center
 tags:
-  - Agents
-  - SQLite
-  - Embeddings
-  - Research
+- Agent Workflows
+- SQLite
+- Semantic Retrieval
+- Research
 ---
 
-## A session forgets everything
+A later coding session needs more than an account of what happened. It may need the reason an approach was rejected, the finding that remains unresolved, or the test result behind a completion claim. [WorkBay](/projects/workbay/) keeps that material in a project record outside the conversation.
 
-A coding agent works inside a context window: the bounded transcript the model can see at once. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
+The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
 
-[WorkBay](/projects/workbay/), an orchestration layer that runs coding agents across repositories and gives them a durable shared record, answers with a database instead of a bigger window. Every repository it manages carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run and nothing exotic required to read it. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. Each write lands as a timestamped row attributed to the session and agent that made it, so the record doubles as an inspectable audit trail of what was concluded and when. The next session starts from a small packet, a bounded selection drawn out of that record, instead of starting cold.
+These parts describe the mechanism. [The field note](/research/interrogating-agent-memory/) describes how I use it, and [the evaluation proposal](/research/economics-of-agent-memory/) asks whether it reduces work at comparable quality.
 
-<Diagram
-    src="/images/research/memory-loop.svg?v=1"
-    alt="Session A writes decisions, findings, and results into handoff.db, a single database file in the repo, while its own context is erased when it ends. A small packet drawn from the database seeds session B."
-    caption="The context dies with the session. The record survives it, and seeds the next one."
-/>
+## The record preserves decisions and evidence
 
-## An index card is not the book
+Each WorkBay repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records.
 
-The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
+Those records keep different aspects of the work distinct. A decision has a rationale. A finding has a status and a recorded resolution. A test has a command and result, with task and commit information helping connect the evidence to the work it concerns.
 
-So selected fields are also embedded. An embedding model reads a piece of text and produces a vector: a list of numbers, usually several hundred of them, that works as coordinates. Each number scores the text along one learned dimension of meaning, and together they place the text as a point in a space where nearby points say similar things. Distance between points stands in for distance between meanings, so asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject."
+A later session can therefore retrieve a decision as a decision. It need not reconstruct the rationale from a recap saying that planning was completed. The rationale still needs to be checked against present requirements, but the earlier reasoning is available for that check.
 
-<Diagram
-    src="/images/research/memory-vector.svg?v=1"
-    alt="A question about a rejected retry approach passes through an embedding model and becomes a vector, a bracketed list of numbers labeled as coordinates. On a plane beside it, the question is plotted as a coral point close to the rationale that rejected it, while an unrelated note sits far away. A note reads 'near in space, near in meaning'."
-    caption="Meaning becomes coordinates. Distance does the searching."
-/>
+## The retrieval layer finds material in the record
 
-The vector works like a card in a library catalog: it finds the book, and authority stays with the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+Retrieval depends on what the session already knows. A known task or finding can be looked up directly. Known wording can be found through full-text search. A question phrased differently from the earlier record can use optional semantic retrieval.
 
-<PullQuote>
-An embedding can find the answer. It cannot be the answer.
-</PullQuote>
+Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
 
-## Layers of authority
+A retrieved record might contain the rationale for an approach rejected earlier. That rationale can explain the original constraint; the constraint can then be compared with the current implementation. The result is a reason to examine the earlier decision, not an instruction to repeat it.
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically, through database queries and plain word search. When you only know the meaning, similarity search over the embeddings proposes candidates. Whatever is found gets cut down to a bounded packet sized to fit at the top of a session, a deliberate spend of scarce context on the task at hand.
+### Keep the index tied to the record
 
-<Diagram
-    src="/images/research/memory-layers.svg?v=1"
-    alt="Four stacked layers narrowing downward: rows as the canonical record, exact search with SQL and full text, meaning search with embeddings, and the packet the next session reads. A small box beside the embeddings layer, annotated 'each vector points back to a row', with an arrow curving up to the rows layer."
-    caption="Authority flows downward. Every layer below the rows resolves back to them."
-/>
+The embeddings form an index over selected fields in the database. Links and text fingerprints connect the index entries to their source records. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
 
-Similarity search has a failure mode exact search lacks: it never returns nothing. It answers "here is the closest thing I have," and as the index grows, the closest thing is always something. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema, where no query can forget to apply it. Left unfenced, recall degrades into suggestion.
+The related-prior-work tool returns candidates for a human or agent to read. Its contract prevents those candidates from automatically closing findings or becoming inputs to a merge decision. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
 
-## The record leans toward failure
+The tool also reports why a lookup returns nothing. An empty store, an unavailable provider, incompatible model information, and no result above the threshold are distinct outcomes. In particular, no result above the threshold does not prove the relevant history is absent. The [retrieval implementation](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) documents these boundaries.
 
-Across the repositories indexed so far, review findings make up about four fifths of the embedded entries: what broke, and what resolution survived review. Most of the rest are decision rationales. These are the things a fresh session cannot see and would otherwise re-derive. Anyone building their own version can take the bias before taking any of the machinery: index failures and rulings ahead of summaries.
+## The context packet gives the session a selection
 
-## Private by default, portable on purpose
+A context packet brings selected records into the current conversation. The packet must be bounded because the conversation still has finite space. Loading every past record would compete with the task the session is meant to complete.
 
-The record is private by default. `handoff.db` stays out of version control, because the record holds reasoning traces, and reasoning traces hold whatever the agent saw, including whatever secrets crossed its screen. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
+The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
 
-<Diagram
-    src="/images/research/memory-boundary.svg?v=1"
-    alt="The handoff database sits on the private side of a dashed machine boundary. A bounded export of chosen rows passes through a gap in the boundary. An arrow toward git is stopped at the boundary with a coral X labeled never."
-    caption="One gate out, and it is deliberate. The path into the public repository stays closed."
-/>
+The useful question is whether a selected record changes the next decision. A paragraph can sound relevant without supplying the constraint or unresolved finding the session actually needs. That difference between apparent relevance and useful context is one reason retrieval needs evaluation.
 
-Because the record is plain SQLite, reading it takes only the file and its schema. A harness, the tool that runs the agent, is interchangeable at that layer: Claude Code and Codex both read the same rows today. The record belongs to the repository. That is portable state, and it should not be mistaken for free switching: moving between harnesses still costs authentication, installation, capability gaps, and re-orientation. The durable record removes one cost from that list, the loss of accumulated project history.
+## Portability follows the record
 
-## Where the evidence stands
+The structured record can be exported and read by different supported coding tools. A session in a new tool can retrieve history written by another tool without having its entire conversation. The new tool still needs its own authentication and setup, and its capabilities may differ.
 
-Daily use is testimony, and testimony is the weakest tier of evidence worth naming. That is the ceiling for any description of a running mechanism. The counterexample sits close to home: the youngest database in the fleet holds a few dozen decisions and has no embedding index switched on yet. What agents actually ask a record like this is read out of production data in [a companion field note on the questions agents bring to the record](/research/interrogating-agent-memory/). Whether remembering saves more than it costs is a causal question, and it belongs to [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/), where the claim has a criterion it must survive.
+The database stays out of version control by default because it can contain sensitive project material. Keeping the file local does not make every use of its contents private: a context packet sent to a hosted model sends that selected material to the provider. Export and model use both require attention to what the record contains.
+
+## Test what the record changes
+
+The implementation makes recorded history persistent and retrievable. It cannot preserve reasoning that was never recorded or guarantee that each useful record will be found.
+
+Those limits define an evaluation question: when a session receives selected history, does it complete comparable work with less effort? The [economics article](/research/economics-of-agent-memory/) separates the cost of supplying that history from its effect on the result.
