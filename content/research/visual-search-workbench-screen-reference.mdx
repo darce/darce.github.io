@@ -34,11 +34,11 @@ A text query is useful when you can describe what you want. A reference image is
 
 ```text
 Photo folders you choose
-          |
+          │
       Search index
-          |
+          │
   Words or reference image
-          |
+          │
     Candidate photographs
        [A] [B] [C]
        [D] [E] [F]
@@ -55,14 +55,14 @@ A selected photograph opens for inspection. **Find similar** makes that photogra
 <AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
 
 ```text
-Text query --> [A] [B] [C] [D]
-                    |
+Text query ► [A] [B] [C] [D]
+                    │
                Find similar
-                    |
+                    │
               B is the reference
-                    |
+                    │
                 [E] [F] [G]
-                    |
+                    │
              Back to text results
 ```
 
@@ -84,22 +84,22 @@ A selected region becomes a set of photographs in the linked grid. The grid lets
 
 ```text
 Similarity overview
-+---------------------------+
-|   . .              . .    |
-|  +---------+              |
-|  | A  B  C |      . .     |
-|  +---------+              |
-|       . .                 |
-+---------------------------+
+┌───────────────────────────┐
+│   . .              . .    │
+│  ┌─────────┐              │
+│  │ A  B  C │      . .     │
+│  └─────────┘              │
+│       . .                 │
+└───────────────────────────┘
        Selected region
-              |
-              v
+              │
+              ▾
       Linked image grid
-      +-------------------+
-      | [A]  [B]  [C]     |
-      | Inspect these     |
-      | photographs       |
-      +-------------------+
+      ┌───────────────────┐
+      │ [A]  [B]  [C]     │
+      │ Inspect these     │
+      │ photographs       │
+      └───────────────────┘
 ```
 
 </AsciiScreen>

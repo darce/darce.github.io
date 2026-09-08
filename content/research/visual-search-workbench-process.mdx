@@ -31,11 +31,11 @@ The design brings together **search**, a **map**, and an **image grid**. Search 
 
 ```text
 Photo folders you choose
-          |
+          │
       Search index
-          |
+          │
   Words or reference image
-          |
+          │
     Candidate photographs
        [A] [B] [C]
        [D] [E] [F]
@@ -58,14 +58,14 @@ VSW lets a result become the next query through **Find similar**. The chosen ima
 <AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
 
 ```text
-Text query --> [A] [B] [C] [D]
-                    |
+Text query ► [A] [B] [C] [D]
+                    │
                Find similar
-                    |
+                    │
               B is the reference
-                    |
+                    │
                 [E] [F] [G]
-                    |
+                    │
              Back to text results
 ```
 
@@ -103,22 +103,22 @@ This connection gives the map a role in the interaction. The map helps you choos
 
 ```text
 Similarity overview
-+---------------------------+
-|   . .              . .    |
-|  +---------+              |
-|  | A  B  C |      . .     |
-|  +---------+              |
-|       . .                 |
-+---------------------------+
+┌───────────────────────────┐
+│   . .              . .    │
+│  ┌─────────┐              │
+│  │ A  B  C │      . .     │
+│  └─────────┘              │
+│       . .                 │
+└───────────────────────────┘
        Selected region
-              |
-              v
+              │
+              ▾
       Linked image grid
-      +-------------------+
-      | [A]  [B]  [C]     |
-      | Inspect these     |
-      | photographs       |
-      +-------------------+
+      ┌───────────────────┐
+      │ [A]  [B]  [C]     │
+      │ Inspect these     │
+      │ photographs       │
+      └───────────────────┘
 ```
 
 </AsciiScreen>
