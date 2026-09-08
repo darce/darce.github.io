@@ -1,178 +1,168 @@
 # Daniel Arcé
-Product designer and design technologist who designs and builds accessible software and AI features, from interaction design and prototyping through implementation.
+Daniel Arcé works across interaction design and front-end development, using working software to explore how people find information and act on it.
 
 ## About
-Hello, I'm Daniel Arcé.
+Hello, I’m Daniel Arcé.
 
-I work in product design, from early ideas and working prototypes through to launch. My background in interactive media and front-end development lets me contribute to both the experience and the software behind it.
+I’m a product designer and design technologist in Toronto, with a hands-on front-end development practice. I use working software to explore how people find information and act on it. That interest connects my work in media and enterprise software with the independent products I design and build today.
 
-### Working with prototypes
+### Designing through working software
 
-I build prototypes so a team can try a proposed flow and compare alternatives. Often, seeing a low-fidelity prototype can inform engineering solutions that prevent expensive mistakes down the road. Higher-fidelity prototypes present interactions that can be validated, and developers get a better feel of what designers intend to build in a way that static documentation cannot.
+A working prototype gives a team something to try. A selection leads to another view; that view may expose a choice that was easy to miss in a static screen. Trying the interaction helps us decide what to keep, what to change, and what the implementation needs to support.
 
-### Independent products
+I stay involved as those decisions reach production. My front-end work includes React and TypeScript, with accessibility built into the behaviour of the interface. Keyboard interaction and focus management are part of making that behaviour work for the people using it.
 
-[Visual Search Workbench](/projects/visual-search-workbench/) is a macOS app I'm developing for exploring photo collections. You can search with words, or start with a picture you like, then follow similar images to find a direction for a creative project. It searches folders on your Mac, with all processing kept local; nothing gets uploaded anywhere.
+### Carrying an idea into production
 
-[AltContext](/projects/altcontext/) combines facial recognition with image description to generate captions with context about who is pictured. In a photograph of a band performing, for example, a description could name the singer as well as describe the scene. It uses identities confirmed by the publisher, with descriptions reviewed in a WordPress admin page. Processing runs on Oracle Cloud Infrastructure (it's not yet practical to describe images locally), with controls to delete the site's hosted recognition data. Publishers maintain control of their data.
+At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition through working prototypes to launch in six months. I proposed collapsible panels so viewers could browse coverage and read comments while the video continued playing. Those panels became working front-end interactions, developed with the internal team and external vendors.
 
-### Bringing the work to launch
+At [PhotoShelter](/projects/photoshelter/), my work combined product R&D with accessibility engineering. A workflow-automation prototype exposed integration issues before production development and informed Smart Galleries. Alongside that R&D work, I led a WCAG audit and front-end remediation, including keyboard support across Web Components, and helped other developers adopt accessible patterns.
 
-At [PhotoShelter](/projects/photoshelter/), I combined product R&D with accessibility work on a large platform for managing digital media. A workflow prototype exposed integration problems before production development. I audited the interface against WCAG accessibility guidelines and worked on fixes to meet enterprise customers' requirements.
+### Exploring and describing images
 
-At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition to launch in six months, working with the internal team and external vendors. Though video content interfaces that combine a social interactivity axis are common today, there were few examples to guied us back then. One soluition I prototyped were collapsible panes so viewers could read comments and browse coverage while the video kept playing, then iterated those interactions through working front-end prototypes to help define backend requirements into production.
+My independent image products pursue two related interests: visual exploration and image description.
 
-### Support tools in the age of A.I. prototyping
+**Visual exploration** is the focus of [Visual Search Workbench](/projects/visual-search-workbench/), a macOS app I designed and released. A person can start with words or a picture, then follow similar images without tagging the collection first. A map offers another way to browse those relationships. I wanted to leave room for a useful picture to suggest a direction the original query did not anticipate, while keeping processing on the Mac. I have tested the app on an 8 GB machine.
 
-I maintain [WorkBay](/projects/workbay/) keeps project decisions and review findings available across sessions with AI coding tools. The main advantage is avoiding vendor lock-in, I can seamlessly switch a session from Codex, Claude, Grok, etc. WorkBay also has a [semantic search](/research/agent-memory/) feature that surfaces previous failures and design decisions, and expands the context during planning sessions [well beyond the immediate task horizon](/research/interrogating-agent-memory/).
+**Image description** is the focus of [AltContext](/projects/altcontext/), which is still in development. It combines a photograph with a publisher’s named people roster and the page’s context to draft a description in WordPress. The editor reviews the identity and wording before applying the text. The intended benefit is more useful context for blind readers, including who is pictured when that matters to the page.
 
-Another project I upkeep is [Heuristics Canon](/research/heuristics-canon/), a collection of principles drawn from published work on design and software. It's proven helpful when reviewing a proposed solution and looking for alternatives. 
+### Keeping design decisions available during development
+
+AI-assisted development introduced another problem into my practice: decisions and review findings could be lost between coding sessions. I built [WorkBay](/projects/workbay/) to preserve those records outside the conversation and make them available to a later session, including when I move to another supported coding tool. Its orchestration layer lets me deploy different agents across the orchestration, implementation, and review stages. In my use, varying the agent composition across those stages makes the agents check each other’s work and helps soften the swings in inference speed and quality that can follow a model release.
+
+Design reviews produce records worth keeping too. I use UX maps to inventory existing interfaces and examine proposed changes. Those maps can be rendered as text screens and flows for people and AI tools to review. [Heuristics Canon](/research/heuristics-canon/), a collection I maintain, supplies specific questions and references for the critique. The resulting findings guide changes that I check in the running interface.
 
 ### Get in touch
 
-I'm interested in senior and lead product design roles where I can stay involved from early exploration through delivery.
+I’m interested in senior and lead product design roles where I can contribute to exploration and stay involved through delivery.
 
-[Email me](mailto:daniel.arce@gmail.com) about a role or a project you would like to discuss.
+[Email me](mailto:daniel.arce@gmail.com) about a role or a project.
 
 Portrait by Liam Maloney</a>.
 
 ## Projects
 
 ### Visual Search Workbench
-*Find photos by description or with an image*
+*Find a picture, then follow its visual neighbours*
 Year: 2026
-Tags: Product Design, Interaction Design, Human-AI Interaction, SwiftUI, Core ML, Accessibility
-Summary: A macOS app for finding and exploring photos in your own folders, with search by words or pictures.
+Tags: Product Design, Interaction Design, Visual Search, UMAP, SwiftUI, Core ML
+Summary: Search your photo folders by words or an example image, then explore related pictures on a UMAP map. Processing stays on the Mac.
 
-Imagine looking for a flower photo in a folder of film scans. You remember the pink petals, but the filename is just a number. You could open each scan, or describe what you remember and start from the closest results. Apple's Photo app helps, but not for images kept in random folders and drives.
+Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. A similarity map offers another route through the collection, without requiring you to tag the photographs first.
 
-Visual Search Workbench makes a different search path possible. It searches the photo folders you choose using words or a reference picture. From a promising result, you can find similar photos, explore the collection by location or date, and save matte cutouts for use elsewhere.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon Macs, keeps image processing on-device, and has been tested on an 8 GB machine.
 
-A reference picture can be the beginning of a moodboard, a colour study, or a composition. Following similar images lets you walk through the collection, even when you don't quite have the words to describe what you're looking for yet.
+![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
-![A search for flowers returns pink cosmos photos from a film-scan library, with one result selected for inspection.](/images/work/sis-search-layer.png)
+*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.3.*
 
-*Screenshots show version 0.2.0, when the app was called Semantic Image Search. The current download is 0.2.3; the [screen reference](/research/visual-search-workbench-screen-reference/) documents that version.*
+## Give the search a starting point
 
-## Find a starting point
+The search begins with the folders you choose. The app reads their photographs into a separate search index and leaves the originals where they are. That index lets you search by what a picture depicts even when its filename is a camera number.
 
-Start by choosing a folder. The app reads the photos where they are and builds a search index: a separate catalogue it can use to compare pictures. The originals stay in their folders, and the image processing runs on your Mac; nothing gets uploaded anywhere.
+You can give the search two kinds of query: a description or a reference picture. A description is useful when you remember a subject but not the filename. A reference picture is useful when showing what interests you is easier than putting it into words.
 
-Once the folder is indexed, you can search for something like “flowers” or “red bicycle.” The app compares the meaning of the phrase with the pictures, so a useful result does not depend on someone having named or tagged the file.
+Drop a reference picture into the app, or choose **Find similar** on a photograph in the collection. That photograph becomes the query for the next set of results. A banner names the reference, and **Back to text results** returns to the earlier query.
 
-Sometimes a picture is easier than a description. Drop a reference image onto the window, or choose **Find similar** on a photo you already have. The results now follow that picture. A banner names the reference image and gives you a way back to the text results, so you can tell which search you are looking at.
+![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
 
-![Find similar uses a pink-flower photo as the reference, names it above the results, and offers a Back to text results button.](/images/work/sis-similarity-search.png)
+A result can therefore become a new direction. You might begin by looking for flowers and continue because a particular image suggests something useful for a colour study. That is the kind of exploration I wanted the app to support.
 
-These results are suggestions ordered by similarity. A high position does not prove that a picture contains what you asked for. The interface avoids turning similarity scores into confidence percentages, and it can show “No close matches” when the ranking gives too little useful distinction between results. The nearest photos remain available to inspect.
+## Explore the collection on a map
 
-## Follow the pictures
+The **Similarity** view arranges related images on a map using UMAP. UMAP takes the images’ numerical representations and looks for a layout that keeps neighbours near one another. The result gives you regions to explore instead of a list to read from top to bottom.
 
-A useful result can lead somewhere the original query did not. Perhaps a flower photo reminds you of a trip, or its colours suggest a direction for a design. You can explore those connections through **Similarity**, **Places**, and **Timeline**.
+A region becomes useful when you can see the photographs behind it. Select a region, and its pictures appear in the linked grid. The grid lets you judge the images themselves and choose another one to follow.
 
-**Similarity** groups visually related photos on a map. You can select a cluster and inspect its pictures in the grid. The map is a way to browse neighbourhoods; the size of a gap between clusters is not a precise measure of how different the pictures are.
+![A Similarity map of a 2,314-photo collection, with photographs from a selected region shown in the grid.](/images/work/sis-layers-umap.png)
 
-![The Similarity view groups a 2,314-photo library into a point cloud, with photos in the selected region shown as thumbnails.](/images/work/sis-layers-umap.png)
+*Selecting a region connects the overview to the photographs it contains.*
 
-**Places** shows photos with recorded coordinates. Select a region to find pictures taken there. **Timeline** groups photos by date, letting you narrow a collection to a year, month, or smaller period. It distinguishes recorded capture dates from file dates and keeps undated photos visible as a separate count.
+The map suggests where to look. Its groups are not automatically named categories, and the gaps between them are not exact measures of visual difference. [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) explains the method and the design idea; the [interaction reference](/research/visual-search-workbench-screen-reference/) follows the controls and views.
 
-Your selection carries between these views. Their zoom and pan also survive tab changes, so you can examine the same set from another angle without rebuilding your view.
+## Look at the selection by place or time
 
-Selecting a photo opens its details, including the camera, capture time, and location when those are available. Those details give you another way to judge whether a suggested picture is the one you need.
+A selection can be explored through **Similarity**, **Places**, or **Timeline**. Similarity organises the images by relationships in their representations. Places uses recorded coordinates. Timeline uses dates to show broader or narrower periods.
 
-## Take a cutout into another project : **experimental feature**
+The selection carries between those views, and each view retains its zoom and pan when you change tabs. You can examine the same material from another angle without rebuilding the view. Selecting an individual photograph opens its available file metadata, including camera information, capture time, and location.
 
-Once you find a useful picture, the app can separate subjects into layers with transparent backgrounds. You can inspect a layer and save it for composition elsewhere.
+## Take a cutout into another project
 
-![A cat photo has three proposed cutout layers, labelled cat, plant, and left plant, each marked experimental.](/images/work/sis-cat-layers-detail.png)
+A useful photograph may contain a subject you want to use in a composition. The app’s experimental cutout feature proposes subject layers with transparent backgrounds. Those layers can be inspected and saved for use elsewhere.
 
-These layers are labelled **experimental** because a proposed cutout still needs inspection. A recognisable subject does not guarantee a clean edge or a useful separation from its background. There is also a limit to what the local system can do in a reasonable time. Expect frayed edges, mislabeled objects, nonsensical segmentation. Still, this feature can do some of the legwork for you.
+![A cat photograph with proposed cutout layers, each marked experimental.](/images/work/sis-cat-layers-detail.png)
 
-## What I have checked
+The layers still require judgment: an edge can be rough, a label can be wrong, or the proposed separation may not suit the composition. Cutouts remain a secondary experiment alongside search and exploration.
 
-The app has been tested on an 8 GB Apple Silicon Mac. Network checks confirm no gallery data leaving the device in the tested flows.
+## Keep the work on the Mac
 
-A task-based study with outside users has **not yet run**, and larger libraries remain unmeasured. The next evaluation needs to establish whether people can find useful photos and correctly interpret the missing-data explanations.
+The app bundles the search and cutout models, so they are available without a first-launch model download. The models process the photographs locally. My network checks found no gallery data leaving the device in the tested flows.
 
-The [process article](/research/visual-search-workbench-process/) explains how I designed and reviewed those states. The [screen reference](/research/visual-search-workbench-screen-reference/) preserves the detailed drawings and release-specific behaviour.
+The 8 GB test establishes a working configuration rather than a memory requirement for every library. Larger collections still need measurement, and an outside-user study has not yet run. That study needs to examine both finding a remembered image and discovering useful material for a creative brief.
 
 ## Download
 
-**[Download Visual Search Workbench 0.2.3 for macOS](https://dl.darce.xyz/)** — Apple Silicon, macOS 14 or later.
+[Download Visual Search Workbench 0.2.3](https://dl.darce.xyz/) for Apple Silicon, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.3.dmg`, approximately 295 MB.
 
-The download is hosted on GitHub. Choose `VisualSearchWorkbench-0.2.3.dmg`, about 295 MB. The search and cutout models are bundled, so no model download is needed on first launch.
+The app is not notarized by Apple, so macOS may block its first launch. The release instructions explain the **Privacy & Security → Open Anyway** option. The [GitHub release repository](https://github.com/darce/visual-search-workbench) provides the built app, model-licence information, and a `SHA256SUMS` file. It does not publish the application source.
 
-The app is **not notarized by Apple**, so macOS may block the first launch. To open it, use **System Settings → Privacy & Security → Open Anyway**.
-
-The [release page](https://github.com/darce/visual-search-workbench) includes model licences and a `SHA256SUMS` file for checking download integrity. If you use Terminal, put that file beside the disk image and run `shasum -a 256 -c SHA256SUMS`.
-
-### AltContext: Recognising People in Image Descriptions
-*Facial recognition and image description for richer context in WordPress*
+### AltContext
+*Use the photograph, confirmed identities, and page context to draft image descriptions*
 Year: 2026
-Tags: Product Design, Human-AI Interaction, Accessibility, WordPress, Vision-Language Models, Python, React
-Summary: AltContext combines facial recognition with image description to give blind readers more context about who is pictured, with editorial review and control over site-owned identity data.
+Tags: Product Design, Human-AI Interaction, Accessibility, React, TypeScript, WordPress, Python
+Summary: AltContext combines a photograph with a publisher’s named people roster and page context. Editors review the proposed identity and wording before applying the text in WordPress.
 
-A blind reader listening to a photograph described as “a person speaking at a lectern” knows what is happening, but may still be missing the point of the picture: who is speaking. If it shows someone the reader knows, a name can make the scene more meaningful.
+A description such as “a person singing on a stage” can explain an activity while leaving out who is pictured. When the page concerns a particular performer, that identity may be part of the photograph’s meaning.
 
-AltContext combines facial recognition with image description to bring that identity into the text. It matches faces against people the site has confirmed, then uses those identities alongside the image and its page context to draft a description. An editor reviews the result before applying it in WordPress.
+AltContext is a WordPress product I am designing and building to bring that context into image descriptions. It combines the photograph with identities from a publisher’s named people roster and information from the page. The editor reviews the proposed identity and wording before applying the text. The intended benefit is more useful context for blind readers; the product is still in development.
 
-## Put a name into the scene
+## Build a description from the photograph, the roster, and the page
 
-Consider a photograph of a familiar speaker at an event. An image model can describe the lectern, the red jacket, and the audience. Facial recognition can connect the speaker to a name in the site's roster. Together, they can produce a description that tells the reader who is speaking and what that person is doing.
+The description draws on three inputs with different roles: **the photograph**, **the roster**, and **the page**. Keeping those roles distinct helps explain what supports each part of the proposed text.
 
-That combination is the core of AltContext. The roster supplies the identity; the picture supplies the scene. The post and caption can add relevant context, such as a person's role, where the image supports its use. For a blind reader, the intended benefit is a description that preserves more of the information a sighted reader might recognise immediately.
+**The photograph** supplies visual information about the scene. An image model may describe a microphone, clothing, or the setting. Those observations provide material for the description without requiring the model to identify the person from general knowledge.
 
-The editor establishes the roster in WordPress. Groups of faces can be associated with a person, and mistaken groupings can be corrected. Those confirmed identities give the description system a site-specific reference for deciding which names it may use.
+**The roster** supplies names the site has established. An editor builds the roster in WordPress by associating groups of faces with people and correcting mistaken groupings. Face matching compares a face in a new image with that site-specific reference. A proposed match still needs review, and the naming policy determines whether a name may be used.
 
-A name in the surrounding text is not sufficient on its own. The system checks whether a recognised face supports it before retaining it in the description. Recognition can still be wrong, so a proposed identity remains part of the editor's review.
+**The page** supplies publishing context, including the image caption and surrounding post. That context helps determine which information matters: a performer’s identity may be important in an event report, while a discussion of a garment may call for attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) explains how an image’s purpose and context shape its text alternative.
 
-## Make the description useful on the page
+The page cannot establish everything about the photograph. A name mentioned in an article does not, by itself, prove who is pictured. AltContext’s reconciliation step distinguishes information supported by something in the image from context about the page or event, so background information is not simply repeated as though it were visible.
 
-Identity is useful when it helps explain the picture's purpose. A speaker's name may matter in an event report, while a photograph used to demonstrate the cut of a jacket may need different wording. The [W3C image guidance](https://www.w3.org/WAI/tutorials/images/) describes how an image's use and context shape its text alternative.
+## Review the proposal before applying it
 
-AltContext draws on information WordPress already holds, including the image caption and the post around it. The model is instructed to check that material against the picture. It should not turn an unrelated sentence from the article into something supposedly visible in the image.
+The proposed identity gives the editor a match to inspect. The editor can compare the image with reference photographs and decide whether the person should be named. That decision informs the draft description, whose wording can then be reviewed or changed before it is applied.
 
-In the review workflow, the editor reads the proposed description and checks the identity, visible details, and relevance to the page. The editor can accept the draft or change its wording before saving it to the WordPress image. Generating a draft and applying it are separate actions in this workflow.
+The draft and the applied text remain separate. Generating a description does not itself publish it, and a suggested name need not be accepted. The publishing workflow also supports a longer description alongside alt text. An image marked as decorative can skip generation and use an empty text alternative.
 
-An optional mode saves a longer description alongside the alt text, giving the editor room for detail. The suggested 125-character length for alt text is advisory; [WCAG sets no such limit](https://www.w3.org/TR/WCAG22/#non-text-content). Images that serve only a decorative purpose can be marked accordingly and skip description generation, using the [empty alternative W3C recommends](https://www.w3.org/WAI/tutorials/images/decorative/).
+## Try the decisions in a practice copy
 
-## Alongside PhotoShelter PeopleID
+The guided walkthrough follows the identity decision through to the resulting text. It starts with saved face-match results from a development run. Confirming a match or keeping a person unnamed changes the practice draft; the draft can then be edited, applied to the practice copy, or restored with undo.
 
-[PhotoShelter PeopleID](https://go.photoshelter.com/brands/blog/facial-recognition-auto-tagging-peopleid/) is a relevant comparison. It matches faces to reference headshots and supplied metadata, helping teams tag and find people in a digital asset library. PhotoShelter also offers [AI-generated alt text](https://go.photoshelter.com/brands/blog/photoshelter-launches-new-ai-generated-alt-text-capability-makes-visual-content-more-accessible/), with options to apply suggestions automatically or review them first.
+The practice copy does not publish to a live page. Its recognition results are saved rather than generated live. An optional live-description path is a separate operation whose availability depends on the service.
 
-AltContext focuses this work on the WordPress publishing workflow: using confirmed identities as input to a description of the scene, with blind readers as a primary audience. The site's own roster and editorial context inform the text, and the editor can correct the identity or wording where the image is published.
+[Open the guided walkthrough](https://demo.altcontext.com/wp-admin/admin.php?page=alt-context-dashboard#/guided-prototype). Access is managed through the [AltContext site](https://altcontext.com).
 
-PhotoShelter's published descriptions do not explain how recognised identities feed into its generated alt text. A direct comparison would need to examine the resulting descriptions and the effort required to correct them. The documented distinction here is AltContext's focus on bringing site-confirmed identities into the WordPress description workflow.
+## Connect the interface to the stored decision
 
-## Keep control of identity data
+My work covers the interaction design and the implementation behind it. The admin interface uses React and TypeScript, the WordPress integration uses PHP, and the supporting recognition and description services use Python/FastAPI. Working across those parts lets me follow an editorial action from its control on screen to the result that is stored.
 
-Facial recognition creates sensitive data about the people in a collection. Control over that data is part of the product design: the site should retain authority over names and editorial decisions, and be able to inspect and remove the recognition data held by the service.
+I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-well-as-the-code) to inventory the interface and produce screens and flows for review. Review findings guide implementation changes, which I check in the running interface. These reviews address structure and behaviour; evaluation with editors and readers has a different job.
 
-AltContext's recognition and description services run on Oracle Cloud Infrastructure (OCI). Images leave the WordPress host for that processing. WordPress remains the source of record for names and editorial corrections. The hosted service handles recognition and stores the biometric representations used to compare faces.
+## Make the processing and retention choices explicit
 
-Database access rules keep each site's recognition records separate. Retention settings let the operator choose how hosted recognition data is kept. Data is retained by default; disposal after synchronisation and on-demand purge are available alternatives. Exports let the operator inspect recognition records, and export and purge operations leave an audit trail. Purging recognition data does not erase the audit records themselves.
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
 
-The naming controls also let the site withhold a person's name from generated text. A separate connection to an external model provider, built for evaluation, is disabled unless explicitly enabled on the server. These controls explain where processing happens and give the operator concrete ways to manage retained data.
+Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
 
-GDPR compliance depends on how the service is operated as well as how it is built. Biometric identification has [additional legal requirements](https://www.edpb.europa.eu/sme/be-compliant/process-personal-data-lawfully_en), including an applicable basis for processing sensitive data. Hosting on OCI does not itself establish compliance: [Oracle shares responsibility with the application operator](https://www.oracle.com/a/ocom/docs/corporate/oci-gdpr-updated.pdf). The controls described here are evidence of the implementation, not a completed legal assessment or a claim of full data sovereignty.
+These controls describe the implementation, not a completed legal compliance assessment. They also distinguish AltContext’s hosted processing from on-device processing. Saved descriptions remain in WordPress even when a new service request cannot run.
 
-If the service becomes unavailable, new recognition and descriptions must wait. Saved descriptions and locally stored results remain available in WordPress, so existing editorial work does not depend on a live recognition request.
+## Evaluate the description and the review
 
-## What the evidence shows
+The evaluation has two audiences: **readers** who use the description and **editors** who review it. Readers need the text to preserve useful context. Editors need to recognise plausible mistakes and correct them before applying the description.
 
-Model comparisons have checked whether descriptions preserve the identities supplied in the context. Some candidates omitted names despite producing fluent sentences; later evaluations showed that smaller models could retain them. An early draft also repeated a caption's background claim about a research residency, prompting clearer rules about what belongs in a description of the image.
+Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. Those checks address particular behaviours; they do not yet establish the reader benefit or the reliability of editorial correction.
 
-These tests examine specific behaviours. They do not establish whether a blind reader receives the right context, or whether an editor reliably catches an incorrect identity. Those questions need evaluation with the people using the descriptions and the review workflow.
-
-Automated checks cover the plugin and service, including accessibility checks on the admin interface. The screens have also been reviewed against a written inventory of their actions and states, using the [process described here](/research/visual-search-workbench-process/).
-
-## Walk through the review yourself
-
-The review step can be tried in a [guided walkthrough inside the demo WordPress site](https://demo.altcontext.com/wp-admin/admin.php?page=alt-context-dashboard#/guided-prototype). It presents one illustrative photograph with its page context, a face the site has matched to a roster entry, and a proposed description. Confirming or rejecting the identity changes the draft; editing, saving, and applying the text remain separate decisions, and an undo restores the previous value.
-
-The walkthrough is a practice copy. It does not run live recognition or description generation, and it does not write to a published page. Refreshing the browser starts a fresh practice. The demo site asks for a sign-in; early-access signup on the [AltContext site](https://altcontext.com) is the way to request one.
-
-The product is in development, before public release.
+Evaluation with blind readers and editors is therefore still needed. The product’s purpose is to make an image more informative, and those evaluations must establish whether the resulting text achieves that purpose.
 
 ### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
 *Product R&D and accessibility for a large DAM platform*
@@ -262,66 +252,57 @@ The responsive layouts kept the player prominent as the available width changed.
 
 The video platform launched on schedule within the six-month window. According to my project record, meeting that deadline helped avert the partner-litigation risk associated with a delayed launch.
 
-### WorkBay: State for Coding Agents
-*Durable workflow and interaction state for coding agents*
+### WorkBay
+*Keep coding tasks and review history available across AI sessions*
 Year: 2026
-Tags: Product Design, AI Workflow Design, Developer Tooling, Coding Agents, MCP, Python
-Summary: Coding agents forget the work that matters when a session ends. WorkBay makes task, review, decision, and test state durable and portable across agent tools.
+Tags: Developer Tooling, AI-Assisted Development, Interaction Design, MCP, Python, SQLite
+Summary: WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions can retrieve the record across supported AI coding tools.
 
-A coding agent is a language model driving developer tools: it edits files and runs tests, and it reasons inside a context window, the model's short-term working memory, which vanishes when the session ends. What vanishes with it is the working state of a project: which task was active, which review findings are still open, why a decision went one way, and what evidence backs it. WorkBay keeps that state in the repository, so the next session, in any of the supported agent tools, picks the work up where the last one left off.
+WorkBay keeps the state of a coding task outside any one AI conversation. It preserves recorded decisions and unfinished review findings so a later session can resume the work, including when I switch between supported coding tools.
 
-## One journey
+I built WorkBay while developing projects such as [AltContext](/projects/altcontext/). A recap could say that a task was nearly finished while leaving out the finding that still blocked it. I needed the next session to retrieve that finding and its evidence, not infer the remaining work from a general account of progress.
 
-Work moves through a fixed sequence: a plan becomes a task, the task gets worked, the work gets reviewed, and findings from the review persist until a gate, a recorded check with authority over the branch, decides whether it merges. Every stage writes to one durable record, so the sequence survives any number of session endings along the way.
+## Keep a record the next session can use
 
-A cold session loads its active task and continues it. Claude Code, Codex, Cursor, grok, and VS Code Copilot all attach to the same record. Re-entry still carries friction: each tool surfaces the record differently, and context that was never recorded stays lost.
+Each repository has a SQLite database at `.task-state/handoff.db`. The database holds the task record: what is active, which decisions have been made, what the reviews found, and which checks were run.
 
-## What the record holds
+The task identifies the current work. Decisions preserve their rationale, while findings retain their severity and resolution status. Test records preserve the commands and results. Together, those records let a later session examine the parts of the work that matter to its next step.
 
-The record is workflow state: it lives in the project, and a new session reloads recorded decisions directly, with no prose recap. Author and reviewer stay separate, so findings carry their own status and commit provenance while merge authority stays with the parent task. The history is vendor-neutral: one manifest keeps commands consistent across tools, and when a chosen backend is unavailable, dispatch stops and reports the failure.
+A session loads a selected context packet from the database. That packet brings recorded history into the current conversation without requiring the whole history to be repeated. Optional semantic retrieval supplies another way to find earlier decisions when the current question uses different words.
 
-## A map of the product before the code
+The retrieved records remain material to inspect. Similarity can suggest that an earlier fix is relevant; it cannot itself close a finding or authorise a merge.
 
-WorkBay ships a Design Map tool as the `/ux-map` command. It asks for an inventory first: the jobs a user comes to do, the screens they meet, the zones and states inside each screen, the actions available, and the flows that chain them, each entry carrying a reference into the real code. The inventory lives in one JSON file per surface, checked into the repository like any other source.
+## Resume in another coding tool
 
-From that file a renderer emits wireframes and flow diagrams deterministically: the same inventory produces byte-identical output, so a diff in a render means a change in the design. The wireframe below is drawn from this site's own map.
+WorkBay exposes the same project record to supported tools, including Claude Code, Codex, Cursor, and VS Code Copilot. A session in another tool can retrieve the decisions and findings that the earlier session left behind.
 
-```text
-+------------------------------------------------------------+
-| Site chrome  [screen]  *                                   |
-| Fully-connected escape hatch on every page: skip link, ma… |
-+------------------------------------------------------------+
-| ZONES                                                      |
-|   - Skip to main content (nav) states=[default]            |
-|   - Masthead wordmark + subtitle → home (nav) states=[def… |
-|   - Decorative 3D cube (other) states=[default]            |
-|   - Primary nav: home / work / research / about (nav) sta… |
-|   - 2×2 theme swatch (form) states=[default]               |
-|   - Detail breadcrumb prev / title / next (nav) states=[d… |
-|   - Page canvas + main landmark (content) states=[default] |
-|   - Footer: name, résumé, privacy, contact (content) stat… |
-+------------------------------------------------------------+
-| ACTIONS                                                    |
-|   [secondary] Go home -> landing                           |
-|   [PRIMARY] Open about -> about                            |
-|   [PRIMARY] Open work hub -> work-index                    |
-|   [PRIMARY] Open research index -> research-index          |
-|   [secondary] Open privacy notice -> privacy               |
-|   [secondary] Toggle light / dark -> appearance            |
-+------------------------------------------------------------+
-| states: default                                            |
-+------------------------------------------------------------+
-```
+That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The record removes one switching cost: reconstructing project history from a conversation held elsewhere.
 
-_The site chrome screen from this site's Design Map render: a boxed wireframe listing its zones (skip link, masthead, decorative cube, primary nav, theme swatch, breadcrumb, page canvas, footer), its actions marked primary or secondary, and its states._
+## Carry a review finding through to a change
 
-The artifacts are there so the screens can be argued about before any of them are built. Reviews cite [the Heuristics Canon](/research/heuristics-canon/), a versioned rulebook whose stable rule IDs make findings checkable later. One critique of [the semantic image search app](/projects/visual-search-workbench/), run by hand against the canon, caught a cancel button wired to a job that could not exist in the state that showed it, filed as a high-severity finding citing the canon rules it broke and the file and line it came from. The repositories that hold maps then guard them like code: tests assert that every label in a wireframe exists in the real interface, and that each screen keeps a single primary action.
+An authoring agent can submit work to a reviewing agent without sharing its conversation. The reviewer records findings against the task. Those findings remain available after the review session ends, so the author can retrieve them and address the changes they call for.
 
-## Under the hood
+A finding’s commit references connect its resolution to the code history. The next reviewer can inspect that history rather than accept a summary saying the problem was fixed. Checks on the normal development path use the recorded state before work is merged.
 
-WorkBay stores state in SQLite at `.task-state/handoff.db` and exposes it over MCP, the Model Context Protocol, a standard interface that lets agent tools call external services. Git hooks protect the main branch during development, and a bounded `/offload` command sends a task to an isolated worktree, a separate working copy of the repository, under a fixed token budget, a cap on how much text the model may consume. Optional embeddings add search by meaning over the recorded rows. The memory design has [its own research entry](/research/agent-memory/), the questions agents bring to the record are collected in [a field note from production use](/research/interrogating-agent-memory/), and whether remembering pays for itself is [an open controlled trial](/research/economics-of-agent-memory/).
+Git hooks enforce parts of that path while they are installed and configured. They are not a security boundary against an unrestricted shell. WorkBay also supports bounded work in separate working copies, with review and merge authority kept outside the worker.
 
-Installation details and the current schema are in the [WorkBay repository](https://github.com/darce/workbay).
+Review the interface as well as the code
+
+Interface review needs more than a code diff. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory records the screens and their regions, the states each region can show, and the actions and flows that connect them.
+
+That inventory can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can review these representations against [Heuristics Canon](/research/heuristics-canon/). The resulting findings can be added to the task record, addressed in the implementation, and checked again after the change.
+
+The workflow separates **validation**, **rendering**, and **critique**. Validation checks whether the map has an acceptable structure. Rendering makes that structure readable in different forms. Critique asks whether particular decisions need attention; it does not implement the answers. A limited automated check pack can also flag issues such as an action pointing to a nonexistent screen.
+
+The public WorkBay repository includes the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany an explanation of a product.
+
+## Separate the working tool from its evaluation
+
+WorkBay is in use in my development practice. Its source documents how records persist, how retrieval works, and how the checks use recorded state. That establishes a working mechanism, while its effect on development effort remains a separate question.
+
+The research follows that distinction. [Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
+
+Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
 
 ### Apple: iPhone X Launch & Marketing Tooling
 *Marketing Engineering*
@@ -398,541 +379,480 @@ I built a custom WordPress theme on top of [Underscores](https://underscores.me/
 
 ## Research
 
-### Memory Outside the Model
-*Durable agent state in SQLite, with embeddings as the index*
-Tags: Agents, SQLite, Embeddings, Research
-Summary: How WorkBay keeps coding-agent memory in a per-repo SQLite database any agent tool can read. Structured rows are the canonical record; semantic embeddings are an index over them.
+### Finding a Visual Direction with UMAP
+*How similarity search becomes a way to explore a photo collection*
+Tags: Visual Search, UMAP, Interaction Design, On-Device ML, Research
+Summary: How Visual Search Workbench connects search, a UMAP map, and an image grid to help people explore a photo collection and develop a visual direction.
 
-## A session forgets everything
+A useful picture can change what you are looking for. You may start with a subject in mind, then notice a colour relationship or composition worth following. That shift interests me because it turns search into part of developing an idea.
 
-A coding agent works inside a context window: the bounded transcript the model can see at once. Close the session and everything it understood about the project is gone. The next session starts as a stranger.
+[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
 
-[WorkBay](/projects/workbay/), an orchestration layer that runs coding agents across repositories and gives them a durable shared record, answers with a database instead of a bigger window. Every repository it manages carries a file called `handoff.db`. It is a SQLite database, which is to say a real database that lives in one ordinary file, with no server to run and nothing exotic required to read it. Sessions write into it the things worth keeping: decisions and the reasons behind them, review findings and how they were fixed, blockers, verified test results. Each write lands as a timestamped row attributed to the session and agent that made it, so the record doubles as an inspectable audit trail of what was concluded and when. The next session starts from a small packet, a bounded selection drawn out of that record, instead of starting cold.
+The design brings together **search**, a **map**, and an **image grid**. Search finds a starting point. The map offers a view of relationships beyond a ranked list. The image grid makes a selected region available for judgment.
 
-## An index card is not the book
+```text
+Photo folders you choose
+          │
+      Search index
+          │
+  Words or reference image
+          │
+    Candidate photographs
+       [A] [B] [C]
+       [D] [E] [F]
+```
 
-The rows alone would already be memory, but memory you can only search by the words it happens to use. A question that comes back months later is rarely worded the way its answer was written down.
+_Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs._
 
-So selected fields are also embedded. An embedding model reads a piece of text and produces a vector: a list of numbers, usually several hundred of them, that works as coordinates. Each number scores the text along one learned dimension of meaning, and together they place the text as a point in a space where nearby points say similar things. Distance between points stands in for distance between meanings, so asking why an approach was rejected lands near the rationale that rejected it, even if that rationale never used the word "reject."
+![The Similarity map in Visual Search Workbench, with photographs from a selected region available in the grid.](/images/work/sis-layers-umap.png)
 
-The vector works like a card in a library catalog: it finds the book, and authority stays with the book. Each card carries a fingerprint of the text it was made from, so a stale card is detectable, and the whole catalog can be reprinted from the rows at any time.
+*Application capture from version 0.2.0. The companion interaction reference draws on the 0.2.3 product record.*
 
-## Layers of authority
+## Search can lead somewhere you did not expect
 
-What a session knows arrives in layers. The rows come first: they are the record. When you know the words, exact search answers deterministically, through database queries and plain word search. When you only know the meaning, similarity search over the embeddings proposes candidates. Whatever is found gets cut down to a bounded packet sized to fit at the top of a session, a deliberate spend of scarce context on the task at hand.
+Search often starts with a fairly definite task: find a photograph you remember. A description can bring likely candidates into view even when you have forgotten the filename. Once you recognise the picture, the search has done its job.
 
-Similarity search has a failure mode exact search lacks: it never returns nothing. It answers "here is the closest thing I have," and as the index grows, the closest thing is always something. So meaning search runs behind hard filters: the index is keyed by record type and task, and the fence is built into the schema, where no query can forget to apply it. Left unfenced, recall degrades into suggestion.
+Visual exploration has a less definite endpoint. A photograph can be useful because it suggests what to look for next. In a reference collection, for example, you might follow a visual resemblance toward a composition you had not yet formulated. The value of that next image depends on the idea you are developing, not only on its match to the original words.
 
-## The record leans toward failure
+VSW lets a result become the next query through **Find similar**. The chosen image becomes the reference for a new ranking, with its name visible above the results. **Back to text results** provides a return to the earlier search. These controls make it possible to follow an image without treating every query as an unrelated start.
 
-Across the repositories indexed so far, review findings make up about four fifths of the embedded entries: what broke, and what resolution survived review. Most of the rest are decision rationales. These are the things a fresh session cannot see and would otherwise re-derive. Anyone building their own version can take the bias before taking any of the machinery: index failures and rulings ahead of summaries.
+```text
+Text query ► [A] [B] [C] [D]
+                    │
+               Find similar
+                    │
+              B is the reference
+                    │
+                [E] [F] [G]
+                    │
+             Back to text results
+```
 
-## Private by default, portable on purpose
+_Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results._
 
-The record is private by default. `handoff.db` stays out of version control, because the record holds reasoning traces, and reasoning traces hold whatever the agent saw, including whatever secrets crossed its screen. Crossing a machine boundary takes a deliberate, bounded export of chosen rows.
+![A photograph used as a Find similar reference, with the reference named and a return to text results available.](/images/work/sis-similarity-search.png)
 
-Because the record is plain SQLite, reading it takes only the file and its schema. A harness, the tool that runs the agent, is interchangeable at that layer: Claude Code and Codex both read the same rows today. The record belongs to the repository. That is portable state, and it should not be mistaken for free switching: moving between harnesses still costs authentication, installation, capability gaps, and re-orientation. The durable record removes one cost from that list, the loss of accumulated project history.
+## The map makes related images browsable
 
-## Where the evidence stands
+A ranked list arranges candidates around one query. A map provides a different way to look through the material: inspect a region, see which pictures it contains, and choose where to go next. UMAP supplies the arrangement for VSW’s Similarity view.
 
-Daily use is testimony, and testimony is the weakest tier of evidence worth naming. That is the ceiling for any description of a running mechanism. The counterexample sits close to home: the youngest database in the fleet holds a few dozen decisions and has no embedding index switched on yet. What agents actually ask a record like this is read out of production data in [a companion field note on the questions agents bring to the record](/research/interrogating-agent-memory/). Whether remembering saves more than it costs is a causal question, and it belongs to [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/), where the claim has a criterion it must survive.
+### How UMAP works, in plain terms
 
-### Five Questions an Agent Cannot Answer from Context
-*What coding agents actually ask a durable project record*
-Tags: Agents, Embeddings, Research
-Summary: A field note from the production records of WorkBay, a system that gives coding agents a durable project record. The questions agents keep asking that no single session can answer, each grounded in what the record holds.
+The app’s image model turns each photograph into an **embedding**, a list of numbers used to compare images. Those numbers work together as a representation; individual entries are not labels such as “red,” “flower,” or “portrait.” Comparing the representations gives the software a way to find nearby images without consulting manually assigned tags.
 
-## The record behind the questions
+Those nearby images form **neighbourhoods**. UMAP represents neighbourhood relationships as a weighted graph: a network of connections whose strengths reflect the local relationships in the input. It then looks for a lower-dimensional arrangement that preserves those relationships as well as possible. This is the graph-and-layout process described in the [UMAP authors’ explanation](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html).
 
-[WorkBay](/projects/workbay/) gives coding agents a durable project record: the decisions, review verdicts, blockers, and test results of every past session, stored as structured rows that outlive the sessions that wrote them. How the record works has [its own entry](/research/agent-memory/); this note reports what it gets used for.
+The arrangement becomes the map on screen. Its purpose is to make some of those relationships available to explore while accepting that a compact layout loses information. The image model supplies the representations; UMAP arranges them; the person decides which pictures are worth following.
 
-An agent's working memory is its context window, the bounded transcript it can see at once. Close the session and the window is gone. The questions below recur in real work, and every one of them has its answer outside the window. Everything reported here is read from `handoff.db` files in daily production use. The patterns are measured; the claims about usefulness are testimony from that use, and the two are kept apart on purpose. Because the rows are plain structured data, any agent tool can read what another wrote, so one harness can check another's work without inheriting its transcript.
+### What the arrangement means
 
-## The questions
+A neighbourhood is a place to investigate, not a category the app has established. Its pictures may be useful together, or their resemblance may be unimportant to the current brief. The photographs themselves let you make that distinction.
 
-### Where is the core problem?
+The layout also changes how relationships look. A wide gap between groups is not an exact measure of their difference, and a dense patch does not establish the density of the original representations. Apparent splits can arise during the reduction, as the [UMAP clustering guide](https://umap-learn.readthedocs.io/en/latest/clustering.html) explains.
 
-Review verdicts accumulate per repository, and their distribution is diagnostic. One small project stood out precisely because of this: roughly three of every four of its recorded reviews failed. A session working there sees one failing review and fixes it in place; the record sees a streak, and in this project the streak pointed at the architecture.
+Two settings help explain why maps can look different: **neighbourhood size** and **minimum distance**. Neighbourhood size determines how broadly the method looks around each item, shifting emphasis between fine local detail and a wider arrangement. Minimum distance affects how tightly points can pack in the layout. The [parameter guide](https://umap-learn.readthedocs.io/en/latest/parameters.html) illustrates both effects. These are explanations of the method, not controls I am claiming the current app exposes.
 
-### Has this fix been found before?
+## The image grid makes the map usable
 
-The object of this search is a solution that worked. The record indexes accepted fixes, and it is searched by meaning rather than exact wording, so a timeout guard written in March is findable in July as "the retry bug," even though the two phrasings share no words. When a new finding lands, that search runs over past resolutions before anyone re-derives the fix.
+A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
 
-### Are we relitigating a settled decision?
+This connection gives the map a role in the interaction. The map helps you choose where to look; the grid shows what is there. Without the grid, a point cloud would reveal an arrangement but provide little basis for deciding whether the pictures suit your work.
 
-The object of this search is a judgment rather than a piece of code. Before an agent re-opens an architectural question, the decision record is searched. "Why is this site static instead of server-rendered?" was settled once, with reasons; an agent that asks again receives the ruling and cites it, and in use the debate stays closed. The failure this guards against is specific to agents: with no memory of the argument, nothing stops a model from being talked back into a position the project already rejected. Human teams have their own version of the failure, and [the Heuristics Canon](/research/heuristics-canon/) is the analogous guard for judgment.
+```text
+Similarity overview
+┌───────────────────────────┐
+│   . .              . .    │
+│  ┌─────────┐              │
+│  │ A  B  C │      . .     │
+│  └─────────┘              │
+│       . .                 │
+└───────────────────────────┘
+       Selected region
+              │
+              ▾
+      Linked image grid
+      ┌───────────────────┐
+      │ [A]  [B]  [C]     │
+      │ Inspect these     │
+      │ photographs       │
+      └───────────────────┘
+```
 
-### Is "done" actually done?
+_Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection._
 
-A claim of completion checks against rows: verified test results and recorded review verdicts, not the agent's own report. The search by meaning covers the softer half of the question, whether a proposed solution was already discussed, because prior discussion rarely reuses the same words. A different model can re-check the same completion evidence.
+The grid and map also need distinct interpretations. A search ranking compares the query with the image representations. The distance between marks on the displayed map is not that ranking. Keeping those roles clear lets the map support browsing without asking it to be a precise measuring instrument.
 
-### What has already failed?
+## Keep the exploration on an everyday Mac
 
-The object of this search is a dead end. Blockers and abandoned approaches persist past the session that hit them. A recurring failure in agent-assisted development is "let me try a different approach," aimed at an approach that already failed, invisibly, in sessions the current model never saw. The record turns that sentence into a lookup.
+Local processing was a design constraint for the app. The photographs stay in the folders the person chooses, and the models ship with the application. I tested that arrangement on an 8 GB Apple Silicon Mac.
 
-## Scope
+That constraint extends beyond running the model. A selected region must also deliver photographs that can be inspected. Release 0.2.3 addressed thumbnail retries, a change recorded in the [release repository](https://github.com/darce/visual-search-workbench). The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
 
-This note does not show that any of this saves money or tokens. Whether reuse lowers what an agent spends is a causal question, and it is the subject of [a controlled trial in The Economics of Remembering](/research/economics-of-agent-memory/).
+## Test retrieval and exploration separately
 
-### The Economics of Remembering
-*The cost is measured; the return still needs a trial*
-Tags: Agents, Economics, Research
-Summary: A production audit shows that durable agent memory is cheap to inject and rich in reusable fixes. A controlled trial still has to measure whether it reduces token spend without lowering outcome quality.
+The design now has an implementation to evaluate. I use screen inventories and the running app to check the relationship between a query, a selection, and the next action. The [interaction reference](/research/visual-search-workbench-screen-reference/) records that relationship. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support these reviews, but outside-user evaluation remains to be done.
 
-## The claim
+That evaluation needs to distinguish **retrieval** from **exploration**. Retrieval asks whether someone can find a remembered photograph. Exploration asks whether someone can assemble useful references for a creative brief, including pictures that change the direction of the brief.
 
-[WorkBay](/projects/workbay/) hands a new coding-agent session a bounded packet drawn from the project's durable record: prior decisions, review findings, resolutions, blockers, and verified tests. How that record works is [described here](/research/agent-memory/); this one is about whether it pays. The claim under test is that starting from the packet lowers the total tokens an agent spends per task while preserving the same outcome quality. Tokens are the metered unit of model work, so tokens per task is the closest thing agent work has to a unit price.
+For retrieval, I would examine completion, mistakes, and effort. For exploration, I would examine the images people keep, the paths they take, and their reasons for continuing from one picture to another. Comparing the map with the grid and image-to-image search would help establish what the map contributes.
 
-The two halves of that claim are in different states. The packet's price is measured; its effect is not. The distinction matters because a cheap intervention can still hurt: it can distract the agent, or surface stale context that steers the work wrong.
+The question is whether visual navigation helps someone develop an idea. A surprising selection may be useful even when it takes them beyond the subject they first searched for.
 
-## The record settles the cost side
+### Visual Search Workbench: Search and Exploration
+*Follow a query into similar images, a map selection, and further exploration*
+Tags: Visual Search, UMAP, Interaction Design, Interface Reference
+Summary: An interaction reference for Visual Search Workbench: begin with words or a picture, follow similar images, and inspect a UMAP map selection in the image grid.
 
-I audited three production `handoff.db` databases from different codebases. Each stores its workflow events as structured database rows, which is what makes an after-the-fact audit like this possible at all.
+This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
-### The packet is a rounding error next to the task
+The application captures are the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
-A compact memory packet averages about 300 tokens. The tasks it precedes range from a few thousand tokens to hundreds of millions at the top end, where a single task fans out across many worker lanes, and the median task lands near three hundred thousand: roughly a thousand times the packet that opened it. Whatever else turns out to be true, the direct price of remembering is not the obstacle.
+## 1. Give the search a starting point
 
-The costs that could still matter are indirect: retrieval latency, stale or irrelevant context, private state leaving its boundary, worse decisions made with misplaced confidence. None of them appears as a line item, which is why the experiment scores the quality of the outcome alongside the token count.
+The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
 
-### The shelves are stocked
+A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
 
-For memory to save anything, the record has to hold answers worth retrieving, and it does. Across the three codebases, about 99% of findings marked resolved carry a written resolution a later session could reuse instead of re-deriving; no codebase fell below 97%. The record also holds findings that recur across tasks and findings reopened after being closed, and session starts repeat the same orientation queries. All of it is work that has been paid for more than once.
+```text
+Photo folders you choose
+          │
+      Search index
+          │
+  Words or reference image
+          │
+    Candidate photographs
+       [A] [B] [C]
+       [D] [E] [F]
+```
 
-What this settles is the write path: the library is stocked and the shelving is consistent. Whether an agent pulls the right volume at the right moment, and whether that changes what it spends, is the part production history cannot certify.
+_Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs._
 
-### Portability is already in hand
+## 2. Make a result the next query
 
-The same record carries rows written by several different agent tools, and any of them can read the decisions and review evidence the others left behind. For a technologist weighing adoption, this benefit needs no experiment to confirm: the audit trail and portable project state exist today, whatever the trial ends up saying about token savings.
+A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search. The new view names the reference and offers **Back to text results**, keeping the change of query visible.
 
-## The record cannot settle the benefit
+![Find similar results with a flower photograph identified as the reference image.](/images/work/sis-similarity-search.png)
 
-Production history cannot say whether the packet causes savings. Every interactive session receives a packet, so there is no untreated group to compare against. The sessions that meter token spend reliably are the orchestrated worker lanes, and those never receive packets. One instrument has the treatment; the other has the meter. No session has both.
+```text
+Text query ► [A] [B] [C] [D]
+                    │
+               Find similar
+                    │
+              B is the reference
+                    │
+                [E] [F] [G]
+                    │
+             Back to text results
+```
 
-More mining cannot close that gap. The comparison has to be built on purpose, which is what the experiment is for.
+_Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results._
 
-## The experiment
+The result has become a direction through the collection. Following it can bring useful material into view even when that material was difficult to describe in the first query.
 
-Instrumentation comes first. The interactive harness has to record one audited token total per assigned task. The rule that selects and formats the packet has to be versioned and frozen. Each task's type and expected size has to be recorded before assignment, both arms have to start from the same base commit under the same limits, and a reviewer who cannot see which arm produced the work scores it against a fixed rubric.
+## 3. Explore a region on the Similarity map
 
-Then the run:
+The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
 
-1. **A/A calibration.** Pairs of identical cold runs establish how much two attempts at the same task differ on their own. That baseline noise sets how many pairs the trial needs.
-2. **Content probe.** A relevant packet runs against an equal-size packet from an unrelated project. If relevance is not even detectable, the trial is not ready.
-3. **Matched pairs.** Each task runs twice from the same starting commit, one run with the frozen packet and one cold, assigned at random. Fixed token and time bounds keep either side from running away, and neither run writes back to the shared record until its pair closes.
-4. **Readout.** The primary metric is total tokens per task, reported as a confidence interval on the paired difference alongside the blinded quality scores. Failed tasks stay in the denominator.
+In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
 
-The success bar is set before the first pair runs: the packet has to cut token spend by at least a fifth, while the blinded quality scores stay within a declared margin of the cold arm's. Fixing the bar in advance is what keeps the eventual result honest, because a threshold chosen after seeing the data can always be argued into place. A fifth is where the saving justifies engineering attention. If the measured interval clears it, the claim stands; if it falls short, the claim closes and the packet keeps its job as an audit trail only. The trial covers one repository's workload, so anything broader would need replication.
+![The Similarity view and the photographs associated with a selected region.](/images/work/sis-layers-umap.png)
 
-The stance going in comes from the [Heuristics Canon](/research/heuristics-canon/) epistemics rule [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01): `require a controlled evaluation … and a prior that most ideas are flat or negative`. Most interventions of this shape do nothing. The audit above justifies running the experiment; it does not justify predicting its result.
+A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
+
+```text
+Similarity overview
+┌───────────────────────────┐
+│   . .              . .    │
+│  ┌─────────┐              │
+│  │ A  B  C │      . .     │
+│  └─────────┘              │
+│       . .                 │
+└───────────────────────────┘
+       Selected region
+              │
+              ▾
+      Linked image grid
+      ┌───────────────────┐
+      │ [A]  [B]  [C]     │
+      │ Inspect these     │
+      │ photographs       │
+      └───────────────────┘
+```
+
+_Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection._
+
+Nearby marks suggest material to inspect. Their spacing is not an exact measure of how different the photographs are. Judging the photographs in the grid is what gives the map selection a purpose.
+
+## 4. Examine the selection by place or time
+
+The selected material can be examined through **Similarity**, **Places**, and **Timeline**. Each view organises the collection using different information.
+
+| View | Basis of the view |
+| --- | --- |
+| Similarity | Relationships between numerical image representations. |
+| Places | Recorded coordinates, explored geographically. |
+| Timeline | Dates, explored across broader or narrower periods. |
+
+Selection carries between the views, and each view retains its zoom and pan when you change tabs. The views therefore offer different routes through related material without requiring you to rebuild the view each time.
+
+A place-based selection can also include photographs outside the current text results. Those photographs are listed without a search rank, keeping the geographic selection distinct from the query’s ranking.
+
+## 5. Inspect a photograph or use a cutout
+
+An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
+
+![A cat image with experimental cutout layers available for inspection.](/images/work/sis-cat-layers-detail.png)
+
+The proposed layers can be inspected and saved for use elsewhere. A recognisable subject does not guarantee a usable separation or edge, so the cutout still needs checking. This remains a secondary workflow alongside search and exploration.
+
+## Use the reference to review the interaction
+
+This sequence connects a query to a result, a result to another query, and a map region to the images it contains. I use representations like these to examine whether the next action follows clearly from the current selection.
+
+A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
+
+Read [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) for the design idea, or return to the [product page](/projects/visual-search-workbench/) for installation and release status.
+
+### Project Memory Outside the Conversation
+*The record, retrieval layer, and context packet behind WorkBay*
+Tags: Agent Workflows, SQLite, Semantic Retrieval, Research
+Summary: WorkBay separates the stored project record from the retrieval layer that finds it and the context packet a coding session reads.
+
+A later coding session needs more than an account of what happened. It may need the reason an approach was rejected, the finding that remains unresolved, or the test result behind a completion claim. [WorkBay](/projects/workbay/) keeps that material in a project record outside the conversation.
+
+The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
+
+These parts describe the mechanism. [The field note](/research/interrogating-agent-memory/) describes how I use it, and [the evaluation proposal](/research/economics-of-agent-memory/) asks whether it reduces work at comparable quality.
+
+## The record preserves decisions and evidence
+
+Each WorkBay repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records.
+
+Those records keep different aspects of the work distinct. A decision has a rationale. A finding has a status and a recorded resolution. A test has a command and result, with task and commit information helping connect the evidence to the work it concerns.
+
+A later session can therefore retrieve a decision as a decision. It need not reconstruct the rationale from a recap saying that planning was completed. The rationale still needs to be checked against present requirements, but the earlier reasoning is available for that check.
+
+## The retrieval layer finds material in the record
+
+Retrieval depends on what the session already knows. A known task or finding can be looked up directly. Known wording can be found through full-text search. A question phrased differently from the earlier record can use optional semantic retrieval.
+
+Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
+
+A retrieved record might contain the rationale for an approach rejected earlier. That rationale can explain the original constraint; the constraint can then be compared with the current implementation. The result is a reason to examine the earlier decision, not an instruction to repeat it.
+
+### Keep the index tied to the record
+
+The embeddings form an index over selected fields in the database. Links and text fingerprints connect the index entries to their source records. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
+
+The related-prior-work tool returns candidates for a human or agent to read. Its contract prevents those candidates from automatically closing findings or becoming inputs to a merge decision. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
+
+The tool also reports why a lookup returns nothing. An empty store, an unavailable provider, incompatible model information, and no result above the threshold are distinct outcomes. In particular, no result above the threshold does not prove the relevant history is absent. The [retrieval implementation](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) documents these boundaries.
+
+## The context packet gives the session a selection
+
+A context packet brings selected records into the current conversation. The packet must be bounded because the conversation still has finite space. Loading every past record would compete with the task the session is meant to complete.
+
+The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
+
+The useful question is whether a selected record changes the next decision. A paragraph can sound relevant without supplying the constraint or unresolved finding the session actually needs. That difference between apparent relevance and useful context is one reason retrieval needs evaluation.
+
+## Portability follows the record
+
+The structured record can be exported and read by different supported coding tools. A session in a new tool can retrieve history written by another tool without having its entire conversation. The new tool still needs its own authentication and setup, and its capabilities may differ.
+
+The database stays out of version control by default because it can contain sensitive project material. Keeping the file local does not make every use of its contents private: a context packet sent to a hosted model sends that selected material to the provider. Export and model use both require attention to what the record contains.
+
+## Test what the record changes
+
+The implementation makes recorded history persistent and retrievable. It cannot preserve reasoning that was never recorded or guarantee that each useful record will be found.
+
+Those limits define an evaluation question: when a session receives selected history, does it complete comparable work with less effort? The [economics article](/research/economics-of-agent-memory/) separates the cost of supplying that history from its effect on the result.
+
+### Five Questions I Ask the Project Record
+*Look for recurring trouble, earlier fixes, decision reasons, completion evidence, and failed approaches*
+Tags: Agent Workflows, Project Memory, Field Notes
+Summary: Five recurring questions show how I use WorkBay’s project record to examine an earlier decision before making the next one.
+
+I use the project record when the next coding decision depends on work outside the current conversation. The record can bring back an earlier rationale or show that a new-looking failure has already occurred across several tasks.
+
+Five questions recur in my use of [WorkBay](/projects/workbay/): **where trouble repeats**, **whether a fix exists**, **why an approach was chosen**, **what supports completion**, and **what has already failed**. Each question calls for a different part of the record.
+
+The examples below are field observations from my development practice, not a controlled productivity study. [Project Memory Outside the Conversation](/research/agent-memory/) explains the storage and retrieval mechanism.
+
+## Where does trouble repeat?
+
+A review usually concerns the work in front of it. A sequence of reviews can reveal trouble that keeps returning across tasks. The project record makes that sequence available even when no single session has seen all of it.
+
+In one earlier audit, roughly three quarters of the recorded reviews in a small project had failed. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
+
+The findings behind the count were the material to inspect. Their shared constraints could suggest a broader problem, while differences between them could show that the apparent pattern had several causes. The count directed the investigation; the findings had to support the diagnosis.
+
+## Does a useful fix already exist?
+
+A new finding may resemble a problem recorded under different wording. Semantic retrieval can surface an earlier resolution, which a human or agent can compare with the current code.
+
+The resolution may contain more than a patch. It can preserve the constraint that made the patch necessary or the reason a simpler change failed. That explanation helps determine whether the earlier fix applies now.
+
+An earlier fix remains a candidate until its conditions and recorded status have been checked. Copying the patch without that check would replace repeated investigation with a different risk: applying the right answer to the wrong problem.
+
+## Why was this approach chosen?
+
+A decision record preserves the reasons behind a choice. Those reasons give a later discussion a starting point even when the people or tools involved were absent from the original conversation.
+
+For example, a later session may question why a site uses static output rather than server rendering. The recorded rationale can identify the requirements the choice addressed. Those requirements can then be compared with the needs of the current work.
+
+A changed requirement may justify a changed decision. The record should make that change deliberate, not keep the original choice closed forever. Its value is distinguishing a new reason from an old debate whose reasoning has been forgotten.
+
+## What supports the completion claim?
+
+A completion claim needs evidence tied to the work being assessed. WorkBay can preserve review verdicts and test records alongside task and commit information. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
+
+The revision matters because a test result from earlier code does not automatically establish the state of the current code. A useful review follows the evidence back to the change instead of relying on a summary saying that the task passed.
+
+Another model can perform that review without inheriting the author’s conversation. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
+
+## What has already failed?
+
+A failed approach leaves information that can disappear from a recap of the eventual success. Blockers and abandoned attempts preserve that information, including why the approach was set aside.
+
+The reason distinguishes an option that was temporarily unavailable from one that produced incorrect results. An unavailable dependency may later become usable. An incorrect result may expose a constraint that still applies.
+
+The history therefore does not forbid another attempt. It makes the next attempt answer a specific question: what has changed since this failed?
+
+## From a useful lookup to an evaluated benefit
+
+These questions give the record a practical role in the next decision. The examples show what can be inspected; they do not establish how often retrieval finds the right material or how much work it saves.
+
+That benefit needs a comparison that measures both effort and the resulting work. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed comparison, keeping the evaluation separate from these observations of use.
+
+### Testing Whether Project Memory Saves Work
+*What an audit shows, what a comparison must test, and what would count as a useful result*
+Tags: Agent Workflows, Evaluation, Token Use, Research
+Summary: An audit snapshot describes WorkBay context packets. A proposed paired comparison tests whether they reduce task token use without lowering quality.
+
+Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
+
+This proposed WorkBay evaluation asks whether a task-relevant context packet reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
+
+The argument has three parts: **the audit snapshot**, **the comparison**, and **the decision criterion**. The audit snapshot describes the recorded cost and contents. The comparison tests whether supplying the history changes the work. The decision criterion specifies what result would justify a savings claim. No controlled-trial result is reported here.
+
+## The audit snapshot describes cost and contents
+
+An earlier audit examined three project `handoff.db` databases. Its summary reported small initial context packets alongside much larger recorded task totals. It also found that most findings marked resolved had a written resolution.
+
+| Audit observation | What it describes |
+| --- | --- |
+| About 300 tokens in the average compact packet | The recorded size of an initial selection of project history. |
+| A median recorded task near three hundred thousand tokens | Task-level totals, rather than the cost of one model request. |
+| Recorded tasks ranging from a few thousand to hundreds of millions of tokens | A heterogeneous workload, including very large tasks split across worker lanes. |
+| About 99% of resolved findings carrying a written resolution; no audited codebase below 97% | Whether a resolution was recorded, not whether another task would benefit from it. |
+
+These figures are descriptive aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
+
+The packet’s recorded size is small relative to those task totals. That comparison concerns the amount of text supplied at the start, not the complete cost of remembering. Retrieval, later context use, and decisions made from stale material may add costs elsewhere. A token count is also not itself a monetary return.
+
+### The audit cannot establish an effect
+
+The audit’s main limitation is an instrumentation mismatch. Interactive sessions received context packets but lacked the audited task-level token measurement used in the analysis. Orchestrated worker lanes supplied token measurements but did not receive those packets.
+
+That mismatch prevents a meaningful treated-versus-untreated comparison. The two groups differ in their work and measurement as well as their use of project history. A controlled comparison must record both the intervention and its cost for the same assigned tasks.
+
+The resolution figures have a similar boundary. A written resolution establishes that material exists to retrieve. It does not establish that retrieval selects the right resolution, or that an agent uses it well. Those effects belong in the comparison.
+
+## The comparison tests whether the packet changes the work
+
+The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
+
+The comparison needs **calibration**, a **content probe**, and **matched task pairs**. Each stage answers a different question before the savings claim is assessed.
+
+**Calibration** uses A/A pairs: two cold runs with the same starting conditions. The variation between those attempts estimates how much results can differ without the memory intervention. That variation informs the sample-size procedure for the main comparison.
+
+**The content probe** compares a relevant packet with an equally sized unrelated packet. This tests whether relevant content makes a difference beyond merely adding text. A relevant-versus-unrelated result would not, by itself, establish a benefit over receiving no packet.
+
+**Matched task pairs** provide that final comparison. Each pair contains one run with the relevant packet and one without it. A reviewer who does not know which condition produced the work scores both results against a fixed rubric. The system records total tokens per assigned task, including unsuccessful attempts.
+
+Keeping unsuccessful attempts in the analysis matters because a quick failure can use fewer tokens than a completed task. The quality assessment and failure rate must therefore accompany the token result.
+
+## The decision criterion includes quality
+
+The existing proposal sets a target of at least a **20% reduction in token use**, while keeping blinded quality within an acceptable margin declared before the trial. The target is a decision criterion, not a prediction.
+
+The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
+
+The initial comparison would concern one repository’s workload. A result there would not establish the same effect for other projects, models, or teams without further evaluation.
+
+## Specify the measurement before running it
+
+The protocol still needs its operational definitions completed. The interactive task meter and packet-selection rule must be recorded and frozen. The quality rubric, acceptable quality margin, and sample-size procedure must be specified before the main comparison.
+
+Those definitions determine what the result will mean. Changing them after inspecting the results could change which runs count as successful or which apparent saving meets the target. Fixing them first makes the eventual decision checkable.
+
+This is a proposed evaluation, not a completed or externally registered study. The Canon’s [UXR-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#uxr-01) and [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01) supply relevant checks: measure at the level of the claim and use a controlled comparison for the claimed effect.
 
 ## The decision in the meantime
 
-Anyone deciding today whether a persistent memory system earns its keep has settled facts and one open question. The direct cost is negligible against the work it precedes. The audit trail and portability across agent tools are usable today. The material worth reusing demonstrably exists. What stays open until the trial reports is whether reuse lowers spend at equal quality.
+I use WorkBay to retain inspectable project history and resume work across coding sessions. Those capabilities can be examined in the implementation. Whether supplying selected history also reduces total work at comparable quality remains open until the comparison is run.
 
-My own position is cheap insurance: the packet stays on while the instrumentation lands, since its measured price is small and its side benefits are already real. The controlled comparison decides whether it is also making the work cheaper.
-
-### Designing Search That Explains What Is Missing
-*How a screen inventory and explicit review rules shaped Visual Search Workbench*
-Tags: Process, Interaction Design, Human-AI Interaction, Research
-Summary: A practical account of designing incomplete-data states: map the screens, review the decisions, and check the built interface against both.
-
-On a fresh launch, an early build of [Visual Search Workbench](/projects/visual-search-workbench/) told the person two things at once: choose a folder, and wait while search prepares. It also offered a Cancel button that could not cancel the preparation.
-
-Each message made sense in isolation. Together, they left the person without a clear next step.
-
-That defect is a useful example of the method behind the app. I used three connected practices: **map the states**, **review the decisions**, and **check the built interface**. This is an account of using them on one product; their value beyond this project still needs testing.
-
-## Map the states
-
-A screen has more to communicate than its successful result. A search screen must also explain an empty library, work in progress, an unreadable file, or a missing drive. Those conditions determine what the person can do next.
-
-Before building the interface, I recorded its screens, regions, states, and connecting journeys in a written **UX map**. For each region, the map described what appears when data is missing, loading, partial, or wrong. This made omissions available for review before they became gaps in the app.
-
-Each screen also had a question to answer. On first launch: how does someone start, and will their photos be copied? During indexing: what does a half-finished collection allow the interface to claim? Those questions gave each review a specific purpose.
-
-The map lived in a version-controlled file. Changes could be compared, and the file could be rendered as simple text drawings for discussion. The drawings helped people inspect the layout while the written map remained the place to update the design.
-
-## Review the decisions
-
-A map records a decision, but it does not establish whether the decision is sound. For that, I used the [Heuristics Canon](/research/heuristics-canon/): a collection of review rules linked to their published sources. A finding could name a rule and explain why it applied, giving me something concrete to accept, challenge, or revise.
-
-Some useful rules came from engineering books. *Designing Data-Intensive Applications* informed how the app treats its search index as a rebuildable copy of information. *Release It!* informed the handling of dependencies that can fail. *Latency* informed the decision to measure slow operations on the target machine.
-
-Those ideas reached the interface through ordinary product questions. If a drive is unplugged, what is missing from the map? If the search model cannot load, what still works? If indexing is unfinished, what does the result count describe?
-
-### Similarity needs an explanation
-
-The search model turns each picture and query into a numerical representation called an **embedding**. The app compares these representations to find nearby candidates. Their usefulness depends on a few constraints that shaped the product.
-
-First, the representations must be comparable. The app uses one defined model and preparation process for its search index and queries. If that definition changes, the index must be rebuilt. The photo files remain the source from which it can be rebuilt.
-
-Second, the nearest pictures are not necessarily good answers. A ranking can return its closest candidates even when none is relevant. The interface therefore avoids confidence percentages. It also warns “No close matches” for a nearly flat ranking while still showing the nearest photos. That check does not establish a reliable relevance threshold for every query.
-
-Third, faster search can introduce its own costs. An approximate search may miss candidates. Measurements on the target machine supported comparing the query with every indexed picture at the tested library size, so that simpler approach shipped. Larger libraries remain an open measurement question.
-
-## Check the built interface
-
-Once the app ran, I checked it against the map again. The [WorkBay](/projects/workbay/) review workflow produced text drawings anchored to the implementation. One drawing exposed the contradictory first-launch state:
-
-```text
-┌─ Search ──────────────────────────────────────────────────────────────┐
-│ [ query…                              ] (or drop an image)            │
-│                                                                       │
-│   No library yet — open a folder to search.                           │
-│ ┌───────────────────────────────────────────────────────────────────┐ │
-│ │ Preparing search…                                      [Cancel]   │ │
-│ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  (indeterminate)                   │ │
-│ └───────────────────────────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────────────┘
-    two competing "nothing here yet" messages, rendered at the same time
-    this [Cancel] cancels nothing
-```
-
-_Search screen as first built: a query field above the message “No library yet — open a folder to search.”, and directly beneath it a second panel reading “Preparing search…” with an indeterminate progress bar and a Cancel button. Two competing empty-state messages are drawn at the same time, and that Cancel cancels nothing._
-
-The two messages were controlled independently. Both conditions could be true, so both messages appeared. The Cancel button reused an indexing action: pressing it recorded a cancelled indexing job even though no indexing job had started.
-
-A nearby state had a related problem. Search preparation and the Similarity layout could show two almost identical progress bars, each with a Cancel button. Their accessibility names distinguished the jobs, but their visible labels did not.
-
-The fix was to make the status region choose one state at a time. The order gives priority to active work, then errors and instructions, before a request to wait:
-
-```text
-   indexing ───────►  live work first
-   error ──────────►  then why it stopped
-   empty library ──►  then what to do
-   preparing ──────►  then just wait
-   otherwise ──────►  ready
-```
-
-_Precedence order for the rebuilt status region, tested top to bottom: indexing shows live work first, then error explains why it stopped, then empty library says what to do, then preparing asks the reader to wait, and otherwise the region reads ready._
-
-The waiting state now names what is loading and offers no Cancel button, because that operation cannot be cancelled:
-
-```text
-┌────────────────────────────────────────────────────────────────┐
-│ ▟▙▟▙▟▙▟▙▟▙▟▙  (indeterminate)                                  │
-│ Preparing search   Loading the search model…       (no Cancel) │
-└────────────────────────────────────────────────────────────────┘
-```
-
-_The rebuilt waiting state: a single indeterminate bar over the label “Preparing search” and the subtitle “Loading the search model…”, with no Cancel button, because nothing in this state can be cancelled._
-
-A unit test checks the combinations of inputs and confirms that this region chooses one state, with Cancel available only for indexing. The [screen reference](/research/visual-search-workbench-screen-reference/) records the other release-specific states, including disconnected drives and unavailable models.
-
-The lesson for a product builder is practical: review the combinations as well as the individual messages. A well-written loading message can still be confusing when another region tells the person to do something incompatible.
-
-## Keep the evidence behind a decision
-
-The review process also needed a memory. WorkBay recorded decisions, their rationale, review findings, and the commands used to check changes. A later session could revisit that evidence instead of relying on a summary that said the work was finished.
-
-Recorded findings still needed judgment. Some led to changes; others were withdrawn or superseded. Keeping the reason for each resolution helped prevent later reviews from reopening the same issue without new evidence.
-
-The build tools used search too. Codemap indexed source-code structure, while local text embeddings helped retrieve earlier decisions and findings. Both produced candidates to inspect against the original code or record. A search result alone could not prove that a feature was absent or a decision had never been made.
-
-That is the same constraint the photo interface has to communicate. A view built from part of a collection must explain what it covers. In the app, that explanation helps someone interpret a map. In the build process, it helps a reviewer judge the evidence behind a change.
-
-## What remains to test
-
-This process found concrete defects and led to testable fixes. It has not yet shown how well people outside the reviews understand the resulting interface. A task-based study is the next step: can someone find a useful photo, recognise an incomplete result, and recover when part of the library is unavailable?
+[Project Memory Outside the Conversation](/research/agent-memory/) describes that implementation. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes how I use it in practice.
 
 ### Heuristics Canon
-*Source-linked decision rules for product and engineering review*
-Tags: Design Systems, Accessibility, Research
-Summary: A working research corpus that turns recurring product, interaction, accessibility, AI, and engineering decisions into checkable rules with stable IDs and source provenance.
+*Connect a review finding to a reason for changing the work*
+Tags: Design Review, Engineering, Writing, Research
+Summary: Heuristics Canon gives design, engineering, and writing reviews specific triggers and questions, with references that let another reviewer examine the reasoning.
 
-## A review instrument, not a style guide
+A review becomes useful when its finding is specific enough to examine. “Improve the navigation” leaves the problem open to interpretation. A finding that identifies two conflicting destinations gives the designer something to inspect and a decision to make.
 
-The Heuristics Canon is a review instrument. It forces a claim to name three things before it ships: the rule being applied, the source that earns that rule its place, and the artifact the claim would change. A source can be a published study or a shipped artifact; a rule with no source does not enter the corpus. Source linkage is provenance for the rule, not evidence that users already validated the product.
+Heuristics Canon is a collection I maintain to support that kind of critique in design, engineering, and writing. I use it with people and AI tools to connect an observed issue to a reason for changing it. A cited rule makes that reason available to challenge as well as to apply.
 
-## The IDs hold still
+## Make the rule inspectable
 
-Rules never get renumbered, so a critique written against an earlier revision still resolves. That is the difference between advice and a corpus you can cite: a design claim points to a rule, the rule points to a source, and the changed artifact records which rule moved it.
+A Canon rule has an observable **trigger**, a proposed **action**, and a **question** that tests whether it applies. The trigger identifies a situation in the artifact under review. The action suggests what to do about it. The question helps the reviewer decide whether the situation actually warrants that response.
 
-## Rules that changed the work
+A stable ID identifies the rule, and a source reference records its basis. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
 
-The test of a rule corpus is whether it reverses decisions that were already made. The agent workflow records described in [Memory Outside the Model](/research/agent-memory/) keep those reversals on file, and they are the strongest evidence the canon has.
+The rules are grouped into lexicons, including interaction design, accessibility, engineering, and writing. These are parts of the same review practice: an interface decision may depend on implementation constraints, while a claim about that interface may need a different kind of evidence. A review retrieves the relevant rules rather than applying the whole collection as a checklist.
 
-A review agent once proposed rewriting roughly forty code sites it had classified as defective by a surface pattern. Checked against the canon's measurement rules, the classification itself was probed first; about a third of the sites turned out to be false positives, and the sweep shrank to the handful that were actually verified. In another case, an agent had written a failure into the plan record as if it were live in the shipped corpus. Re-read against the claims rules, it corrected its own entry, noting the failure existed only on an input it had constructed for the test. Both cases share the shape: an agent proposes, names a rule and source, and narrows or withdraws the proposal before a false claim lands.
+## Review a map and the images it represents
 
-The same corpus reviews this site. [Visual Search Workbench](/projects/visual-search-workbench/) names CAL-02 and RLSE-04 as the two rules that split its incomplete-data states apart, and that case carried a visible media-pending note until captured screenshots existed to replace it, so it never implied evidence it did not have. The writing rules vetted the research entries you are reading now; earlier drafts lost several rhetorical habits to them.
+Visual Search Workbench connects a Similarity map with an image grid. Reviewing that connection raises two separate questions: **does the selection remain recognisable across the views**, and **does the explanation describe the map accurately**?
 
-The corpus is public: [Heuristics Canon on GitHub](https://github.com/darce/heuristics-canon).
+**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-15).
 
-### Visual Search Workbench: Screen Reference
-*Detailed interface states for version 0.2.3*
-Tags: Interaction Design, Accessibility
-Summary: Eight accessible screen drawings documenting search, exploration, missing data, and recovery in Visual Search Workbench 0.2.3.
+**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-18) supplies a check on that inference.
 
-This reference accompanies the [product story](/projects/visual-search-workbench/) and the [design process](/research/visual-search-workbench-process/). It records the detailed states for version 0.2.3, rather than serving as a step-by-step introduction.
+These examples show how a rule can focus a critique. They do not establish that the map helps people explore a collection. The [VSW design article](/research/visual-search-workbench-process/) treats that as a separate evaluation question.
 
-The drawings were checked against the 0.2.3 source. A test in the product repository checks quoted interface strings against their named Swift files. The screenshots in the product story show 0.2.0, before the rename from Semantic Image Search and the thumbnail changes in 0.2.3.
+## Carry the finding into the work
 
-The paths, filenames, and counts below are examples from the documented states. In particular, the missing-model screen shows recovery from an unreadable custom model folder; the downloadable app bundles its models.
+My workflow combines the Canon with [WorkBay](/projects/workbay/). An interface can be inventoried in a UX map and rendered as text screens or flow diagrams. A reviewer examines those representations and records a finding with the rule and artifact it concerns.
 
-## 1. Cold start
+The finding can then be stored against the task. A change addresses it, and a later review checks the result. Keeping the finding available allows the reviewer to ask whether the change resolved the original issue instead of relying on a broad statement that the interface was improved.
 
-**Screen 1 — Cold start.**
+The running interface remains part of that review. A map can expose an action or flow, but it does not reproduce the entire visual and interactive experience.
 
-The first launch explains how to begin. It does not report zero results before a library exists.
+## Question the finding before changing the product
 
-```text
-┌─ Visual Search Workbench ────────────────────────────────────────────────┐
-│ ┌─ Assets ──────────┐ ┌────────────────────────────────────────────────┐ │
-│ │ ▾ Assets          │ │ [ Search query                      ] (Search) │ │
-│ │   Photos you have │ │ [ Add Folder… ]                                │ │
-│ │   matted appear   │ │ Choose a folder to search. Your photos stay    │ │
-│ │   here. Open a    │ │ where they are.                                │ │
-│ │   folder to get   │ ├────────────────────────────────────────────────┤ │
-│ │   started.        │ │                                                │ │
-│ │ ▸ Jobs            │ │                                                │ │
-│ └───────────────────┘ └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+A critique can be wrong even when it cites a rule. The finding itself needs scrutiny before it justifies a change.
 
-_Screen 1, cold start: window with an empty Assets pane reading 'Photos you have matted appear here. Open a folder to get started.' beside a search pane with an Add Folder button and the line 'Choose a folder to search. Your photos stay where they are.'; no result count is drawn._
+In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. This is a field example of testing a finding, not an accuracy measurement for the Canon.
 
-## 2. Indexing
+Another recorded correction concerned a failure described as present in shipped work. The failure existed only in a constructed test input, so the claim had to be narrowed before it could justify a production change. In both cases, examining the basis of the finding changed the proposed work.
 
-**Screen 2 — Indexing.**
+## Keep the source and version with the reasoning
 
-Indexing reports completed work against a total. Cancelling leaves a partial index.
+A source reference establishes where a rule came from. It does not establish that the rule applies to every artifact or that a product has passed user validation. The trigger and any relevant exception still require judgment.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ Search query                                          ] (Search)       │
-│ [ Add Folder… ]                                                          │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  Embedding 812 of 1284…                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-│  ▢ ▢ ▢ ▢ ▢ ▢                                                             │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+The writing lexicon makes this boundary explicit: some rules are provisional editorial checks, not proof of AI authorship. Repeating a topic can help a reader follow an explanation, for example; repetition alone does not establish that the prose should be changed. The effect on the passage matters.
 
-_Screen 2, indexing: an Add Folder button and a determinate progress bar reading 'Embedding 812 of 1284…' under the search field, above a two-row grid of photo placeholders._
+A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. The [consumer guide](https://github.com/darce/heuristics-canon/blob/main/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
 
-## 3. Semantic results
+## Measure review quality, not the number of citations
 
-**Screen 3 — Semantic results.**
+The field examples show findings leading to revisions or being withdrawn. They do not establish that the full collection improves review outcomes compared with a smaller checklist or another reviewer.
 
-Results are ordered by similarity. In 0.2.3, thumbnails load four at a time, with a two-second wait limit and staggered retries. A missing file gets a permanent explanation.
+A comparison would need to examine consequential findings, missed defects, false positives, and reviewer effort on comparable artifacts. Those measures concern the quality of the review. The number of rule IDs cited concerns only its activity.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ [ red bicycle                                           ] (Search)       │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ▸ Explore                                                                │
-├──────────────────────────────────────────────────────────────────────────┤
-│ red bicycle                                                              │
-│ 64 search results · nearest 64                                           │
-│  ●  ●  ▢  ●  ▢  ●    ▢ decoding; asks again on a jittered backoff        │
-│  ●  ▢  ●  ●  ●  ▢                                                        │
-│  ●  ●  ●  ×  ●  ●    × Picture unavailable                               │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 3, semantic results: query 'red bicycle' with a header reading '64 search results, nearest 64' above three rows of result thumbnails — some decoded, several still placeholders waiting on a retry, and one marked Picture unavailable._
-
-## 4. A photo selected, details open
-
-**Screen 4 — A photo selected, details open.**
-
-File metadata gives the reader facts to inspect alongside the search ranking. The location map uses bundled coastline data and states the area shown.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ┌────────────────┐  IMG_4417.HEIC                                        │
-│ │                │  Selected photo · double-click to open                │
-│ │   [ preview ]  │  ▾ Photo details                                      │
-│ │                │        Size  4032 × 3024                              │
-│ │                │      Camera  Apple iPhone 13 Pro                      │
-│ └────────────────┘        Lens  26 mm f/1.5                              │
-│                          Taken  2021:07:14 18:22:00                      │
-│                            GPS  64.1466°, -21.9426°                      │
-│                                 ┌──────────────────────────┐             │
-│                                 │ ∿∿∿∿   ·   ·      ∿∿∿∿∿∿ │             │
-│                                 │  ∿∿∿─────●───────∿∿∿     │             │
-│                                 │    ∿∿∿∿∿∿· ∿∿∿∿∿∿∿       │             │
-│                                 └──────────────────────────┘             │
-│                                 Northern high latitudes, western         │
-│                                 hemisphere                               │
-│                                 Area shown: 60.15° N–68.15° N,           │
-│                                 25.94° W–17.94° W                        │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ●  ●  ●  ●  ●  ●                                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 4, inspection: IMG_4417.HEIC selected with an open details panel listing size, camera, lens, capture time and GPS above an offline mini-map drawn from a bundled coastline, captioned 'Northern high latitudes, western hemisphere' and 'Area shown: 60.15° N–68.15° N, 25.94° W–17.94° W'; result thumbnails below._
-
-## 5. Explore: Similarity / Places / Timeline
-
-**Screen 5 — Explore: Similarity / Places / Timeline.**
-
-The counts describe different subsets. A location selection can include photos outside the search results; those photos are labelled and listed without a search rank.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity  47 | Places  41 | Timeline  47 ]                           │
-│                              ↑           ↑                               │
-│            41 of the 47 selected photos have coordinates.                │
-│            The gap between those two numbers IS the finding.             │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore  [ Similarity  38 | Places  41 | Timeline  41 ]                │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │ 90°N ┌──────────────────┬──────────────────┐                         │ │
-│ │      │  ∿∿∿   ·  ∿∿┌─────────────┐∿        │                         │ │
-│ │   0° ├───∿∿───────∿│  ●   ● ●●  ∿│──∿∿─────┤                         │ │
-│ │      │      ∿∿    ∿└─────────────┘∿  · ∿∿  │                         │ │
-│ │ 90°S └──────────────────┴──────────────────┘                         │ │
-│ │      180°W               0°              180°E                       │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-│ Mark area   ○ 1 photo   ◯ 312 photos                                     │
-│ Showing 41 of 1284 photos. 1198 have no coordinates, 45 could not be     │
-│ read.                                                                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ ● Map selection · Showing 41 photos in the map selection. 41 of them are │
-│   not in your search results, so they are listed last rather than ranked.│
-│                                                       ( Clear region )   │
-├──────────────────────────────────────────────────────────────────────────┤
-│  ▣ ▣ ▣ ▣ ▣ ▣   ← 41 tiles, place order, unranked                         │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 5, Explore: badges reading Similarity 47, Places 41, Timeline 47 with a note that 41 of the 47 selected photos have coordinates; below, a Places map showing 41 of 1,284 photos, 1,198 without coordinates and 45 unreadable, and a 41-photo map selection listed unranked._
-
-## 6. Partial-library caveat
-
-**Screen 6 — Partial-library caveat.**
-
-The warning names the unavailable drive and qualifies the whole view. Visible and VoiceOver wording come from one string.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore                                                                │
-│ [ Similarity | Places | Timeline ]                                       │
-│ ⚠ 312 photos were never opened: their files are on Chimay, which is      │
-│   not plugged in. Dates and places describe the rest of the library,     │
-│   not all of it.                                                         │
-│ ┌──────────────────────────────────────────────────────────────────────┐ │
-│ │      ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁                           │ │
-│ └──────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 6, partial-library caveat: an Explore view warning that 312 photos were never opened and that dates and places describe the rest of the library, above a timeline histogram._
-
-## 7. Timeline: rest, zoom, truncation
-
-**Screen 7 — Timeline: rest, zoom, truncation.**
-
-The timeline names its date sources, keeps undated photos off the axis with their own count, and offers a way to reach dates outside the displayed range.
-
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates                                                                │
-│ Photos by capture year                             Square-root count scale│
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │ 1284┤                                            │ │ Off the time    │ │
-│ │  722┤        ▅█                                  │ │ axis            │ │
-│ │  321┤   ▂▅   ██ ▇▅                               │ │      ⁇          │ │
-│ │   80┤ ▁ ██   ██ ██ ▃▁                            │ │      94         │ │
-│ │    0┼─┴──┴───┴┴─┴┴─┴──┴──                        │ │ Undated photos  │ │
-│ │     2019 2020 2021 2022 2023 2024 2025           │ └─────────────────┘ │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ ■ EXIF exposure date  ■ File write time  ■ Source unknown                │
-│ 🕐 Bars are calendar periods: one bar per calendar year, cut in GMT       │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ▾ Explore     [ Similarity | Places | Timeline ]                         │
-│ All dates › 2021 › Jul 2021                                 [ Zoom out ] │
-│ Photos by capture day                              Square-root count scale│
-│ 1 July 2021 to 31 July 2021                        [ Zoom to selection ] │
-│ Bars per   Year ○──────────● Day    Day                                  │
-│ ┌──────────────────────────────────────────────────┐ ┌─────────────────┐ │
-│ │   ▃▁  ▂▅█▆▃▁ ▁  0  0  ▁▃▄▂▁   ▂▇█▅▂▁    ▁ ▁▂▃▁   │ │ Off the time    │ │
-│ │                 ╌  ╌                             │ │ axis            │ │
-│ │ 1    5    9   13   17   21   25   29             │ │      ⁇          │ │
-│ └──────────────────────────────────────────────────┘ │      94         │ │
-│                                                      │ Undated photos  │ │
-│                                                      └─────────────────┘ │
-│ ⚠ 94 photos have no date and are not on this axis.                       │
-│ 🕐 Bars are calendar periods: one bar per calendar day, cut in GMT        │
-│    (Gregorian).                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ Photos by capture year                                                   │
-│ ┌──────────────────────────────────────────────────┐                     │
-│ │        ▁▂▅█▆▃▁    ▁▃▄▂▁      ▂▇█▅▂▁     ▁▂▃▁     │                     │
-│ │ 1962 1966 ... 2019 2020 2021 2022 2023 2024 2025 │                     │
-│ └──────────────────────────────────────────────────┘                     │
-│ ⚠ 3 photos dated before 1962 are off the left of this axis.              │
-│                                       [ Before 1962 ]                    │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 7, timeline: an all-dates histogram 2019 to 2025 on a square-root count scale with 94 undated photos held off the axis; a July 2021 daily zoom; and a truncated view offering a 'Before 1962' action._
-
-## 8. Missing model and settings recovery
-
-**Screen 8 — Missing model and settings recovery.**
-
-Settings explains library access, model recovery, content handling, and the optional local layer-naming service. Ollama naming is off by default; when enabled, it sends small crops to a service on the same Mac.
-
-```text
-┌─ Model folder ───────────────────────────────────────────────────────────┐
-│ Where the exported CLIP and MobileSAM packages live. The object detector │
-│ ships inside the app, so detection works even when this folder is        │
-│ missing; search does not.                                                │
-│                                                                          │
-│ /Volumes/Butter/cache/sis-coreml-export                                  │
-│ This folder is not readable — an unmounted disk, or models that were     │
-│ never exported there. Search will report the missing package by name.    │
-│                                                                          │
-│ ( Choose model folder… )   ( Reset to default )                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ Settings ───────────────────────────────────────────────────────────────┐
-│ Library folders                                                          │
-│   ~/Pictures/2021-iceland                              (Remove)          │
-│   + Open Folder…                                                         │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Memory                                                                   │
-│ ──────────────────────────────────────────────────────────────────────── │
-│ Models                                                                   │
-│                                                                          │
-│ Content                                                                  │
-│   No photo is tagged, hidden, blurred, or ranked lower for what it       │
-│   depicts. This app has no explicit-content classifier, so nothing is    │
-│   filtered out and nothing is certified safe — search matches every      │
-│   indexed photo on the same terms, and a generated layer name may        │
-│   describe a photo plainly.                                              │
-│                                                                          │
-│ Local layer names                                                        │
-│   ☐ Ask local Ollama to name unsure layers                               │
-│     Off by default. When on, unsure crops may be sent as a 256px JPEG    │
-│     to Ollama on this Mac (127.0.0.1). Gallery bytes never leave the     │
-│     device.                                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-_Screen 8, recovery: a model-folder panel naming /Volumes/Butter/cache/sis-coreml-export as unreadable with Choose and Reset controls, above Settings listing library folders, the content policy, and the off-by-default local Ollama naming option._
-
-## Additional cutout screenshots
-
-These captures are from 0.2.0. They show the inspection and saving steps described in the product story.
-
-![An enlarged layer titled "cat · experimental": the cat cut out on an alpha checkerboard, above a Save this layer button and a Close button.](/images/work/sis-cat-layer.png)
-
-![A photo of three costumed people whose details show chips Person 1, Person 2, and Person 3, above four separate person layers cut out on alpha checkerboards.](/images/work/sis-persons-layer-layout.png)
+The [public repository](https://github.com/darce/heuristics-canon) contains the rules, source references, and longer reasoning cards for decisions that need more context.
 
 ### 3D Without Canvas or WebGL
 *Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL*
