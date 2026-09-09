@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { NextPageWithLayout } from './_app'
 import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
 import { ContentIndexData, MetaImage } from '../types'
 import Layout from '../components/layout/Layout'
+import ResponsiveImage from '../components/common/ResponsiveImage/ResponsiveImage'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
@@ -23,6 +23,8 @@ const FEATURED_TITLES: Record<string, string> = {
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
+
+const heroPriorityAttributes: Record<string, string> = { fetchpriority: 'high' }
 
 export const cardIconFor = (project: ContentIndexData): MetaImage | undefined => {
     const { masthead, thumbnail, images } = project.metaData
@@ -66,6 +68,8 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                     alt="Daniel Arcé, portrait by Liam Maloney"
                                     width={120}
                                     height={120}
+                                    decoding="async"
+                                    {...heroPriorityAttributes}
                                 />
                             </picture>
                         </figure>
@@ -83,7 +87,7 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                 <section className={styles.featured}>
                     <h2>Selected work</h2>
                     <ul className={styles.projectList}>
-                        {featuredProjects.map((project) => {
+                        {featuredProjects.map((project, index) => {
                             const icon = cardIconFor(project)
                             return (
                                 <li key={project.slug} className={styles.projectItem}>
@@ -95,13 +99,14 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                                                     aria-hidden="true"
                                                 >
                                                     {icon && (
-                                                        <Image
-                                                            src={`/images/${icon.src}`}
+                                                        <ResponsiveImage
+                                                            src={icon.src}
                                                             alt=""
-                                                            width={120}
-                                                            height={120}
                                                             sizes="120px"
+                                                            priority={index < 2}
                                                             style={{
+                                                                width: '100%',
+                                                                height: '100%',
                                                                 objectFit: 'cover',
                                                                 ...(icon.position ? { objectPosition: icon.position } : {}),
                                                             }}
