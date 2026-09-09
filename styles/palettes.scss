@@ -8,7 +8,9 @@ $terminal: #1c1d21;
 $terminal-raised: #2c2e34;
 $terminal-sunk: #2f3137;
 $terminal-ink: #cbcdd2;
-$coral-red: #d9253f;
+// The coral accent now measures 3.90:1 on $paper-raised and 3.03:1 on
+// $terminal-sunk, the limiting real grounds for the site's UI strokes.
+$coral-red: #e03a50;
 $sky-blue: #6ab5db;
 $electric-ultramarine: #3c00f7;
 
@@ -28,7 +30,9 @@ $themes: (
         backgroundColor: $terminal,
         surface: $terminal-raised,
         masthead: $terminal,
-        castShadow: black,
+        // Focus ink measures 8.53:1 on $terminal-raised and 8.17:1 on
+        // $terminal-sunk, so keyboard rings remain visible in dark mode.
+        castShadow: $terminal-ink,
         inactiveBg: $terminal-sunk,
         header: $terminal-ink,
         text: $terminal-ink,
