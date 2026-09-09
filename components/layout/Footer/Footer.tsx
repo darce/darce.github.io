@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ footerData, className }) => {
         return null
     }
     return (
-        <footer className={`${styles.footer} ${className || ''}`}>
+        <footer id="site-footer" tabIndex={-1} className={`${styles.footer} ${className || ''}`}>
             <div className={styles.footerInner}>
                 <MDXRemote {...footerContent.mdxSource} />
             </div>

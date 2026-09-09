@@ -39,29 +39,6 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
         document.body.setAttribute('data-theme', appearance)
     }, [appearance])
 
-    /** Style tab focus */
-    useEffect(() => {
-        const handleKeyDownOnce = (event: KeyboardEvent) => {
-            if (event.key === 'Tab') {
-                document.body.classList.add('is-tab')
-            }
-            window.removeEventListener('keydown', handleKeyDownOnce)
-            window.addEventListener('mousedown', handleMouseDownOnce)
-        }
-
-        const handleMouseDownOnce = () => {
-            document.body.classList.remove('is-tab')
-            window.removeEventListener('mousedown', handleMouseDownOnce)
-            window.addEventListener('keydown', handleKeyDownOnce)
-        }
-
-        window.addEventListener('keydown', handleKeyDownOnce)
-        return () => {
-            window.removeEventListener('keydown', handleKeyDownOnce)
-            window.removeEventListener('mousedown', handleMouseDownOnce)
-        }
-    }, [])
-
     useEffect(() => {
         trackPageView(router.asPath)
 

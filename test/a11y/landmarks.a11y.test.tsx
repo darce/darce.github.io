@@ -63,6 +63,27 @@ describe('ARIA landmarks and semantic structure', () => {
         expect(container.querySelector('#main-content')).toBeTruthy()
     })
 
+    // Tab does not walk landmark to landmark by itself; the skip bar is what
+    // provides that, and it is only as good as its targets. A fragment jump to
+    // an element without tabIndex scrolls but leaves focus behind, which is the
+    // failure this asserts against — it is invisible in a rendering check.
+    it('every skip link points at a landmark that can actually take focus', () => {
+        const { container } = renderLayout()
+
+        const links = Array.from(container.querySelectorAll('.skip-link'))
+        expect(links.map(link => link.getAttribute('href'))).toEqual([
+            '#main-content',
+            '#primary-navigation',
+            '#site-footer',
+        ])
+
+        for (const link of links) {
+            const target = container.querySelector(link.getAttribute('href') as string)
+            expect(target, `no element for ${link.getAttribute('href')}`).toBeTruthy()
+            expect(target?.getAttribute('tabindex')).toBe('-1')
+        }
+    })
+
     it('the shipped primary nav is named and marks the current page', () => {
         const { container } = renderLayout()
 

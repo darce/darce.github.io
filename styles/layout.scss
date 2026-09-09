@@ -4,27 +4,66 @@
     display: block;
     overflow-x: clip;
 
-    .skip-link {
+    // The whole bar reveals on :focus-within, not one link at a time, so the
+    // reader can see the landmarks either side of the one they are on and Tab
+    // reads as stepping along a row rather than as three unrelated flashes.
+    .skip-links {
         position: absolute;
         left: -9999px;
         top: auto;
         width: 1px;
         height: 1px;
         overflow: hidden;
-        z-index: 100;
+
+        &:focus-within {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            width: auto;
+            height: auto;
+            overflow: visible;
+        }
+    }
+
+    .skip-link {
+        display: block;
         padding: 0.5rem 1rem;
         background: var(--gray-12);
         color: var(--gray-1);
         text-decoration: none;
         font-size: 0.875rem;
+        white-space: nowrap;
 
-        &:focus {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: auto;
-            height: auto;
-            overflow: visible;
+        + .skip-link {
+            border-left: $s-line solid var(--gray-1);
+        }
+
+        // Inset so the ring stays inside the bar rather than bleeding off the
+        // top of the viewport, where the bar is pinned.
+        &:focus-visible {
+            outline: 2px solid var(--gray-1);
+            outline-offset: -4px;
+        }
+
+        &:focus:not(:focus-visible) {
+            outline: none;
+        }
+    }
+
+    // Landmark jump targets. These take focus only from the skip bar, so the
+    // ring is inset — an outset one on <main> would trace the whole viewport.
+    #main-content,
+    .footer,
+    .nav {
+        &:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: -2px;
+        }
+
+        &:focus:not(:focus-visible) {
+            outline: none;
         }
     }
 

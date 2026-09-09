@@ -38,14 +38,19 @@
             text-decoration: none;
             display: block;
             cursor: pointer;
+
+            // Inset: rows are flush against each other, so an outset ring
+            // would sit on top of the neighbouring row's border.
+            @include themeComponent($themes) {
+                $outline-color: t('castShadow');
+                @include isFocused($outline-color, -2px);
+            }
         }
 
         @include themeComponent($themes) {
-            $outline-color: t('castShadow');
             color: t('text');
             background-color: t('inactiveBg');
             border-bottom-color: t('surface');
-            @include isFocused($outline-color);
         }
 
         &.selected {

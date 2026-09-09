@@ -20,7 +20,7 @@ const Nav: React.FC<NavProps> = ({ className }) => {
     }, [router.asPath])
 
     return (
-        <nav className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
+        <nav id="primary-navigation" tabIndex={-1} className={`${styles.nav} ${className || ''}`} aria-label='Daniel Arcé'>
             <ul>
                 {NAV_ITEMS.map((navItem) => (
                     <li

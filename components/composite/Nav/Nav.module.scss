@@ -51,6 +51,13 @@
             cursor: pointer;
             position: relative;
 
+            // Inset: an item is nearly as tall as the bar, so an outset ring
+            // would break the bar's top and bottom edge.
+            @include themeComponent($themes) {
+                $outline-color: t('castShadow');
+                @include isFocused($outline-color, -2px);
+            }
+
             @media (max-width: $tabletMax) {
                 padding: $s-medium;
             }
@@ -88,11 +95,6 @@
             &::after {
                 width: 100%;
             }
-        }
-
-        @include themeComponent($themes) {
-            $outline-color: t('castShadow');
-            @include isFocused($outline-color);
         }
     }
 

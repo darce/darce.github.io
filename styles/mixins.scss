@@ -89,13 +89,27 @@
         }
     }
 
-    @mixin isFocused($outline-color) {
+    /// Keyboard focus ring.
+    ///
+    /// `:focus-visible` is the browser's own answer to the question the old
+    /// `body.is-tab` class was tracking by hand, so the listener in _app.tsx
+    /// that set it is gone. Two things the previous rule got wrong and this one
+    /// fixes: it must land on the element that actually takes focus (it sat on
+    /// the wrapping `li`, which never does), and it must state a width —
+    /// `outline-style` alone inherits the UA's `medium` and drew nothing.
+    ///
+    /// @param {Color} $outline-color - ring colour, normally t('castShadow')
+    /// @param {Length} $offset - negative insets the ring, for items whose ring
+    ///   would otherwise spill out of a tight bar or a clipped parent
+    @mixin isFocused($outline-color, $offset: $s-small) {
+        &:focus-visible {
+            outline: 2px solid $outline-color;
+            outline-offset: $offset;
+        }
 
-        /** global prevents appending selector to component name when importing */
-        :global(body.is-tab) & {
-            &:focus {
-                outline-style: solid;
-                outline-color: $outline-color;
-            }
+        /// Pointer presses keep their bare state; without this the UA ring
+        /// returns on click in browsers that still match :focus there.
+        &:focus:not(:focus-visible) {
+            outline: none;
         }
     }
