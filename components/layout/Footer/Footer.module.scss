@@ -23,14 +23,15 @@
     // Footer links sit outside #main-content, so the global link colour never
     // reaches them. Restate it here rather than widening the global selector.
     a {
-        // Coral is a stroke everywhere else on the site, never ink: as link
-        // text on the footer band it only reaches 3.7:1 light / 3.4:1 dark,
-        // short of AA for 0.85rem. The accent is a stroke here too.
+        // Coral is a stroke everywhere else on the site, never ink: on the
+        // footer band it reaches 3.27:1 light / 3.92:1 dark, short of AA for
+        // 0.85rem. The accent is a stroke here too.
         //
         // The stroke is drawn at rest, not only on hover. Link ink against
         // footer body text is 2.12:1 light / 1.43:1 dark, so colour alone
         // cannot mark these as links (1.4.1). The width is $s-line, the rule
         // every other interactive border on the site follows.
+        padding-block: $s;
         border-bottom: $s-line solid;
 
         @include themeComponent($themes) {
