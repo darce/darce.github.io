@@ -13,13 +13,6 @@ import type { MarkdownData } from '../../types'
 const MDX_PATH = path.join(
     process.cwd(), 'content', 'research', 'visual-search-workbench-process.mdx')
 
-// The precedence-order drawing uses arrows rather than a box, so matching on
-// '┌' alone would silently pass it over — the one drawing with no border is
-// exactly the one a border-based selector would miss.
-const asciiPres = (container: HTMLElement): HTMLPreElement[] =>
-    Array.from(container.querySelectorAll('pre')).filter(pre =>
-        /[┌│└├─►▟░]/.test(pre.textContent ?? ''))
-
 describe('visual-search-workbench process essay through the shipped MDX pipeline', () => {
     let doc: MarkdownData
 

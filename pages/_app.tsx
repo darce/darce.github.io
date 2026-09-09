@@ -22,7 +22,7 @@ import {
 import { GA_MEASUREMENT_ID } from '../lib/telemetry/ga'
 import '../styles/global.scss'
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode
 }
 

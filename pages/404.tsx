@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import type { NextPageWithLayout } from './_app'
 import Layout from '../components/layout/Layout'
 import { getMdxContent, getMdxIndexContent } from '../lib/getMdxContent'
@@ -14,13 +15,13 @@ const NotFoundPage: NextPageWithLayout = () => {
             </Head>
             <h2>Page not found</h2>
             <p>
-                <a href="/">Home</a>
+                <Link href="/">Home</Link>
                 {' | '}
-                <a href="/work/">Work</a>
+                <Link href="/work/">Work</Link>
                 {' | '}
-                <a href="/research/">Research</a>
+                <Link href="/research/">Research</Link>
                 {' | '}
-                <a href="/about/">About</a>
+                <Link href="/about/">About</Link>
             </p>
         </div>
     )

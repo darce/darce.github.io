@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Box } from '@radix-ui/themes'
-import { OrderBookData, OrderBookMetrics, OrderBookEntry } from '../../../types'
+import { OrderBookData, OrderBookMetrics } from '../../../types'
 import {
   SymbolSelector,
   MetricsCards,

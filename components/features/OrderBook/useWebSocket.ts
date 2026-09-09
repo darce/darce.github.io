@@ -103,6 +103,12 @@ export function useWebSocket<T>({
                         MAX_RECONNECT_DELAY_MS
                     )
                     reconnectAttemptRef.current = attempt + 1
+                    // Self-reference: `connect` is still in its temporal dead zone
+                    // while this factory runs, but onclose cannot fire before the
+                    // binding is initialised, so the recursion is safe. Rewriting it
+                    // through a ref changes which generation of `connect` reconnects,
+                    // which is not a change to make without exercising the socket.
+                    // eslint-disable-next-line react-hooks/immutability
                     reconnectTimerRef.current = setTimeout(connect, delay)
                 }
             }

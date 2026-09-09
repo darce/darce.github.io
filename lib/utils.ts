@@ -9,12 +9,12 @@ export const mapRange = (
     return mappedValue
 }
 
-export const throttle = (callback: (...args: any[]) => void, pause: number) => {
+export const throttle = <Args extends unknown[]>(callback: (...args: Args) => void, pause: number) => {
     let isPaused: boolean = false
     /** Handle different return types of setTimeout: number for client, Timeout for node */
     let timeout: ReturnType<typeof setTimeout>
 
-    const throttledFunction = (...args: any[]) => {
+    const throttledFunction = (...args: Args) => {
         if (isPaused) return
         isPaused = true;
         clearTimeout(timeout)

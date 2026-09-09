@@ -18,9 +18,10 @@ interface CubeProps {
     className?: string
 }
 
+const FULL_ROTATION_RADIANS = Math.PI * 2
+
 const Cube: React.FC<CubeProps> = ({ className }) => {
     const [vertices, setVertices] = useState<Vertex[]>([])
-    const FULL_ROTATION_RADIANS = Math.PI * 2
     const mobileMax = Number.parseInt(breakpoints.mobileMax, 10)
     const rafPending = useRef(false)
 
@@ -38,7 +39,7 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
     const angleXRef = useRef<number>(0)
     const angleYRef = useRef<number>(0)
     const angleZRef = useRef<number>(0)
-    const centerRef = useRef<Point>({ x: 0, y: 0 })
+    const [center, setCenter] = useState<Point>({ x: 0, y: 0 })
     const cubeRef = useRef<HTMLDivElement>(null)
 
     const updateVertices = useCallback(() => {
@@ -84,7 +85,8 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
     useEffect(() => {
         if (cubeRef.current) {
             const cubeRect = cubeRef.current.getBoundingClientRect()
-            centerRef.current = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
+            const measured = { x: cubeRect.width / 2, y: cubeRect.height / 2 }
+            setCenter(prev => (prev.x === measured.x && prev.y === measured.y ? prev : measured))
             window.addEventListener('mousemove', handleMouseMove, { passive: true })
             window.addEventListener('scroll', handleScroll, { passive: true })
 
@@ -105,8 +107,8 @@ const Cube: React.FC<CubeProps> = ({ className }) => {
                     className={styles.vertex}
                     style={{
                         transform:
-                            `translate3d(${vertexDiv.x + centerRef.current.x}px, 
-                                ${vertexDiv.y + centerRef.current.y}px,
+                            `translate3d(${vertexDiv.x + center.x}px, 
+                                ${vertexDiv.y + center.y}px,
                                 ${vertexDiv.z}px)`
                     }}
                     data-vertex-id={index}

@@ -16,7 +16,7 @@
         "start": "next start",
         "precheck": "npm run images",
         "typecheck": "tsc --noEmit",
-        "lint": "tsc --noEmit",
+        "lint": "eslint .",
         "check": "npm run typecheck && npm run lint",
         "inspect": "node scripts/inspect-dom.mjs"
     },
@@ -54,6 +54,8 @@
         "@types/node": "^20.11.30",
         "@types/react": "^18.2.70",
         "axe-core": "^4.11.2",
+        "eslint": "^9.39.5",
+        "eslint-config-next": "^16.3.4",
         "gray-matter": "^4.0.3",
         "jsdom": "^29.0.1",
         "modern-normalize": "^2.0.0",

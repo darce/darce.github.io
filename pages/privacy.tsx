@@ -35,7 +35,7 @@ const PrivacyPage: NextPageWithLayout = () => {
             <h3>How it is collected</h3>
             <p>
                 This site uses Google Analytics and a self-hosted analytics service
-                (AltContext). An anonymous identifier is stored in your browser's
+                (AltContext). An anonymous identifier is stored in your browser&rsquo;s
                 localStorage to distinguish unique visits. This identifier cannot be
                 used to identify you personally.
             </p>
@@ -51,7 +51,7 @@ const PrivacyPage: NextPageWithLayout = () => {
             <p>
                 Google Analytics is subject to{' '}
                 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
-                    Google's Privacy Policy
+                    Google&rsquo;s Privacy Policy
                 </a>.
                 The self-hosted analytics service runs on infrastructure controlled by the site owner.
             </p>
@@ -60,7 +60,7 @@ const PrivacyPage: NextPageWithLayout = () => {
             <p>
                 You can block analytics by using a browser extension such as uBlock Origin,
                 or by enabling Do Not Track in your browser settings.
-                You can clear the anonymous identifier by clearing your browser's localStorage
+                You can clear the anonymous identifier by clearing your browser&rsquo;s localStorage
                 for this domain.
             </p>
 

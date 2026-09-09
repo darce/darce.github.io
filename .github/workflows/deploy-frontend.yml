@@ -63,10 +63,16 @@ jobs:
             lib/generated
           key: image-variants-${{ hashFiles('public/images/**', 'scripts/generate-image-variants.js') }}
 
+      # static_site_generator: next is deliberately not set. It makes the action
+      # rewrite next.config.js in place to inject basePath, images.unoptimized and
+      # experimental.images.unoptimized. All three are already committed in
+      # next.config.js (basePath resolves to empty — the site is served from the
+      # domain root), so the rewrite changed nothing and its parser failed part
+      # way through, logging "Unsupported configuration file extension" on every
+      # deploy. Without it the action only enables Pages and reports the origin.
       - name: Setup pages
         uses: actions/configure-pages@v4
         with:
-          static_site_generator: next
           enablement: true
 
       - name: Build with Next.js
