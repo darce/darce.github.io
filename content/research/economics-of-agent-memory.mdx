@@ -43,11 +43,23 @@ An earlier audit examined three project `handoff.db` databases. Its summary repo
 
 These figures are descriptive aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
 
-The packet’s recorded size is small relative to those task totals. That comparison concerns the amount of text supplied at the start, not the complete cost of remembering. Retrieval, later context use, and decisions made from stale material may add costs elsewhere. A token count is also not itself a monetary return.
+<Diagram
+    src="/images/research/econ-scale.svg?v=2"
+    alt="On a logarithmic ruler, the average packet is around three hundred tokens and the median recorded task around three hundred thousand, about three tenfold steps apart."
+    caption="Each step is ten times the tokens. The markers compare two audit aggregates; they do not measure savings or the full cost of memory."
+/>
+
+The three steps between the packet and median-task markers show a difference of roughly a thousandfold. The packet’s recorded size is small relative to those task totals. That comparison concerns the amount of text supplied at the start, not the complete cost of remembering. Retrieval, later context use, and decisions made from stale material may add costs elsewhere. A token count is also not itself a monetary return.
 
 ### The audit cannot establish an effect
 
 The audit’s main limitation is an instrumentation mismatch. Interactive sessions received context packets but lacked the audited task-level token measurement used in the analysis. Orchestrated worker lanes supplied token measurements but did not receive those packets.
+
+<Diagram
+    src="/images/research/econ-gap.svg?v=2"
+    alt="Interactive sessions have packet marks but no audited token meter. Orchestrated lanes have meter marks but no packets. A crossed-out connection shows the missing overlap."
+    caption="In this audit, one group received the intervention and the other supplied the measurement. Neither group supplies both sides needed to estimate the effect."
+/>
 
 That mismatch prevents a meaningful treated-versus-untreated comparison. The two groups differ in their work and measurement as well as their use of project history. A controlled comparison must record both the intervention and its cost for the same assigned tasks.
 
@@ -58,6 +70,12 @@ The resolution figures have a similar boundary. A written resolution establishes
 The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
 
 The comparison needs **calibration**, a **content probe**, and **matched task pairs**. Each stage answers a different question before the savings claim is assessed.
+
+<Diagram
+    src="/images/research/econ-design.svg?v=4"
+    alt="Four stages: calibrate variation with A/A pairs, compare relevant and unrelated packets, run matched memory-versus-cold pairs, then report token effects alongside blinded quality."
+    caption="The proposed sequence separates normal run-to-run variation, the relevance of the content, and the effect of supplying it. The readout must include quality."
+/>
 
 **Calibration** uses A/A pairs: two cold runs with the same starting conditions. The variation between those attempts estimates how much results can differ without the memory intervention. That variation informs the sample-size procedure for the main comparison.
 

@@ -29,6 +29,12 @@ A later coding session needs more than an account of what happened. It may need 
 
 The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
 
+<Diagram
+    src="/images/research/memory-loop.svg?v=2"
+    alt="Session A writes decisions, findings, and results into handoff.db. Its conversation is outside session B’s view, but selected records reach session B as a small context packet."
+    caption="The database connects sessions: the next conversation receives a selection of recorded work without needing the earlier transcript."
+/>
+
 These parts describe the mechanism. [The field note](/research/interrogating-agent-memory/) describes how I use it, and [the evaluation proposal](/research/economics-of-agent-memory/) asks whether it reduces work at comparable quality.
 
 ## The record preserves decisions and evidence
@@ -45,6 +51,12 @@ Retrieval depends on what the session already knows. A known task or finding can
 
 Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
 
+<Diagram
+    src="/images/research/memory-vector.svg?v=2"
+    alt="A question becomes a numerical vector. In a schematic two-dimensional view, it sits near an earlier rationale and farther from an unrelated note."
+    caption="The nearby rationale is a candidate to read. This simplified view shows similarity, which does not establish that the earlier constraint still applies."
+/>
+
 A retrieved record might contain the rationale for an approach rejected earlier. That rationale can explain the original constraint; the constraint can then be compared with the current implementation. The result is a reason to examine the earlier decision, not an instruction to repeat it.
 
 ### Keep the index tied to the record
@@ -59,6 +71,12 @@ The tool also reports why a lookup returns nothing. An empty store, an unavailab
 
 A context packet brings selected records into the current conversation. The packet must be bounded because the conversation still has finite space. Loading every past record would compete with the task the session is meant to complete.
 
+<Diagram
+    src="/images/research/memory-layers.svg?v=2"
+    alt="The stored record feeds two alternative retrieval paths: exact lookup and full-text search, or optional semantic search. Both lead to a selected context packet; the semantic index links back to its source rows."
+    caption="Read from the top down: preserve the record, choose a retrieval path, then select what the session needs. Semantic search is optional."
+/>
+
 The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
 
 The useful question is whether a selected record changes the next decision. A paragraph can sound relevant without supplying the constraint or unresolved finding the session actually needs. That difference between apparent relevance and useful context is one reason retrieval needs evaluation.
@@ -68,6 +86,12 @@ The useful question is whether a selected record changes the next decision. A pa
 The structured record can be exported and read by different supported coding tools. A session in a new tool can retrieve history written by another tool without having its entire conversation. The new tool still needs its own authentication and setup, and its capabilities may differ.
 
 The database stays out of version control by default because it can contain sensitive project material. Keeping the file local does not make every use of its contents private: a context packet sent to a hosted model sends that selected material to the provider. Export and model use both require attention to what the record contains.
+
+<Diagram
+    src="/images/research/memory-boundary.svg?v=2"
+    alt="A local database stays out of version control by default. Selected rows can cross the machine boundary through an export or a packet sent to a hosted model."
+    caption="Local storage and model use have different boundaries. Sending a context packet to a hosted model sends those selected records to its provider."
+/>
 
 ## Test what the record changes
 
