@@ -76,10 +76,10 @@ def memory_loop() -> str:
     b.append(text(93, 68, "session A", anchor="middle"))
     for y in (84, 96, 108):
         b.append(line(48, y, 138, y, stroke=INK2, width=1))
-    # the context evaporates
+    # the earlier conversation is outside the next session’s view
     b.append(line(93, 138, 93, 156, stroke=INK2, width=1, dash="3 3"))
     b.append(box(28, 158, 130, 44, stroke=INK2, dash="4 3"))
-    b.append(text(93, 184, "context erased", size=12, fill=INK2, anchor="middle"))
+    b.append(text(93, 184, "outside B’s view", size=12, fill=INK2, anchor="middle"))
     # the record persists
     b.append(box(195, 150, 150, 110, width=2))
     b.append(rows(195, 150, 150, 110, 5))
@@ -98,34 +98,27 @@ def memory_loop() -> str:
 
 
 def memory_layers() -> str:
-    bands = [
-        (20, 28, 380, "rows: the canonical record", INK, 1.5),
-        (50, 112, 320, "exact search: SQL and full text", INK, 1.5),
-        (80, 196, 260, "meaning search: embeddings", CORAL, 2),
-        (125, 280, 170, "the packet", INK, 1.5),
-    ]
     b = []
-    for x, y, w, label, stroke, sw in bands:
-        b.append(box(x, y, w, 54, stroke=stroke, width=sw))
-        ly = 48 if y == 28 else y + 32
-        b.append(text(210, ly, label, size=13, anchor="middle"))
-    b.append(
-        text(210, 354, "what the next session reads", size=12, fill=INK2, anchor="middle")
-    )
-    for y in (58, 66, 74):
-        b.append(line(90, y, 330, y, stroke=INK2, width=1))
-    for y1 in (82, 166, 250):
-        b.append(line(210, y1, 210, y1 + 26, end="layers-ink"))
-    # the card in the index points back to the shelf
-    b.append(box(414, 200, 46, 30, stroke=CORAL))
-    b.append(
-        f'<path d="M437,200 C450,130 442,86 404,62" fill="none" '
-        f'stroke="{CORAL}" stroke-width="1.5" marker-end="url(#layers-coral)"/>'
-    )
-    b.append(text(437, 250, "each vector", size=12, fill=INK2, anchor="middle"))
-    b.append(text(437, 264, "points back", size=12, fill=INK2, anchor="middle"))
-    b.append(text(437, 278, "to a row", size=12, fill=INK2, anchor="middle"))
-    return svg(500, 370, "layers", "".join(b))
+    b.append(box(70, 24, 380, 60, width=2))
+    b.append(text(260, 49, "rows: the project record", size=15, anchor="middle"))
+    b.append(text(260, 70, "decisions, findings, evidence", anchor="middle"))
+    for x in (135, 385):
+        b.append(line(x, 84, x, 132, end="layers-ink"))
+    b.append(box(20, 136, 230, 76))
+    b.append(text(135, 164, "exact retrieval", size=15, anchor="middle"))
+    b.append(text(135, 189, "lookup / full-text search", anchor="middle"))
+    b.append(box(270, 136, 230, 76, stroke=CORAL, width=2))
+    b.append(text(385, 164, "semantic retrieval", size=15, anchor="middle"))
+    b.append(text(385, 189, "optional embedding index", anchor="middle"))
+    b.append(line(480, 136, 480, 54, stroke=CORAL))
+    b.append(line(480, 54, 454, 54, stroke=CORAL, end="layers-coral"))
+    b.append(text(385, 110, "links to source rows", size=12, fill=CORAL, anchor="middle"))
+    for x in (135, 385):
+        b.append(line(x, 212, 260, 270, end="layers-ink"))
+    b.append(box(150, 276, 220, 54))
+    b.append(text(260, 308, "selected context packet", size=14, anchor="middle"))
+    b.append(text(260, 354, "what the next session reads", anchor="middle"))
+    return svg(520, 378, "layers", "".join(b))
 
 
 def memory_boundary() -> str:
@@ -133,7 +126,7 @@ def memory_boundary() -> str:
     b.append(box(30, 70, 170, 120, width=2))
     b.append(rows(30, 70, 170, 120, 5))
     b.append(text(115, 60, "handoff.db", size=14, anchor="middle"))
-    b.append(text(115, 212, "private", size=12, fill=INK2, anchor="middle"))
+    b.append(text(115, 212, "local record", size=12, fill=INK2, anchor="middle"))
     # the machine boundary, with one deliberate gate
     b.append(text(280, 20, "machine boundary", size=12, fill=INK2, anchor="middle"))
     b.append(line(280, 32, 280, 108, dash="4 4"))
@@ -141,14 +134,14 @@ def memory_boundary() -> str:
     # the export path, through the gate
     b.append(line(200, 118, 322, 129, stroke=CORAL, width=2, end="bound-coral"))
     b.append(box(326, 104, 130, 54, stroke=CORAL, width=2))
-    b.append(text(391, 135, "bounded export", size=12, fill=CORAL, anchor="middle"))
+    b.append(text(391, 135, "selected rows", size=12, fill=CORAL, anchor="middle"))
     b.append(line(456, 131, 500, 131, stroke=CORAL, width=1.5, end="bound-coral"))
-    b.append(text(512, 178, "chosen rows only", size=12, fill=INK2, anchor="end"))
+    b.append(text(512, 178, "export / hosted model", size=12, fill=INK2, anchor="end"))
     # the path that never opens
     b.append(line(200, 168, 272, 202, end="bound-ink"))
     b.append(line(273, 199, 287, 213, stroke=CORAL, width=2))
     b.append(line(273, 213, 287, 199, stroke=CORAL, width=2))
-    b.append(text(296, 207, "never", size=13, fill=CORAL))
+    b.append(text(296, 207, "excluded by default", size=12, fill=CORAL))
     b.append(box(360, 216, 120, 54))
     b.append(text(420, 247, "git / public", size=13, anchor="middle"))
     return svg(520, 300, "bound", "".join(b))
@@ -188,31 +181,27 @@ def memory_window() -> str:
 
 def memory_vector() -> str:
     b = []
-    # a question becomes numbers
-    b.append(box(24, 78, 122, 74))
-    b.append(text(85, 102, "why was the", size=11, anchor="middle"))
-    b.append(text(85, 117, "retry approach", size=11, anchor="middle"))
-    b.append(text(85, 132, "rejected?", size=11, anchor="middle"))
-    b.append(line(146, 115, 186, 115, end="vec-ink"))
-    b.append(text(166, 170, "embedding", size=11, fill=INK2, anchor="middle"))
-    b.append(text(166, 184, "model", size=11, fill=INK2, anchor="middle"))
-    b.append(box(190, 94, 162, 42))
-    b.append(text(271, 119, "[ 0.12  -0.83  0.44  ... ]", size=12, anchor="middle"))
-    b.append(text(271, 156, "a vector: coordinates", size=11, fill=INK2, anchor="middle"))
-    b.append(line(352, 115, 392, 115, end="vec-ink"))
-    # the numbers place it in a space where distance is meaning
-    b.append(line(412, 202, 412, 40, width=1))
-    b.append(line(412, 202, 620, 202, width=1))
-    b.append(f'<rect x="516" y="92" width="7" height="7" fill="{CORAL}"/>')
-    b.append(text(512, 84, "the question", size=11, fill=CORAL, anchor="middle"))
-    b.append(f'<rect x="548" y="112" width="7" height="7" fill="{INK}"/>')
-    b.append(text(560, 132, "the rationale that", size=11))
-    b.append(text(560, 146, "rejected it", size=11))
-    b.append(line(523, 99, 548, 115, stroke=CORAL, width=1, dash="3 3"))
-    b.append(f'<rect x="434" y="178" width="7" height="7" fill="{INK2}"/>')
-    b.append(text(448, 185, "an unrelated note", size=11, fill=INK2))
-    b.append(text(516, 224, "near in space, near in meaning", size=12, fill=INK2, anchor="middle"))
-    return svg(700, 244, "vec", "".join(b))
+    b.append(box(20, 24, 150, 86))
+    for y, label in [(48, "why was the"), (68, "retry approach"), (88, "rejected?")]:
+        b.append(text(95, y, label, size=14, anchor="middle"))
+    b.append(line(170, 66, 230, 66, end="vec-ink"))
+    b.append(text(205, 128, "embedding model", size=13, fill=INK2, anchor="middle"))
+    b.append(box(236, 42, 164, 48))
+    b.append(text(318, 71, "[0.12 -0.83 ...]", size=14, anchor="middle"))
+    b.append(text(318, 110, "a numerical vector", size=13, fill=INK2, anchor="middle"))
+    b.append(line(318, 136, 318, 170, end="vec-ink"))
+    b.append(line(40, 328, 40, 172, width=1))
+    b.append(line(40, 328, 390, 328, width=1))
+    b.append(f'<rect x="212" y="210" width="8" height="8" fill="{CORAL}"/>')
+    b.append(text(210, 196, "the question", size=14, fill=CORAL, anchor="middle"))
+    b.append(f'<rect x="254" y="238" width="8" height="8" fill="{INK}"/>')
+    b.append(text(272, 260, "earlier", size=14))
+    b.append(text(272, 278, "rationale", size=14))
+    b.append(line(220, 218, 254, 238, stroke=CORAL, width=1, dash="3 3"))
+    b.append(f'<rect x="64" y="294" width="8" height="8" fill="{INK2}"/>')
+    b.append(text(82, 308, "unrelated note", size=14, fill=INK2))
+    b.append(text(210, 360, "similarity suggests a candidate", size=14, fill=INK2, anchor="middle"))
+    return svg(420, 382, "vec", "".join(b))
 
 
 PLATES = {

@@ -94,8 +94,8 @@ def econ_scale() -> str:
 def econ_gap() -> str:
     b = []
     panels = [
-        (34, "interactive sessions", "packet: always", "meter: unreliable", True),
-        (304, "orchestrated lanes", "meter: audited", "packet: never", False),
+        (34, "interactive sessions", "packet: supplied", "no audited task meter", True),
+        (304, "orchestrated lanes", "meter: audited", "packet: not supplied", False),
     ]
     for px, title, ink_note, coral_note, packet_side in panels:
         cx = px + 91
@@ -124,24 +124,23 @@ def econ_gap() -> str:
 
 def econ_design() -> str:
     stages = [
-        ("A/A pairs", ["measure pair", "noise"], "sets N", INK),
-        ("content probe", ["relevant vs", "unrelated"], "validates content", INK),
-        ("paired trial", ["memory vs cold,", "randomized"], "the experiment", CORAL),
-        ("readout", ["token effect +", "blinded quality"], "effect interval", INK),
+        (20, 30, "A/A pairs", ["two cold runs", "estimate variation"], INK),
+        (230, 30, "content probe", ["relevant vs", "unrelated packet"], INK),
+        (230, 218, "paired trial", ["memory vs cold", "randomized order"], CORAL),
+        (20, 218, "readout", ["token effect", "+ blinded quality"], INK),
     ]
     b = []
-    for i, (title, sub, foot, stroke) in enumerate(stages):
-        x = 20 + i * 128
-        cx = x + 50
-        b.append(box(x, 60, 100, 64, stroke=stroke, width=2 if stroke == CORAL else 1.5))
-        b.append(text(cx, 86, title, size=12, fill=stroke, anchor="middle"))
-        for j, s in enumerate(sub):
-            b.append(text(cx, 103 + 13 * j, s, size=10, fill=INK2, anchor="middle"))
-        foot_fill = CORAL if stroke == CORAL else INK2
-        b.append(text(cx, 152, foot, size=10, fill=foot_fill, anchor="middle"))
-        if i < 3:
-            b.append(line(x + 100, 92, x + 126, 92, end="des-ink"))
-    return svg(520, 200, "des", "".join(b))
+    for i, (x, y, title, sub, stroke) in enumerate(stages):
+        cx = x + 85
+        b.append(box(x, y, 170, 104, stroke=stroke, width=2 if stroke == CORAL else 1.5))
+        b.append(text(cx, y + 30, f"{i + 1}. {title}", size=15, fill=stroke, anchor="middle"))
+        for j, label in enumerate(sub):
+            b.append(text(cx, y + 58 + 22 * j, label, size=14, fill=INK2, anchor="middle"))
+    b.append(line(190, 82, 226, 82, end="des-ink"))
+    b.append(line(315, 134, 315, 214, end="des-ink"))
+    b.append(line(230, 270, 194, 270, end="des-ink"))
+    b.append(text(210, 366, "proposed sequence; no trial result yet", size=14, fill=INK2, anchor="middle"))
+    return svg(420, 390, "des", "".join(b))
 
 
 PLATES = {
