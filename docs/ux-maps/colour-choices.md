@@ -46,7 +46,7 @@ Not imported: ADLC `--rec-link #17627f`, `--rec-pass*`, `--rec-fail*`, `--rec-ga
 - COL-16 mid-tone: coral held on both grounds (3.44 dark is the tightest pair — non-text only).
 - A11Y-01: body pairs ≥4.5; coral not used as small body text.
 - A11Y-06: OrderBook bid/ask stays Radix green/red; not folded into site accents.
-- IDNT-05 / LAY-10: Radix `accentColor=cyan` `radius=medium` is an unchosen second system — flag, do not silently restyle exhibits this pass.
+- Radix `accentColor=cyan` `radius=medium` is an unchosen second system — flag, do not silently restyle exhibits this pass.
 - TYPE locked: GeistMono + Roboto Flex unchanged.
 
 ## Identity anchor (COL-03)
