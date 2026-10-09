@@ -1,6 +1,6 @@
 # darce.xyz
 > Portfolio and case studies for Daniel Arcé.
-> Daniel Arcé works across interaction design and front-end development, using working software to explore how people find information and act on it.
+> Daniel Arcé — Senior Front-End Developer & Design Technologist in Toronto. Production interfaces, accessibility, and working prototypes for media products, photo archives, and image tools.
 
 ## Pages
 - / — Home
@@ -11,10 +11,11 @@
 ## Projects
 - /projects/visual-search-workbench/ — Search your photo folders by words or an example image, then explore related pictures on a UMAP map. Processing stays on the Mac.
 - /projects/altcontext/ — AltContext combines a photograph with a publisher’s named people roster and page context. Editors review the proposed identity and wording before applying the text in WordPress.
-- /projects/photoshelter/ — R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.
+- /projects/photoshelter/ — Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.
 - /projects/msnbc/ — Helped take MSNBC’s dedicated video experience from initial product definition through functional prototypes, interaction design, production development, and an on-schedule launch.
 - /projects/workbay/ — WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions can retrieve the record across supported AI coding tools.
-- /projects/apple/ — Built launch-critical landing pages, a CSS-animated email campaign, and internal workflow tooling for Apple’s iPhone X release
+- /projects/apple/ — Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
+- /projects/texting-syria/ — Liam Maloney supplied the photographs, text, and translations. I developed the experience end to end, connecting the exhibition with actual messages delivered to visitors’ phones through an SMS server.
 - /projects/barbarabeirne/ — Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
 - /projects/bauhausdances/ — Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
 

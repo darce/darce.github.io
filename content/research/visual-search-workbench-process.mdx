@@ -25,7 +25,7 @@ A useful picture can change what you are looking for. You may start with a subje
 
 [Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
 
-The design brings together **search**, a **map**, and an **image grid**. Search finds a starting point. The map offers a view of relationships beyond a ranked list. The image grid makes a selected region available for judgment.
+A selected map region opens its photographs in the linked image grid, where their composition, colour, and subject can be judged together.
 
 <AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
 
@@ -97,7 +97,7 @@ Two settings help explain why maps can look different: **neighbourhood size** an
 
 A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
 
-This connection gives the map a role in the interaction. The map helps you choose where to look; the grid shows what is there. Without the grid, a point cloud would reveal an arrangement but provide little basis for deciding whether the pictures suit your work.
+The grid supplies what the point cloud cannot: the photographs themselves, at a size that lets you judge whether the selected region suits the brief.
 
 <AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
 
@@ -133,10 +133,10 @@ That constraint extends beyond running the model. A selected region must also de
 
 ## Test retrieval and exploration separately
 
-The design now has an implementation to evaluate. I use screen inventories and the running app to check the relationship between a query, a selection, and the next action. The [interaction reference](/research/visual-search-workbench-screen-reference/) records that relationship. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support these reviews, but outside-user evaluation remains to be done.
+The design now has an implementation to evaluate. I review the path from query to selection to next action using screen inventories and the running app. The [interaction reference](/research/visual-search-workbench-screen-reference/) makes that path inspectable. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support my reviews; no external user study has run.
 
 That evaluation needs to distinguish **retrieval** from **exploration**. Retrieval asks whether someone can find a remembered photograph. Exploration asks whether someone can assemble useful references for a creative brief, including pictures that change the direction of the brief.
 
 For retrieval, I would examine completion, mistakes, and effort. For exploration, I would examine the images people keep, the paths they take, and their reasons for continuing from one picture to another. Comparing the map with the grid and image-to-image search would help establish what the map contributes.
 
-The question is whether visual navigation helps someone develop an idea. A surprising selection may be useful even when it takes them beyond the subject they first searched for.
+An exploration study would need to allow for a useful selection that takes someone beyond the subject they first searched for.

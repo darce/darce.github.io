@@ -12,12 +12,14 @@ links:
   label: WorkBay on GitHub
 thumbnail:
   src: arp-collage-squares-laws-of-chance-1916.jpg
-  alt: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
+  alt: Blue and white rough-edged rectangles spaced across a grey paper background.
+  caption: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
     paper on paper. Museum of Modern Art, New York. Public domain.
   position: center
 masthead:
   src: arp-collage-squares-laws-of-chance-1916.jpg
-  alt: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
+  alt: Blue and white rough-edged rectangles spaced across a grey paper background.
+  caption: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
     paper on paper. Museum of Modern Art, New York. Public domain.
   position: center
 tags:
@@ -33,11 +35,17 @@ WorkBay keeps the state of a coding task outside any one AI conversation. It pre
 
 I built WorkBay while developing projects such as [AltContext](/projects/altcontext/). A recap could say that a task was nearly finished while leaving out the finding that still blocked it. I needed the next session to retrieve that finding and its evidence, not infer the remaining work from a general account of progress.
 
+<Diagram
+    src="/images/projects/workbay-journey.svg"
+    alt="Plan, task, work, review, gate, and merge share one durable record. Sessions can end between stages; review findings persist into the gate."
+    caption="The task record carries decisions, findings, and evidence through the development workflow."
+/>
+
 ## Keep a record the next session can use
 
 Each repository has a SQLite database at `.task-state/handoff.db`. The database holds the task record: what is active, which decisions have been made, what the reviews found, and which checks were run.
 
-The task identifies the current work. Decisions preserve their rationale, while findings retain their severity and resolution status. Test records preserve the commands and results. Together, those records let a later session examine the parts of the work that matter to its next step.
+A task identifies the work. Under it, decisions keep their rationale, findings keep their severity and resolution status, and test records keep commands and results. A later session can look up the unresolved finding before changing the code it concerns.
 
 A session loads a selected context packet from the database. That packet brings recorded history into the current conversation without requiring the whole history to be repeated. Optional semantic retrieval supplies another way to find earlier decisions when the current question uses different words.
 
@@ -47,7 +55,7 @@ The retrieved records remain material to inspect. Similarity can suggest that an
 
 WorkBay exposes the same project record to supported tools, including Claude Code, Codex, Cursor, and VS Code Copilot. A session in another tool can retrieve the decisions and findings that the earlier session left behind.
 
-That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The record removes one switching cost: reconstructing project history from a conversation held elsewhere.
+That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The recorded history gives the new session a starting point without relying on access to the earlier conversation.
 
 ## Carry a review finding through to a change
 
@@ -63,14 +71,20 @@ Interface review needs more than a code diff. I use WorkBay’s UX-map workflow 
 
 That inventory can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can review these representations against [Heuristics Canon](/research/heuristics-canon/). The resulting findings can be added to the task record, addressed in the implementation, and checked again after the change.
 
+<Diagram
+    src="/images/projects/workbay-uxmap.svg"
+    alt="An inventory of jobs, screens, states, and flows feeds a renderer. It produces ASCII wireframes, Mermaid flows, and Markdown tables for critique by canon rule ID."
+    caption="The UX-map workflow makes the inventory and review material inspectable before implementation."
+/>
+
 The workflow separates **validation**, **rendering**, and **critique**. Validation checks whether the map has an acceptable structure. Rendering makes that structure readable in different forms. Critique asks whether particular decisions need attention; it does not implement the answers. A limited automated check pack can also flag issues such as an action pointing to a nonexistent screen.
 
 The public WorkBay repository includes the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany an explanation of a product.
 
-## Separate the working tool from its evaluation
+## Use and evaluation
 
-WorkBay is in use in my development practice. Its source documents how records persist, how retrieval works, and how the checks use recorded state. That establishes a working mechanism, while its effect on development effort remains a separate question.
+I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. Its source documents persistence, retrieval, and checks against the recorded state; the linked research examines that mechanism and proposes how to measure its effect.
 
-The research follows that distinction. [Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
+[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
 
 Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).

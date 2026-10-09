@@ -9,17 +9,17 @@ import Layout from '../components/layout/Layout'
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from '../lib/seo'
 import styles from '../styles/landingPage.module.scss'
 
-export const FEATURED_SLUGS = ['visual-search-workbench', 'altcontext', 'photoshelter', 'msnbc']
+export const FEATURED_SLUGS = ['photoshelter', 'msnbc', 'visual-search-workbench', 'altcontext']
 
 export const FEATURED_METRICS: Record<string, string> = {
-    "visual-search-workbench": "Search your photo folders with words or a picture, then follow related images through a map and linked grid. Processing stays on the Mac.",
-    "altcontext": "Use the photograph, confirmed identities, and page context to draft an image description. The editor decides what to apply in WordPress. In development.",
-    "photoshelter": "A workflow-automation prototype exposed integration issues before production development. My work also included a WCAG audit and front-end accessibility remediation.",
-    "msnbc": "Collapsible panels let viewers browse coverage and comments while the video kept playing. I helped take the experience from concept to launch in six months."
+    photoshelter: 'Production accessibility work: custom keyboard navigation across Web Components and Shadow DOM, audit remediation, and mentoring four developers. A workflow prototype informed Smart Galleries.',
+    msnbc: 'I proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with the internal team and vendors.',
+    'visual-search-workbench': 'Start with words or a picture, choose a promising image, and follow it through a similarity map and linked grid. Released for macOS, with on-device processing.',
+    altcontext: 'Draft image descriptions from the photograph, face suggestions, and page context. The editor reviews the identity and wording before applying stored text in WordPress. In development.',
 }
 
 const FEATURED_TITLES: Record<string, string> = {
-    msnbc: 'MSNBC: From Video Concept to Launch',
+    msnbc: 'MSNBC: Continuous Video Playback',
 }
 
 const isStillImage = (src: string): boolean => !/\.gif$/i.test(src)
@@ -71,7 +71,7 @@ const Landing: NextPageWithLayout<LandingProps> = ({ featuredProjects }) => {
                         </figure>
                         <div className={styles.heroText}>
                             <p className={styles.positioning}>
-                                I work across interaction design and front-end development, using working software to explore how people find information and act on it. That practice connects my work at MSNBC and PhotoShelter with my independent products for visual exploration and image description.
+                                I build accessible interfaces and working prototypes. My work spans media products, photo archives, and tools for finding and describing images. At PhotoShelter and MSNBC, I carried interaction decisions into production code.
                             </p>
                             <a className={styles.cta} href="mailto:daniel.arce@gmail.com">
                                 <span className={styles.ctaInner}>Get in touch</span>

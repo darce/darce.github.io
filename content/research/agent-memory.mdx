@@ -7,15 +7,17 @@ type: method
 status: running
 description: WorkBay separates the stored project record from the retrieval layer that finds it and the context
   packet a coding session reads.
-details: This article describes the implementation. Its use and proposed evaluation have separate companion articles.
+details: SQLite preserves decisions and evidence; exact lookup, text search, and optional semantic retrieval supply selected records to the next coding session.
 thumbnail:
   src: research/dec-29-1977-on-kawara.jpg
-  alt: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
+  alt: A red canvas reads “DEC. 29, 1977” in white, above a box holding a newspaper front page.
+  caption: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
     Solomon R. Guggenheim Museum, New York. © One Million Years Foundation.
   position: center
 masthead:
   src: research/dec-29-1977-on-kawara.jpg
-  alt: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
+  alt: A red canvas reads “DEC. 29, 1977” in white, above a box holding a newspaper front page.
+  caption: On Kawara, DEC. 29, 1977, “Thursday,” from the Today series, 1966–2013. Acrylic on canvas, 20.3 × 25.4 cm.
     Solomon R. Guggenheim Museum, New York. © One Million Years Foundation.
   position: center
 tags:
@@ -35,7 +37,7 @@ The design has three parts: a **record**, a **retrieval layer**, and a **context
     caption="The database connects sessions: the next conversation receives a selection of recorded work without needing the earlier transcript."
 />
 
-These parts describe the mechanism. [The field note](/research/interrogating-agent-memory/) describes how I use it, and [the evaluation proposal](/research/economics-of-agent-memory/) asks whether it reduces work at comparable quality.
+I use this record to [examine earlier decisions](/research/interrogating-agent-memory/). Whether supplying it reduces work at comparable quality remains a [question for evaluation](/research/economics-of-agent-memory/).
 
 ## The record preserves decisions and evidence
 
@@ -57,7 +59,7 @@ Semantic retrieval compares numerical representations called **embeddings**. An 
     caption="The nearby rationale is a candidate to read. This simplified view shows similarity, which does not establish that the earlier constraint still applies."
 />
 
-A retrieved record might contain the rationale for an approach rejected earlier. That rationale can explain the original constraint; the constraint can then be compared with the current implementation. The result is a reason to examine the earlier decision, not an instruction to repeat it.
+Suppose retrieval finds the rationale for an approach rejected earlier. The session can compare the recorded constraint with the current implementation before deciding whether that rejection still holds.
 
 ### Keep the index tied to the record
 
@@ -79,7 +81,7 @@ A context packet brings selected records into the current conversation. The pack
 
 The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
 
-The useful question is whether a selected record changes the next decision. A paragraph can sound relevant without supplying the constraint or unresolved finding the session actually needs. That difference between apparent relevance and useful context is one reason retrieval needs evaluation.
+A selected record earns its place in the packet if it supplies a constraint, unresolved finding, or other evidence the next decision needs. A paragraph that merely sounds relevant can consume the same space without helping the task.
 
 ## Portability follows the record
 
@@ -95,6 +97,4 @@ The database stays out of version control by default because it can contain sens
 
 ## Test what the record changes
 
-The implementation makes recorded history persistent and retrievable. It cannot preserve reasoning that was never recorded or guarantee that each useful record will be found.
-
-Those limits define an evaluation question: when a session receives selected history, does it complete comparable work with less effort? The [economics article](/research/economics-of-agent-memory/) separates the cost of supplying that history from its effect on the result.
+Reasoning that was never recorded cannot be retrieved, and useful records can still be missed. The [proposed evaluation](/research/economics-of-agent-memory/) tests the resulting question: does a session receiving selected history complete comparable work with less effort?

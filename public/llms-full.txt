@@ -1,40 +1,38 @@
 # Daniel Arcé
-Daniel Arcé works across interaction design and front-end development, using working software to explore how people find information and act on it.
+Daniel Arcé — Senior Front-End Developer & Design Technologist in Toronto. Production interfaces, accessibility, and working prototypes for media products, photo archives, and image tools.
 
 ## About
 Hello, I’m Daniel Arcé.
 
-I’m a product designer and design technologist in Toronto, with a hands-on front-end development practice. I use working software to explore how people find information and act on it. That interest connects my work in media and enterprise software with the independent products I design and build today.
+I’m a senior front-end developer and design technologist based in Toronto. Most of my professional work has been in front-end development: building production interfaces, making them usable from the keyboard, and working out interaction decisions in code. At MSNBC, I held a Design Technologist post; today I also design and build independent applications.
 
-### Designing through working software
+### From prototype to production interface
 
 A working prototype gives a team something to try. A selection leads to another view; that view may expose a choice that was easy to miss in a static screen. Trying the interaction helps us decide what to keep, what to change, and what the implementation needs to support.
 
-I stay involved as those decisions reach production. My front-end work includes React and TypeScript, with accessibility built into the behaviour of the interface. Keyboard interaction and focus management are part of making that behaviour work for the people using it.
+I stay involved as those decisions reach production. My front-end work includes React and TypeScript, with keyboard interaction and focus management built into the behaviour of the interface.
 
-### Carrying an idea into production
+At [PhotoShelter](/projects/photoshelter/), I led a WCAG audit and front-end remediation, including custom keyboard behaviour across Polymer, Web Components, and Shadow DOM. I mentored four developers on accessible patterns. Working with the Chief Architect, I also built a workflow-automation prototype that exposed integration issues and informed Smart Galleries.
 
-At [MSNBC](/projects/msnbc/), I helped take a dedicated video experience from product definition through working prototypes to launch in six months. I proposed collapsible panels so viewers could browse coverage and read comments while the video continued playing. Those panels became working front-end interactions, developed with the internal team and external vendors.
+At [MSNBC](/projects/msnbc/), I proposed and prototyped collapsible panels so viewers could browse coverage and read comments while the video continued playing. I helped deliver the resulting AngularJS interface with the internal team and vendors within a six-month launch window. At [Apple](/projects/apple/), I implemented responsive launch pages from the marketing and design team’s specifications and automated campaign build and preview steps.
 
-At [PhotoShelter](/projects/photoshelter/), my work combined product R&D with accessibility engineering. A workflow-automation prototype exposed integration issues before production development and informed Smart Galleries. Alongside that R&D work, I led a WCAG audit and front-end remediation, including keyboard support across Web Components, and helped other developers adopt accessible patterns.
+### Building around photographs and film
 
-### Exploring and describing images
+For [Texting Syria](/projects/texting-syria/), photographer Liam Maloney supplied the photographs, text, and translations; I developed the experience end to end. The exhibition connected photographs with actual messages delivered to visitors’ phones through an SMS server.
 
-My independent image products pursue two related interests: visual exploration and image description.
+My recent image applications extend that practice into search and description. [Visual Search Workbench](/projects/visual-search-workbench/) is a macOS app I designed, built, and released. Start with words or a picture, choose a promising image, then follow related photographs through a map and linked grid. Its bundled models process photographs on the Mac; my documented checks include an 8 GB Apple Silicon machine.
 
-**Visual exploration** is the focus of [Visual Search Workbench](/projects/visual-search-workbench/), a macOS app I designed and released. A person can start with words or a picture, then follow similar images without tagging the collection first. A map offers another way to browse those relationships. I wanted to leave room for a useful picture to suggest a direction the original query did not anticipate, while keeping processing on the Mac. I have tested the app on an 8 GB machine.
+[AltContext](/projects/altcontext/) is still in development. It uses a photograph, a publisher’s named people roster, and page context to draft descriptions in WordPress. The editor reviews face suggestions and wording before applying the text. I build the React/TypeScript interface, WordPress PHP integration, and Python services. Evaluation with editors and blind readers remains to be done.
 
-**Image description** is the focus of [AltContext](/projects/altcontext/), which is still in development. It combines a photograph with a publisher’s named people roster and the page’s context to draft a description in WordPress. The editor reviews the identity and wording before applying the text. The intended benefit is more useful context for blind readers, including who is pictured when that matters to the page.
+### Keeping decisions available during development
 
-### Keeping design decisions available during development
+AI-assisted development introduced another problem into my practice: decisions and review findings could be lost between coding sessions. I built [WorkBay](/projects/workbay/) to preserve those records outside the conversation and retrieve them in a later session, including when I move to another supported coding tool. I use different agents for orchestration, implementation, and review so that work can be checked without inheriting the author’s conversation.
 
-AI-assisted development introduced another problem into my practice: decisions and review findings could be lost between coding sessions. I built [WorkBay](/projects/workbay/) to preserve those records outside the conversation and make them available to a later session, including when I move to another supported coding tool. Its orchestration layer lets me deploy different agents across the orchestration, implementation, and review stages. In my use, varying the agent composition across those stages makes the agents check each other’s work and helps soften the swings in inference speed and quality that can follow a model release.
-
-Design reviews produce records worth keeping too. I use UX maps to inventory existing interfaces and examine proposed changes. Those maps can be rendered as text screens and flows for people and AI tools to review. [Heuristics Canon](/research/heuristics-canon/), a collection I maintain, supplies specific questions and references for the critique. The resulting findings guide changes that I check in the running interface.
+I also use UX maps to inventory interfaces and examine proposed changes. Those maps can be rendered as text screens and flows for people and AI tools to review. [Heuristics Canon](/research/heuristics-canon/), a collection I maintain, supplies specific questions and references for the critique. I check the resulting changes in the running interface.
 
 ### Get in touch
 
-I’m interested in senior and lead product design roles where I can contribute to exploration and stay involved through delivery.
+I’m interested in senior front-end development and design-technology roles, with production interface work at their centre. I’m based in Toronto and open to New York City.
 
 [Email me](mailto:daniel.arce@gmail.com) about a role or a project.
 
@@ -48,13 +46,13 @@ Year: 2026
 Tags: Product Design, Interaction Design, Visual Search, UMAP, SwiftUI, Core ML
 Summary: Search your photo folders by words or an example image, then explore related pictures on a UMAP map. Processing stays on the Mac.
 
-Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. A similarity map offers another route through the collection, without requiring you to tag the photographs first.
+Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. In Explore, a similarity map connects regions to photographs in the linked grid. Places and Timeline offer other ways to examine the selection, without requiring advance tagging.
 
-I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon Macs, keeps image processing on-device, and has been tested on an 8 GB machine.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. I have also maintained it after release: version 0.2.3 corrected thumbnail retry handling so selected photographs could reach the grid. The current download is 0.2.6.
 
 ![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
-*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.3.*
+*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.6.*
 
 ## Give the search a starting point
 
@@ -66,7 +64,7 @@ Drop a reference picture into the app, or choose **Find similar** on a photograp
 
 ![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
 
-A result can therefore become a new direction. You might begin by looking for flowers and continue because a particular image suggests something useful for a colour study. That is the kind of exploration I wanted the app to support.
+A search for flowers might lead to a picture worth following for a colour study. Using that picture as the reference lets the next search follow the visual interest it raised.
 
 ## Explore the collection on a map
 
@@ -98,11 +96,11 @@ The layers still require judgment: an edge can be rough, a label can be wrong, o
 
 The app bundles the search and cutout models, so they are available without a first-launch model download. The models process the photographs locally. My network checks found no gallery data leaving the device in the tested flows.
 
-The 8 GB test establishes a working configuration rather than a memory requirement for every library. Larger collections still need measurement, and an outside-user study has not yet run. That study needs to examine both finding a remembered image and discovering useful material for a creative brief.
+The app worked in my documented checks on an 8 GB Apple Silicon Mac. Larger-library performance and peak memory still need measurement. An outside-user study has not run; it needs to test both finding a remembered image and discovering useful references for a creative brief.
 
 ## Download
 
-[Download Visual Search Workbench 0.2.3](https://dl.darce.xyz/) for Apple Silicon, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.3.dmg`, approximately 295 MB.
+[Download Visual Search Workbench 0.2.6](https://dl.darce.xyz/) for Apple Silicon or Intel, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.6.dmg`, approximately 296 MB.
 
 The app is not notarized by Apple, so macOS may block its first launch. The release instructions explain the **Privacy & Security → Open Anyway** option. The [GitHub release repository](https://github.com/darce/visual-search-workbench) provides the built app, model-licence information, and a `SHA256SUMS` file. It does not publish the application source.
 
@@ -116,9 +114,7 @@ A description such as “a person singing on a stage” can explain an activity 
 
 AltContext is a WordPress product I am designing and building to bring that context into image descriptions. It combines the photograph with identities from a publisher’s named people roster and information from the page. The editor reviews the proposed identity and wording before applying the text. The intended benefit is more useful context for blind readers; the product is still in development.
 
-## Build a description from the photograph, the roster, and the page
-
-The description draws on three inputs with different roles: **the photograph**, **the roster**, and **the page**. Keeping those roles distinct helps explain what supports each part of the proposed text.
+## What supports the draft description
 
 **The photograph** supplies visual information about the scene. An image model may describe a microphone, clothing, or the setting. Those observations provide material for the description without requiring the model to identify the person from general knowledge.
 
@@ -126,21 +122,19 @@ The description draws on three inputs with different roles: **the photograph**, 
 
 **The page** supplies publishing context, including the image caption and surrounding post. That context helps determine which information matters: a performer’s identity may be important in an event report, while a discussion of a garment may call for attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) explains how an image’s purpose and context shape its text alternative.
 
-The page cannot establish everything about the photograph. A name mentioned in an article does not, by itself, prove who is pictured. AltContext’s reconciliation step distinguishes information supported by something in the image from context about the page or event, so background information is not simply repeated as though it were visible.
+A name in the article alone cannot establish who is pictured. AltContext’s reconciliation step separates observations from page or event context before drafting, so background information is not presented as visible evidence.
 
 ## Review the proposal before applying it
 
 The proposed identity gives the editor a match to inspect. The editor can compare the image with reference photographs and decide whether the person should be named. That decision informs the draft description, whose wording can then be reviewed or changed before it is applied.
 
-The draft and the applied text remain separate. Generating a description does not itself publish it, and a suggested name need not be accepted. The publishing workflow also supports a longer description alongside alt text. An image marked as decorative can skip generation and use an empty text alternative.
+The editor can change the draft, decline a suggested name, or apply the reviewed text to WordPress. Generation and storage are separate actions. The workflow also supports a longer description alongside alt text; decorative images can skip generation and use an empty text alternative.
 
 ## Try the decisions in a practice copy
 
 The guided walkthrough follows the identity decision through to the resulting text. It starts with saved face-match results from a development run. Confirming a match or keeping a person unnamed changes the practice draft; the draft can then be edited, applied to the practice copy, or restored with undo.
 
-The practice copy does not publish to a live page. Its recognition results are saved rather than generated live. An optional live-description path is a separate operation whose availability depends on the service.
-
-[Open the guided walkthrough](https://demo.altcontext.com/wp-admin/admin.php?page=alt-context-dashboard#/guided-prototype). Access is managed through the [AltContext site](https://altcontext.com).
+[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. It uses saved recognition results and applies edits only to the practice copy, with undo. It does not publish a live page. An optional live-description request is a separate operation whose availability depends on the service.
 
 ## Connect the interface to the stored decision
 
@@ -150,91 +144,81 @@ I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-w
 
 ## Make the processing and retention choices explicit
 
-AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Self-hosted recognition and description models run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
 
 Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
 
-These controls describe the implementation, not a completed legal compliance assessment. They also distinguish AltContext’s hosted processing from on-device processing. Saved descriptions remain in WordPress even when a new service request cannot run.
+The hosted service and WordPress hold different records: purging recognition data leaves saved WordPress descriptions and the audit trail in place. Saved descriptions also remain available when a new service request cannot run. These controls have not undergone a legal compliance assessment.
 
 ## Evaluate the description and the review
 
 The evaluation has two audiences: **readers** who use the description and **editors** who review it. Readers need the text to preserve useful context. Editors need to recognise plausible mistakes and correct them before applying the description.
 
-Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. Those checks address particular behaviours; they do not yet establish the reader benefit or the reliability of editorial correction.
+Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. Evaluation with blind readers and editors is still needed to establish whether the descriptions preserve useful context and whether editors can catch plausible mistakes. The implementation has not had an independent security audit.
 
-Evaluation with blind readers and editors is therefore still needed. The product’s purpose is to make an image more informative, and those evaluations must establish whether the resulting text achieves that purpose.
-
-### PhotoShelter: Product R&D & Accessibility at Enterprise Scale
-*Product R&D and accessibility for a large DAM platform*
+### PhotoShelter: Production Accessibility & Workflow Prototypes
+*Keyboard interaction, audit remediation, and product prototyping*
 Year: 2021
 Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
-Summary: R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.
+Summary: Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.
 
-## R&D prototyping
+## Keyboard access across the production interface
 
-Working with the Chief Architect, I built exploratory prototypes outside the production timeline to answer product questions cheaply and catch integration problems before they reached production.
+PhotoShelter’s core menus needed keyboard support. I led the WCAG 2.1 audit and front-end remediation, addressing unlabeled controls and missing ARIA attributes alongside the deeper navigation problems. The accessibility work helped protect institutional contracts associated with $9.2M in annual recurring revenue (ARR) that were at risk if the product could not demonstrate the required accessibility compliance.
 
-### Workflow automation interface
+![Keyboard navigation for the main menu](/images/photoshelter-keyboard-navigation.gif)
 
-This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development effort by an internal estimate of roughly 30%.
+*Keyboard navigation for PhotoShelter’s main menu.*
 
-### Client-side image blur comparison
+Polymer and Web Components put interactive elements inside Shadow DOM boundaries. Focus and keyboard events did not move cleanly across those boundaries. I built a custom keyboard layer to bridge them, keeping menu items reachable as people moved between components.
 
-Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)
 
-## Accessibility
+*Moving from mouse to keyboard control without a mode switch.*
 
-PhotoShelter's customer base includes universities and professional sports organizations, and several key contracts worth a combined $9.2M ARR were exposed if the product could not demonstrate [ADA](https://www.ada.gov/law-and-regs/ada/) and WCAG compliance. I led the WCAG 2.1 audit and front-end remediation effort for PhotoShelter's core product to close that gap.
+This work covered the behaviour of the interface as well as its markup. I mentored four developers on accessibility patterns and introduced review checklists for new work, so the team could carry those patterns into later changes.
 
-The initial audit surfaced two classes of issues: fast fixes such as missing ARIA attributes and unlabeled controls, and deeper structural problems such as mouse-only navigation across core menus.
+## A workflow prototype that informed Smart Galleries
 
-### Keyboard navigation for every menu
+Working with the Chief Architect, I built exploratory prototypes outside the production path. We could try a workflow and expose its integration problems before committing it to production development.
 
-![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard navigation for the main menu*
+The workflow-automation prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%.
 
-Before this work, every menu in the product was mouse-only. Keyboard access is essential for users with limited mobility and speeds things up for power users who prefer shortcuts.
+## Testing image analysis in the browser
 
-The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
+I also built an OpenCV.js prototype to compare image blur in the browser, without backend processing. It tested a lightweight image-analysis workflow in a static-file environment and did not ship as a standalone feature.
 
-![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
-
-## Team adoption
-
-I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
-
-### MSNBC Video: From Product Concept to Launch in Six Months
-*Product definition, interaction design, working prototypes, and launch*
+### MSNBC Video: Browsing Around Continuous Playback
+*Interaction prototypes and production AngularJS development*
 Year: 2014
 Tags: Product Design, Interaction Design, Prototyping, Front-End, AngularJS, Drupal, Media Platform
 Summary: Helped take MSNBC’s dedicated video experience from initial product definition through functional prototypes, interaction design, production development, and an on-schedule launch.
 
-## Context
+## A dedicated video experience after the site rebuild
 
 MSNBC.com had recently been rebuilt on Drupal following the Microsoft/NBC split. [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) describes the broader site as a ground-up rebuild that launched in October 2013. Once that site was live, the network needed a dedicated video experience.
 
-The new surface had to support watching live and archived coverage while discovering what to watch next. Sending viewers away from the player to browse would break that continuity. The product problem was to make exploration and playback work together on the same page.
+The new surface had to support watching live and archived coverage while discovering what to watch next. Browsing needed to stay on the viewing page so the stream could continue while someone chose what to watch next.
 
-My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. Working prototypes therefore had to move the team toward a production decision within a fixed delivery window.
+My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. The prototypes had to settle interface behaviour in time for production development.
 
 ## My role
 
-I used functional prototypes to propose how the video experience should behave, then implemented front-end patterns for production. Doing both the design and the implementation meant I could carry a question into working software and refine it with the team.
+I proposed interface behaviour in functional prototypes and implemented front-end patterns for production. The prototypes gave the team a way to try a proposal before deciding how to build it.
 
-I collaborated with MSNBC’s internal team, external vendors, and stakeholders as the prototypes evolved. I proposed and implemented interface patterns within that shared process; I did not independently own the entire product direction or the broader MSNBC.com rebuild. My remit covered the dedicated video experience and the AngularJS components I contributed to MSNBC’s in-house CMS, which I integrated with the Drupal backend powering the broader site.
+I worked with MSNBC’s internal team, external vendors, and stakeholders. My remit covered the dedicated video experience and the AngularJS components I contributed to the in-house CMS, integrated with the Drupal backend. The broader MSNBC.com redesign was a separate team effort.
 
 ## The video platform
 
 ### From concept to working prototypes
 
-The initial concept centred on continuous viewing: a person should be able to watch coverage while looking through related stories and engagement features. I translated that goal into working prototypes, so the conversation could move from a proposed layout to how the interface behaved.
+I prototyped ways to browse coverage and comments around a running player. After several iterations with stakeholders, I helped carry the agreed interactions into the production AngularJS interface.
 
-The prototypes went through multiple iterations with stakeholders. I then carried those proposals into production development, so the behaviour the prototypes settled is the behaviour that shipped.
+### Collapsible panels around a running player
 
-### Collapsible panes around a running player
+My proposal was to give the surrounding content its own collapsible panels. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
 
-My proposal was to give the surrounding content its own collapsible panes. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
-
-That put playback and conversation on screen at the same time. Comments usually lived below the fold or on a separate page, so a viewer who wanted to read them gave up the video to do it. Here they sat beside the player and could be dismissed. The arrangement is unremarkable on a video site today; in 2013 it was a proposal that needed a working prototype before the team would commit to it.
+Comments sat beside the player and could be dismissed. The prototype made that arrangement testable within the page, including what happened to the player’s width as panels opened and closed.
 
 In live coverage that continuity mattered most, because the broadcast could move on while someone was choosing another story. An “Up next” row below the player brought the next viewing choice close to the current clip, and the adjacent video list provided a broader route through coverage.
 
@@ -266,7 +250,7 @@ I built WorkBay while developing projects such as [AltContext](/projects/altcont
 
 Each repository has a SQLite database at `.task-state/handoff.db`. The database holds the task record: what is active, which decisions have been made, what the reviews found, and which checks were run.
 
-The task identifies the current work. Decisions preserve their rationale, while findings retain their severity and resolution status. Test records preserve the commands and results. Together, those records let a later session examine the parts of the work that matter to its next step.
+A task identifies the work. Under it, decisions keep their rationale, findings keep their severity and resolution status, and test records keep commands and results. A later session can look up the unresolved finding before changing the code it concerns.
 
 A session loads a selected context packet from the database. That packet brings recorded history into the current conversation without requiring the whole history to be repeated. Optional semantic retrieval supplies another way to find earlier decisions when the current question uses different words.
 
@@ -276,7 +260,7 @@ The retrieved records remain material to inspect. Similarity can suggest that an
 
 WorkBay exposes the same project record to supported tools, including Claude Code, Codex, Cursor, and VS Code Copilot. A session in another tool can retrieve the decisions and findings that the earlier session left behind.
 
-That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The record removes one switching cost: reconstructing project history from a conversation held elsewhere.
+That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The recorded history gives the new session a starting point without relying on access to the earlier conversation.
 
 ## Carry a review finding through to a change
 
@@ -296,29 +280,41 @@ The workflow separates **validation**, **rendering**, and **critique**. Validati
 
 The public WorkBay repository includes the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany an explanation of a product.
 
-## Separate the working tool from its evaluation
+## Use and evaluation
 
-WorkBay is in use in my development practice. Its source documents how records persist, how retrieval works, and how the checks use recorded state. That establishes a working mechanism, while its effect on development effort remains a separate question.
+I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. Its source documents persistence, retrieval, and checks against the recorded state; the linked research examines that mechanism and proposes how to measure its effect.
 
-The research follows that distinction. [Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
+[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
 
 Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
 
 ### Apple: iPhone X Launch & Marketing Tooling
-*Marketing Engineering*
+*Responsive front-end implementation and campaign automation*
 Year: 2017
 Tags: Front-End, CSS3 Animations, Sass, JavaScript, Node.js, Bash, Gulp, Marketing Engineering
-Summary: Built launch-critical landing pages, a CSS-animated email campaign, and internal workflow tooling for Apple’s iPhone X release
+Summary: Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
 
 ## iPhone X launch pages
 
-I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. The work involved translating high-fidelity static comps into pixel-perfect, responsive front-end code under tight launch deadlines.
+I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. I translated the team’s static design specifications into responsive front-end code under the launch deadlines.
 ## CSS-animated email campaign
 
-I prototyped and developed what was reportedly the marketing department’s first CSS-animated direct email campaign. The animations were designed to increase engagement without relying on JavaScript or image-heavy treatments, keeping the email lightweight and broadly compatible across clients. Internal reporting put the open rate well above the department's norm, though the sample size and the definition of an open were never recorded.
+I prototyped and developed a CSS-animated direct email campaign. CSS supplied the motion without JavaScript; implementation had to account for differences between email clients.
 ## Campaign tooling
 
-The email production workflow was manual and repetitive, so I built a set of CLI tools in Node.js, Bash, and Gulp to automate build, preview, and deployment steps for direct email campaigns. This reduced turnaround time and made campaign production more repeatable.
+Campaign production involved repeated manual steps. I built command-line tools in Node.js, Bash, and Gulp to automate builds, previews, and deployment, giving the team a repeatable way to prepare an email campaign.
+
+### Texting Syria: An Exhibition Across Photographs and Phones
+*End-to-end implementation for Liam Maloney’s installation*
+Year: 2016
+Tags: Exhibition, Interaction Development, SMS, Documentary Photography
+Summary: Liam Maloney supplied the photographs, text, and translations. I developed the experience end to end, connecting the exhibition with actual messages delivered to visitors’ phones through an SMS server.
+
+Texting Syria brings photographs together with messages received by the people pictured. Photographer Liam Maloney supplied the images, text, and translations; I developed the experience end to end.
+
+The exhibition invited visitors to connect to an SMS server and receive a series of actual messages on their own phones. Those messages had been received when Maloney took the photographs. The interaction extended the exhibition onto a device the visitor was already carrying.
+
+The [Photoville NY 2016 record](https://photoville.com/projects/texting-syria/) credits Liam Maloney “with coding by Daniel Arce” and documents the SMS interaction. [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html) provides the photographs and Maloney’s statement about people in Lebanon keeping in touch with family in Syria.
 
 ### barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh
 *Artist Archive / Portfolio*
@@ -326,9 +322,9 @@ Year: 2023, 2026
 Tags: Web Components, JavaScript, Sass, Rollup, Accessibility, Archive Recovery
 Summary: Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
 
-## The problem
+## Recovering a Flash archive in 2023
 
-Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were both unavailable. I was brought in to recover the images and rebuild the site from scratch.
+Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were unavailable. In 2023, I was brought in to recover the images and rebuild the site.
 
 ## Recovering the images
 
@@ -336,15 +332,17 @@ The images were embedded in a compiled .SWF binary file. I used [FFDec](https://
 
 ![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted from a .SWF file using FFDec*
 
-## The rebuild
+## Rebuilding with Web Components in 2026
 
-Future compatibility was the priority, so I built the site with Web Components and Vanilla JavaScript instead of a framework that could age out. The build pipeline runs on Rollup with Sass for styling. The full-screen image carousel and all navigation are keyboard-accessible.
+In 2026, I rewrote the live site with Web Components and JavaScript, using Rollup for the build and Sass for styling. The full-screen image carousel and navigation support keyboard interaction. Keeping the presentation in web components gave the archive a browser-based foundation for later maintenance.
 
 Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
 
 ![A group of children climbing on a large pile of debris, one waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
 
-## Client feedback
+## Feedback on the 2023 recovery
+
+Alison Cornyn supplied this testimonial in June 2023, after the recovery and initial rebuild:
 
 > "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional.
 Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.
@@ -363,9 +361,9 @@ Year: 2023
 Tags: WordPress, Custom Theme, PHP, CSS Animation, JavaScript, Video, Accessibility
 Summary: Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
 
-## The design challenge
+## A visual treatment drawn from the films
 
-Filmmaker Debra McCall wanted a new website for her 1982 film recreating Oskar Schlemmer’s Bauhaus Dances. The challenge was to reflect Bauhaus visual language without falling into generic arts-site conventions.
+Filmmaker Debra McCall wanted a new website for the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. She supplied the films; I designed and implemented their web presentation.
 
 The visual direction grew out of the film’s Hoop Dance sequence, where white rings create stark geometric forms against a dark stage. I used that imagery as the basis for the site’s visual system and interaction language.
 
@@ -375,7 +373,7 @@ A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motio
 
 ## Implementation
 
-I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. The site also uses self-hosted video with caching optimizations to keep load times low without relying on third-party embeds.
+I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. I implemented self-hosted video and caching, so the film presentation did not depend on third-party embeds.
 
 ## Research
 
@@ -388,7 +386,7 @@ A useful picture can change what you are looking for. You may start with a subje
 
 [Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
 
-The design brings together **search**, a **map**, and an **image grid**. Search finds a starting point. The map offers a view of relationships beyond a ranked list. The image grid makes a selected region available for judgment.
+A selected map region opens its photographs in the linked image grid, where their composition, colour, and subject can be judged together.
 
 ```text
 Photo folders you choose
@@ -456,7 +454,7 @@ Two settings help explain why maps can look different: **neighbourhood size** an
 
 A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
 
-This connection gives the map a role in the interaction. The map helps you choose where to look; the grid shows what is there. Without the grid, a point cloud would reveal an arrangement but provide little basis for deciding whether the pictures suit your work.
+The grid supplies what the point cloud cannot: the photographs themselves, at a size that lets you judge whether the selected region suits the brief.
 
 ```text
 Similarity overview
@@ -490,13 +488,13 @@ That constraint extends beyond running the model. A selected region must also de
 
 ## Test retrieval and exploration separately
 
-The design now has an implementation to evaluate. I use screen inventories and the running app to check the relationship between a query, a selection, and the next action. The [interaction reference](/research/visual-search-workbench-screen-reference/) records that relationship. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support these reviews, but outside-user evaluation remains to be done.
+The design now has an implementation to evaluate. I review the path from query to selection to next action using screen inventories and the running app. The [interaction reference](/research/visual-search-workbench-screen-reference/) makes that path inspectable. WorkBay and the [Heuristics Canon](/research/heuristics-canon/) support my reviews; no external user study has run.
 
 That evaluation needs to distinguish **retrieval** from **exploration**. Retrieval asks whether someone can find a remembered photograph. Exploration asks whether someone can assemble useful references for a creative brief, including pictures that change the direction of the brief.
 
 For retrieval, I would examine completion, mistakes, and effort. For exploration, I would examine the images people keep, the paths they take, and their reasons for continuing from one picture to another. Comparing the map with the grid and image-to-image search would help establish what the map contributes.
 
-The question is whether visual navigation helps someone develop an idea. A surprising selection may be useful even when it takes them beyond the subject they first searched for.
+An exploration study would need to allow for a useful selection that takes someone beyond the subject they first searched for.
 
 ### Visual Search Workbench: Search and Exploration
 *Follow a query into similar images, a map selection, and further exploration*
@@ -505,7 +503,7 @@ Summary: An interaction reference for Visual Search Workbench: begin with words 
 
 This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
-The application captures are the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
+The current downloadable release is 0.2.6. The application captures remain the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
 ## 1. Give the search a starting point
 
@@ -547,8 +545,6 @@ Text query ► [A] [B] [C] [D]
 
 _Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results._
 
-The result has become a direction through the collection. Following it can bring useful material into view even when that material was difficult to describe in the first query.
-
 ## 3. Explore a region on the Similarity map
 
 The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
@@ -581,7 +577,7 @@ Similarity overview
 
 _Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection._
 
-Nearby marks suggest material to inspect. Their spacing is not an exact measure of how different the photographs are. Judging the photographs in the grid is what gives the map selection a purpose.
+Spacing between map marks is not an exact measure of how different the photographs are. Inspect the selection in the grid to judge the images themselves.
 
 ## 4. Examine the selection by place or time
 
@@ -607,7 +603,7 @@ The proposed layers can be inspected and saved for use elsewhere. A recognisable
 
 ## Use the reference to review the interaction
 
-This sequence connects a query to a result, a result to another query, and a map region to the images it contains. I use representations like these to examine whether the next action follows clearly from the current selection.
+I use this reference to check whether each selection has a clear next action and a way to return to the earlier search.
 
 A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
 
@@ -622,7 +618,7 @@ A later coding session needs more than an account of what happened. It may need 
 
 The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
 
-These parts describe the mechanism. [The field note](/research/interrogating-agent-memory/) describes how I use it, and [the evaluation proposal](/research/economics-of-agent-memory/) asks whether it reduces work at comparable quality.
+I use this record to [examine earlier decisions](/research/interrogating-agent-memory/). Whether supplying it reduces work at comparable quality remains a [question for evaluation](/research/economics-of-agent-memory/).
 
 ## The record preserves decisions and evidence
 
@@ -638,7 +634,7 @@ Retrieval depends on what the session already knows. A known task or finding can
 
 Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
 
-A retrieved record might contain the rationale for an approach rejected earlier. That rationale can explain the original constraint; the constraint can then be compared with the current implementation. The result is a reason to examine the earlier decision, not an instruction to repeat it.
+Suppose retrieval finds the rationale for an approach rejected earlier. The session can compare the recorded constraint with the current implementation before deciding whether that rejection still holds.
 
 ### Keep the index tied to the record
 
@@ -654,7 +650,7 @@ A context packet brings selected records into the current conversation. The pack
 
 The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
 
-The useful question is whether a selected record changes the next decision. A paragraph can sound relevant without supplying the constraint or unresolved finding the session actually needs. That difference between apparent relevance and useful context is one reason retrieval needs evaluation.
+A selected record earns its place in the packet if it supplies a constraint, unresolved finding, or other evidence the next decision needs. A paragraph that merely sounds relevant can consume the same space without helping the task.
 
 ## Portability follows the record
 
@@ -664,9 +660,7 @@ The database stays out of version control by default because it can contain sens
 
 ## Test what the record changes
 
-The implementation makes recorded history persistent and retrievable. It cannot preserve reasoning that was never recorded or guarantee that each useful record will be found.
-
-Those limits define an evaluation question: when a session receives selected history, does it complete comparable work with less effort? The [economics article](/research/economics-of-agent-memory/) separates the cost of supplying that history from its effect on the result.
+Reasoning that was never recorded cannot be retrieved, and useful records can still be missed. The [proposed evaluation](/research/economics-of-agent-memory/) tests the resulting question: does a session receiving selected history complete comparable work with less effort?
 
 ### Five Questions I Ask the Project Record
 *Look for recurring trouble, earlier fixes, decision reasons, completion evidence, and failed approaches*
@@ -675,9 +669,9 @@ Summary: Five recurring questions show how I use WorkBay’s project record to e
 
 I use the project record when the next coding decision depends on work outside the current conversation. The record can bring back an earlier rationale or show that a new-looking failure has already occurred across several tasks.
 
-Five questions recur in my use of [WorkBay](/projects/workbay/): **where trouble repeats**, **whether a fix exists**, **why an approach was chosen**, **what supports completion**, and **what has already failed**. Each question calls for a different part of the record.
+In [WorkBay](/projects/workbay/), I look up decisions, findings, test records, or blockers according to what the current task needs.
 
-The examples below are field observations from my development practice, not a controlled productivity study. [Project Memory Outside the Conversation](/research/agent-memory/) explains the storage and retrieval mechanism.
+[Project Memory Outside the Conversation](/research/agent-memory/) explains how those records are stored and retrieved.
 
 ## Where does trouble repeat?
 
@@ -685,7 +679,7 @@ A review usually concerns the work in front of it. A sequence of reviews can rev
 
 In one earlier audit, roughly three quarters of the recorded reviews in a small project had failed. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
 
-The coral cluster illustrates what the wider view makes visible: repeated failures that a single session might miss. The findings behind the count were the material to inspect. Their shared constraints could suggest a broader problem, while differences between them could show that the apparent pattern had several causes. The count directed the investigation; the findings had to support the diagnosis.
+I inspected the findings behind the count to see whether they shared a constraint or arose from different causes. The proportion directed that investigation; the findings had to support the diagnosis.
 
 ## Does a useful fix already exist?
 
@@ -721,9 +715,9 @@ The history therefore does not forbid another attempt. It makes the next attempt
 
 ## From a useful lookup to an evaluated benefit
 
-These questions give the record a practical role in the next decision. The examples show what can be inspected; they do not establish how often retrieval finds the right material or how much work it saves.
+My use of these lookups has not established how often retrieval finds the right material or how much work it saves.
 
-That benefit needs a comparison that measures both effort and the resulting work. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed comparison, keeping the evaluation separate from these observations of use.
+[Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) proposes a comparison of task effort and quality to evaluate that benefit.
 
 ### Testing Whether Project Memory Saves Work
 *What an audit shows, what a comparison must test, and what would count as a useful result*
@@ -732,9 +726,9 @@ Summary: An audit snapshot describes WorkBay context packets. A proposed paired 
 
 Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
 
-This proposed WorkBay evaluation asks whether a task-relevant context packet reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
+A task-relevant context packet is useful if it reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
 
-The argument has three parts: **the audit snapshot**, **the comparison**, and **the decision criterion**. The audit snapshot describes the recorded cost and contents. The comparison tests whether supplying the history changes the work. The decision criterion specifies what result would justify a savings claim. No controlled-trial result is reported here.
+The audit gives a starting point for that test: the recorded size and contents of context packets. It cannot establish their effect on task outcomes.
 
 ## The audit snapshot describes cost and contents
 
@@ -749,7 +743,7 @@ An earlier audit examined three project `handoff.db` databases. Its summary repo
 
 These figures are descriptive aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
 
-The three steps between the packet and median-task markers show a difference of roughly a thousandfold. The packet’s recorded size is small relative to those task totals. That comparison concerns the amount of text supplied at the start, not the complete cost of remembering. Retrieval, later context use, and decisions made from stale material may add costs elsewhere. A token count is also not itself a monetary return.
+The average initial packet is roughly a thousandth of the median recorded task total. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
 
 ### The audit cannot establish an effect
 
@@ -763,8 +757,6 @@ The resolution figures have a similar boundary. A written resolution establishes
 
 The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
 
-The comparison needs **calibration**, a **content probe**, and **matched task pairs**. Each stage answers a different question before the savings claim is assessed.
-
 **Calibration** uses A/A pairs: two cold runs with the same starting conditions. The variation between those attempts estimates how much results can differ without the memory intervention. That variation informs the sample-size procedure for the main comparison.
 
 **The content probe** compares a relevant packet with an equally sized unrelated packet. This tests whether relevant content makes a difference beyond merely adding text. A relevant-versus-unrelated result would not, by itself, establish a benefit over receiving no packet.
@@ -775,7 +767,7 @@ Keeping unsuccessful attempts in the analysis matters because a quick failure ca
 
 ## The decision criterion includes quality
 
-The existing proposal sets a target of at least a **20% reduction in token use**, while keeping blinded quality within an acceptable margin declared before the trial. The target is a decision criterion, not a prediction.
+The proposal sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
 
 The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
 
@@ -791,7 +783,7 @@ This is a proposed evaluation, not a completed or externally registered study. T
 
 ## The decision in the meantime
 
-I use WorkBay to retain inspectable project history and resume work across coding sessions. Those capabilities can be examined in the implementation. Whether supplying selected history also reduces total work at comparable quality remains open until the comparison is run.
+I use WorkBay to retain inspectable project history and resume work across coding sessions. Until the comparison is run, I can assess the recorded history and retrieval behaviour, but cannot claim measured effort savings.
 
 [Project Memory Outside the Conversation](/research/agent-memory/) describes that implementation. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes how I use it in practice.
 
@@ -826,13 +818,13 @@ These examples show how a rule can focus a critique. They do not establish that 
 
 My workflow combines the Canon with [WorkBay](/projects/workbay/). An interface can be inventoried in a UX map and rendered as text screens or flow diagrams. A reviewer examines those representations and records a finding with the rule and artifact it concerns.
 
-The finding can then be stored against the task. A change addresses it, and a later review checks the result. Keeping the finding available allows the reviewer to ask whether the change resolved the original issue instead of relying on a broad statement that the interface was improved.
+A task stores the finding alongside the change that addresses it. On the next review, the reviewer can compare the result with the original issue and record whether it was resolved.
 
 The running interface remains part of that review. A map can expose an action or flow, but it does not reproduce the entire visual and interactive experience.
 
 ## Question the finding before changing the product
 
-A critique can be wrong even when it cites a rule. The finding itself needs scrutiny before it justifies a change.
+Before changing the product, I check whether the cited defect actually exists.
 
 In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. This is a field example of testing a finding, not an accuracy measurement for the Canon.
 
@@ -840,7 +832,7 @@ Another recorded correction concerned a failure described as present in shipped 
 
 ## Keep the source and version with the reasoning
 
-A source reference establishes where a rule came from. It does not establish that the rule applies to every artifact or that a product has passed user validation. The trigger and any relevant exception still require judgment.
+A source reference lets the reviewer examine the basis of a rule. The artifact must still match its trigger, and an exception may make the proposed action inappropriate.
 
 The writing lexicon makes this boundary explicit: some rules are provisional editorial checks, not proof of AI authorship. Repeating a topic can help a reader follow an explanation, for example; repetition alone does not establish that the prose should be changed. The effect on the passage matters.
 
@@ -848,26 +840,22 @@ A review also needs the version of the rule it used. An ID can remain stable whi
 
 ## Measure review quality, not the number of citations
 
-The field examples show findings leading to revisions or being withdrawn. They do not establish that the full collection improves review outcomes compared with a smaller checklist or another reviewer.
+Whether the collection improves review outcomes over a smaller checklist or another reviewer remains unmeasured.
 
-A comparison would need to examine consequential findings, missed defects, false positives, and reviewer effort on comparable artifacts. Those measures concern the quality of the review. The number of rule IDs cited concerns only its activity.
+A comparison would need to examine consequential findings, missed defects, false positives, and reviewer effort on comparable artifacts. Counting cited rule IDs would measure activity without showing which consequential defects the review found or missed.
 
 The [public repository](https://github.com/darce/heuristics-canon) contains the rules, source references, and longer reasoning cards for decisions that need more context.
 
 ### 3D Without Canvas or WebGL
-*Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL*
+*Rotation matrices and perspective projection in TypeScript and CSS*
 Tags: Linear Algebra, 3D Graphics, TypeScript, DOM Manipulation, CSS Transforms
 Summary: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
 
-> **What this is:** a small experiment showing how 3D rotation and projection map to browser rendering using only DOM elements, TypeScript, and CSS transforms.
-> **What this is not:** a general-purpose 3D engine or a recommended production rendering pipeline.
+Move your mouse over the cube to rotate it. Each of its eight vertices is a `div`; TypeScript computes the rotated coordinates and CSS transforms position the dots.
 
-## Why DOM Instead of Canvas?
+The DOM rendering is a deliberate constraint that keeps the calculation visible, from matrix multiplication to motion on screen.
 
-In this experiment, the cube is not drawn on a canvas. Each vertex is a `div` element, positioned using CSS transforms.
-
-This is a deliberate constraint: no canvas, no WebGL, no engine; just enough code to make the math visible from matrix multiplication to motion on screen.
-## The Problem
+## Rotate eight points
 
 A cube has eight vertices. Each vertex is a point in space: $(x, y, z)$.
 
@@ -900,7 +888,7 @@ const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
 
 ### Around Y
 
-The middle row is $[0, 1, 0]$. No rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
+The middle row is $[0, 1, 0]$. A rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
 
 $$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}$$
 ```typescript
@@ -981,8 +969,6 @@ export const transformPoints = (
 }
 ```
 
-The goal isn’t to build a general transform stack; it’s to keep the full pipeline visible: matrix multiplication in TypeScript, projection, and DOM updates in the browser.
-
 ## From 3D to Screen
 
 After rotation the cube is still in 3D. The screen is 2D.
@@ -993,9 +979,9 @@ The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ whe
 
 $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
 
-Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
+Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In coordinates measured from the eye, the same horizontal construction is $B_x = A_x \cdot d / A_z$: $A_z$ then denotes eye-relative depth, rather than the demo's world-space $z$.
 
-The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
+The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
 
 ```typescript
 const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
@@ -1016,32 +1002,31 @@ This simplified projection works for a small demo, though in a more robust rende
 
 Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
 
-Again: no canvas, no 3D engine—just math → DOM updates.
-
 ### The Render Loop
 
 React manages the vertices as state. When mouse movement triggers a recalculation, the component re-renders with new coordinates:
 
 ```typescript
 {vertices.map((vertex, index) => (
-    
+    <div
+        key={index}
+        className={styles.vertex}
+        style={{
+            // Template literal: backticks allow embedded expressions ${...}
+            // to inject computed coordinates directly into the CSS string
+            transform: `translate3d(
+                ${vertex.x + center.x}px,
+                ${vertex.y + center.y}px,
+                ${vertex.z}px
+            )`
+        }}
+    />
 ))}
 ```
 
 The browser handles the actual positioning. We compute the math; CSS does the rendering.
 
-### DOM, GPU, and Seeing the Math
-
-Using `translate3d` lets the browser composite vertices on the GPU. For eight tiny `div`s, that’s plenty: the GPU moves a few layers while the CPU focuses on the math.
-
-This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
-
-Here's the full chain:
-
-1. Take a 3D point  
-2. Apply rotation matrices  
-3. Project to 2D  
-4. Push the result into a CSS transform
+The browser decides how to composite the transformed elements. This experiment makes the coordinate calculation inspectable; it supplies no GPU-performance measurement or production-rendering comparison.
 
 ## The complete code
 
@@ -1136,7 +1121,17 @@ export const transformPoints = (
 }
 
 {vertices.map((vertex, index) => (
-    
+    <div
+        key={index}
+        className={styles.vertex}
+        style={{
+            transform: `translate3d(
+                ${vertex.x + center.x}px,
+                ${vertex.y + center.y}px,
+                ${vertex.z}px
+            )`
+        }}
+    />
 ))}
 ```
 ---
@@ -1148,9 +1143,114 @@ Summary: An interactive guide to bids, asks, spread, and visible market depth us
 
 ## What is an Order Book?
 
-In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
+In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book records resting buy and sell orders, grouped by price.
 
 Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
+
+## Bids and asks
+
+### Bids (Buy Side)
+
+**Bids** are prices at which traders are willing to buy.
+
+> "Buy 0.5 BTC at 93,000 USDT"
+
+The **best bid** is the highest buy price currently in the book. It defines the top of the bid side.
+
+### Asks (Sell Side)
+
+**Asks** are prices at which traders are willing to sell.
+
+> "Sell 0.3 BTC at 93,050 USDT"
+
+The **best ask** is the lowest sell price currently in the book. It defines the top of the ask side.
+
+Together, best bid and best ask define the **top of book**.
+
+---
+
+## Read the displayed volume and spread
+
+### Order Imbalance
+
+**Order imbalance** compares visible buy and sell volume. In this demo, it reflects the top 20 levels of the book, not the full market.
+
+Displayed volume does not tell us how many traders placed the orders or whether those orders will remain. Imbalance alone does not predict the next price.
+
+#### Where Does Volume Come From?
+
+Every order in the book has a **size**, how many units someone wants to buy or sell at that price.
+
+For example, Binance might send:
+
+```json
+{
+  "bids": [["2.35", "1500"], ["2.34", "800"]],
+  "asks": [["2.36", "1200"], ["2.37", "600"]]
+}
+```
+
+The first bid level contains 1,500 units at 2.35 in the quote currency; the first ask level contains 1,200 units at 2.36. Each level can aggregate several orders.
+
+**Total volume** is just adding up all the sizes on each side:
+
+- Bids: 1,500 + 800 = **2,300 total**
+- Asks: 1,200 + 600 = **1,800 total**
+
+```typescript
+const totalBidVolume = bids.reduce((sum, entry) => sum + entry.size, 0)
+const totalAskVolume = asks.reduce((sum, entry) => sum + entry.size, 0)
+```
+
+#### How Imbalance Is Calculated
+
+The formula compares how much is on each side:
+
+> **Order Imbalance** = (Bid Volume − Ask Volume) ÷ (Bid Volume + Ask Volume)
+
+Subtract ask volume from bid volume, then divide by their combined volume.
+
+```typescript
+const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
+```
+
+For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined.
+
+| Result | What It Means |
+|--------|---------------|
+| **+1** | Bid volume only |
+| **+0.5** | Bid volume is three times ask volume |
+| **0** | Equal bid and ask volume |
+| **-0.5** | Ask volume is three times bid volume |
+| **-1** | Ask volume only |
+
+#### A Simple Example
+
+Using the numbers above (bids = 2,300, asks = 1,800):
+
+$$\frac{2300 - 1800}{2300 + 1800} = \frac{500}{4100} = 0.12$$
+
+Rounded to two decimal places, the imbalance is **+0.12**: bid volume exceeds ask volume in these displayed levels.
+
+---
+
+### Spread
+
+The **spread** is the gap between the best ask and the best bid:
+
+> Spread = Best Ask − Best Bid
+
+The live value above shows the current spread for the selected trading pair.
+
+A narrow spread puts the best available buying and selling prices close together. A wider spread increases the gap an immediate trade must cross. Liquidity also depends on how much size is available at those prices and farther into the book.
+
+---
+
+### Market Depth
+
+The colored bars aggregate **volume at each price level**. Longer bars mean more resting size at that price.
+
+Depth shows where displayed size is concentrated and which price levels an immediate order may consume. This partial view cannot account for orders beyond the displayed levels or changes before execution.
 
 ---
 
@@ -1167,8 +1267,8 @@ Two basic order types:
 
 2. **Limit order**  
    - “Buy at 93,000 or better (lower).”  
-   - Sits in the book until matched or cancelled.  
-   - Provides liquidity.
+   - Can execute immediately if it crosses an available price.
+   - Any unfilled portion that rests in the book provides liquidity.
 
 When a market buy arrives, it lifts the lowest ask.  
 When a market sell arrives, it hits the highest bid.  

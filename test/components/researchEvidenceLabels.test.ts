@@ -4,6 +4,8 @@ import { render, screen } from '@testing-library/react'
 import { formatResearchBadge } from '../../lib/researchEvidenceLabels'
 import SectionCards from '../../components/features/SectionCards/SectionCards'
 import type { ContentIndexData } from '../../types'
+import path from 'node:path'
+import { parseMarkdownFile } from '../../lib/markdownUtils'
 
 vi.mock('next/image', () => ({
     default: (props: { alt: string }) => React.createElement('img', props),
@@ -24,9 +26,23 @@ describe('research evidence labels', () => {
     it('translates lifecycle status into evidence readers can interpret', () => {
         expect(formatResearchBadge('status', 'running')).toBe('Evidence: in daily use')
         expect(formatResearchBadge('status', 'measured')).toBe('Evidence: measurement complete')
-        expect(formatResearchBadge('status', 'registered')).toBe('Evidence: measurement pending')
+        expect(formatResearchBadge('status', 'registered')).toBe('Evidence: evaluation proposed')
         expect(formatResearchBadge('status', 'rerun')).toBe('Evidence: rerun planned')
         expect(formatResearchBadge('status', 'closed')).toBe('Evidence: closed')
+    })
+
+    it('renders the economics proposal without implying external registration', async () => {
+        const { metaData } = await parseMarkdownFile(
+            path.join(process.cwd(), 'content', 'research', 'economics-of-agent-memory.mdx'),
+            { includeSource: false },
+        )
+        expect(metaData.status).toBe('registered') // keep the stored taxonomy compatible
+        render(React.createElement(SectionCards, {
+            section: 'research', items: [{ slug: 'economics-of-agent-memory', metaData }],
+        }))
+        expect(screen.getByText('Evidence: evaluation proposed')).toBeInTheDocument()
+        expect(screen.queryByText('registered')).not.toBeInTheDocument()
+        expect(screen.queryByText('Evidence: measurement complete')).not.toBeInTheDocument()
     })
 
     it('renders translated labels on research cards and raw metadata on work cards', () => {

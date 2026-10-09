@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { execSync } = require('child_process')
 const matter = require('gray-matter')
+const { stripMdxComponents } = require('./lib/strip-mdx-components')
 
 const SITE_URL = 'https://darce.xyz'
 const SITE_NAME = 'Daniel Arcé'
@@ -41,39 +42,6 @@ function readSection(subDir) {
             return { slug, data, content, section: subDir }
         })
         .sort((a, b) => (a.data.index ?? 0) - (b.data.index ?? 0))
-}
-
-function stripMdxComponents(content) {
-    return content
-        // Remove JSX component tags like <OrderBook />, <Cube />, etc.
-        .replace(/<[A-Z][A-Za-z]*\b[^>]*\/>/g, '')
-        // AsciiScreen is unwrapped, not dropped. The prose points straight at
-        // these drawings ("This is the screen the render exposed:"), so removing
-        // them with the other components leaves sentences aimed at nothing, and
-        // a machine reader is told a defect is visible in a picture it cannot
-        // see. Keep the fence, and keep the label after it as the caption — on
-        // the page that label is the figure's accessible name, and here it is
-        // the only text saying what the box-drawing depicts.
-        .replace(
-            /<AsciiScreen\s+label="([^"]*)"\s*>\s*([\s\S]*?)\s*<\/AsciiScreen>/g,
-            (_match, label, body) => `${body}\n\n_${label}_`)
-        // The About page is authored as cards. Intro and CardGrid are layout
-        // wrappers; an AboutCard is a titled section of the bio. Unwrap them
-        // so the prose survives instead of being dropped with the tags.
-        .replace(
-            /<AboutCard\b[^>]*\btitle="([^"]*)"[^>]*>\s*([\s\S]*?)\s*<\/AboutCard>/g,
-            (_match, title, body) => `### ${title}\n\n${body}`)
-        .replace(/<\/?(Intro|CardGrid)>/g, '')
-        // Remove JSX opening/closing tags
-        .replace(/<[A-Z][A-Za-z]*\b[^>]*>[\s\S]*?<\/[A-Z][A-Za-z]*>/g, '')
-        // Remove import statements
-        .replace(/^import\s+.*$/gm, '')
-        // Remove HTML tags like <h2>, <a>, etc. but keep text content
-        .replace(/<([a-z][a-z0-9]*)\b[^>]*>([\s\S]*?)<\/\1>/g, '$2')
-        .replace(/<([a-z][a-z0-9]*)\b[^>]*\/?>/g, '')
-        // Collapse multiple blank lines
-        .replace(/\n{3,}/g, '\n\n')
-        .trim()
 }
 
 // ---------------------------------------------------------------------------

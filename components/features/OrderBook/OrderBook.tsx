@@ -59,7 +59,7 @@ const OrderBook: React.FC<OrderBookProps> = ({
                     <Callout.Text>
                         <Text weight="bold">Error:</Text> {error}
                         <br />
-                        <Text size="1" color="gray">Please try again or select a different trading pair.</Text>
+                        <Text size="1" color="gray">Reload this page to try connecting again.</Text>
                     </Callout.Text>
                 </Callout.Root>
             </Box>

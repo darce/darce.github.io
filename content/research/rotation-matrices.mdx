@@ -2,7 +2,7 @@
 index: 10
 year: 2024
 title: 3D Without Canvas or WebGL
-subtitle: Rotation matrices with DOM Elements & CSS transforms; no Canvas or WebGL
+subtitle: Rotation matrices and perspective projection in TypeScript and CSS
 type: note
 status: closed
 description: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
@@ -23,15 +23,11 @@ tags:
 
 <Cube />
 
-> **What this is:** a small experiment showing how 3D rotation and projection map to browser rendering using only DOM elements, TypeScript, and CSS transforms.
-> **What this is not:** a general-purpose 3D engine or a recommended production rendering pipeline.
+Move your mouse over the cube to rotate it. Each of its eight vertices is a `div`; TypeScript computes the rotated coordinates and CSS transforms position the dots.
 
-## Why DOM Instead of Canvas?
+The DOM rendering is a deliberate constraint that keeps the calculation visible, from matrix multiplication to motion on screen.
 
-In this experiment, the cube is not drawn on a canvas. Each vertex is a `div` element, positioned using CSS transforms.
-
-This is a deliberate constraint: no canvas, no WebGL, no engine; just enough code to make the math visible from matrix multiplication to motion on screen.
-## The Problem
+## Rotate eight points
 
 A cube has eight vertices. Each vertex is a point in space: $(x, y, z)$.
 
@@ -78,7 +74,7 @@ const rotationX = (vertexArray: Vertex[], angle: number): Vertex[] => {
 
 ### Around Y
 
-The middle row is $[0, 1, 0]$. No rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
+The middle row is $[0, 1, 0]$. A rotation around the $y$-axis leaves $y$ unchanged while rotating points in the $xz$-plane:
 
 $$R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}$$
 ```typescript
@@ -196,8 +192,6 @@ export const transformPoints = (
 }
 ```
 
-The goal isn’t to build a general transform stack; it’s to keep the full pipeline visible: matrix multiplication in TypeScript, projection, and DOM updates in the browser.
-
 ## From 3D to Screen
 
 After rotation the cube is still in 3D. The screen is 2D.
@@ -208,7 +202,7 @@ The gap from the eye to the screen is **eye distance** $d$ (the camera's $z$ whe
 
 $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}$$
 
-Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Same construction as $B_x = A_x \cdot d / A_z$.
+Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In coordinates measured from the eye, the same horizontal construction is $B_x = A_x \cdot d / A_z$: $A_z$ then denotes eye-relative depth, rather than the demo's world-space $z$.
 
 <Diagram
     src="/images/research/rotation-perspective.svg?v=17"
@@ -216,7 +210,7 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. Sam
     caption="Height on screen is a shrink of height in space. Same colors as the braces."
 />
 
-The demo stores $d$ as `eyeDistance` and folds the shrink into one **perspective scale** $s = 1/(d - z)$. Same $d$, two depths: the far tree lands closer to the middle, and smaller.
+The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
 
 <Diagram
     src="/images/research/rotation-f-projection.svg?v=16"
@@ -243,8 +237,6 @@ This simplified projection works for a small demo, though in a more robust rende
 
 Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
 
-Again: no canvas, no 3D engine—just math → DOM updates.
-
 ### The Render Loop
 
 React manages the vertices as state. When mouse movement triggers a recalculation, the component re-renders with new coordinates:
@@ -269,18 +261,7 @@ React manages the vertices as state. When mouse movement triggers a recalculatio
 
 The browser handles the actual positioning. We compute the math; CSS does the rendering.
 
-### DOM, GPU, and Seeing the Math
-
-Using `translate3d` lets the browser composite vertices on the GPU. For eight tiny `div`s, that’s plenty: the GPU moves a few layers while the CPU focuses on the math.
-
-This demo isn’t about “beating” WebGL. It’s about keeping the entire 3D pipeline visible, rotation & projection, so you can read the math directly in TypeScript and see the result on screen.
-
-Here's the full chain:
-
-1. Take a 3D point  
-2. Apply rotation matrices  
-3. Project to 2D  
-4. Push the result into a CSS transform
+The browser decides how to composite the transformed elements. This experiment makes the coordinate calculation inspectable; it supplies no GPU-performance measurement or production-rendering comparison.
 
 ## The complete code
 

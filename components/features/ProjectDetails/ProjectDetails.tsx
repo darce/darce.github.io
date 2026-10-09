@@ -119,7 +119,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                             sizes="(max-width: 1024px) 100vw, 640px"
                             style={{ width: '100%', height: 'auto' }}
                         />
-                        <figcaption>{project.metaData.masthead.alt}</figcaption>
+                        <figcaption>{project.metaData.masthead.caption ?? project.metaData.masthead.alt}</figcaption>
                     </figure>
                 )}
                 <aside className={styles.metadata}>
@@ -145,7 +145,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                                     style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                                     onError={() => handleImageError(index)}
                                 />
-                                <figcaption>{image.alt}</figcaption>
+                                <figcaption>{image.caption ?? image.alt}</figcaption>
                             </figure>
                         )
                     })}

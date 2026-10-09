@@ -9,6 +9,7 @@ const metaLinkSchema = z.object({
 const metaImageSchema = z.object({
     src: z.string().min(1),
     alt: z.string().default(''),
+    caption: z.string().optional(),
     position: z.string().optional(),
     scale: z.number().positive().optional(),
 })

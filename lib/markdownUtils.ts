@@ -64,17 +64,27 @@ const asMetaLinks = (value: unknown): MetaData['links'] => {
     return links.length > 0 ? links : undefined
 }
 
+const asMetaImage = (value: unknown): MetaData['thumbnail'] => {
+    if (!isRecord(value)) return undefined
+    const src = asOptionalString(value.src)
+    if (!src) return undefined
+    const result: NonNullable<MetaData['thumbnail']> = { src, alt: asOptionalString(value.alt) ?? '' }
+    const caption = asOptionalString(value.caption)
+    if (caption) result.caption = caption
+    const position = asOptionalString(value.position)
+    if (position) result.position = position
+    const scale = asOptionalNumber(value.scale)
+    if (scale) result.scale = scale
+    return result
+}
+
 const asMetaImages = (value: unknown): MetaData['images'] => {
     if (!Array.isArray(value)) {
         return undefined
     }
     const images = value
-        .filter(isRecord)
-        .map((entry) => ({
-            src: asOptionalString(entry.src) ?? '',
-            alt: asOptionalString(entry.alt) ?? '',
-        }))
-        .filter((entry) => entry.src.length > 0)
+        .map(asMetaImage)
+        .filter((entry): entry is NonNullable<MetaData['thumbnail']> => entry !== undefined)
     return images.length > 0 ? images : undefined
 }
 
@@ -102,18 +112,6 @@ const normalizeMetaData = (rawData: unknown, filePath: string): MetaData => {
 
     // Pre-normalize gray-matter output into clean types before validation
     const normalized: Record<string, unknown> = {}
-    const asMetaThumbnail = (value: unknown): MetaData['thumbnail'] => {
-        if (!isRecord(value)) return undefined
-        const src = asOptionalString(value.src)
-        if (!src) return undefined
-        const result: NonNullable<MetaData['thumbnail']> = { src, alt: asOptionalString(value.alt) ?? '' }
-        const position = asOptionalString(value.position)
-        if (position) result.position = position
-        const scale = asOptionalNumber(value.scale)
-        if (scale) result.scale = scale
-        return result
-    }
-
     const fieldNormalizers: Array<[string, (v: unknown) => unknown]> = [
         ['index', asOptionalNumber],
         ['year', asOptionalNumber],
@@ -122,8 +120,8 @@ const normalizeMetaData = (rawData: unknown, filePath: string): MetaData => {
         ['description', asOptionalString],
         ['details', asOptionalString],
         ['links', asMetaLinks],
-        ['thumbnail', asMetaThumbnail],
-        ['masthead', asMetaThumbnail],
+        ['thumbnail', asMetaImage],
+        ['masthead', asMetaImage],
         ['images', asMetaImages],
         ['tags', asOptionalStringArray],
         ['type', asOptionalString],

@@ -18,8 +18,8 @@ const PrivacyPage: NextPageWithLayout = () => {
             <h2>Privacy</h2>
 
             <p>
-                This site collects anonymous usage data to understand how visitors use the site.
-                No personal information is collected. No cookies are used for tracking.
+                This site sends usage events to Google Analytics and AltContext to understand
+                which pages visitors use and how those pages perform.
             </p>
 
             <h3>What is collected</h3>
@@ -35,17 +35,11 @@ const PrivacyPage: NextPageWithLayout = () => {
             <h3>How it is collected</h3>
             <p>
                 This site uses Google Analytics and a self-hosted analytics service
-                (AltContext). An anonymous identifier is stored in your browser&rsquo;s
-                localStorage to distinguish unique visits. This identifier cannot be
-                used to identify you personally.
+                (AltContext). AltContext stores a randomly generated identifier in your
+                browser&rsquo;s localStorage and includes it with usage events, so visits
+                from that browser can be linked. The analytics code does not ask for your
+                name or email address.
             </p>
-
-            <h3>What is not collected</h3>
-            <ul>
-                <li>Names, email addresses, or other personal information</li>
-                <li>IP addresses (not stored by the self-hosted analytics)</li>
-                <li>Tracking cookies</li>
-            </ul>
 
             <h3>Third parties</h3>
             <p>
@@ -53,15 +47,18 @@ const PrivacyPage: NextPageWithLayout = () => {
                 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
                     Google&rsquo;s Privacy Policy
                 </a>.
-                The self-hosted analytics service runs on infrastructure controlled by the site owner.
+                {' '}Google Analytics cookies are not disabled by this site.
+                AltContext runs on infrastructure controlled by the site owner. This page
+                describes the events sent by the browser; server retention and network logs
+                have not been verified for this policy.
             </p>
 
             <h3>Your choices</h3>
             <p>
-                You can block analytics by using a browser extension such as uBlock Origin,
-                or by enabling Do Not Track in your browser settings.
-                You can clear the anonymous identifier by clearing your browser&rsquo;s localStorage
-                for this domain.
+                A browser content blocker can prevent analytics requests. This site does
+                not check the browser&rsquo;s Do Not Track setting. You can remove the
+                AltContext identifier by clearing localStorage for this domain; a new
+                identifier is created on a later visit if analytics can run.
             </p>
 
             <h3>Contact</h3>

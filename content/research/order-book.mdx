@@ -26,14 +26,14 @@ tags:
 
 ## What is an Order Book?
 
-In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book is the _data structure_ that records those intentions: all active buy and sell orders, grouped by price.
+In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book records resting buy and sell orders, grouped by price.
 
 Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
 <OrderBookProvider>
 
 <OrderBook />
 
-## The Two Sides of Every Trade
+## Bids and asks
 
 ### Bids (Buy Side)
 <BestBid />
@@ -55,14 +55,13 @@ Together, best bid and best ask define the **top of book**.
 
 ---
 
-## Key Structures to Watch
+## Read the displayed volume and spread
 
 ### Order Imbalance
 <OrderImbalance />
 **Order imbalance** compares visible buy and sell volume. In this demo, it reflects the top 20 levels of the book, not the full market.
 
-- More buyers waiting → price might go up  
-- More sellers waiting → price might go down
+Displayed volume does not tell us how many traders placed the orders or whether those orders will remain. Imbalance alone does not predict the next price.
 
 #### Where Does Volume Come From?
 
@@ -77,7 +76,7 @@ For example, Binance might send:
 }
 ```
 
-Reading this: "Someone wants to buy 1,500 units at \$2.35" and "Someone wants to sell 1,200 units at \$2.36."
+The first bid level contains 1,500 units at 2.35 in the quote currency; the first ask level contains 1,200 units at 2.36. Each level can aggregate several orders.
 
 **Total volume** is just adding up all the sizes on each side:
 
@@ -95,22 +94,21 @@ The formula compares how much is on each side:
 
 > **Order Imbalance** = (Bid Volume − Ask Volume) ÷ (Bid Volume + Ask Volume)
 
-In plain English: **subtract the two sides, then divide by the total.**
-In this demo, order imbalance is calculated from the currently visible depth levels (top 20 levels), not the full exchange order book.
+Subtract ask volume from bid volume, then divide by their combined volume.
 
 ```typescript
 const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
 ```
 
-This gives a number between -1 and +1:
+For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined.
 
 | Result | What It Means |
 |--------|---------------|
-| **+1** | All buyers, no sellers |
-| **+0.5** | Buyers outnumber sellers 3 to 1 |
-| **0** | Perfectly balanced |
-| **-0.5** | Sellers outnumber buyers 3 to 1 |
-| **-1** | All sellers, no buyers |
+| **+1** | Bid volume only |
+| **+0.5** | Bid volume is three times ask volume |
+| **0** | Equal bid and ask volume |
+| **-0.5** | Ask volume is three times bid volume |
+| **-1** | Ask volume only |
 
 #### A Simple Example
 
@@ -118,7 +116,7 @@ Using the numbers above (bids = 2,300, asks = 1,800):
 
 $$\frac{2300 - 1800}{2300 + 1800} = \frac{500}{4100} = 0.12$$
 
-That's **+12%** slightly more buyers than sellers. The book leans toward buying pressure.
+Rounded to two decimal places, the imbalance is **+0.12**: bid volume exceeds ask volume in these displayed levels.
 
 ---
 
@@ -131,19 +129,15 @@ The **spread** is the gap between the best ask and the best bid:
 
 The live value above shows the current spread for the selected trading pair.
 
-- **Narrow spread** → buyers and sellers mostly agree on price; the market is liquid.  
-- **Wide spread** → less agreement; it costs more to trade immediately.
+A narrow spread puts the best available buying and selling prices close together. A wider spread increases the gap an immediate trade must cross. Liquidity also depends on how much size is available at those prices and farther into the book.
 
---- 
+---
 
 ### Market Depth
 
 The colored bars aggregate **volume at each price level**. Longer bars mean more resting size at that price.
 
-Depth tells you:
-
-- How far price might move if a large market order hits the book  
-- Where size is concentrated (potential support/resistance zones)
+Depth shows where displayed size is concentrated and which price levels an immediate order may consume. This partial view cannot account for orders beyond the displayed levels or changes before execution.
 
 </OrderBookProvider>
 
@@ -162,8 +156,8 @@ Two basic order types:
 
 2. **Limit order**  
    - “Buy at 93,000 or better (lower).”  
-   - Sits in the book until matched or cancelled.  
-   - Provides liquidity.
+   - Can execute immediately if it crosses an available price.
+   - Any unfilled portion that rests in the book provides liquidity.
 
 When a market buy arrives, it lifts the lowest ask.  
 When a market sell arrives, it hits the highest bid.  
