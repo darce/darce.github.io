@@ -23,6 +23,9 @@
     // Footer links sit outside #main-content, so the global link colour never
     // reaches them. Restate it here rather than widening the global selector.
     a {
+        // Inline boxes use glyph height; an inline-block includes the line height
+        // and padding in the actual pressable area.
+        display: inline-block;
         // Coral is a stroke everywhere else on the site, never ink: on the
         // footer band it reaches 3.27:1 light / 3.92:1 dark, short of AA for
         // 0.85rem. The accent is a stroke here too.

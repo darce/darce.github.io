@@ -1,39 +1,29 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { cardIconFor } from '../../pages/index'
 import type { ContentIndexData } from '../../types'
 
-const project = (metaData: ContentIndexData['metaData']): ContentIndexData => ({
-    slug: 'fixture',
-    metaData,
-})
+const project = (metaData: ContentIndexData['metaData']): ContentIndexData => ({ slug: 'fixture', metaData })
+const thumbnail = { src: 'thumbnail.png', alt: 'Thumbnail input' }
+const masthead = { src: 'masthead.jpg', alt: 'Masthead input' }
+const animation = { src: 'motion.gif', alt: 'Animated input' }
 
-describe('cardIconFor (homepage featured card icon)', () => {
-    it('prefers the thumbnail over the masthead', () => {
-        const icon = cardIconFor(
-            project({
-                thumbnail: { src: 'sis-results-grid.png', alt: 'Ranked results grid' },
-                masthead: { src: 'blossfeldt-plate.jpg', alt: 'Karl Blossfeldt, Urformen der Kunst (1928)' },
-            }),
-        )
-        expect(icon?.src).toBe('sis-results-grid.png')
+describe('featured icon selection', () => {
+    it('prefers a still thumbnail over other media', () => {
+        expect(cardIconFor(project({ thumbnail, masthead }))).toEqual(thumbnail)
     })
-
-    it('falls back to the masthead when no thumbnail is set', () => {
-        const icon = cardIconFor(project({ masthead: { src: 'blossfeldt-plate.jpg', alt: 'plate' } }))
-        expect(icon?.src).toBe('blossfeldt-plate.jpg')
+    it('uses the masthead when the thumbnail is absent', () => {
+        expect(cardIconFor(project({ masthead }))).toEqual(masthead)
     })
-
-    it('skips an animated thumbnail in favour of a still image', () => {
-        const icon = cardIconFor(
-            project({
-                thumbnail: { src: 'keyboard-nav.gif', alt: 'Keyboard navigation' },
-                masthead: { src: 'plate.jpg', alt: 'plate' },
-            }),
-        )
-        expect(icon?.src).toBe('plate.jpg')
+    it('prefers still media over an animated thumbnail', () => {
+        expect(cardIconFor(project({ thumbnail: animation, masthead }))).toEqual(masthead)
     })
-
-    it('returns undefined when the project declares no media', () => {
+    it('uses gallery media when neither preferred slot is present', () => {
+        expect(cardIconFor(project({ images: [thumbnail] }))).toEqual(thumbnail)
+    })
+    it('keeps an animation usable when it is the only media', () => {
+        expect(cardIconFor(project({ thumbnail: animation }))).toEqual(animation)
+    })
+    it('allows a project without media', () => {
         expect(cardIconFor(project({}))).toBeUndefined()
     })
 })

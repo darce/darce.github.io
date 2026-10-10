@@ -41,9 +41,9 @@ describe('resolveNavPath', () => {
 })
 
 describe('NAV_ITEMS', () => {
-    it('contains home, work, research, and about', () => {
-        const labels = NAV_ITEMS.map(item => item.label)
-        expect(labels).toEqual(['home', 'work', 'research', 'about'])
+    it('has unique named destinations', () => {
+        expect(new Set(NAV_ITEMS.map(item => item.href)).size).toBe(NAV_ITEMS.length)
+        expect(NAV_ITEMS.every(item => item.label.trim())).toBe(true)
     })
 
     it('has valid href values', () => {

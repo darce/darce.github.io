@@ -1,49 +1,24 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { render, within } from '@testing-library/react'
 import ErrorBoundary from '../../components/common/ErrorBoundary'
+import { NAV_ITEMS } from '../../lib/routes'
+import { auditAccessibility } from '../support/shell'
 
-const ThrowingComponent = () => {
-    throw new Error('Test error')
-}
+const childText = 'A working child'
+const BrokenChild = () => { throw new Error('Controlled component failure') }
 
-const WorkingComponent = () => <p>Working content</p>
-
-describe('ErrorBoundary', () => {
-    // Suppress console.error for expected errors
-    const originalError = console.error
-    beforeEach(() => {
-        console.error = vi.fn()
+describe('ErrorBoundary recovery', () => {
+    it('renders working children', () => {
+        const { container } = render(<ErrorBoundary><p>{childText}</p></ErrorBoundary>)
+        expect(container).toHaveTextContent(childText)
     })
-    afterEach(() => {
-        console.error = originalError
-    })
-
-    it('renders children when no error', () => {
-        render(
-            <ErrorBoundary>
-                <WorkingComponent />
-            </ErrorBoundary>
-        )
-        expect(screen.getByText('Working content')).toBeInTheDocument()
-    })
-
-    it('renders fallback when child throws', () => {
-        render(
-            <ErrorBoundary>
-                <ThrowingComponent />
-            </ErrorBoundary>
-        )
-        expect(screen.getByText('Something went wrong.')).toBeInTheDocument()
-        expect(screen.getByText('Return to homepage')).toBeInTheDocument()
-    })
-
-    it('provides a link back to the homepage', () => {
-        render(
-            <ErrorBoundary>
-                <ThrowingComponent />
-            </ErrorBoundary>
-        )
-        const link = screen.getByRole('link', { name: 'Return to homepage' })
-        expect(link).toHaveAttribute('href', '/')
+    it('replaces a failed child with an accessible full-page recovery link', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => {})
+        const { container } = render(<ErrorBoundary><BrokenChild /></ErrorBoundary>)
+        const view = within(container)
+        expect(view.getByRole('heading')).toHaveAccessibleName()
+        expect(view.getByRole('link')).toHaveAccessibleName()
+        expect(view.getByRole('link')).toHaveAttribute('href', NAV_ITEMS[0].href)
+        expect(await auditAccessibility(container)).toHaveNoViolations()
     })
 })

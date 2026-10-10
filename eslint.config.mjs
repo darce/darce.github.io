@@ -12,6 +12,8 @@ const config = [
             'lib/generated/**',
             'agentic/**',
             'docs/**',
+            'playwright-report/**',
+            'test-results/**',
         ],
     },
     ...nextCoreWebVitals,
@@ -32,13 +34,10 @@ const config = [
         },
     },
     {
-        // Test fixtures hand-write the markup they assert against. A raw <a> is
-        // the subject of the test, not a routing mistake, and the alt-less <img>
-        // in landmarks.a11y.test.tsx exists so axe has something to fail on.
+        // Recovery-link fixtures may use plain anchors. Images still require alt text.
         files: ['test/**/*.{ts,tsx}'],
         rules: {
             '@next/next/no-html-link-for-pages': 'off',
-            'jsx-a11y/alt-text': 'off',
         },
     },
     {

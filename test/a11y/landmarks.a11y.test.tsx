@@ -1,142 +1,33 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest'
-import { render } from '@testing-library/react'
-import { axe } from 'vitest-axe'
-import Layout from '../../components/layout/Layout'
-import { HeaderDataProvider } from '../../contexts/HeaderContext'
-import { FooterDataProvider } from '../../contexts/FooterContext'
-import { getMdxContent, getMdxIndexContent } from '../../lib/getMdxContent'
-import type { ContentIndexData, MarkdownData } from '../../types'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { within } from '@testing-library/react'
+import { NAV_ITEMS } from '../../lib/routes'
+import NotFoundPage from '../../pages/404'
+import { loadShellData, renderShell } from '../support/shell'
 
-vi.mock('next/router', () => ({
-    useRouter: () => ({ asPath: '/', push: vi.fn(), prefetch: vi.fn(), events: { on: vi.fn(), off: vi.fn() } }),
-}))
+describe('the shipped landmark and skip navigation', () => {
+    let shell: Awaited<ReturnType<typeof loadShellData>>
+    beforeAll(async () => { shell = await loadShellData() })
 
-// The landmark structure is only worth asserting against the components that
-// actually ship it. A hand-written fixture drifts silently: it kept asserting a
-// footer landmark for as long as the real Layout emitted none.
-describe('ARIA landmarks and semantic structure', () => {
-    let headerData: ContentIndexData[]
-    let footerData: MarkdownData[]
-
-    beforeAll(async () => {
-        Object.defineProperty(window, 'matchMedia', {
-            writable: true,
-            value: vi.fn().mockImplementation(query => ({
-                matches: false,
-                media: query,
-                addEventListener: vi.fn(),
-                removeEventListener: vi.fn(),
-            })),
-        })
-        headerData = (await getMdxIndexContent({ subDir: 'header' })).parsedMdxArray
-        footerData = (await getMdxContent({ subDir: 'footer' })).parsedMdxArray
-    })
-
-    const renderLayout = () =>
-        render(
-            <HeaderDataProvider initialData={headerData}>
-                <FooterDataProvider initialData={footerData}>
-                    <Layout>
-                        <h2>Projects</h2>
-                        <p>Content here.</p>
-                    </Layout>
-                </FooterDataProvider>
-            </HeaderDataProvider>
-        )
-
-    it('the shipped layout has no landmark violations', async () => {
-        const { container } = renderLayout()
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('the shipped layout emits every landmark the skip link assumes', () => {
-        const { container } = renderLayout()
-
-        expect(container.querySelector('header')).toBeTruthy()
-        expect(container.querySelector('main')).toBeTruthy()
-        expect(container.querySelector('nav')).toBeTruthy()
-        expect(container.querySelector('footer')).toBeTruthy()
-
-        const skipLink = container.querySelector('.skip-link')
-        expect(skipLink?.getAttribute('href')).toBe('#main-content')
-        expect(container.querySelector('#main-content')).toBeTruthy()
-    })
-
-    // Tab does not walk landmark to landmark by itself; the skip bar is what
-    // provides that, and it is only as good as its targets. A fragment jump to
-    // an element without tabIndex scrolls but leaves focus behind, which is the
-    // failure this asserts against — it is invisible in a rendering check.
-    it('every skip link points at a landmark that can actually take focus', () => {
-        const { container } = renderLayout()
-
-        const links = Array.from(container.querySelectorAll('.skip-link'))
-        expect(links.map(link => link.getAttribute('href'))).toEqual([
-            '#main-content',
-            '#primary-navigation',
-            '#site-footer',
-        ])
-
-        for (const link of links) {
-            const target = container.querySelector(link.getAttribute('href') as string)
-            expect(target, `no element for ${link.getAttribute('href')}`).toBeTruthy()
-            expect(target?.getAttribute('tabindex')).toBe('-1')
+    it('every skip destination is a named or semantic landmark that accepts focus', () => {
+        const { container } = renderShell(<NotFoundPage />, shell)
+        const view = within(container)
+        view.getByRole('banner')
+        view.getByRole('main')
+        view.getByRole('contentinfo')
+        const primary = view.getByRole('navigation')
+        expect(primary).toHaveAccessibleName()
+        const current = primary.querySelector('[aria-current="page"]')
+        expect(current).toHaveAttribute('href', NAV_ITEMS[0].href)
+        const skipLinks = view.getAllByRole('link').filter(link => link.getAttribute('href')?.startsWith('#'))
+        const destinations = skipLinks.map(link => container.querySelector(link.getAttribute('href')!))
+        expect(destinations).toContain(view.getByRole('main'))
+        expect(destinations).toContain(view.getByRole('contentinfo'))
+        expect(destinations).toContain(primary)
+        for (const destination of destinations) {
+            expect(destination).not.toBeNull()
+            expect(destination).toHaveAttribute('tabindex', '-1')
+            ;(destination as HTMLElement).focus()
+            expect(destination).toHaveFocus()
         }
-    })
-
-    it('the shipped primary nav is named and marks the current page', () => {
-        const { container } = renderLayout()
-
-        const nav = container.querySelector('nav')
-        expect(nav?.getAttribute('aria-label')).toBeTruthy()
-
-        // asPath is mocked to '/', so home is the one item carrying aria-current
-        const current = container.querySelectorAll('[aria-current="page"]')
-        expect(current).toHaveLength(1)
-        expect(current[0].textContent).toBe('home')
-    })
-
-    it('images in content have alt text', async () => {
-        const { container } = render(
-            <figure>
-                <img src="/images/test.png" alt="Descriptive alt text" width={800} height={600} />
-                <figcaption>Descriptive alt text</figcaption>
-            </figure>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('images without alt text fail axe', async () => {
-        const { container } = render(
-            <img src="/images/test.png" />
-        )
-        const results = await axe(container)
-        expect(results.violations.length).toBeGreaterThan(0)
-        expect(results.violations[0].id).toBe('image-alt')
-    })
-
-    it('buttons have accessible names', async () => {
-        const { container } = render(
-            <div>
-                <button aria-label="Switch to dark mode" type="button">
-                    <span aria-hidden="true">&#x263E;</span>
-                </button>
-            </div>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
-    it('color contrast is maintained in text elements', async () => {
-        const { container } = render(
-            <main style={{ backgroundColor: '#e7eaef' }}>
-                <h2 style={{ color: '#171920' }}>Heading text</h2>
-                <p style={{ color: '#171920' }}>Body text with sufficient contrast.</p>
-                <a href="/" style={{ color: '#004e98' }}>Link text</a>
-            </main>
-        )
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
     })
 })

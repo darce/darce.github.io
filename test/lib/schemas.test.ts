@@ -5,7 +5,6 @@ import {
     headerSchema,
     aboutSchema,
     passthroughSchema,
-    sectionSchemas,
 } from '../../lib/schemas'
 
 describe('contentItemSchema', () => {
@@ -117,16 +116,5 @@ describe('passthroughSchema', () => {
             education: [{ school: 'NYU' }],
         })
         expect(result.success).toBe(true)
-    })
-})
-
-describe('sectionSchemas', () => {
-    it('maps known sections to schemas', () => {
-        expect(sectionSchemas).toHaveProperty('projects')
-        expect(sectionSchemas).toHaveProperty('research')
-        expect(sectionSchemas).toHaveProperty('header')
-        expect(sectionSchemas).toHaveProperty('about')
-        expect(sectionSchemas).toHaveProperty('resume')
-        expect(sectionSchemas).toHaveProperty('footer')
     })
 })

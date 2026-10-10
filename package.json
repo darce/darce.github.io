@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "vitest run",
-        "pretest": "npm run images",
+        "pretest": "npm run images && node scripts/generate-llm-content.js",
         "test:watch": "vitest",
         "test:a11y": "vitest run test/a11y",
         "images": "node scripts/generate-image-variants.js",
@@ -17,8 +17,10 @@
         "precheck": "npm run images",
         "typecheck": "tsc --noEmit",
         "lint": "eslint .",
-        "check": "npm run typecheck && npm run lint",
-        "inspect": "node scripts/inspect-dom.mjs"
+        "check": "npm run typecheck && npm run typecheck:test && npm run lint",
+        "inspect": "node scripts/inspect-dom.mjs",
+        "test:browser": "playwright test",
+        "typecheck:test": "tsc --noEmit -p tsconfig.test.json"
     },
     "repository": {
         "type": "git",
@@ -47,6 +49,7 @@
         "@axe-core/react": "^4.11.1",
         "@mdx-js/loader": "^3.0.1",
         "@next/mdx": "^14.1.4",
+        "@playwright/test": "1.64.0",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",

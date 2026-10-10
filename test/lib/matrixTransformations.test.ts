@@ -29,10 +29,12 @@ describe('transformPoints', () => {
 
     it('scales vertices by the given factor', () => {
         const scale1 = transformPoints(CUBE_VERTICES, 0, 0, 0, 1, 5)
-        const scale2 = transformPoints(CUBE_VERTICES, 0, 0, 0, 2, 5)
+        const factor = 2
+        const scale2 = transformPoints(CUBE_VERTICES, 0, 0, 0, factor, 5)
         // Uniform xy scale is applied before projection. Depth still uses
         // the vertex z after that step (this helper does not scale z).
-        expect(Math.abs(scale2[0].x)).toBeGreaterThan(Math.abs(scale1[0].x))
+        expect(scale2[0].x).toBeCloseTo(scale1[0].x * factor)
+        expect(scale2[0].y).toBeCloseTo(scale1[0].y * factor)
     })
 
     it('uses active right-handed Ry: +x maps toward −z', () => {

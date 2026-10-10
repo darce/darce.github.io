@@ -122,14 +122,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                         <figcaption>{project.metaData.masthead.caption ?? project.metaData.masthead.alt}</figcaption>
                     </figure>
                 )}
-                <aside className={styles.metadata}>
+                <div className={styles.metadata}>
                     {project.metaData.links && (
                         <div className={styles.links}>
                             <a target="_blank" rel="noopener noreferrer" href={project.metaData.links[0].url}>{project.metaData.links[0].label}</a>
                         </div>
                     )}
                     <p>{project.metaData.details}</p>
-                </aside>
+                </div>
             </div>
 
             <div className={styles.post}>

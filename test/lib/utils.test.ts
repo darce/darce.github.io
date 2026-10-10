@@ -28,49 +28,50 @@ describe('mapRange', () => {
 })
 
 describe('throttle', () => {
+    const pause = 100
+    const first = 'first input'
+    const second = 'second input'
+    const third = 'third input'
     it('calls the callback after the pause', () => {
         vi.useFakeTimers()
         const fn = vi.fn()
-        const throttled = throttle(fn, 100)
+        const throttled = throttle(fn, pause)
 
-        throttled('arg1')
+        throttled(first)
         expect(fn).not.toHaveBeenCalled()
 
-        vi.advanceTimersByTime(100)
-        expect(fn).toHaveBeenCalledWith('arg1')
+        vi.advanceTimersByTime(pause)
+        expect(fn).toHaveBeenCalledWith(first)
 
-        vi.useRealTimers()
     })
 
     it('ignores calls during the pause period', () => {
         vi.useFakeTimers()
         const fn = vi.fn()
-        const throttled = throttle(fn, 100)
+        const throttled = throttle(fn, pause)
 
-        throttled('first')
-        throttled('second')
-        throttled('third')
+        throttled(first)
+        throttled(second)
+        throttled(third)
 
-        vi.advanceTimersByTime(100)
+        vi.advanceTimersByTime(pause)
         // Only the first call goes through (others ignored while paused)
-        expect(fn).toHaveBeenCalledTimes(1)
+        expect(fn.mock.calls).toEqual([[first]])
 
-        vi.useRealTimers()
     })
 
     it('allows a new call after the pause period completes', () => {
         vi.useFakeTimers()
         const fn = vi.fn()
-        const throttled = throttle(fn, 100)
+        const throttled = throttle(fn, pause)
 
-        throttled('first')
-        vi.advanceTimersByTime(100)
+        throttled(first)
+        vi.advanceTimersByTime(pause)
         expect(fn).toHaveBeenCalledTimes(1)
 
-        throttled('second')
-        vi.advanceTimersByTime(100)
-        expect(fn).toHaveBeenCalledTimes(2)
+        throttled(second)
+        vi.advanceTimersByTime(pause)
+        expect(fn.mock.calls).toEqual([[first], [second]])
 
-        vi.useRealTimers()
     })
 })

@@ -2,15 +2,12 @@
 @import '../../../styles/vars.scss';
 @import '../../../styles/mixins.scss';
 
-$cell: 10px;
-$grid-size: $cell * 2;
-
 .toggle {
     background: none;
     border: $s-line solid;
     border-radius: 0;
-    width: $grid-size;
-    height: $grid-size;
+    width: $s-large;
+    height: $s-large;
     cursor: pointer;
     padding: 0;
     position: relative;
@@ -19,18 +16,6 @@ $grid-size: $cell * 2;
 
     @include themeComponent($themes) {
         border-color: t('text');
-    }
-
-    // The swatch stays 20px; the pressable box reaches the 24px floor without
-    // resizing the grid. ditheredShadow owns ::after, so this uses ::before.
-    &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 24px;
-        height: 24px;
-        transform: translate(-50%, -50%);
     }
 
     @include ditheredShadow(

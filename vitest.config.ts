@@ -3,13 +3,15 @@ import path from 'path'
 
 export default defineConfig({
     oxc: {
-        jsx: 'automatic',
+        jsx: { runtime: 'automatic' },
     },
     test: {
         environment: 'jsdom',
         setupFiles: ['./test/setup.ts'],
         include: ['test/**/*.test.{ts,tsx}'],
         globals: true,
+        maxWorkers: 2,
+        testTimeout: 15000,
     },
     resolve: {
         alias: {

@@ -86,6 +86,11 @@
     h3 {
         scroll-margin-top: $s-large;
         margin-block: 0 $s-medium;
+
+        &:focus-visible {
+            outline: $s solid currentColor;
+            outline-offset: $s-small;
+        }
     }
 }
 

@@ -32,6 +32,13 @@ a {
     transition: color 200ms $ease-decel;
 }
 
+// Prose links remain identifiable without depending on color differences.
+#main-content a:not([class]) {
+    text-decoration: underline;
+    text-decoration-thickness: $s-line;
+    text-underline-offset: $s;
+}
+
 .theme--default #main-content a:not([class]) {
     color: $electric-ultramarine;
 
@@ -50,11 +57,6 @@ a {
             font-variation-settings: 'wght' 600;
         }
     }
-}
-
-#main-content a[href^="http"]:not([class]),
-#main-content a[href^="mailto:"]:not([class]) {
-    white-space: nowrap;
 }
 
 #main-content a[href^="http"]:not([class])::after,

@@ -178,3 +178,7 @@ dist
 # Derived image variants + manifest (rebuilt by `npm run images`)
 public/images/_gen/
 lib/generated/
+
+# Browser verification artifacts
+playwright-report/
+test-results/

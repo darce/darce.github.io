@@ -86,7 +86,7 @@ const PortfolioGroups: React.FC<PortfolioGroupsProps> = ({ section, title, descr
             {groups.map(group => (
                 <section key={group.id} className={styles.group} aria-labelledby={group.id}>
                     <header className={styles.groupIntro}>
-                        <h3 id={group.id}>{group.title}</h3>
+                        <h3 id={group.id} tabIndex={-1}>{group.title}</h3>
                         <p>{group.description}</p>
                     </header>
                     <SectionCards section={section} items={group.items} headingLevel={4} />

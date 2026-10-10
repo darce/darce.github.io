@@ -1,29 +1,18 @@
-import { describe, it, expect } from 'vitest'
-import fs from 'fs'
-import path from 'path'
+import { describe, expect, it } from 'vitest'
+import fs from 'node:fs'
+import matter from 'gray-matter'
+import { allContentFiles, expectPublicAssetExists } from '../support/content'
 
-describe('content asset links', () => {
-    it('no MDX links a local file that is not in public/', () => {
-        // The résumé PDF went stale in place and stayed linked from every page.
-        // Nothing should point at a root-relative file the export does not ship.
-        const contentDir = path.join(process.cwd(), 'content')
-        const walk = (dir: string): string[] =>
-            fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-                const full = path.join(dir, entry.name)
-                if (entry.isDirectory()) return walk(full)
-                return entry.name.endsWith('.mdx') ? [full] : []
-            })
-
-        const missing: string[] = []
-        for (const file of walk(contentDir)) {
-            const raw = fs.readFileSync(file, 'utf8')
-            for (const match of raw.matchAll(/\((\/[^)\s]+\.[a-z0-9]{2,4})\)/gi)) {
-                const asset = match[1]
-                if (!fs.existsSync(path.join(process.cwd(), 'public', asset))) {
-                    missing.push(`${path.relative(process.cwd(), file)} -> ${asset}`)
-                }
-            }
+describe('source content assets', () => {
+    it.each(allContentFiles)('%s references existing metadata media and local links', file => {
+        const { data, content } = matter(fs.readFileSync(file, 'utf8'))
+        const images = [data.thumbnail, data.masthead, ...(data.images ?? [])].filter(Boolean)
+        for (const image of images) {
+            expect(image.alt, `image alternative in ${file}`).toEqual(expect.any(String))
+            expectPublicAssetExists(`/images/${image.src.trim()}`)
         }
-        expect(missing).toEqual([])
+        for (const match of content.matchAll(/(?:\]\(|src=["'])(\/images\/[^)"'\s]+)/g)) {
+            expectPublicAssetExists(match[1])
+        }
     })
 })
