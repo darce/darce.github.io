@@ -16,7 +16,7 @@
 - /projects/workbay/ — Built WorkBay to preserve task decisions, review findings, and test evidence across AI coding sessions, with SQLite records, MCP retrieval, and checks on the normal Git development path.
 - /projects/apple/ — Implemented responsive iPhone X launch pages from supplied designs, developed a CSS-animated email campaign, and automated campaign build, preview, and deployment steps.
 - /projects/texting-syria/ — Built the PHP and Twilio application for Liam Maloney’s Texting Syria installation, delivering previously recorded messages to exhibition visitors’ phones.
-- /projects/barbarabeirne/ — Recovered the images embedded in Barbara Beirne’s defunct Flash site in 2023, then rebuilt its web presentation with Web Components, keyboard navigation, and a full-screen carousel in 2026.
+- /projects/barbarabeirne/ — Recovered the images embedded in Barbara Beirne’s defunct Flash site, then rebuilt its web presentation with Web Components, keyboard navigation, and a full-screen carousel.
 - /projects/bauhausdances/ — Designed a film-derived visual treatment and built a custom WordPress theme for Debra McCall’s Bauhaus Dances, with self-hosted video and caching.
 
 ## Research
