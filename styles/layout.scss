@@ -1,3 +1,4 @@
+@use 'generated/portfolio-tokens' as tokens;
 @import 'vars.scss';
 
 .layout {
@@ -100,7 +101,7 @@
 
     .content {
         display: grid;
-        grid-template-columns: [left] minmax(450px, 35%) [menu-end] auto [content-end];
+        grid-template-columns: [left] clamp(tokens.$layout-rail-minimum, tokens.$layout-rail-viewport-share * 100vw, tokens.$layout-rail-maximum) [menu-end] minmax(0, 1fr) [content-end];
         grid-gap: $s-large;
         grid-template-areas:
             "menu details";

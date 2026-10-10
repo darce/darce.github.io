@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
+import ArticleFigure from './ArticleFigure'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
@@ -79,6 +80,7 @@ const mdxComponents = {
     DiagramPair,
     PullQuote,
     AsciiScreen,
+    Figure: ArticleFigure,
     hr: () => null,
 }
 
@@ -132,24 +134,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                 </div>
             </div>
 
-            <div className={styles.post}>
+            <div className={styles.post} data-article-body>
                 {project.metaData.images &&
                     project.metaData.images.map((image, index) => {
                         if (failedImages.has(index)) return null
                         return (
-                            <figure className={styles.imgWrapper} key={index}>
-                                <ResponsiveImage
-                                    src={image.src}
-                                    alt={image.alt}
-                                    sizes="(max-width: 768px) 100vw, 45vw"
-                                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
-                                    onError={() => handleImageError(index)}
-                                />
-                                <figcaption>{image.caption ?? image.alt}</figcaption>
-                            </figure>
+                            <ArticleFigure
+                                key={index}
+                                src={image.src}
+                                alt={image.alt}
+                                caption={image.caption}
+                                side={index % 2 === 0 ? 'right' : 'left'}
+                                onError={() => handleImageError(index)}
+                            />
                         )
                     })}
-                <div className={styles.source}>
+                <div className={styles.source} data-figure-start={(project.metaData.images?.length ?? 0) % 2 === 0 ? 'right' : 'left'}>
                     <MDXRemote {...project.mdxSource} components={mdxComponents} />
                 </div>
             </div>

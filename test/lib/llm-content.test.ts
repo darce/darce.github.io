@@ -11,6 +11,14 @@ const full = fs.readFileSync(path.join(process.cwd(), 'public/llms-full.txt'), '
 const index = fs.readFileSync(path.join(process.cwd(), 'public/llms.txt'), 'utf8')
 
 describe('generated text exports reflect the current source inventory', () => {
+    it('keeps inset figure evidence and its explanation in the text alternative', () => {
+        const source = '<Figure src="menu.gif" alt="Focus moving through a menu" caption="Keyboard navigation." width={640} height={446} inspectable>\n\nFocus must cross component boundaries.\n\n</Figure>'
+        const text = stripMdxComponents(source)
+        expect(text).toContain('![Focus moving through a menu](/images/menu.gif)')
+        expect(text).toContain('*Keyboard navigation.*')
+        expect(text).toContain('Focus must cross component boundaries.')
+        expect(text).not.toMatch(/<\/?Figure\b|width=|inspectable/)
+    })
     it.each(articles)('$section/$slug retains its metadata, body, technical examples, and diagram alternatives', ({ file, section, slug }) => {
         const { data, content } = matter(fs.readFileSync(file, 'utf8'))
         expect(index).toContain(buildItemPath(section, slug) + '/')

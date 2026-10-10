@@ -1,16 +1,21 @@
+@use '../../../styles/generated/portfolio-tokens' as tokens;
 @import '../../../styles/vars.scss';
 @import '../../../styles/mixins.scss';
 
 .projectDetails {
     position: relative;
+    min-width: 0;
+    line-height: $type-lh-body;
+    overflow-wrap: anywhere;
 
     >h2 {
-        font-size: 2rem;
-        line-height: $type-lh-title;
+        font-size: tokens.$typography-article-title-size;
+        line-height: tokens.$typography-article-title-line-height;
+        max-inline-size: tokens.$typography-article-title-measure-ems * 1em;
 
         @media (max-width: $tabletMax) {
-            font-size: 1.2rem;
-            line-height: $type-lh-title-mobile;
+            font-size: tokens.$typography-article-title-mobile-size;
+            line-height: tokens.$typography-article-title-mobile-line-height;
         }
     }
 
@@ -67,14 +72,13 @@
             object-fit: contain;
         }
 
-        // Image credit: small, quiet, italic
+        // Credits remain distinct without fading below readable contrast.
         figcaption {
             margin-top: $s-small;
-            font-size: 0.75rem;
-            line-height: 1.5;
-            font-weight: 200;
+            font-size: $type-caption;
+            line-height: $type-lh-caption;
+            font-weight: 400;
             font-style: italic;
-            opacity: 0.7;
         }
 
         @media (max-width: $tabletMax) {
@@ -87,6 +91,7 @@
     .metadata {
         flex: 1 1 0;
         min-width: 0;
+        max-inline-size: $type-measure;
 
         border-top: 2px solid;
 
@@ -102,43 +107,31 @@
             margin-top: $s-small;
         }
 
-        .lede:not(:has(.masthead)) & {
-            padding: 0 $s-x-large;
-            border-top: none;
-            font-weight: 200;
-            font-style: italic;
-        }
-
         @media (max-width: $tabletMax) {
             padding: 0;
         }
     }
 
     .post {
+        max-inline-size: $type-measure;
+        container: article-body / inline-size;
+
         @media (max-width: $tabletMax) {
             display: block;
         }
 
-        .imgWrapper {
-            float: right;
-            max-width: 45%;
-            margin: 0 0 $s-large $s-large;
-
-            @media (max-width: $tabletMax) {
-                float: none;
-                max-width: 100%;
-                margin: 0 0 $s-large 0;
-            }
-        }
-
         img {
             width: 100%;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
         }
 
         figcaption {
-            font-weight: 200;
-            font-style: italic;
+            margin-top: $s-small;
+            font-size: $type-caption;
+            line-height: $type-lh-caption;
+            font-weight: 400;
+            font-style: normal;
         }
 
         // Clear floats after post content
@@ -146,6 +139,57 @@
             content: '';
             display: table;
             clear: both;
+        }
+    }
+
+    .articleFigure {
+        clear: both;
+        width: 100%;
+        margin: 0 0 $s-large;
+
+        img {
+            display: block;
+        }
+
+        figcaption a {
+            display: block;
+            width: fit-content;
+            margin-top: $s-small;
+        }
+    }
+
+    .figureFlow {
+        display: flow-root;
+        clear: both;
+        margin-bottom: $s-large;
+
+        > p:first-of-type {
+            margin-top: 0;
+        }
+
+        > :last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    // Half-width insets need both the desktop layout and enough actual reading
+    // space. Enlarged default text turns this into a stacked figure again.
+    @media (min-width: #{$tabletMax + 1}) {
+        @container article-body (min-width: #{$type-inset-min}) {
+            .insetFigure {
+                float: right;
+                width: tokens.$article-inset-width-share * 100%;
+                margin: 0 0 $s-large tokens.$article-inset-gutter;
+            }
+
+            .insetFigure[data-side='left'],
+            .source[data-figure-start='left'] > :nth-child(odd of .figureFlow, .insetFigure) > .insetFigure[data-side='auto'],
+            .source[data-figure-start='right'] > :nth-child(even of .figureFlow, .insetFigure) > .insetFigure[data-side='auto'],
+            .source[data-figure-start='left'] > .insetFigure[data-side='auto']:nth-child(odd of .figureFlow, .insetFigure),
+            .source[data-figure-start='right'] > .insetFigure[data-side='auto']:nth-child(even of .figureFlow, .insetFigure) {
+                float: left;
+                margin: 0 tokens.$article-inset-gutter $s-large 0;
+            }
         }
     }
 
@@ -165,6 +209,7 @@
         // Hierarchical section typography: a major section opens with a 2px
         // rule; subsections rely on scale and weight alone
         h2 {
+            clear: both;
             margin: $s-x-large 0 $s-medium;
             padding-top: $s-large;
             border-top: 2px solid;
@@ -178,10 +223,17 @@
         }
 
         h3 {
-            margin: $s-large 0 $s-small;
+            clear: both;
+            margin: $s-x-large 0 $s-medium;
             font-size: $type-h3;
             line-height: $type-lh-h3;
             font-variation-settings: 'wght' #{$type-wght-h3};
+        }
+
+        > h2:first-child,
+        > h3:first-child {
+            clear: none;
+            margin-top: 0;
         }
 
         @media (max-width: $tabletMax) {

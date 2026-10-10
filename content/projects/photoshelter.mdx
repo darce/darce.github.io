@@ -39,17 +39,31 @@ I led the WCAG 2.1 audit and front-end remediation. Some repairs concerned the i
 
 That work also addressed a commercial risk. Institutional contracts associated with $9.2M in annual recurring revenue depended on the product demonstrating the required accessibility compliance. The remediation helped reduce the risk to those existing contracts.
 
-![Keyboard navigation for the main menu](/images/photoshelter-keyboard-navigation.gif)
-
-*Keyboard navigation for PhotoShelter’s main menu.*
+<Figure
+  src="photoshelter-keyboard-navigation.gif"
+  alt="Keyboard navigation for the main menu"
+  caption="Keyboard navigation for PhotoShelter’s main menu."
+  width={640}
+  height={446}
+  inspectable
+>
 
 The interface used Polymer and Web Components, with interactive elements inside Shadow DOM boundaries. Those boundaries organised the implementation, but keyboard users still needed to move through a menu as a continuous interaction. Focus and keyboard events did not move cleanly between the components.
 
+</Figure>
+
+<Figure
+  src="photoshelter-empty-trash.gif"
+  alt="The main menu goes from mouse to keyboard control"
+  caption="Moving from mouse to keyboard control without a mode switch."
+  width={640}
+  height={329}
+  inspectable
+>
+
 I built a custom keyboard layer to bridge them. It kept menu items reachable as people moved between components and supported switching between mouse and keyboard without a separate mode. This was behaviour I had to implement across the interface; changing individual controls’ markup would not resolve the navigation problem on its own.
 
-![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)
-
-*Moving from mouse to keyboard control without a mode switch.*
+</Figure>
 
 ### Carrying the patterns into later changes
 

@@ -6,6 +6,9 @@ interface ResponsiveImageProps {
     src: string
     alt: string
     sizes: string
+    /** Intrinsic dimensions for originals outside the generated manifest, such as GIFs. */
+    width?: number
+    height?: number
     /** above the fold: eager + fetchpriority=high */
     priority?: boolean
     className?: string
@@ -17,6 +20,8 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
     src,
     alt,
     sizes,
+    width,
+    height,
     priority = false,
     className,
     style,
@@ -35,7 +40,7 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
     }
 
     if (!entry) {
-        return <img src={`/images/${src}`} {...commonAttributes} />
+        return <img src={`/images/${src}`} width={width} height={height} {...commonAttributes} />
     }
 
     return (
