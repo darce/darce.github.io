@@ -50,7 +50,7 @@ Summary: Search your photo folders by words or an example image, then explore re
 
 Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. In Explore, a similarity map connects regions to photographs in the linked grid. Places and Timeline offer other ways to examine the selection, without requiring advance tagging.
 
-I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. The [0.2.6 release](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), published 25 September 2026, fixed a preview crash caused by malformed people-name metadata.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. The [0.2.6 release](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), published 25 September 2026, fixed a preview crash caused by the app’s people-name reader misinterpreting a metadata value in photos from some cameras.
 
 ![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
@@ -1236,7 +1236,7 @@ Using the numbers above (bids = 2,300, asks = 1,800):
 
 $$\frac{2300 - 1800}{2300 + 1800} = \frac{500}{4100} = 0.12$$
 
-Rounded to two decimal places, the imbalance is **+0.12**, equivalent to **12%** in the live card’s percentage format. Bid volume exceeds ask volume in these displayed levels.
+Rounded to two decimal places, the imbalance is **+0.12**. In the live card’s percentage format, the unrounded ratio would display as **12.20%**. Bid volume exceeds ask volume in these displayed levels.
 
 ---
 
