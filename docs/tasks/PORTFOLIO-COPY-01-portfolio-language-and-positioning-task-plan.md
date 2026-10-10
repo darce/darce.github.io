@@ -4,7 +4,7 @@
 > **Author**: Codex coordinator
 > **Project**: darce.github.io
 > **Task ID**: PORTFOLIO-COPY-01
-> **Task Plan Status**: reviewed; publication pending
+> **Task Plan Status**: completed
 > **Target Branch**: `feature/portfolio-copy-01`
 > **Review Coverage Target**: 1
 
@@ -222,8 +222,8 @@ Proof: no unresolved substantive findings, successful required checks, successfu
 ### Slice 3
 
 - [x] Run the requested independent Claude remote review and resolve substantive findings.
-- [ ] Complete branch readiness and closure gates, merge, and publish.
-- [ ] Verify the live site and record deployment evidence.
+- [x] Complete branch readiness and closure gates, merge, and publish.
+- [x] Verify the live site and record deployment evidence.
 
 ## Review Readiness
 
@@ -233,10 +233,16 @@ Proof: no unresolved substantive findings, successful required checks, successfu
 
 ## Success Criteria
 
-- [ ] darce.xyz consistently presents the front-end/development foundation and design-technologist practice.
+- [x] darce.xyz consistently presents the front-end/development foundation and design-technologist practice.
 - [x] All public articles have been reviewed for specificity, explanatory structure, and repetitive prose.
 - [x] The intentional art pairings remain, with useful image descriptions and proper visible attribution.
 - [x] Texting Syria's end-to-end implementation is represented accurately.
 - [x] The requested remote implementation and independent review have verifiable model/effort provenance.
 - [x] The asset backlog and scoped STE admission assessment are delivered, without changing résumés or either canon corpus.
-- [ ] The live Pages deployment contains the reviewed changes.
+- [x] The live Pages deployment contains the reviewed changes.
+
+## Publication record
+
+The [GitHub Pages deployment](https://github.com/darce/darce.github.io/actions/runs/38010234259) succeeded for `792dac403c7b9b6cc0eef67c6bd39e029dbd0b02` on 2026-10-10 UTC. Live verification at darce.xyz passed all 46 desktop/mobile route checks, including the new title, About Person metadata, Texting Syria, corrected VSW/order-book text, images and captions. Browser analytics requests returned HTTP 202.
+
+Implementation and source-review receipts remain in WorkBay and the coordinator’s task-state artifacts. The content review, art/STE assessment and asset backlog are committed in this repository. Résumé files and both source corpora remain unchanged.
