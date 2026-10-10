@@ -573,10 +573,6 @@ The current downloadable release is 0.2.6. The application captures remain the e
 
 ## 1. Give the search a starting point
 
-The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
-
-A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
-
 ```text
 Photo folders you choose
           │
@@ -591,9 +587,11 @@ Photo folders you choose
 
 _Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs._
 
-## 2. Make a result the next query
+The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
 
-A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search. The new view names the reference and offers **Back to text results**, keeping the change of query visible.
+A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
+
+## 2. Make a result the next query
 
 ![Find similar results with a flower photograph identified as the reference image.](/images/work/sis-similarity-search.png)
 
@@ -611,15 +609,19 @@ Text query ► [A] [B] [C] [D]
 
 _Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results._
 
+A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search.
+
+The new view names the reference and offers **Back to text results**, keeping the change of query visible.
+
+</div>
+
 ## 3. Explore a region on the Similarity map
+
+![The Similarity view and the photographs associated with a selected region.](/images/work/sis-layers-umap.png)
 
 The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
 
 In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
-
-![The Similarity view and the photographs associated with a selected region.](/images/work/sis-layers-umap.png)
-
-A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
 
 ```text
 Similarity overview
@@ -643,6 +645,8 @@ Similarity overview
 
 _Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection._
 
+A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
+
 Spacing between map marks is not an exact measure of how different the photographs are. Inspect the selection in the grid to judge the images themselves.
 
 ## 4. Examine the selection by place or time
@@ -661,9 +665,9 @@ A place-based selection can also include photographs outside the current text re
 
 ## 5. Inspect a photograph or use a cutout
 
-An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
-
 ![A cat image with experimental cutout layers available for inspection.](/images/work/sis-cat-layers-detail.png)
+
+An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
 
 The proposed layers can be inspected and saved for use elsewhere. A recognisable subject does not guarantee a usable separation or edge, so the cutout still needs checking. This remains a secondary workflow alongside search and exploration.
 

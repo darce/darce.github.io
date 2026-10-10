@@ -126,6 +126,7 @@ const normalizeMetaData = (rawData: unknown, filePath: string): MetaData => {
         ['tags', asOptionalStringArray],
         ['type', asOptionalString],
         ['status', asOptionalString],
+        ['articleLayout', asOptionalString],
     ]
 
     for (const [key, normalize] of fieldNormalizers) {

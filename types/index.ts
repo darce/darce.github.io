@@ -27,6 +27,7 @@ export interface MetaData {
     tags?: string[]
     type?: 'experiment' | 'method' | 'note'
     status?: 'registered' | 'running' | 'measured' | 'rerun' | 'closed'
+    articleLayout?: 'flow'
 }
 
 export interface ContentIndexData {

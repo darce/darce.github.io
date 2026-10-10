@@ -196,6 +196,138 @@
         }
     }
 
+    // Opt-in pilot: evidence owns its intrinsic width; prose uses the space
+    // beside it while retaining a reading measure (Canon v0.25.6 TYPE-01).
+    .post.flowPost {
+        .insetFigure {
+            // sizes="auto" contains a lazy image's intrinsic dimensions. Use
+            // the source ratio so the browser's 300px fallback cannot size it.
+            inline-size: min(var(--figure-native-width, 100%), calc(#{tokens.$article-flow-maximum-image-height} * var(--figure-aspect-ratio, 1)));
+            max-inline-size: 100%;
+            float: none;
+            clear: none;
+
+            // A long credit should wrap to the picture, rather than determine
+            // its intrinsic size and create an empty strip next to the image.
+            figcaption {
+                contain: inline-size;
+            }
+        }
+
+        .imageTrigger {
+            width: 100%;
+            max-inline-size: 100%;
+        }
+
+        .insetFigure img {
+            width: 100%;
+            max-inline-size: 100%;
+            max-block-size: tokens.$article-flow-maximum-image-height;
+        }
+
+        .source {
+            // Each content section shrinks around its own evidence and prose,
+            // so a short diagram cannot leave a wide empty gutter at 1920px.
+            > section {
+                display: flow-root;
+                inline-size: fit-content;
+                max-inline-size: 100%;
+
+                &:has(> table) {
+                    inline-size: 100%;
+                }
+
+                &:has(> [data-flow-copy='short']) {
+                    // A brief explanation can follow both floats; cap its
+                    // field at one prose measure and two reading-size visuals.
+                    inline-size: 100%;
+                    max-inline-size: calc(#{$type-measure} + #{tokens.$article-flow-maximum-image-height * 2});
+                }
+            }
+
+            > p,
+            > section > p {
+                // Each paragraph fits the available space beside a float;
+                // later paragraphs return below it without an image/text row.
+                display: flow-root;
+                min-inline-size: min(100%, tokens.$article-flow-minimum-prose-characters * 1ch);
+                max-inline-size: $type-measure;
+            }
+
+            > section > [data-flow-copy='short'] {
+                display: flow-root;
+                min-inline-size: min(100%, tokens.$article-flow-short-prose-characters * 1ch);
+                max-inline-size: $type-measure;
+            }
+
+            // Size and spacing already identify sections. Repeated dark rules
+            // add no hierarchy (Canon v0.25.6 LAY-06).
+            h2 {
+                border-top: 0;
+                padding-top: 0;
+            }
+
+            .asciiScreen,
+            > pre,
+            > section > pre {
+                inline-size: max-content;
+                max-inline-size: 100%;
+                margin: 0 0 $s-large;
+                clear: none;
+            }
+
+            .asciiScreen pre {
+                box-sizing: border-box;
+                inline-size: max-content;
+                max-inline-size: 100%;
+                margin: 0;
+            }
+
+            .asciiScreen code {
+                padding: 0;
+            }
+        }
+
+        @media (min-width: #{$tabletMax + 1}) {
+            @container article-body (min-width: #{tokens.$article-flow-dual-evidence-minimum-container}) {
+                .source > section > [data-flow-copy='short'] {
+                    // Its capped box contributes the prose measure to section
+                    // sizing; line boxes follow both floats and widen below.
+                    display: block;
+                    min-inline-size: 0;
+                }
+            }
+
+            @container article-body (min-width: #{$type-inset-min}) {
+                .insetFigure,
+                .source .asciiScreen,
+                .source > pre,
+                .source > section > pre {
+                    // Reserve legible prose in type units. This is a maximum,
+                    // not a fixed share: short diagrams stay short (LAY-24).
+                    max-inline-size: calc(100% - #{tokens.$article-flow-minimum-prose-characters * 1ch} - #{tokens.$article-inset-gutter});
+                }
+
+                .source .asciiScreen,
+                .source > pre,
+                .source > section > pre {
+                    float: right;
+                    margin: 0 0 $s-large tokens.$article-inset-gutter;
+                }
+
+                .insetFigure {
+                    float: right;
+                    margin: 0 0 $s-large tokens.$article-inset-gutter;
+                }
+
+                .insetFigure[data-side='left'] {
+                    float: left;
+                    margin: 0 tokens.$article-inset-gutter $s-large 0;
+                }
+            }
+        }
+    }
+
     .source {
         min-width: 0;
 

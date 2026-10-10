@@ -29,13 +29,18 @@ test('work and research images share continuous inset or wide figure layouts', a
         await page.evaluate(() => document.fonts.ready)
         const body = page.getByRole('article').locator('[data-article-body]')
         const canvas = (await body.boundingBox())!
+        const contentFlow = await body.getAttribute('data-article-layout') === 'flow'
         const rootSize = await page.evaluate(() => Number.parseFloat(getComputedStyle(document.documentElement).fontSize))
         const wraps = page.viewportSize()!.width > tokens.breakpoint['tablet-end'].$value.value && canvas.width >= tokens.article.inset['minimum-container'].$value.value * rootSize
         for (const image of await body.locator('img').all()) {
             expect(await image.evaluate(element => element.closest('figure')?.getAttribute('data-layout')), `${section}/${slug}: image uses shared figure`).toMatch(/^(inset|wide)$/)
         }
         for (const [index, figure] of (await body.locator('figure[data-layout="inset"]').all()).entries()) {
-            expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
+            if (contentFlow) {
+                expect((await figure.boundingBox())!.width).toBeLessThanOrEqual(canvas.width)
+            } else {
+                expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
+            }
             await expect(figure).toHaveCSS('float', wraps ? (index % 2 === 0 ? 'right' : 'left') : 'none')
             await expect(figure.locator('figcaption')).toContainText(/\S/)
         }

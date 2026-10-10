@@ -28,6 +28,12 @@
       "width-share": { "$type": "number", "$value": 0.5, "$description": "Fraction of the full article canvas used by a desktop inset figure." },
       "gutter": { "$type": "dimension", "$value": "{spacing.large}" }
     },
+    "flow": {
+      "minimum-prose-characters": { "$type": "number", "$value": 40, "$description": "Minimum readable prose space beside intrinsic evidence; the web consumer multiplies by 1ch." },
+      "short-prose-characters": { "$type": "number", "$value": 24, "$description": "Minimum space for a brief explanation beside two related evidence items; the web consumer multiplies by 1ch." },
+      "dual-evidence-minimum-container": { "$type": "dimension", "$value": { "value": 60, "unit": "rem" }, "$description": "Allow brief copy to widen line by line around two figures when the article has enough space." },
+      "maximum-image-height": { "$type": "dimension", "$value": { "value": 24, "unit": "rem" }, "$description": "Reading-size ceiling for inline screenshots; their aspect ratios determine the width, with full-size inspection available." }
+    },
     "viewer": {
       "edge": { "$type": "dimension", "$value": "{spacing.medium}" },
       "padding": { "$type": "dimension", "$value": "{spacing.medium}" },

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
 import ImageViewer from '../../common/ImageViewer/ImageViewer'
+import { getImageEntry } from '../../../lib/imageManifest'
 import styles from './ProjectDetails.module.scss'
 
 interface ArticleFigureProps {
@@ -23,6 +24,13 @@ const ArticleFigure: React.FC<ArticleFigureProps> = ({
     inspectable = true, className = '', onError, children,
 }) => {
     const [viewing, setViewing] = useState(false)
+    const entry = getImageEntry(src)
+    const nativeWidth = entry?.width ?? width
+    const nativeHeight = entry?.height ?? height
+    const dimensions = nativeWidth && nativeHeight ? {
+        '--figure-native-width': `${nativeWidth}px`,
+        '--figure-aspect-ratio': nativeWidth / nativeHeight,
+    } as React.CSSProperties : undefined
     const image = <ResponsiveImage
         src={src}
         alt={alt}
@@ -35,6 +43,7 @@ const ArticleFigure: React.FC<ArticleFigureProps> = ({
         className={`${styles.articleFigure} ${layout === 'inset' ? styles.insetFigure : ''} ${className}`}
         data-layout={layout}
         data-side={side}
+        style={dimensions}
     >
         {inspectable ? <button type="button" className={styles.imageTrigger} aria-label={`Expand image: ${alt}`} aria-haspopup="dialog" onClick={() => setViewing(true)}>
             {image}

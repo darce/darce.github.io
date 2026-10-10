@@ -5,6 +5,7 @@ title: 'Visual Search Workbench: Search and Exploration'
 subtitle: Follow a query into similar images, a map selection, and further exploration
 type: method
 status: running
+articleLayout: flow
 description: 'An interaction reference for Visual Search Workbench: begin with words or a picture, follow similar
   images, and inspect a UMAP map selection in the image grid.'
 details: This selective interaction reference combines existing application captures with clearly labelled explanatory
@@ -24,11 +25,9 @@ This reference follows a path through [Visual Search Workbench](/projects/visual
 
 The current downloadable release is 0.2.6. The application captures remain the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
+<section>
+
 ## 1. Give the search a starting point
-
-The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
-
-A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
 
 <AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
 
@@ -46,9 +45,15 @@ Photo folders you choose
 
 </AsciiScreen>
 
-## 2. Make a result the next query
+The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
 
-A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search. The new view names the reference and offers **Back to text results**, keeping the change of query visible.
+A text query is useful when you can describe what you want. A reference image is useful when showing an example is easier. Both routes lead to candidates that you can inspect in the image grid.
+
+</section>
+
+<section>
+
+## 2. Make a result the next query
 
 <Figure
   src="work/sis-similarity-search.png"
@@ -71,18 +76,29 @@ Text query ► [A] [B] [C] [D]
 
 </AsciiScreen>
 
+<div data-flow-copy="short">
+
+A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search.
+
+The new view names the reference and offers **Back to text results**, keeping the change of query visible.
+
+</div>
+
+</section>
+
+<section>
+
 ## 3. Explore a region on the Similarity map
-
-The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
-
-In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
 
 <Figure
   src="work/sis-layers-umap.png"
   alt="The Similarity view and the photographs associated with a selected region."
+  side="left"
 />
 
-A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
+The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
+
+In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
 
 <AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
 
@@ -108,7 +124,13 @@ Similarity overview
 
 </AsciiScreen>
 
+A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
+
 Spacing between map marks is not an exact measure of how different the photographs are. Inspect the selection in the grid to judge the images themselves.
+
+</section>
+
+<section>
 
 ## 4. Examine the selection by place or time
 
@@ -124,16 +146,24 @@ Selection carries between the views, and each view retains its zoom and pan when
 
 A place-based selection can also include photographs outside the current text results. Those photographs are listed without a search rank, keeping the geographic selection distinct from the query’s ranking.
 
-## 5. Inspect a photograph or use a cutout
+</section>
 
-An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
+<section>
+
+## 5. Inspect a photograph or use a cutout
 
 <Figure
   src="work/sis-cat-layers-detail.png"
   alt="A cat image with experimental cutout layers available for inspection."
 />
 
+An individual photograph can be inspected with its available file metadata. It can also supply a subject for the experimental cutout workflow, which proposes layers with transparent backgrounds.
+
 The proposed layers can be inspected and saved for use elsewhere. A recognisable subject does not guarantee a usable separation or edge, so the cutout still needs checking. This remains a secondary workflow alongside search and exploration.
+
+</section>
+
+<section>
 
 ## Use the reference to review the interaction
 
@@ -142,3 +172,5 @@ I use this reference to check whether each selection has a clear next action and
 A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
 
 Read [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) for the design idea, or return to the [product page](/projects/visual-search-workbench/) for installation and release status.
+
+</section>

@@ -137,7 +137,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, className }) =
                 </div>
             </div>
 
-            <div className={styles.post} data-article-body>
+            <div
+                className={`${styles.post} ${project.metaData.articleLayout === 'flow' ? styles.flowPost : ''}`}
+                data-article-body
+                data-article-layout={project.metaData.articleLayout}
+            >
                 {project.metaData.images &&
                     project.metaData.images.map((image, index) => {
                         if (failedImages.has(index)) return null
