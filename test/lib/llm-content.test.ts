@@ -1,28 +1,31 @@
-import { describe, it, expect } from 'vitest'
-import fs from 'fs'
-import path from 'path'
+import { describe, expect, it } from 'vitest'
+import fs from 'node:fs'
+import path from 'node:path'
+import matter from 'gray-matter'
+import { createRequire } from 'node:module'
+import { allContentFiles, articles } from '../support/content'
+import { buildItemPath } from '../../lib/routes'
 
-// public/llms-full.txt is the site rendered for machine readers. It is generated
-// by scripts/generate-llm-content.js at prebuild, so it can silently lose content
-// whenever the MDX starts using a component the stripper does not understand.
-
+const { stripMdxComponents } = createRequire(import.meta.url)('../../scripts/lib/strip-mdx-components.js') as { stripMdxComponents: (content: string) => string }
 const full = fs.readFileSync(path.join(process.cwd(), 'public/llms-full.txt'), 'utf8')
+const index = fs.readFileSync(path.join(process.cwd(), 'public/llms.txt'), 'utf8')
 
-describe('llms-full.txt keeps the drawings the prose argues from', () => {
-    it('carries the ASCII screens rather than the component that wraps them', () => {
-        // The essay says "This is the screen the render exposed:" and then shows
-        // it. Strip the drawing and the sentence points at nothing — the reader
-        // is told a defect is visible in a picture that is not there.
-        expect(full).toMatch(/[┌└├─│]{4,}/)
-        expect(full).not.toContain('<AsciiScreen')
-        expect(full).not.toContain('</AsciiScreen>')
+describe('generated text exports reflect the current source inventory', () => {
+    it.each(articles)('$section/$slug retains its metadata, body, technical examples, and diagram alternatives', ({ file, section, slug }) => {
+        const { data, content } = matter(fs.readFileSync(file, 'utf8'))
+        expect(index).toContain(buildItemPath(section, slug) + '/')
+        expect(index).toContain(data.description ?? data.title)
+        expect(full).toContain(`### ${data.title}`)
+        expect(full).toContain(data.subtitle)
+        if (data.details) expect(full).toContain(data.details)
+        expect(full).toContain(stripMdxComponents(content).trim())
+        const evidence = [...(content.match(/^```[^\n]*\n[\s\S]*?^```/gm) ?? []), ...(content.match(/\$\$[\s\S]*?\$\$/g) ?? [])]
+        for (const block of evidence) expect(full).toContain(block)
     })
-
-    it('unwraps wrapper components instead of dropping their children', () => {
-        // The generic JSX stripper drops a component together with its children,
-        // which would silently remove whole sections of a page; these unwrap.
-        expect(full).not.toMatch(/<\/?(Intro|CardGrid|AboutCard|PullQuote)\b/)
-        const about = full.slice(full.indexOf('## About'))
-        expect(about.trim().length).toBeGreaterThan(500)
+    it('retains the About body rather than only its wrapper or an arbitrary character count', () => {
+        const about = allContentFiles.find(file => path.basename(path.dirname(file)) === 'about')!
+        const { content } = matter(fs.readFileSync(about, 'utf8'))
+        expect(full).toContain(stripMdxComponents(content).trim())
+        expect(full).not.toMatch(/<\/?(?:AsciiScreen|Intro|AboutCard|PullQuote)\b/)
     })
 })

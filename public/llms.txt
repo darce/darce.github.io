@@ -9,15 +9,15 @@
 - /research/ — Index of technical writing and experiments
 
 ## Projects
-- /projects/visual-search-workbench/ — Search your photo folders by words or an example image, then explore related pictures on a UMAP map. Processing stays on the Mac.
-- /projects/altcontext/ — AltContext combines a photograph with a publisher’s named people roster and page context. Editors review the proposed identity and wording before applying the text in WordPress.
-- /projects/photoshelter/ — Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.
-- /projects/msnbc/ — Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.
-- /projects/workbay/ — WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions can retrieve the record across supported AI coding tools.
-- /projects/apple/ — Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
-- /projects/texting-syria/ — I built the PHP and Twilio application for Liam Maloney’s Texting Syria, delivering messages from recorded conversations to visitors’ own phones.
-- /projects/barbarabeirne/ — Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
-- /projects/bauhausdances/ — Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
+- /projects/visual-search-workbench/ — Designed and built a SwiftUI app for searching photo folders and following visual neighbours, with linked UMAP, Places, and Timeline views and local Core ML processing.
+- /projects/altcontext/ — Developing a React interface, WordPress integration, and Python services that combine photographs, confirmed identities, and page context for editor-reviewed image descriptions.
+- /projects/photoshelter/ — Led production accessibility work at PhotoShelter, built keyboard behaviour across Web Components and Shadow DOM, maintained Mocha tests, and developed React workflow prototypes with the Chief Architect and UX team.
+- /projects/msnbc/ — Proposed and prototyped browsing around continuous video playback, then helped deliver the responsive AngularJS interface and CMS components with MSNBC’s internal team and external vendors.
+- /projects/workbay/ — Built WorkBay to preserve task decisions, review findings, and test evidence across AI coding sessions, with SQLite records, MCP retrieval, and checks on the normal Git development path.
+- /projects/apple/ — Implemented responsive iPhone X launch pages from supplied designs, developed a CSS-animated email campaign, and automated campaign build, preview, and deployment steps.
+- /projects/texting-syria/ — Built the PHP and Twilio application for Liam Maloney’s Texting Syria installation, delivering previously recorded messages to exhibition visitors’ phones.
+- /projects/barbarabeirne/ — Recovered the images embedded in Barbara Beirne’s defunct Flash site in 2023, then rebuilt its web presentation with Web Components, keyboard navigation, and a full-screen carousel in 2026.
+- /projects/bauhausdances/ — Designed a film-derived visual treatment and built a custom WordPress theme for Debra McCall’s Bauhaus Dances, with self-hosted video and caching.
 
 ## Research
 - /research/visual-search-workbench-process/ — How Visual Search Workbench connects search, a UMAP map, and an image grid to help people explore a photo collection and develop a visual direction.

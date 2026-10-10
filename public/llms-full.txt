@@ -45,347 +45,399 @@ Portrait by Liam Maloney</a>.
 ### Visual Search Workbench
 *Find a picture, then follow its visual neighbours*
 Year: 2026
-Tags: Product Design, Interaction Design, Visual Search, UMAP, SwiftUI, Core ML
-Summary: Search your photo folders by words or an example image, then explore related pictures on a UMAP map. Processing stays on the Mac.
+Tags: Interaction Design, Visual Search, UMAP, SwiftUI, Core ML, macOS Development
+Summary: Designed and built a SwiftUI app for searching photo folders and following visual neighbours, with linked UMAP, Places, and Timeline views and local Core ML processing.
+I designed and built Visual Search Workbench in SwiftUI with local model processing. Release 0.2.6 is available for Apple Silicon and Intel Macs.
 
-Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. In Explore, a similarity map connects regions to photographs in the linked grid. Places and Timeline offer other ways to examine the selection, without requiring advance tagging.
+I built Visual Search Workbench around the point where finding a photograph turns into following a visual idea. A search may begin with something specific, then return a picture that suggests another direction. I wanted that picture to become the next query without making someone invent a new description for it.
 
-I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. The [0.2.6 release](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), published 25 September 2026, fixed a preview crash caused by the app’s people-name reader misinterpreting a metadata value in photos from some cameras.
+The app searches photographs in folders you choose. You can start with words or a reference image, inspect the results, and use a promising photograph to find related pictures. Explore adds a similarity map linked to an image grid, with Places and Timeline views for examining the same selection by location or date.
 
 ![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
 *These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.6.*
 
-## Give the search a starting point
+### Give the search a starting point
 
-The search begins with the folders you choose. The app reads their photographs into a separate search index and leaves the originals where they are. That index lets you search by what a picture depicts even when its filename is a camera number.
+I keep the search index separate from the original photographs. The app reads the folders you select and leaves the files where they are. Its image representations let a query follow what a picture depicts even when the filename is only a camera number; you do not have to tag the collection first.
 
-You can give the search two kinds of query: a description or a reference picture. A description is useful when you remember a subject but not the filename. A reference picture is useful when showing what interests you is easier than putting it into words.
+A text query is useful when you can describe what you remember. A reference image is useful when the quality you are looking for is easier to show. You can drop a picture into the app or choose **Find similar** on one already in the collection.
 
-Drop a reference picture into the app, or choose **Find similar** on a photograph in the collection. That photograph becomes the query for the next set of results. A banner names the reference, and **Back to text results** returns to the earlier query.
+When a photograph becomes the query, a banner names the reference. **Back to text results** returns to the earlier search. Those controls make the change of query visible and give it a way back, so following one image does not require starting over.
 
 ![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
 
-A search for flowers might lead to a picture worth following for a colour study. Using that picture as the reference lets the next search follow the visual interest it raised.
+A search for flowers, for example, might turn up a picture worth following for its colour. That photograph can then lead to references that would have been difficult to request with the original search terms.
 
-## Explore the collection on a map
+### Explore the collection on a map
 
-The **Similarity** view arranges related images on a map using UMAP. UMAP takes the images’ numerical representations and looks for a layout that keeps neighbours near one another. The result gives you regions to explore instead of a list to read from top to bottom.
+I used UMAP for the **Similarity** view. It takes the images’ numerical representations and looks for a two-dimensional arrangement that keeps neighbours near each other. This gives the collection regions to explore instead of presenting every result in one ranked list.
 
-A region becomes useful when you can see the photographs behind it. Select a region, and its pictures appear in the linked grid. The grid lets you judge the images themselves and choose another one to follow.
+The map is linked to the grid. Select a region and the photographs behind it appear below, where you can judge the images themselves and choose one to follow. That connection is important: the layout offers an overview, but the photographs are still what the person needs to inspect.
 
 ![A Similarity map of a 2,314-photo collection, with photographs from a selected region shown in the grid.](/images/work/sis-layers-umap.png)
 
 *Selecting a region connects the overview to the photographs it contains.*
 
-The map suggests where to look. Its groups are not automatically named categories, and the gaps between them are not exact measures of visual difference. [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) explains the method and the design idea; the [interaction reference](/research/visual-search-workbench-screen-reference/) follows the controls and views.
+The regions are not automatically named categories, and distances on the map are not exact measurements of visual difference. [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) develops the design idea; the [interaction reference](/research/visual-search-workbench-screen-reference/) follows the individual views and controls.
 
-## Look at the selection by place or time
+### Look at the selection by place or time
 
-A selection can be explored through **Similarity**, **Places**, or **Timeline**. Similarity organises the images by relationships in their representations. Places uses recorded coordinates. Timeline uses dates to show broader or narrower periods.
+A selection carries between **Similarity**, **Places**, and **Timeline**. Places uses recorded coordinates, while Timeline lets you examine wider or narrower periods. Each view retains its zoom and pan when you change tabs. Selecting a photograph opens the available metadata, including camera information, capture time, and location.
 
-The selection carries between those views, and each view retains its zoom and pan when you change tabs. You can examine the same material from another angle without rebuilding the view. Selecting an individual photograph opens its available file metadata, including camera information, capture time, and location.
+I also worked on what happens while that information is loading. In release 0.2.6, the plot and timeline appear before all dates and locations have been read, then fill in as the metadata arrives. An unfinished metadata read no longer has to hold back the whole view.
 
-For 0.2.6, I made the latest requested time range take precedence over an older asynchronous result. After a slider drag, selection and results follow that request. The plot and timeline also appear before dates and locations finish loading, then fill in as that metadata arrives. These changes are documented in the [release notes](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6).
+The time slider needed a related correction. A request made earlier can finish after a newer one. I changed the handling so the selection and results settle on the range most recently requested, including after a drag or a change of time axis. An older response cannot replace the range the person has just chosen.
 
-## Take a cutout into another project
+The same release fixed a preview crash caused by the people-name reader misinterpreting a metadata value in photographs from some cameras. It also made same-named folders distinguishable by their paths and corrected a count’s singular and plural forms on screen and in VoiceOver. The [release notes](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6) document these changes.
 
-A useful photograph may contain a subject you want to use in a composition. The app’s experimental cutout feature proposes subject layers with transparent backgrounds. Those layers can be inspected and saved for use elsewhere.
+### Take a cutout into another project
+
+Search can lead to a photograph whose subject would be useful in a composition. I added an experimental cutout feature that proposes subject layers with transparent backgrounds. The layers can be inspected and saved for use elsewhere.
 
 ![A cat photograph with proposed cutout layers, each marked experimental.](/images/work/sis-cat-layers-detail.png)
 
-The layers still require judgment: an edge can be rough, a label can be wrong, or the proposed separation may not suit the composition. Cutouts remain a secondary experiment alongside search and exploration.
+The proposed separation still needs judgment. An edge can be rough or a label can be wrong. Cutouts remain a secondary experiment alongside the search and exploration work.
 
-## Keep the work on the Mac
+### Keep the work on the Mac
 
-The app bundles the search and cutout models, so they are available without a first-launch model download. The models process the photographs locally. My network checks found no gallery data leaving the device in the tested flows.
+I built the macOS interface in SwiftUI and use Core ML for local model processing. The app bundles its search and cutout models, so it does not need to fetch them at first launch. The photographs are processed on the Mac; my network checks found no gallery data leaving the device in the tested flows.
 
-The app worked in my documented checks on an 8 GB Apple Silicon Mac. Larger-library performance and peak memory still need measurement. An outside-user study has not run; it needs to test both finding a remembered image and discovering useful references for a creative brief.
+My documented checks include an 8 GB Apple Silicon Mac. Larger-library performance and peak memory still need measurement. I have not yet run an outside-user study to test whether the app helps people find remembered images or develop useful references for a creative brief.
 
-## Download
+### Download
 
-[Download Visual Search Workbench 0.2.6](https://dl.darce.xyz/) for Apple Silicon or Intel, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.6.dmg`, approximately 296 MB.
+[Download Visual Search Workbench 0.2.6](https://dl.darce.xyz/) for Apple Silicon or Intel, macOS 14 or later. The release was published on September 25, 2026.
 
-The app is not notarized by Apple, so macOS may block its first launch. The release instructions explain the **Privacy & Security → Open Anyway** option. The [GitHub release repository](https://github.com/darce/visual-search-workbench) provides the built app, model-licence information, and a `SHA256SUMS` file. It does not publish the application source.
+The app is not notarized by Apple, so macOS may block its first launch. The [release instructions](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6) explain the opening procedure. The [GitHub repository](https://github.com/darce/visual-search-workbench) distributes the built app, model-licence information, and checksums; it does not publish the application source.
 
 ### AltContext
 *Use the photograph, confirmed identities, and page context to draft image descriptions*
 Year: 2026
-Tags: Product Design, Human-AI Interaction, Accessibility, React, TypeScript, WordPress, Python
-Summary: AltContext combines a photograph with a publisher’s named people roster and page context. Editors review the proposed identity and wording before applying the text in WordPress.
+Tags: Interaction Design, Accessibility, React, TypeScript, WordPress, PHP, Python, FastAPI
+Summary: Developing a React interface, WordPress integration, and Python services that combine photographs, confirmed identities, and page context for editor-reviewed image descriptions.
+I am designing and developing AltContext’s React interface, WordPress integration, and supporting recognition and description services. The product is in development.
 
-A description such as “a person singing on a stage” can explain an activity while leaving out who is pictured. When the page concerns a particular performer, that identity may be part of the photograph’s meaning.
+A description such as “a person singing on a stage” can explain an activity while leaving out who is pictured. On a page about a particular performer, that identity may be important to understanding why the photograph is there.
 
-AltContext is a WordPress product I am designing and building to bring that context into image descriptions. It combines the photograph with identities from a publisher’s named people roster and information from the page. The editor reviews the proposed identity and wording before applying the text. The intended benefit is more useful context for blind readers; the product is still in development.
+I am building AltContext to bring that publishing context into WordPress image descriptions. The product combines the photograph with a site’s own people roster and information from the page. An editor reviews the proposed identity and the wording before applying the text. The intended benefit is more useful context for blind readers; establishing that benefit with readers is still part of the work ahead.
 
-## What supports the draft description
+### What supports the draft description
 
-**The photograph** supplies visual information about the scene. An image model may describe a microphone, clothing, or the setting. Those observations provide material for the description without requiring the model to identify the person from general knowledge.
+The photograph supplies visual information: a microphone, clothing, or something else visible in the scene. An image model can describe those details without having to identify the person from its general knowledge.
 
-**The roster** supplies names the site has established. An editor builds the roster in WordPress by associating groups of faces with people and correcting mistaken groupings. Face matching compares a face in a new image with that site-specific reference. A proposed match still needs review, and the naming policy determines whether a name may be used.
+Names come from the publisher’s roster. In WordPress, an editor associates groups of faces with people and corrects mistaken groupings. A face in a new photograph can then be compared with those site-specific references. The result is a proposed match for review. The naming policy also determines whether a name may be used in the generated text.
 
-**The page** supplies publishing context, including the image caption and surrounding post. That context helps determine which information matters: a performer’s identity may be important in an event report, while a discussion of a garment may call for attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) explains how an image’s purpose and context shape its text alternative.
+The page supplies a different kind of information. A caption or surrounding paragraph can explain why the publisher chose an image and which details matter. A performer’s identity may be relevant to an event report, while an article about a garment may need more attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) describes how purpose and context shape an image’s text alternative.
 
-A name in the article alone cannot establish who is pictured. AltContext’s reconciliation step separates observations from page or event context before drafting, so background information is not presented as visible evidence.
+I keep those sources distinct in the drafting workflow. Mentioning a person in an article does not establish that the person appears in its photograph. The reconciliation step separates visual observations from page or event context before drafting, so background information is not presented as something the image shows.
 
-## Review the proposal before applying it
+### Review the proposal before applying it
 
-The proposed identity gives the editor a match to inspect. The editor can compare the image with reference photographs and decide whether the person should be named. That decision informs the draft description, whose wording can then be reviewed or changed before it is applied.
+The editor first needs enough information to judge the proposed identity. The workflow lets them compare the image with reference photographs and decide whether the person should be named. That decision informs the description, which can then be edited before it is saved.
 
-The editor can change the draft, decline a suggested name, or apply the reviewed text to WordPress. Generation and storage are separate actions. The workflow also supports a longer description alongside alt text; decorative images can skip generation and use an empty text alternative.
+I separate generation from applying the text. A generated draft is a proposal in the interface; it does not become a stored WordPress description simply because the service returned it. The editor can change the wording or decline a suggested name before applying the result.
 
-## Try the decisions in a practice copy
+The workflow also supports a longer description alongside alt text. Decorative images can skip generation and use an empty text alternative. The interface needs to accommodate those publishing decisions alongside the review of generated descriptions.
 
-The guided walkthrough uses names and descriptions prepared in advance from a recorded face-match run. Choose whether to use a suggested name or leave each person unnamed. Once both choices are made for a photograph, the suggested description appears in an editable textarea. **Use this description** changes the demo image’s alt text; **Keep the current description** retains it; **Undo this change** restores the original.
+### Connect the interface to the stored decision
 
-[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. Recognition is not running during the walkthrough. Changes affect only the demo image on that page and clear when you reload; they do not publish to WordPress.
+I am responsible for the interaction design and the implementation behind it. The admin interface uses React and TypeScript, with PHP for the WordPress integration and Python/FastAPI for the supporting services. Working across those parts lets me follow an editorial action from the control on screen to the record it changes.
 
-## Connect the interface to the stored decision
+The service is designed around tenant-scoped recognition data and API isolation between publishers. I use task briefs and acceptance tests to define the work, and code review as part of the versioned delivery process. An interface change has to be considered alongside the WordPress integration and supporting service it uses.
 
-My work covers the interaction design and the implementation behind it. The admin interface uses React and TypeScript, the WordPress integration uses PHP, and the supporting recognition and description services use Python/FastAPI. Working across those parts lets me follow an editorial action from its control on screen to the result that is stored.
+I also use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-well-as-the-code) to inventory an existing interface or examine a proposed change. The resulting screens and flows can be reviewed by people and AI tools, and findings can be checked in the running interface after implementation. This supports review of structure and behaviour; it does not replace evaluation with editors and readers.
 
-I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-well-as-the-code) to inventory the interface and produce screens and flows for review. Review findings guide implementation changes, which I check in the running interface. These reviews address structure and behaviour; evaluation with editors and readers has a different job.
+### Try the decisions in a practice copy
 
-## Make the processing and retention choices explicit
+The [public practice guide](https://demo.altcontext.com/guide/) uses names and descriptions prepared in advance from a recorded run. Recognition is not running while someone uses the guide.
 
-AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
+For each photograph, choose whether to use the suggested names or leave the people unnamed. Once both choices have been made, the prepared description appears in an editable textarea. **Use this description** changes the demo image’s alt text. **Keep the current description** leaves it as it is, and **Undo this change** restores the original.
 
-Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
+The guide does not require sign-in. Its changes affect only the demo image on that page, clear on reload, and do not publish to WordPress.
 
-The hosted service and WordPress hold different records: purging recognition data leaves saved WordPress descriptions and the audit trail in place. Saved descriptions also remain available when a new service request cannot run. These controls have not undergone a legal compliance assessment.
+### Make the processing and retention choices explicit
 
-## Evaluate the description and the review
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service also stores the recognition representations used for face comparison.
 
-The evaluation has two audiences: **readers** who use the description and **editors** who review it. Readers need the text to preserve useful context. Editors need to recognise plausible mistakes and correct them before applying the description.
+Recognition data is retained by default unless another retention mode is selected. The hosted records have retention settings and export and purge operations, with controls for withholding names from generated text. Export and purge operations leave an audit trail.
 
-Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. Evaluation with blind readers and editors is still needed to establish whether the descriptions preserve useful context and whether editors can catch plausible mistakes. The implementation has not had an independent security audit.
+Purging hosted recognition data does not erase saved WordPress descriptions or that audit trail. Saved descriptions also remain available when a new service request cannot run. These are separate records with different lifetimes, and the controls have not undergone a legal compliance assessment.
+
+### Evaluate the description and the review
+
+Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. The implementation has not had an independent security audit.
+
+Evaluation with blind readers and editors is still needed. Readers need descriptions that preserve useful context. Editors need to recognise plausible mistakes in a proposed match or a fluent draft and correct them before publication. Those are the outcomes that will establish whether the workflow is useful.
 
 ### PhotoShelter: Production Accessibility & Workflow Prototypes
-*Keyboard interaction, audit remediation, and product prototyping*
-Year: 2021
-Tags: Product R&D, Prototyping, Accessibility, Interaction Design, Web Components, OpenCV.js, Enterprise SaaS
-Summary: Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.
+*Keyboard interaction, reusable patterns, and product prototyping*
+Year: 2022
+Tags: Front-End Development, Accessibility, Web Components, React, Mocha, Jenkins, Interaction Prototyping, OpenCV.js
+Summary: Led production accessibility work at PhotoShelter, built keyboard behaviour across Web Components and Shadow DOM, maintained Mocha tests, and developed React workflow prototypes with the Chief Architect and UX team.
+From September 2018 to February 2022, I worked as a Senior Front-End Developer at PhotoShelter. I led its WCAG 2.1 audit and front-end remediation, mentored four developers, and built exploratory prototypes with the Chief Architect and UX team.
 
-## Keyboard access across the production interface
+### Keyboard access across the production interface
 
-PhotoShelter’s core menus needed keyboard support. I led the WCAG 2.1 audit and front-end remediation, addressing unlabeled controls and missing ARIA attributes alongside the deeper navigation problems. The accessibility work helped protect institutional contracts associated with $9.2M in annual recurring revenue (ARR) that were at risk if the product could not demonstrate the required accessibility compliance.
+PhotoShelter’s digital asset management platform served more than 80,000 users and hosted over a billion files at the time of this work. Its core menus needed keyboard support. A person who could operate a control with a mouse could encounter a different interface when trying to reach the same control from the keyboard.
+
+I led the WCAG 2.1 audit and front-end remediation. Some repairs concerned the information a control exposed: missing labels and ARIA attributes. Others required changes to how focus moved through the interface. Giving a control a name did not make it reachable, and making it reachable did not settle what its keyboard behaviour should be.
+
+That work also addressed a commercial risk. Institutional contracts associated with $9.2M in annual recurring revenue depended on the product demonstrating the required accessibility compliance. The remediation helped reduce the risk to those existing contracts.
 
 ![Keyboard navigation for the main menu](/images/photoshelter-keyboard-navigation.gif)
 
 *Keyboard navigation for PhotoShelter’s main menu.*
 
-Polymer and Web Components put interactive elements inside Shadow DOM boundaries. Focus and keyboard events did not move cleanly across those boundaries. I built a custom keyboard layer to bridge them, keeping menu items reachable as people moved between components.
+The interface used Polymer and Web Components, with interactive elements inside Shadow DOM boundaries. Those boundaries organised the implementation, but keyboard users still needed to move through a menu as a continuous interaction. Focus and keyboard events did not move cleanly between the components.
+
+I built a custom keyboard layer to bridge them. It kept menu items reachable as people moved between components and supported switching between mouse and keyboard without a separate mode. This was behaviour I had to implement across the interface; changing individual controls’ markup would not resolve the navigation problem on its own.
 
 ![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)
 
 *Moving from mouse to keyboard control without a mode switch.*
 
-This work covered the behaviour of the interface as well as its markup. I mentored four developers on accessibility patterns and introduced review checklists for new work, so the team could carry those patterns into later changes.
+### Carrying the patterns into later changes
 
-## A workflow prototype that informed Smart Galleries
+The audit identified repairs in the existing product. New development also needed to use the resulting patterns. I established component conventions and review checklists that the team could apply to later work, and mentored four developers on accessibility practices.
 
-Working with the Chief Architect, I built exploratory prototypes outside the production path. We could try a workflow and expose its integration problems before committing it to production development.
+I also wrote and maintained Mocha tests used in Jenkins CI/CD pipelines. Those tests supported iterative changes to the production application. Together with the component conventions, they gave the team an established process for changing existing code instead of treating each repair as an isolated implementation.
 
-The workflow-automation prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%.
+### A workflow prototype that informed Smart Galleries
 
-## Testing image analysis in the browser
+Alongside the production work, I collaborated with the Chief Architect and UX team on exploratory workflow prototypes. I built a React-based automation prototype so we could try the proposed behaviour and expose integration problems before committing to the production implementation.
 
-I also built an OpenCV.js prototype to compare image blur in the browser, without backend processing. It tested a lightweight image-analysis workflow in a static-file environment and did not ship as a standalone feature.
+That prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%. The estimate concerned the later implementation effort; my work was on the exploratory prototype that informed it.
+
+### Testing image analysis in the browser
+
+I also built an OpenCV.js prototype to compare image blur without sending the analysis to a backend. It let me test a lightweight image-analysis workflow in a static-file environment, where the browser had to do the processing.
+
+The blur experiment remained a prototype and did not ship as a standalone feature.
 
 ### MSNBC Video: Browsing Around Continuous Playback
 *Interaction prototypes and production AngularJS development*
 Year: 2014
-Tags: Interaction Prototyping, Interaction Design, Prototyping, Front-End, AngularJS, Drupal, Media Platform
-Summary: Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.
+Tags: Interaction Prototyping, Interaction Design, Front-End Development, AngularJS, Drupal, Media Products
+Summary: Proposed and prototyped browsing around continuous video playback, then helped deliver the responsive AngularJS interface and CMS components with MSNBC’s internal team and external vendors.
+As Senior Design Technologist and Front-End Developer, I proposed and prototyped the browsing behaviour for MSNBC’s dedicated video experience, then helped deliver the AngularJS interface with the internal team and external vendors.
 
-## A dedicated video experience after the site rebuild
+### A dedicated video experience after the site rebuild
 
-MSNBC.com had recently been rebuilt on Drupal following the Microsoft/NBC split. [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) describes the broader site as a ground-up rebuild that launched in October 2013. Once that site was live, the network needed a dedicated video experience.
+MSNBC needed viewers to be able to look for another story while continuing to watch live or archived coverage. Leaving the viewing page to browse would interrupt that activity. During a live broadcast, the programme could move on while someone was deciding what to watch next.
 
-The new surface had to support watching live and archived coverage while discovering what to watch next. Browsing needed to stay on the viewing page so the stream could continue while someone chose what to watch next.
+The dedicated video experience followed the broader MSNBC.com rebuild, which [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) dates to October 2013. My work concerned the video interface and components for the in-house CMS. The full site redesign was a separate team effort.
 
-My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. The prototypes had to settle interface behaviour in time for production development.
+Working prototypes before production
 
-## My role
+I worked with MSNBC’s internal team, external vendors, and stakeholders, first proposing interactions in functional prototypes and then helping implement the agreed behaviour. We had a hard six-month launch deadline, so the prototypes needed to settle questions that would otherwise carry into production development.
 
-I proposed interface behaviour in functional prototypes and implemented front-end patterns for production. The prototypes gave the team a way to try a proposal before deciding how to build it.
+I used the prototypes to make the behaviour visible. A static layout could show a player beside a discussion panel. A working version let the team see what happened to the player’s width when that panel opened, and whether browsing still worked while a video was running. We went through several iterations before carrying the agreed interactions into the production AngularJS interface.
 
-I worked with MSNBC’s internal team, external vendors, and stakeholders. My remit covered the dedicated video experience and the AngularJS components I contributed to the in-house CMS, integrated with the Drupal backend. The broader MSNBC.com redesign was a separate team effort.
+Collapsible panels around a running player
 
-## The video platform
+My proposal gave the content around the player its own collapsible panels. A viewer could open the discussion, scan the latest coverage, or close the surrounding panels to watch at full width. The player continued running while those browsing choices changed.
 
-### From concept to working prototypes
+Comments sat beside the video and could be dismissed. An “Up next” row below the player placed the next viewing choice near the current clip, while the adjacent video list offered a broader route through the coverage. These controls supported different amounts of browsing without requiring the viewer to leave the page.
 
-I prototyped ways to browse coverage and comments around a running player. After several iterations with stakeholders, I helped carry the agreed interactions into the production AngularJS interface.
+Adapting the browsing layout to the screen
 
-### Collapsible panels around a running player
+The panels also had to work within responsive layouts. A desktop could accommodate horizontal video rows beside a large player. At narrower widths, recommendations moved into vertical lists while the video remained prominent.
 
-My proposal was to give the surrounding content its own collapsible panels. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
-
-Comments sat beside the player and could be dismissed. The prototype made that arrangement testable within the page, including what happened to the player’s width as panels opened and closed.
-
-In live coverage that continuity mattered most, because the broadcast could move on while someone was choosing another story. An “Up next” row below the player brought the next viewing choice close to the current clip, and the adjacent video list provided a broader route through coverage.
-
-The responsive layouts kept the player prominent as the available width changed. Desktop had room for horizontal video rows and a side panel; narrower layouts placed recommendations into vertical lists. The arrangement let browsing adapt to the screen while keeping the current video central.
+I worked through those arrangements in the prototypes and helped carry them into the production interface. The desktop arrangement could not simply shrink to fit. The surrounding recommendations needed a different layout while the player retained its place as the main activity.
 
 ![MSNBC video interface with a large player, clip details and an Up next row on the left, and a list of latest videos on the right.](/images/msnbc-interface.png)
 
-*Surviving interface capture, from December 2016 rather than launch day. The player, next-video choices, and broader browsing list share the same viewing surface.*
+*Surviving interface capture from December 2016, rather than launch day. The player, next-video choices, and broader browsing list share the same viewing surface.*
 
 ![MSNBC video mockup showing phone, tablet and desktop layouts: the player remains prominent, recommendations stack at narrower widths, and a discussion panel sits beside the desktop player.](/images/msnbc-watch-full-mockup.webp)
 
 *Responsive interface mockup showing the player and surrounding content at different screen widths.*
 
-### Through production to launch
+Through production to launch
 
-The video platform launched on schedule within the six-month window. According to my project record, meeting that deadline helped avert the partner-litigation risk associated with a delayed launch.
+My implementation work included AngularJS components for the in-house CMS, integrated with its Drupal backend. I stayed involved as the interaction proposals became production code, working within the responsibilities shared by the internal team and vendors.
+
+The video platform launched within the six-month window. A delayed launch carried a risk of partner litigation; delivering on schedule helped avoid that risk. My contribution extended from proposing the interaction through prototyping and front-end implementation on the team that delivered it.
 
 ### WorkBay
 *Keep coding tasks and review history available across AI sessions*
 Year: 2026
-Tags: Developer Tooling, AI-Assisted Development, Interaction Design, MCP, Python, SQLite
-Summary: WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions can retrieve the record across supported AI coding tools.
+Tags: Developer Tooling, AI-Assisted Development, MCP, Python, SQLite, Review Workflows
+Summary: Built WorkBay to preserve task decisions, review findings, and test evidence across AI coding sessions, with SQLite records, MCP retrieval, and checks on the normal Git development path.
+I began WorkBay in June 2026 for my own AI-assisted development practice. Its public source documents the task database, review workflow, and checks on the normal Git development path.
 
-WorkBay keeps the state of a coding task outside any one AI conversation. It preserves recorded decisions and unfinished review findings so a later session can resume the work, including when I switch between supported coding tools.
+I move coding work between AI tools and sessions. While developing projects such as [AltContext](/projects/altcontext/), I found that a recap could describe a task as nearly finished while leaving out the review finding that still blocked it. The next session needed the finding and its evidence, not just an account of progress.
 
-I built WorkBay while developing projects such as [AltContext](/projects/altcontext/). A recap could say that a task was nearly finished while leaving out the finding that still blocked it. I needed the next session to retrieve that finding and its evidence, not infer the remaining work from a general account of progress.
+I built WorkBay to keep that record outside the conversation. It stores the active task and the decisions made against it, along with review findings and test evidence. A later session can retrieve what remains unresolved, including when I change coding tools.
 
-## Keep a record the next session can use
+### Keep a record the next session can use
 
-Each repository has a SQLite database at `.task-state/handoff.db`. The database holds the task record: what is active, which decisions have been made, what the reviews found, and which checks were run.
+Each repository has a SQLite database at `.task-state/handoff.db`. A task identifies the work, its branch, and its working copy. Decisions preserve their rationale. Review findings retain their severity and resolution status, while test records keep commands and results.
 
-A task identifies the work. Under it, decisions keep their rationale, findings keep their severity and resolution status, and test records keep commands and results. A later session can look up the unresolved finding before changing the code it concerns.
+A session loads a selected context packet from that database. The packet gives it relevant recorded history without requiring the entire earlier conversation. Optional semantic retrieval can find an older decision when the new question uses different wording.
 
-A session loads a selected context packet from the database. That packet brings recorded history into the current conversation without requiring the whole history to be repeated. Optional semantic retrieval supplies another way to find earlier decisions when the current question uses different words.
+I keep retrieval separate from approval. Finding a similar earlier fix can help a session decide what to inspect, but it cannot close a review finding or authorise a merge. The retrieved record has to be considered against the code being changed now.
 
-The retrieved records remain material to inspect. Similarity can suggest that an earlier fix is relevant; it cannot itself close a finding or authorise a merge.
+### Resume in another coding tool
 
-## Resume in another coding tool
+WorkBay exposes the database through Model Context Protocol (MCP) tools. Supported clients include Claude Code, Codex, Cursor, and VS Code Copilot. They can read the same project record even though they do not share a conversation.
 
-WorkBay exposes the same project record to supported tools, including Claude Code, Codex, Cursor, and VS Code Copilot. A session in another tool can retrieve the decisions and findings that the earlier session left behind.
+This makes a change of tool less dependent on access to the previous tool’s transcript. It also helps after a long session has compressed its context: WorkBay can reload the recorded state from the database.
 
-That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The recorded history gives the new session a starting point without relying on access to the earlier conversation.
+The continuity is limited to what was recorded. Authentication, available tools, and model capabilities still differ between clients, and unrecorded reasoning does not reappear. The useful property is that changing a coding tool does not mean abandoning the project’s accumulated task and review history.
 
-## Carry a review finding through to a change
+### Carry a review finding through to a change
 
-An authoring agent can submit work to a reviewing agent without sharing its conversation. The reviewer records findings against the task. Those findings remain available after the review session ends, so the author can retrieve them and address the changes they call for.
+An authoring agent can submit work to a reviewing agent without passing over its conversation. The reviewer writes findings against the task. When the author resumes, those findings are available to address rather than buried in a separate review transcript.
 
-A finding’s commit references connect its resolution to the code history. The next reviewer can inspect that history rather than accept a summary saying the problem was fixed. Checks on the normal development path use the recorded state before work is merged.
+A finding carries commit references for the fix on the branch and its later merge. That lets another reviewer inspect the code history behind a reported resolution. The review gate checks for unresolved high- and medium-severity findings, including whether a finding has been explicitly deferred or otherwise given an allowed disposition.
 
-Git hooks enforce parts of that path while they are installed and configured. They are not a security boundary against an unrestricted shell. WorkBay also supports bounded work in separate working copies, with review and merge authority kept outside the worker.
+I also moved routine task operations into commands that can run without a model turn. Creating a working copy, checking merge readiness, and closing a task do not need an agent to improvise the bookkeeping. Git hooks check the normal development path while they are installed and configured. An unrestricted shell can disable or bypass them; they are not a security boundary.
+
+For self-contained work, WorkBay can hand a bounded task to another backend under a token cap. That worker does not merge its own changes. Review and merge authority remain outside the worker, so producing a change and accepting it are separate steps.
 
 Review the interface as well as the code
 
-Interface review needs more than a code diff. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory records the screens and their regions, the states each region can show, and the actions and flows that connect them.
+A code review may miss a problem that only becomes apparent when the interface is considered as a sequence of screens and states. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory describes screen regions, the states they can show, and the actions and flows between them.
 
-That inventory can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can review these representations against [Heuristics Canon](/research/heuristics-canon/). The resulting findings can be added to the task record, addressed in the implementation, and checked again after the change.
+It can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can inspect these representations against [Heuristics Canon](/research/heuristics-canon/). Findings can then be attached to the task, addressed in implementation, and checked again after the change.
 
-The workflow separates **validation**, **rendering**, and **critique**. Validation checks whether the map has an acceptable structure. Rendering makes that structure readable in different forms. Critique asks whether particular decisions need attention; it does not implement the answers. A limited automated check pack can also flag issues such as an action pointing to a nonexistent screen.
+Validation checks whether the map has an acceptable structure. Rendering makes it readable, while critique considers the decisions represented in it. A limited automated check pack can catch an action pointing to a nonexistent screen. None of those operations implements the proposed repair or establishes that the interface will work for its users.
 
-The public WorkBay repository includes the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany an explanation of a product.
+The public WorkBay repository contains the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany a product explanation.
 
-## Use and evaluation
+### Use and evaluation
 
-I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. Its source documents persistence, retrieval, and checks against the recorded state; the linked research examines that mechanism and proposes how to measure its effect.
+I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. The useful evidence available so far concerns persistence, retrieval, and checks against the recorded state.
 
-[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
-
-Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
+[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) follows its use, and [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation. Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
 
 ### Apple: iPhone X Launch & Marketing Tooling
 *Responsive front-end implementation and campaign automation*
 Year: 2017
-Tags: Front-End, CSS3 Animations, Sass, JavaScript, Node.js, Bash, Gulp, Marketing Engineering
-Summary: Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
+Tags: Front-End Development, Responsive Layout, CSS Animation, JavaScript, Node.js, Bash, Gulp, Campaign Tooling
+Summary: Implemented responsive iPhone X launch pages from supplied designs, developed a CSS-animated email campaign, and automated campaign build, preview, and deployment steps.
+I contracted with Apple’s marketing team in Sunnyvale from July 2017 to March 2018, working on iPhone X launch pages and the tools used to prepare email campaigns.
 
-## iPhone X launch pages
+### iPhone X launch pages
 
-I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. I translated the team’s static design specifications into responsive front-end code under the launch deadlines.
-## CSS-animated email campaign
+For the November 2017 iPhone X launch, I worked with Apple’s marketing and design teams to turn static design specifications into responsive landing pages. The designs established the visual treatment. My responsibility was to make that treatment work in the browser under the launch deadlines.
 
-I prototyped and developed a CSS-animated direct email campaign. CSS supplied the motion without JavaScript; implementation had to account for differences between email clients.
-## Campaign tooling
+I had to preserve the intended composition as the available width changed. The supplied layouts established the visual target; responsive code had to account for the sizes between them as well. My part of the launch was that implementation, working from the design team’s specifications.
 
-Campaign production involved repeated manual steps. I built command-line tools in Node.js, Bash, and Gulp to automate builds, previews, and deployment, giving the team a repeatable way to prepare an email campaign.
+### CSS-animated email campaign
+
+I also prototyped and developed a CSS-animated direct email campaign. The email itself carried the motion, without JavaScript. That introduced a different implementation constraint from the web pages: email clients varied in the CSS they supported.
+
+I used the prototype to work through the motion before developing the campaign implementation. Email-client compatibility was part of that work: an animation that worked on a web page still had to be considered within the more restricted environment of an email.
+
+### Campaign tooling
+
+Preparing campaigns involved repeated build, preview, and deployment steps. I wrote command-line tools in Node.js, Bash, and Gulp to automate that preparation and give the team a repeatable production process.
+
+The automation replaced repeated manual preparation with defined commands. It gave the team a way to prepare another campaign through the same build and preview process, with deployment steps included in the tooling.
 
 ### Texting Syria: An Exhibition Across Photographs and Phones
-*SMS development for Liam Maloney’s photography installation*
+*PHP and Twilio development for Liam Maloney’s installation*
 Year: 2014
-Tags: Exhibition, Interaction Development, SMS, Documentary Photography
-Summary: I built the PHP and Twilio application for Liam Maloney’s Texting Syria, delivering messages from recorded conversations to visitors’ own phones.
+Tags: Exhibition, Interaction Development, PHP, Twilio, SMS, Documentary Photography
+Summary: Built the PHP and Twilio application for Liam Maloney’s Texting Syria installation, delivering previously recorded messages to exhibition visitors’ phones.
+In 2014, I developed the PHP and Twilio application for Texting Syria. Liam supplied the photographs, text, and translations; I built the software that delivered the exhibition’s messages.
 
-## Bringing the conversations into the exhibition
+### Bringing the conversations into the exhibition
 
-Liam photographed Syrians who had fled to Lebanon and were keeping in touch with family in Homs by phone. The installation brought those photographs together with messages received at the time they were taken.
+Liam Maloney photographed Syrians who had fled to Lebanon and were using their phones to keep in touch with family in Homs. His installation paired those photographs with text messages received at the time they were taken. The [Moving Walls collection](https://www.movingwalls.org/moving-walls/23/texting-syria.html) includes the photographs and exchanges translated from Arabic.
 
-I wrote the application in PHP and integrated the Twilio API. Visitors connected to the exhibition’s SMS service and received a sequence of texts drawn from those earlier exchanges. Their own text-message inbox was the interface.
+The messages gave visitors words that the photographs could not show on their own. To bring those exchanges into the exhibition, I built an application that sent them to visitors’ phones through an SMS service.
 
-## The visitor’s phone as part of the installation
+### Building the SMS application
 
-Using SMS made the visitor’s own phone part of the exhibition. The photographs showed people keeping in touch with family elsewhere; the messages brought the words of those exchanges onto a device the visitor used for their own conversations.
+I wrote the application in PHP and integrated the Twilio API for message delivery. A visitor connected to the exhibition’s SMS service and received a sequence of texts drawn from the documented exchanges.
 
-Texting Syria was exhibited at [Photoville New York in 2016](https://photoville.com/projects/texting-syria/). Liam’s photographs and artist statement are also documented in [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html).
+These were previously collected messages. Receiving them did not open a live conversation with the people in the photographs. Liam supplied the content and translations, and my work covered the software that made the SMS experience function.
+
+### The visitor’s phone as part of the installation
+
+The visitor read the texts in their own message inbox, where they would ordinarily receive messages from people they knew. That familiar interface became part of the installation alongside the photographs on display.
+
+The application connected the exhibition material to that everyday act of receiving a message. It used the phone already in the visitor’s hand as the place where the written exchange appeared.
+
+Texting Syria was exhibited at Photoville New York in 2016. Its [exhibition record](https://photoville.com/projects/texting-syria/) credits Liam Maloney, with coding by Daniel Arce. The [Moving Walls 23 artist statement](https://www.movingwalls.org/moving-walls/23/texting-syria.html) describes Liam’s documentary intent and the larger body of work to which the installation belongs.
 
 ### barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh
-*Artist Archive / Portfolio*
-Year: 2023, 2026
+*Recovering the photographs and rebuilding their web presentation*
+Year: 2026
 Tags: Web Components, JavaScript, Sass, Rollup, Accessibility, Archive Recovery
-Summary: Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
+Summary: Recovered the images embedded in Barbara Beirne’s defunct Flash site in 2023, then rebuilt its web presentation with Web Components, keyboard navigation, and a full-screen carousel in 2026.
+This project began with recovering photographs from a non-functional Flash site in 2023. I rebuilt the portfolio around the recovered images, then returned in 2026 to implement a Web Components version with keyboard navigation and a full-screen carousel.
 
-## Recovering a Flash archive in 2023
+### Recovering a Flash archive in 2023
 
-Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were unavailable. In 2023, I was brought in to recover the images and rebuild the site.
+Barbara Beirne’s photography archive was held inside a Flash website that had stopped working years earlier. The original source files were unavailable, and the original developer could not be brought back into the project. Before I could rebuild the portfolio, I needed to recover the photographs from the published site.
 
-## Recovering the images
+The surviving file was a compiled `.SWF`. It contained the images, but it was not an editable source project or a folder of photographs ready to move into a new website. That made asset recovery the first part of the development work.
 
-The images were embedded in a compiled .SWF binary file. I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract usable assets from the binary. It took some work to get clean exports, but the tool pulled the full image set.
+### Recovering the images
 
-![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted from a .SWF file using FFDec*
+I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract the images embedded in the binary. Getting clean exports took additional work, but I recovered the full embedded image set and used it for the initial rebuild.
 
-## Rebuilding with Web Components in 2026
+![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)
 
-In 2026, I rewrote the live site with Web Components and JavaScript, using Rollup for the build and Sass for styling. The full-screen image carousel and navigation support keyboard interaction. Keeping the presentation in web components gave the archive a browser-based foundation for later maintenance.
+*Image extracted from the compiled Flash file using FFDec.*
 
-## Presenting her images
+Recovering those assets gave the project usable photographs again. It also let the new site present the work without depending on the Flash application that had previously contained it.
 
-Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
+### Rebuilding with Web Components in 2026
+
+I returned to the site in 2026 and rewrote it with Web Components and JavaScript, using Rollup for the build and Sass for styling. This was a later implementation pass on the recovered archive, separate from the 2023 recovery and initial rebuild.
+
+I implemented keyboard interaction for the navigation and full-screen carousel. Visitors could use those parts of the interface without relying on a mouse.
+
+### Presenting her images
+
+We chose a minimal, stark design to give Barbara’s photographs room. The navigation and viewing controls had to support looking through the archive without dominating the page.
+
+The full-screen carousel provides a larger view of a photograph, while the navigation supports moving through the archive. That made room for sustained viewing as well as moving on to the next photograph.
 
 ![A group of children climbing on a large pile of debris, one waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
 
-## Feedback on the 2023 recovery
+### Feedback on the 2023 recovery
 
-Alison Cornyn supplied this testimonial in June 2023, after the recovery and initial rebuild:
+Alison Cornyn, an artist and the co-founder and creative director of Picture Projects, wrote after the recovery and initial rebuild:
 
-> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional.
-Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.
-The site is responsive and works seamlessly on all platforms and browsers.
-Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate.
-I had no references to go by when we hired Daniel and couldn't be more pleased with his work."
->> *Alison Cornyn*
+> “Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.”
 
->> *Artist + Co-Founder and Creative Director Picture Projects*
-
->> *June 13, 2023*
+*Alison Cornyn, June 13, 2023.*
 
 ### bauhausdances.org: Visual Identity & Custom WordPress Theme
-*Arts & Film (Independent)*
+*Visual design drawn from the films, implemented in WordPress*
 Year: 2023
-Tags: WordPress, Custom Theme, PHP, CSS Animation, JavaScript, Video, Accessibility
-Summary: Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
+Tags: Visual Design, WordPress, Custom Theme, PHP, CSS Animation, JavaScript, Self-Hosted Video
+Summary: Designed a film-derived visual treatment and built a custom WordPress theme for Debra McCall’s Bauhaus Dances, with self-hosted video and caching.
+Debra McCall supplied the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. I designed and built their web presentation in 2023, including the visual treatment and a custom WordPress theme.
 
-## A visual treatment drawn from the films
+### A visual treatment drawn from the films
 
-Filmmaker Debra McCall wanted a new website for the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. She supplied the films; I designed and implemented their web presentation.
+Debra McCall wanted a new website for the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. She supplied the films. My work was to develop their web presentation and build a site she could manage independently.
 
-The visual direction grew out of the film’s Hoop Dance sequence, where white rings create stark geometric forms against a dark stage. I used that imagery as the basis for the site’s visual system and interaction language.
+The visual direction came from the Hoop Dance sequence. White rings form changing geometric arrangements around the dancer against a dark stage. I used those rings as the basis for the site’s visual treatment and interaction language, connecting the surrounding design to a specific passage in the films.
 
-![Reinfentanz performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
+![Hoop Dance performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
 
-A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motion without overpowering the content.
+A subtle ring-based interaction carries that idea into the interface. The motion refers back to the filmed performance while leaving the films as the main material to watch. The same film sequence therefore informed both the graphic treatment and the motion I implemented.
 
-## Implementation
+A custom WordPress theme for the films
 
-I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. I implemented self-hosted video and caching, so the film presentation did not depend on third-party embeds.
+I built the site as a custom WordPress theme using [Underscores](https://underscores.me/) as the starting point. The theme combined PHP with JavaScript and CSS animation. WordPress provided the content-management interface, while the custom theme let me implement the film-derived design.
+
+That separation mattered for the handover. The visual treatment could be specific to this project without requiring the client to return to the code for routine content management. The client could manage the content through WordPress while the theme controlled its presentation.
+
+### Self-hosted video
+
+I implemented self-hosted video so the presentation did not depend on third-party embeds. I also added caching to support delivery of the media-heavy site.
+
+The result was a WordPress site built around McCall’s supplied films, with their presentation and supporting content under the site’s own management.
 
 ## Research
 
@@ -393,6 +445,7 @@ I built a custom WordPress theme on top of [Underscores](https://underscores.me/
 *How similarity search becomes a way to explore a photo collection*
 Tags: Visual Search, UMAP, Interaction Design, On-Device ML, Research
 Summary: How Visual Search Workbench connects search, a UMAP map, and an image grid to help people explore a photo collection and develop a visual direction.
+A design study of the implemented interaction: how a search, a UMAP map, and an image grid support visual exploration.
 
 A useful picture can change what you are looking for. You may start with a subject in mind, then notice a colour relationship or composition worth following. That shift interests me because it turns search into part of developing an idea.
 
@@ -512,6 +565,7 @@ An exploration study would need to allow for a useful selection that takes someo
 *Follow a query into similar images, a map selection, and further exploration*
 Tags: Visual Search, UMAP, Interaction Design, Interface Reference
 Summary: An interaction reference for Visual Search Workbench: begin with words or a picture, follow similar images, and inspect a UMAP map selection in the image grid.
+This selective interaction reference combines existing application captures with clearly labelled explanatory schematics.
 
 This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
@@ -625,6 +679,7 @@ Read [Finding a Visual Direction with UMAP](/research/visual-search-workbench-pr
 *The record, retrieval layer, and context packet behind WorkBay*
 Tags: Agent Workflows, SQLite, Semantic Retrieval, Research
 Summary: WorkBay separates the stored project record from the retrieval layer that finds it and the context packet a coding session reads.
+SQLite preserves decisions and evidence; exact lookup, text search, and optional semantic retrieval supply selected records to the next coding session.
 
 A later coding session needs more than an account of what happened. It may need the reason an approach was rejected, the finding that remains unresolved, or the test result behind a completion claim. [WorkBay](/projects/workbay/) keeps that material in a project record outside the conversation.
 
@@ -678,6 +733,7 @@ Reasoning that was never recorded cannot be retrieved, and useful records can st
 *Look for recurring trouble, earlier fixes, decision reasons, completion evidence, and failed approaches*
 Tags: Agent Workflows, Project Memory, Field Notes
 Summary: Five recurring questions show how I use WorkBay’s project record to examine an earlier decision before making the next one.
+These are field observations from my development practice, not a controlled productivity study.
 
 I use the project record when the next coding decision depends on work outside the current conversation. The record can bring back an earlier rationale or show that a new-looking failure has already occurred across several tasks.
 
@@ -735,6 +791,7 @@ My use of these lookups has not established how often retrieval finds the right 
 *What an audit shows, what a comparison must test, and what would count as a useful result*
 Tags: Agent Workflows, Evaluation, Token Use, Research
 Summary: An audit snapshot describes WorkBay context packets. A proposed paired comparison tests whether they reduce task token use without lowering quality.
+Three project databases supply descriptive audit figures. A proposed paired trial would test a 20% token-reduction target at comparable quality.
 
 Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
 
@@ -803,6 +860,7 @@ I use WorkBay to retain inspectable project history and resume work across codin
 *Connect a review finding to a reason for changing the work*
 Tags: Design Review, Engineering, Writing, Research
 Summary: Heuristics Canon gives design, engineering, and writing reviews specific triggers and questions, with references that let another reviewer examine the reasoning.
+I maintain this collection for human and AI reviews. The rules support critique; they do not replace judgment.
 
 A review becomes useful when its finding is specific enough to examine. “Improve the navigation” leaves the problem open to interpretation. A finding that identifies two conflicting destinations gives the designer something to inspect and a decision to make.
 
@@ -862,6 +920,7 @@ The [public repository](https://github.com/darce/heuristics-canon) contains the 
 *Rotation matrices and perspective projection in TypeScript and CSS*
 Tags: Linear Algebra, 3D Graphics, TypeScript, DOM Manipulation, CSS Transforms
 Summary: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
+Move your mouse to rotate the cube. A hands-on study of rotation matrices and perspective projection, implemented in TypeScript and rendered with CSS transforms.
 
 Move your mouse over the cube to rotate it. Each of its eight vertices is a `div`; TypeScript computes the rotated coordinates and CSS transforms position the dots.
 
@@ -1152,6 +1211,7 @@ export const transformPoints = (
 *Streaming top-of-book depth with WebSockets and React*
 Tags: React, TypeScript, WebSocket, Binance API, Data Visualization, Market Microstructure, Cryptocurrency
 Summary: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
+An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. React and TypeScript render the top 20 bid and ask levels in real time over a direct WebSocket connection.
 
 ## What is an Order Book?
 
