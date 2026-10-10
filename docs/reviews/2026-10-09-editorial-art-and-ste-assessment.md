@@ -1,6 +1,6 @@
 # PORTFOLIO-COPY-01 — editorial art and ASD-STE100 assessment
 
-Date: 2026-10-09. Implementer assessment, using **Canon v0.25.6** from the verified read-only transport. Manifest SHA256: `ce0953e41cf3fc836cf9d8a5a8e7975173d26da8cf178480bfbd1d33bf41cb7d`. The companion content review records source loading, digest checks, matching reasoning cards, exemptions, and blocked build/test verification. This document makes editorial judgments; it does not substitute for the requested independent Claude review.
+Date: 2026-10-09; correction pass: 2026-10-10. Implementer assessment, using **Canon v0.25.6** from the verified read-only transport. Manifest SHA256: `ce0953e41cf3fc836cf9d8a5a8e7975173d26da8cf178480bfbd1d33bf41cb7d`. The companion content review records source loading, digest checks, matching reasoning cards, exemptions, historical dependency failures and resolved coordinator verification. The supplied Opus review is conditional_pass; this bounded correction addresses its findings without claiming a new independent verdict. Correction-pass remote check and all 217 tests passed; Webpack production export passed after the default Turbopack build stalled. The content review records those distinct outcomes.
 
 ## Purpose and precedent
 
@@ -80,7 +80,7 @@ The existing ProjectDetails masthead renders intrinsic proportions with `width: 
 
 Product evidence is a different class of image: PhotoShelter's keyboard GIF/menu, MSNBC's dated interface capture, older VSW captures and labelled schematics, and the existing WorkBay diagrams. PhotoShelter/MSNBC now lead the homepage and professional Work group. WorkBay's first mechanism diagram appears after two opening paragraphs. This moves work proof earlier without displacing independent art. Modern-art captions do not explain a settled metaphor, and repeated “not a screenshot” captions were not added.
 
-This is a file/CSS/source inspection, not desktop/mobile rendered QA. Browser tooling was unavailable and the static build was blocked by missing dependencies. The coordinator must inspect wrapping, figure completeness, card crops, credit legibility, image failures, and body hierarchy at both widths after a successful build.
+The initial remote pass inspected files/CSS/source only and had dependency-blocked builds. Coordinator verification subsequently passed check, all 217 tests and normal build/export on the reviewed source tree: 46 desktop/mobile route checks returned HTTP 200 without page errors, broken images or overflow. The five artwork figures were inspected with credits fully visible. These are supplied rendered-QA receipts, not remote browser runs or catalogue/rights verification. Preview analytics CORS from localhost leaves live-origin behavior as a deployment gate.
 
 ## Depiction rows and scope
 
@@ -95,46 +95,45 @@ BOUND-02, **Narrowly selective transparency** — *On Photography* + *Regarding 
 
 All matching reasoning cards were opened; CARD-18 applies to bearer/source separation, while the model-role, compression, finite-catalogue and density cards remain inert for these open editorial readings. Their scope/verification dispositions are in the content review. No catalogue model, identity recognition, crop inference or symbolic taxonomy was added.
 
-## ASD-STE100: conditional private-corpus admission
+## ASD-STE100: scoped private-corpus intake recommendation
 
-**Recommendation:** admit ASD-STE100 to the private research corpus only after official-source acquisition and grounding. Do not add unverified standard rules now, change either corpus, enforce a sentence-length limit, or label this portfolio STE-compliant.
+**Recommendation — implementer:** worth admitting to private RESEARCH for technical procedures after normal provenance, permission and overlap checks. Acquisition is complete; no corpus edit is authorized here. Essay editing, art interpretation and full conformance assessment have different purposes.
 
-### What the official sources establish
+### Official sources inspected
 
-ASD describes STE as controlled technical writing with writing rules and an approved dictionary. The dictionary controls meanings and grammatical uses; technical nouns and verbs can supply subject-specific terms. Its origins and stated purpose concern understandable maintenance/technical instructions. Those facts support investigating it for procedural writing; they do not supply the full standard's rule text or exceptions. [Official About STE](https://www.asd-ste100.org/about_STE.html).
+The original [ASD-STE100 Issue 9 PDF](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf), dated **15 January 2025**, has **434 pages**; author: ASD STEMG. Its SHA256 matches `STE-SOURCE-UPDATE.txt`: `d1f4ea9e7cd6e46b47aa9057209f99e78c0e9cfc4e27a5b07895b05c1a166431`. The downloads-page request form is not the only access route. The staged PDF and text were inspected; a fresh Poppler `pdftotext` 24.02.0 layout extraction exactly matched the staged text (SHA256 `a216fe199bd6e9c77fc743dfe6dc081ee5f245adcb115ed6ca1aa45ee50fa3f5`). No PDF, extraction or dictionary is published here.
 
-The current official downloads page identifies **Issue 9, January 2025**, and directs readers to a request form for an official copy. The official homepage points to the same standard/resources. No form was submitted and no person was contacted. No official full copy was supplied to this session; an indexed search result is not an acquired, checksummed and inspected standard. [Official downloads](https://www.asd-ste100.org/STE_downloads.html), [official homepage](https://www.asd-ste100.org/).
+The unnumbered copyright notice (PDF page 2) distinguishes listed usage categories from broader reproduction permission; a public URL does not establish redistribution rights. The source controls technical writing and approved word meanings/grammatical uses, while allowing subject-specific technical terms.
 
-The downloads page separately links STEMG's *Simplified Technical English and Artificial Intelligence* white paper. It warns that plausible, authoritative-looking AI text is not verified conformance and keeps the standard as the primary reference. The user-supplied **June 2026** PDF was read with `pdftotext`; its SHA256 is `678819db12b1c8900076341822232e49b45bdc060f243aa1b5c33cb94fba2df3`. Page 1 states the standard takes priority and disclaims endorsement of tools; page 2 discusses reliability, terminology, traceability and human oversight; page 3 gives recommended controls/accountability. This is a three-page guidance paper, not Issue 9 or a source of replacement rules. [Official downloads and white-paper link](https://www.asd-ste100.org/STE_downloads.html).
+Selected contexts below were read with their examples and exceptions. Locators are **printed folios**, not PDF viewer page numbers; these are concise paraphrases, with no verbatim rule quotation.
 
-The initial direct About/download fetches were unreliable (including 403); the official-domain indexed pages supplied the overview/download facts. The local white paper supplied its own page-specific evidence. No unofficial GitHub clone, web summary, or unverified 20/25-word rule was used as rule authority.
+| Rule / printed locator | Scoped summary |
+| --- | --- |
+| 1.11, p. 1-1-13 | Use one technical noun for the same item. |
+| 3.6, pp. 1-3-5–6 | Use active voice; the descriptive-passive exception requires an unknown agent. |
+| 4.2, p. 1-4-3 | Preserve complete sentence parts and write contractions in full. |
+| 5.1, pp. 1-5-1–2; 6.3, p. 1-6-4 | Procedural sentences: 20 words; descriptive sentences: 25. Informational notes in procedures use the descriptive limit. |
+| 5.3, p. 1-5-3; 5.4, p. 1-5-4 | Give command-form instructions; put a necessary condition before the command. |
+| 6.2, pp. 1-6-2–4; 9.4, p. 1-9-8 | Connect ideas through stable key terms; repeat equivalent instructions consistently when context and meaning match. |
 
-### Fit and overlap — editorial assessment
+The formal contractions and 20/25-word provisions belong to STE technical writing, not universal essay requirements. This review neither establishes STE conformance nor detects AI authorship.
 
-STE is a promising additional source for steps such as installation, inspection, maintenance, recovery, or a narrowly specified operational procedure: ambiguity about the object, action, condition or sequence can lead to doing the wrong thing. An approved dictionary is a substantive contract that requires acquisition, domain terminology handling and knowledgeable review; it is not merely “use short sentences.”
+The coordinator acquired ASD STEMG’s [*ASD-STE100 Simplified Technical English and Artificial Intelligence* white paper](https://www.asd-ste100.org/assets/files/WhitePaper-ASD-STE100_and_AI.pdf) directly from ASD; it was not a user-owned supplied document. **June 2026**, three pages, SHA256 `678819db12b1c8900076341822232e49b45bdc060f243aa1b5c33cb94fba2df3`. Its p. 1 prioritises the standard and disclaims tool endorsement; pp. 2–3 discuss reliability, traceability and human oversight. It is guidance, separate from the original standard’s rules.
 
-The portfolio also contains explanatory essays, mathematical derivations, historical attribution, uncertainty and independent-art readings. Turning those genres into maintenance instructions could remove a needed relationship or qualification and flatten their thought. Keep controlled-language work trigger-bounded to actual procedures; consider a practice guide separately from its explanatory case study. Neither this review nor the absent full standard establishes that every essay should use a fixed vocabulary.
+### Overlap and intake — independent editorial judgment
 
-| Existing canon mechanism examined | Likely overlap to test after acquisition | Boundary / possible additional value |
+| Existing Canon v0.25.6 mechanism | Overlap judgment | Possible distinct intake value |
 | --- | --- | --- |
-| WRIT-03 — **Name the concrete referent**, *The Sense of Style, ch. 3* | Identifying the object/action a procedural step concerns | Approved terms and their allowed senses may add a more formal procedure-specific constraint. An ordinary explanatory abstraction is not automatically prohibited. |
-| WRIT-06 — **Repeat the precise term**, *The Sense of Style, ch. 5* | Stable names when several components/referents are active | A verified dictionary may govern meanings/parts of speech, beyond consistent naming. Do not impose that contract on art interpretation or all public copy. |
-| WRIT-71 — **Unpack private knowledge**, *The Sense of Style, ch. 3* | Reader comprehension and needed technical explanation | Procedure audiences may need conditions/order rather than an essay's conceptual development. Exact STE provisions remain unverified. |
+| WRIT-03 — **Name the concrete referent**, *The Sense of Style, ch. 3* | Much general clarity advice already has support. | A bounded procedural terminology contract needs its own audience and reviewer. |
+| WRIT-06 — **Repeat the precise term**, *The Sense of Style, ch. 5* | Strong overlap with the inspected terminology/cohesion contexts. | Dictionary senses and parts of speech can add precision beyond consistent naming. |
+| WRIT-71 — **Unpack private knowledge**, *The Sense of Style, ch. 3* | Both concern what the intended reader needs to understand. | Procedure grammar and condition/action dependencies deserve separate verification. |
 
-CARD-22's named-domain lookup check, linked to WRIT-06 above, supports consulting the actual standard before adopting a vocabulary. Its finite-runtime-catalogue contract remains inert here: an LLM's plausible reconstruction is not the acquired dictionary.
+These are deduplication judgments, not new canon rules or retroactive ASD attribution of Pinker’s mechanisms. Prioritise installation, maintenance and recovery instructions; keep explanatory essays, derivations and editorial art outside an imposed controlled-language contract. Do not import a wholesale dictionary or treat a practice guide’s procedural surface as the entire case study’s genre.
 
-These are deduplication hypotheses, not verified STE rule mappings. The row sources remain Pinker's; they were not retroactively attributed to ASD. STE may contribute a documented procedure/dictionary contract while adding little to general advice already grounded in the writing lexicon.
-
-### Admission conditions and owner handoff
-
-1. The research-corpus owner acquires an official copy through an official channel outside this task. Record publisher/issue/date, acquisition URL/date and any use restrictions. Do not promote a clone as authority.
-2. Verify **Issue 9, January 2025** on the document itself. Record the exact file SHA256 and extraction-tool/version/checksum. No full-standard checksum is available from this session.
-3. Extract the standard without losing dictionary layout, exceptions, part-of-speech labels, approved senses or cross-references. Preserve page/section/rule/dictionary-entry locators and compare a representative sample against the original PDF.
-4. Read prospective rules and their exceptions in context. Ground each proposed distillation in exact rule/entry and page locators; distinguish mandatory provisions, examples and guidance. Keep the separate AI white paper in a separate source record.
-5. Deduplicate by **trigger, action, audience and verification**, not by shared words such as “clear.” Prefer adding bounded support to an existing mechanism over creating near-duplicate rules. Where the controlled dictionary adds a distinct obligation, specify the procedural trigger, terminology owner and conformance review needed.
-6. Review procedures against the acquired source, with knowledgeable human oversight. Mark essays/editorial art as outside an imposed controlled-language contract unless an explicit later brief changes their purpose. Do not advertise compliance from a surface edit, a readability score, or an AI assertion.
-7. Only after those checks should the owner decide admission to the **private research corpus**. Any later published-canon change is a separate review/release task. No corpus content was modified here.
+1. Record the acquired official source’s provenance, issue/date, URL, checksums and applicable permission before intake. Public availability is not permission to republish it.
+2. Preserve rule/entry/printed-page locators, dictionary layout and exceptions; compare prospective distillations against the PDF. Keep the AI guidance in a separate source record.
+3. Deduplicate by trigger, action, audience and verification. Review any genuinely new procedural obligation with a knowledgeable human before admission. Published-canon release work remains separate.
 
 ## Outstanding evidence
 
-The asset backlog prioritises current VSW captures, AltContext editor/practice states, PhotoShelter keyboard evidence, Texting Syria exhibition/phone records, current Catch production evidence, and catalogue/credit provenance for all five art files. Catalogue verification should establish whether a reproduction is complete or a detail, title/date/material/institution/credit accuracy, and permitted source attribution. This task preserves the existing material and records the gaps; it does not fabricate assets or claim permissions that were not inspected.
+Current VSW captures, AltContext WordPress editor/stored-text evidence, PhotoShelter keyboard records, Texting Syria exhibition/implementation records, permissioned Catch contribution records from August 2024–February 2025, and catalogue/credit provenance remain optional evidence work in the backlog. A current Catch surface must be tied to Daniel’s contribution. Desktop/mobile route and five-figure QA, plus signed-out guide apply/undo, are completed coordinator checks. Reader/editor studies and catalogue/rights verification remain distinct; none is inferred from those checks.

@@ -41,9 +41,9 @@ The editor can change the draft, decline a suggested name, or apply the reviewed
 
 ## Try the decisions in a practice copy
 
-The guided walkthrough follows the identity decision through to the resulting text. It starts with saved face-match results from a development run. Confirming a match or keeping a person unnamed changes the practice draft; the draft can then be edited, applied to the practice copy, or restored with undo.
+The guided walkthrough uses names and descriptions prepared in advance from a recorded face-match run. Choose whether to use a suggested name or leave each person unnamed. Once both choices are made for a photograph, the suggested description appears in an editable textarea. **Use this description** changes the demo image’s alt text; **Keep the current description** retains it; **Undo this change** restores the original.
 
-[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. It uses saved recognition results and applies edits only to the practice copy, with undo. It does not publish a live page. An optional live-description request is a separate operation whose availability depends on the service.
+[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. Recognition is not running during the walkthrough. Changes affect only the demo image on that page and clear when you reload; they do not publish to WordPress.
 
 ## Connect the interface to the stored decision
 
@@ -53,7 +53,7 @@ I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-w
 
 ## Make the processing and retention choices explicit
 
-AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Self-hosted recognition and description models run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
 
 Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
 

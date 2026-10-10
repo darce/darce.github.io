@@ -4,13 +4,15 @@ Daniel Arcé — Senior Front-End Developer & Design Technologist in Toronto. Pr
 ## About
 Hello, I’m Daniel Arcé.
 
-I’m a senior front-end developer and design technologist based in Toronto. Most of my professional work has been in front-end development: building production interfaces, making them usable from the keyboard, and working out interaction decisions in code. At MSNBC, I held a Design Technologist post; today I also design and build independent applications.
+I’m a senior front-end developer and design technologist based in Toronto. Most of my professional work has been in front-end development: building production interfaces, making them usable from the keyboard, and working out interaction decisions in code. At MSNBC, I held the Senior Design Technologist and Front-End Developer role; today I also design and build independent applications.
 
 ### From prototype to production interface
 
 A working prototype gives a team something to try. A selection leads to another view; that view may expose a choice that was easy to miss in a static screen. Trying the interaction helps us decide what to keep, what to change, and what the implementation needs to support.
 
 I stay involved as those decisions reach production. My front-end work includes React and TypeScript, with keyboard interaction and focus management built into the behaviour of the interface.
+
+At Catch (August 2024–February 2025), I built production React and TypeScript interfaces, including API and authentication integration and Cypress tests.
 
 At [PhotoShelter](/projects/photoshelter/), I led a WCAG audit and front-end remediation, including custom keyboard behaviour across Polymer, Web Components, and Shadow DOM. I mentored four developers on accessible patterns. Working with the Chief Architect, I also built a workflow-automation prototype that exposed integration issues and informed Smart Galleries.
 
@@ -48,7 +50,7 @@ Summary: Search your photo folders by words or an example image, then explore re
 
 Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. In Explore, a similarity map connects regions to photographs in the linked grid. Places and Timeline offer other ways to examine the selection, without requiring advance tagging.
 
-I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. I have also maintained it after release: version 0.2.3 corrected thumbnail retry handling so selected photographs could reach the grid. The current download is 0.2.6.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. The [0.2.6 release](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), published 25 September 2026, fixed a preview crash caused by malformed people-name metadata.
 
 ![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
@@ -83,6 +85,8 @@ The map suggests where to look. Its groups are not automatically named categorie
 A selection can be explored through **Similarity**, **Places**, or **Timeline**. Similarity organises the images by relationships in their representations. Places uses recorded coordinates. Timeline uses dates to show broader or narrower periods.
 
 The selection carries between those views, and each view retains its zoom and pan when you change tabs. You can examine the same material from another angle without rebuilding the view. Selecting an individual photograph opens its available file metadata, including camera information, capture time, and location.
+
+For 0.2.6, I made the latest requested time range take precedence over an older asynchronous result. After a slider drag, selection and results follow that request. The plot and timeline also appear before dates and locations finish loading, then fill in as that metadata arrives. These changes are documented in the [release notes](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6).
 
 ## Take a cutout into another project
 
@@ -132,9 +136,9 @@ The editor can change the draft, decline a suggested name, or apply the reviewed
 
 ## Try the decisions in a practice copy
 
-The guided walkthrough follows the identity decision through to the resulting text. It starts with saved face-match results from a development run. Confirming a match or keeping a person unnamed changes the practice draft; the draft can then be edited, applied to the practice copy, or restored with undo.
+The guided walkthrough uses names and descriptions prepared in advance from a recorded face-match run. Choose whether to use a suggested name or leave each person unnamed. Once both choices are made for a photograph, the suggested description appears in an editable textarea. **Use this description** changes the demo image’s alt text; **Keep the current description** retains it; **Undo this change** restores the original.
 
-[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. It uses saved recognition results and applies edits only to the practice copy, with undo. It does not publish a live page. An optional live-description request is a separate operation whose availability depends on the service.
+[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. Recognition is not running during the walkthrough. Changes affect only the demo image on that page and clear when you reload; they do not publish to WordPress.
 
 ## Connect the interface to the stored decision
 
@@ -144,7 +148,7 @@ I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-w
 
 ## Make the processing and retention choices explicit
 
-AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Self-hosted recognition and description models run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
 
 Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
 
@@ -191,8 +195,8 @@ I also built an OpenCV.js prototype to compare image blur in the browser, withou
 ### MSNBC Video: Browsing Around Continuous Playback
 *Interaction prototypes and production AngularJS development*
 Year: 2014
-Tags: Product Design, Interaction Design, Prototyping, Front-End, AngularJS, Drupal, Media Platform
-Summary: Helped take MSNBC’s dedicated video experience from initial product definition through functional prototypes, interaction design, production development, and an on-schedule launch.
+Tags: Interaction Prototyping, Interaction Design, Prototyping, Front-End, AngularJS, Drupal, Media Platform
+Summary: Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.
 
 ## A dedicated video experience after the site rebuild
 
@@ -306,15 +310,15 @@ Campaign production involved repeated manual steps. I built command-line tools i
 
 ### Texting Syria: An Exhibition Across Photographs and Phones
 *End-to-end implementation for Liam Maloney’s installation*
-Year: 2016
+Year: 2014
 Tags: Exhibition, Interaction Development, SMS, Documentary Photography
 Summary: Liam Maloney supplied the photographs, text, and translations. I developed the experience end to end, connecting the exhibition with actual messages delivered to visitors’ phones through an SMS server.
 
-Texting Syria brings photographs together with messages received by the people pictured. Photographer Liam Maloney supplied the images, text, and translations; I developed the experience end to end.
+Texting Syria brings Liam Maloney’s photographs together with actual text messages. Maloney supplied the photographs, text, and translations; I developed the SMS experience end to end in 2014 using the Twilio API.
 
-The exhibition invited visitors to connect to an SMS server and receive a series of actual messages on their own phones. Those messages had been received when Maloney took the photographs. The interaction extended the exhibition onto a device the visitor was already carrying.
+The exhibition invited visitors to connect to an SMS server and receive a series of actual messages on their own phones. According to Maloney’s project statement, those texts had been received when the photographs were taken.
 
-The [Photoville NY 2016 record](https://photoville.com/projects/texting-syria/) credits Liam Maloney “with coding by Daniel Arce” and documents the SMS interaction. [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html) provides the photographs and Maloney’s statement about people in Lebanon keeping in touch with family in Syria.
+Photoville NY exhibited the project in 2016. Its [exhibition record](https://photoville.com/projects/texting-syria/) credits Liam Maloney “with coding by Daniel Arce” and documents the SMS interaction. [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html) provides the photographs and Maloney’s statement about people in Lebanon keeping in touch with family in Syria.
 
 ### barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh
 *Artist Archive / Portfolio*
@@ -335,6 +339,8 @@ The images were embedded in a compiled .SWF binary file. I used [FFDec](https://
 ## Rebuilding with Web Components in 2026
 
 In 2026, I rewrote the live site with Web Components and JavaScript, using Rollup for the build and Sass for styling. The full-screen image carousel and navigation support keyboard interaction. Keeping the presentation in web components gave the archive a browser-based foundation for later maintenance.
+
+## Presenting her images
 
 Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
 
@@ -484,7 +490,7 @@ The grid and map also need distinct interpretations. A search ranking compares t
 
 Local processing was a design constraint for the app. The photographs stay in the folders the person chooses, and the models ship with the application. I tested that arrangement on an 8 GB Apple Silicon Mac.
 
-That constraint extends beyond running the model. A selected region must also deliver photographs that can be inspected. Release 0.2.3 addressed thumbnail retries, a change recorded in the [release repository](https://github.com/darce/visual-search-workbench). The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
+That constraint extends beyond running the model. The [0.2.6 release record](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6) documents the latest-range decision described in the [case study](/projects/visual-search-workbench/#look-at-the-selection-by-place-or-time), slider corrections, and metadata filling in after the plot and timeline appear. The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
 
 ## Test retrieval and exploration separately
 
@@ -1230,7 +1236,7 @@ Using the numbers above (bids = 2,300, asks = 1,800):
 
 $$\frac{2300 - 1800}{2300 + 1800} = \frac{500}{4100} = 0.12$$
 
-Rounded to two decimal places, the imbalance is **+0.12**: bid volume exceeds ask volume in these displayed levels.
+Rounded to two decimal places, the imbalance is **+0.12**, equivalent to **12%** in the live card’s percentage format. Bid volume exceeds ask volume in these displayed levels.
 
 ---
 

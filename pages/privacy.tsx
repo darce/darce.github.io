@@ -34,8 +34,10 @@ const PrivacyPage: NextPageWithLayout = () => {
 
             <h3>How it is collected</h3>
             <p>
-                This site uses Google Analytics and a self-hosted analytics service
-                (AltContext). AltContext stores a randomly generated identifier in your
+                This site uses Google Analytics and AltContext analytics, a service
+                operated by the site owner and hosted on Fly.io. It is separate from the
+                AltContext image-description product. AltContext analytics stores a randomly
+                generated identifier in your
                 browser&rsquo;s localStorage and includes it with usage events, so visits
                 from that browser can be linked. The analytics code does not ask for your
                 name or email address.
@@ -48,7 +50,7 @@ const PrivacyPage: NextPageWithLayout = () => {
                     Google&rsquo;s Privacy Policy
                 </a>.
                 {' '}Google Analytics cookies are not disabled by this site.
-                AltContext runs on infrastructure controlled by the site owner. This page
+                The site owner operates the AltContext analytics application on Fly.io. This page
                 describes the events sent by the browser; server retention and network logs
                 have not been verified for this policy.
             </p>
