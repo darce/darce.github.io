@@ -37,8 +37,11 @@ jobs:
             lib/generated
           key: image-variants-${{ hashFiles('public/images/**', 'scripts/generate-image-variants.js') }}
 
-      - name: Typecheck
+      - name: Typecheck and lint
         run: npm run check
+
+      - name: Test content and components
+        run: npm test
 
   build:
     runs-on: ubuntu-latest
@@ -77,6 +80,21 @@ jobs:
 
       - name: Build with Next.js
         run: npm run build
+
+      - name: Install browser for rendered verification
+        run: npx playwright install --with-deps chromium
+
+      - name: Test rendered site
+        run: npm run test:browser
+
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: |
+            playwright-report
+            test-results
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
