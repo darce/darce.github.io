@@ -1,51 +1,70 @@
 ---
 index: 10
-year: 2021
+year: 2022
 title: 'PhotoShelter: Production Accessibility & Workflow Prototypes'
-subtitle: 'Keyboard interaction, audit remediation, and product prototyping'
-description: 'Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.'
-details: 'At the time of this work, PhotoShelter’s cloud Digital Asset Management platform served 80,000+ users and hosted 1B+ files. I led its WCAG 2.1 audit and front-end remediation, mentored four developers, and built exploratory workflow prototypes with the Chief Architect.'
+subtitle: 'Keyboard interaction, reusable patterns, and product prototyping'
+description: >-
+  Led production accessibility work at PhotoShelter, built keyboard behaviour
+  across Web Components and Shadow DOM, maintained Mocha tests, and developed
+  React workflow prototypes with the Chief Architect and UX team.
+details: >-
+  From September 2018 to February 2022, I worked as a Senior Front-End Developer
+  at PhotoShelter. I led its WCAG 2.1 audit and front-end remediation, mentored
+  four developers, and built exploratory prototypes with the Chief Architect and
+  UX team.
 links:
-- url: http://www.photoshelter.com
-  label: PhotoShelter.com
+  - url: 'http://www.photoshelter.com'
+    label: PhotoShelter.com
 thumbnail:
   src: photoshelter-keyboard-navigation.gif
-  alt: "Keyboard navigation for PhotoShelter's main menu"
+  alt: Keyboard navigation for PhotoShelter's main menu
 images:
-- src: photoshelter-main-menu.png
-  alt: "Main PhotoShelter menu with accessible keyboard navigation"
+  - src: photoshelter-main-menu.png
+    alt: Main PhotoShelter menu with accessible keyboard navigation
 tags:
-- Product R&D
-- Prototyping
-- Accessibility
-- Interaction Design
-- Web Components
-- OpenCV.js
-- Enterprise SaaS
+  - Front-End Development
+  - Accessibility
+  - Web Components
+  - React
+  - Mocha
+  - Jenkins
+  - Interaction Prototyping
+  - OpenCV.js
 ---
+### Keyboard access across the production interface
 
-## Keyboard access across the production interface
+PhotoShelter’s digital asset management platform served more than 80,000 users and hosted over a billion files at the time of this work. Its core menus needed keyboard support. A person who could operate a control with a mouse could encounter a different interface when trying to reach the same control from the keyboard.
 
-PhotoShelter’s core menus needed keyboard support. I led the WCAG 2.1 audit and front-end remediation, addressing unlabeled controls and missing ARIA attributes alongside the deeper navigation problems. The accessibility work helped protect institutional contracts associated with $9.2M in annual recurring revenue (ARR) that were at risk if the product could not demonstrate the required accessibility compliance.
+I led the WCAG 2.1 audit and front-end remediation. Some repairs concerned the information a control exposed: missing labels and ARIA attributes. Others required changes to how focus moved through the interface. Giving a control a name did not make it reachable, and making it reachable did not settle what its keyboard behaviour should be.
+
+That work also addressed a commercial risk. Institutional contracts associated with $9.2M in annual recurring revenue depended on the product demonstrating the required accessibility compliance. The remediation helped reduce the risk to those existing contracts.
 
 ![Keyboard navigation for the main menu](/images/photoshelter-keyboard-navigation.gif)
 
 *Keyboard navigation for PhotoShelter’s main menu.*
 
-Polymer and Web Components put interactive elements inside Shadow DOM boundaries. Focus and keyboard events did not move cleanly across those boundaries. I built a custom keyboard layer to bridge them, keeping menu items reachable as people moved between components.
+The interface used Polymer and Web Components, with interactive elements inside Shadow DOM boundaries. Those boundaries organised the implementation, but keyboard users still needed to move through a menu as a continuous interaction. Focus and keyboard events did not move cleanly between the components.
+
+I built a custom keyboard layer to bridge them. It kept menu items reachable as people moved between components and supported switching between mouse and keyboard without a separate mode. This was behaviour I had to implement across the interface; changing individual controls’ markup would not resolve the navigation problem on its own.
 
 ![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)
 
 *Moving from mouse to keyboard control without a mode switch.*
 
-This work covered the behaviour of the interface as well as its markup. I mentored four developers on accessibility patterns and introduced review checklists for new work, so the team could carry those patterns into later changes.
+### Carrying the patterns into later changes
 
-## A workflow prototype that informed Smart Galleries
+The audit identified repairs in the existing product. New development also needed to use the resulting patterns. I established component conventions and review checklists that the team could apply to later work, and mentored four developers on accessibility practices.
 
-Working with the Chief Architect, I built exploratory prototypes outside the production path. We could try a workflow and expose its integration problems before committing it to production development.
+I also wrote and maintained Mocha tests used in Jenkins CI/CD pipelines. Those tests supported iterative changes to the production application. Together with the component conventions, they gave the team an established process for changing existing code instead of treating each repair as an isolated implementation.
 
-The workflow-automation prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%.
+### A workflow prototype that informed Smart Galleries
 
-## Testing image analysis in the browser
+Alongside the production work, I collaborated with the Chief Architect and UX team on exploratory workflow prototypes. I built a React-based automation prototype so we could try the proposed behaviour and expose integration problems before committing to the production implementation.
 
-I also built an OpenCV.js prototype to compare image blur in the browser, without backend processing. It tested a lightweight image-analysis workflow in a static-file environment and did not ship as a standalone feature.
+That prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%. The estimate concerned the later implementation effort; my work was on the exploratory prototype that informed it.
+
+### Testing image analysis in the browser
+
+I also built an OpenCV.js prototype to compare image blur without sending the analysis to a backend. It let me test a lightweight image-analysis workflow in a static-file environment, where the browser had to do the processing.
+
+The blur experiment remained a prototype and did not ship as a standalone feature.

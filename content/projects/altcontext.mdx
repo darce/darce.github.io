@@ -2,65 +2,78 @@
 index: 3
 year: 2026
 title: AltContext
-subtitle: Use the photograph, confirmed identities, and page context to draft image descriptions
-description: AltContext combines a photograph with a publisher’s named people roster and page context. Editors review
-  the proposed identity and wording before applying the text in WordPress.
-details: I am designing and developing the WordPress interface and supporting services. The product is in development.
+subtitle: >-
+  Use the photograph, confirmed identities, and page context to draft image
+  descriptions
+description: >-
+  Developing a React interface, WordPress integration, and Python services that
+  combine photographs, confirmed identities, and page context for
+  editor-reviewed image descriptions.
+details: >-
+  I am designing and developing AltContext’s React interface, WordPress
+  integration, and supporting recognition and description services. The product
+  is in development.
 links:
-- url: https://demo.altcontext.com/guide/
-  label: Try the public practice guide
+  - url: 'https://demo.altcontext.com/guide/'
+    label: Try the public practice guide
 tags:
-- Product Design
-- Human-AI Interaction
-- Accessibility
-- React
-- TypeScript
-- WordPress
-- Python
+  - Interaction Design
+  - Accessibility
+  - React
+  - TypeScript
+  - WordPress
+  - PHP
+  - Python
+  - FastAPI
 ---
+A description such as “a person singing on a stage” can explain an activity while leaving out who is pictured. On a page about a particular performer, that identity may be important to understanding why the photograph is there.
 
-A description such as “a person singing on a stage” can explain an activity while leaving out who is pictured. When the page concerns a particular performer, that identity may be part of the photograph’s meaning.
+I am building AltContext to bring that publishing context into WordPress image descriptions. The product combines the photograph with a site’s own people roster and information from the page. An editor reviews the proposed identity and the wording before applying the text. The intended benefit is more useful context for blind readers; establishing that benefit with readers is still part of the work ahead.
 
-AltContext is a WordPress product I am designing and building to bring that context into image descriptions. It combines the photograph with identities from a publisher’s named people roster and information from the page. The editor reviews the proposed identity and wording before applying the text. The intended benefit is more useful context for blind readers; the product is still in development.
+### What supports the draft description
 
-## What supports the draft description
+The photograph supplies visual information: a microphone, clothing, or something else visible in the scene. An image model can describe those details without having to identify the person from its general knowledge.
 
-**The photograph** supplies visual information about the scene. An image model may describe a microphone, clothing, or the setting. Those observations provide material for the description without requiring the model to identify the person from general knowledge.
+Names come from the publisher’s roster. In WordPress, an editor associates groups of faces with people and corrects mistaken groupings. A face in a new photograph can then be compared with those site-specific references. The result is a proposed match for review. The naming policy also determines whether a name may be used in the generated text.
 
-**The roster** supplies names the site has established. An editor builds the roster in WordPress by associating groups of faces with people and correcting mistaken groupings. Face matching compares a face in a new image with that site-specific reference. A proposed match still needs review, and the naming policy determines whether a name may be used.
+The page supplies a different kind of information. A caption or surrounding paragraph can explain why the publisher chose an image and which details matter. A performer’s identity may be relevant to an event report, while an article about a garment may need more attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) describes how purpose and context shape an image’s text alternative.
 
-**The page** supplies publishing context, including the image caption and surrounding post. That context helps determine which information matters: a performer’s identity may be important in an event report, while a discussion of a garment may call for attention to the clothing. [W3C’s image guidance](https://www.w3.org/WAI/tutorials/images/) explains how an image’s purpose and context shape its text alternative.
+I keep those sources distinct in the drafting workflow. Mentioning a person in an article does not establish that the person appears in its photograph. The reconciliation step separates visual observations from page or event context before drafting, so background information is not presented as something the image shows.
 
-A name in the article alone cannot establish who is pictured. AltContext’s reconciliation step separates observations from page or event context before drafting, so background information is not presented as visible evidence.
+### Review the proposal before applying it
 
-## Review the proposal before applying it
+The editor first needs enough information to judge the proposed identity. The workflow lets them compare the image with reference photographs and decide whether the person should be named. That decision informs the description, which can then be edited before it is saved.
 
-The proposed identity gives the editor a match to inspect. The editor can compare the image with reference photographs and decide whether the person should be named. That decision informs the draft description, whose wording can then be reviewed or changed before it is applied.
+I separate generation from applying the text. A generated draft is a proposal in the interface; it does not become a stored WordPress description simply because the service returned it. The editor can change the wording or decline a suggested name before applying the result.
 
-The editor can change the draft, decline a suggested name, or apply the reviewed text to WordPress. Generation and storage are separate actions. The workflow also supports a longer description alongside alt text; decorative images can skip generation and use an empty text alternative.
+The workflow also supports a longer description alongside alt text. Decorative images can skip generation and use an empty text alternative. The interface needs to accommodate those publishing decisions alongside the review of generated descriptions.
 
-## Try the decisions in a practice copy
+### Connect the interface to the stored decision
 
-The guided walkthrough uses names and descriptions prepared in advance from a recorded face-match run. Choose whether to use a suggested name or leave each person unnamed. Once both choices are made for a photograph, the suggested description appears in an editable textarea. **Use this description** changes the demo image’s alt text; **Keep the current description** retains it; **Undo this change** restores the original.
+I am responsible for the interaction design and the implementation behind it. The admin interface uses React and TypeScript, with PHP for the WordPress integration and Python/FastAPI for the supporting services. Working across those parts lets me follow an editorial action from the control on screen to the record it changes.
 
-[Open the public practice guide](https://demo.altcontext.com/guide/) without signing in. Recognition is not running during the walkthrough. Changes affect only the demo image on that page and clear when you reload; they do not publish to WordPress.
+The service is designed around tenant-scoped recognition data and API isolation between publishers. I use task briefs and acceptance tests to define the work, and code review as part of the versioned delivery process. An interface change has to be considered alongside the WordPress integration and supporting service it uses.
 
-## Connect the interface to the stored decision
+I also use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-well-as-the-code) to inventory an existing interface or examine a proposed change. The resulting screens and flows can be reviewed by people and AI tools, and findings can be checked in the running interface after implementation. This supports review of structure and behaviour; it does not replace evaluation with editors and readers.
 
-My work covers the interaction design and the implementation behind it. The admin interface uses React and TypeScript, the WordPress integration uses PHP, and the supporting recognition and description services use Python/FastAPI. Working across those parts lets me follow an editorial action from its control on screen to the result that is stored.
+### Try the decisions in a practice copy
 
-I use [WorkBay’s UX-map workflow](/projects/workbay/#review-the-interface-as-well-as-the-code) to inventory the interface and produce screens and flows for review. Review findings guide implementation changes, which I check in the running interface. These reviews address structure and behaviour; evaluation with editors and readers has a different job.
+The [public practice guide](https://demo.altcontext.com/guide/) uses names and descriptions prepared in advance from a recorded run. Recognition is not running while someone uses the guide.
 
-## Make the processing and retention choices explicit
+For each photograph, choose whether to use the suggested names or leave the people unnamed. Once both choices have been made, the prepared description appears in an editable textarea. **Use this description** changes the demo image’s alt text. **Keep the current description** leaves it as it is, and **Undo this change** restores the original.
 
-AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service stores the recognition representations used to compare faces.
+The guide does not require sign-in. Its changes affect only the demo image on that page, clear on reload, and do not publish to WordPress.
 
-Those hosted records have retention settings, export and purge operations, and controls for withholding names from generated text. Recognition data is retained by default unless another retention mode is selected. Export and purge operations leave an audit trail; purging the recognition data does not remove that trail.
+### Make the processing and retention choices explicit
 
-The hosted service and WordPress hold different records: purging recognition data leaves saved WordPress descriptions and the audit trail in place. Saved descriptions also remain available when a new service request cannot run. These controls have not undergone a legal compliance assessment.
+AltContext uses a WordPress host and a hosted processing service. WordPress remains the source of record for names, editorial corrections, and saved descriptions. Recognition and description processing run on Oracle Cloud Infrastructure, so images leave the WordPress host for that work. The hosted service also stores the recognition representations used for face comparison.
 
-## Evaluate the description and the review
+Recognition data is retained by default unless another retention mode is selected. The hosted records have retention settings and export and purge operations, with controls for withholding names from generated text. Export and purge operations leave an audit trail.
 
-The evaluation has two audiences: **readers** who use the description and **editors** who review it. Readers need the text to preserve useful context. Editors need to recognise plausible mistakes and correct them before applying the description.
+Purging hosted recognition data does not erase saved WordPress descriptions or that audit trail. Saved descriptions also remain available when a new service request cannot run. These are separate records with different lifetimes, and the controls have not undergone a legal compliance assessment.
 
-Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. Evaluation with blind readers and editors is still needed to establish whether the descriptions preserve useful context and whether editors can catch plausible mistakes. The implementation has not had an independent security audit.
+### Evaluate the description and the review
+
+Model comparisons have examined whether supplied identities survive into the text and whether page context introduces unsupported claims. Automated checks cover the plugin and services, including accessibility checks on the admin interface. The implementation has not had an independent security audit.
+
+Evaluation with blind readers and editors is still needed. Readers need descriptions that preserve useful context. Editors need to recognise plausible mistakes in a proposed match or a fluent draft and correct them before publication. Those are the outcomes that will establish whether the workflow is useful.

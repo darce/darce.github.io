@@ -2,63 +2,69 @@
 index: 12
 year: 2014
 title: 'MSNBC Video: Browsing Around Continuous Playback'
-subtitle: 'Interaction prototypes and production AngularJS development'
-description: 'Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.'
-details: 'As Senior Design Technologist and Front-End Developer, I proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.'
+subtitle: Interaction prototypes and production AngularJS development
+description: >-
+  Proposed and prototyped browsing around continuous video playback, then helped
+  deliver the responsive AngularJS interface and CMS components with MSNBC’s
+  internal team and external vendors.
+details: >-
+  As Senior Design Technologist and Front-End Developer, I proposed and
+  prototyped the browsing behaviour for MSNBC’s dedicated video experience, then
+  helped deliver the AngularJS interface with the internal team and external
+  vendors.
 links:
-- url: https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study
-  label: Lullabot on the broader MSNBC.com rebuild
+  - url: 'https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study'
+    label: Lullabot on the broader MSNBC.com rebuild
 thumbnail:
   src: msnbc-interface.png
-  alt: MSNBC video player beside a list of latest coverage, with an Up next row below
+  alt: >-
+    MSNBC video player beside a list of latest coverage, with an Up next row
+    below
   position: top
 tags:
-- Interaction Prototyping
-- Interaction Design
-- Prototyping
-- Front-End
-- AngularJS
-- Drupal
-- Media Platform
+  - Interaction Prototyping
+  - Interaction Design
+  - Front-End Development
+  - AngularJS
+  - Drupal
+  - Media Products
 ---
-## A dedicated video experience after the site rebuild
+### A dedicated video experience after the site rebuild
 
-MSNBC.com had recently been rebuilt on Drupal following the Microsoft/NBC split. [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) describes the broader site as a ground-up rebuild that launched in October 2013. Once that site was live, the network needed a dedicated video experience.
+MSNBC needed viewers to be able to look for another story while continuing to watch live or archived coverage. Leaving the viewing page to browse would interrupt that activity. During a live broadcast, the programme could move on while someone was deciding what to watch next.
 
-The new surface had to support watching live and archived coverage while discovering what to watch next. Browsing needed to stay on the viewing page so the stream could continue while someone chose what to watch next.
+The dedicated video experience followed the broader MSNBC.com rebuild, which [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) dates to October 2013. My work concerned the video interface and components for the in-house CMS. The full site redesign was a separate team effort.
 
-My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. The prototypes had to settle interface behaviour in time for production development.
+<h3 id="my-role">Working prototypes before production</h3>
 
-## My role
+I worked with MSNBC’s internal team, external vendors, and stakeholders, first proposing interactions in functional prototypes and then helping implement the agreed behaviour. We had a hard six-month launch deadline, so the prototypes needed to settle questions that would otherwise carry into production development.
 
-I proposed interface behaviour in functional prototypes and implemented front-end patterns for production. The prototypes gave the team a way to try a proposal before deciding how to build it.
+I used the prototypes to make the behaviour visible. A static layout could show a player beside a discussion panel. A working version let the team see what happened to the player’s width when that panel opened, and whether browsing still worked while a video was running. We went through several iterations before carrying the agreed interactions into the production AngularJS interface.
 
-I worked with MSNBC’s internal team, external vendors, and stakeholders. My remit covered the dedicated video experience and the AngularJS components I contributed to the in-house CMS, integrated with the Drupal backend. The broader MSNBC.com redesign was a separate team effort.
+<h3 id="the-video-platform">Collapsible panels around a running player</h3>
 
-## The video platform
+<span id="from-concept-to-working-prototypes"></span>
 
-### From concept to working prototypes
+My proposal gave the content around the player its own collapsible panels. A viewer could open the discussion, scan the latest coverage, or close the surrounding panels to watch at full width. The player continued running while those browsing choices changed.
 
-I prototyped ways to browse coverage and comments around a running player. After several iterations with stakeholders, I helped carry the agreed interactions into the production AngularJS interface.
+Comments sat beside the video and could be dismissed. An “Up next” row below the player placed the next viewing choice near the current clip, while the adjacent video list offered a broader route through the coverage. These controls supported different amounts of browsing without requiring the viewer to leave the page.
 
-### Collapsible panels around a running player
+<h3 id="collapsible-panels-around-a-running-player">Adapting the browsing layout to the screen</h3>
 
-My proposal was to give the surrounding content its own collapsible panels. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
+The panels also had to work within responsive layouts. A desktop could accommodate horizontal video rows beside a large player. At narrower widths, recommendations moved into vertical lists while the video remained prominent.
 
-Comments sat beside the player and could be dismissed. The prototype made that arrangement testable within the page, including what happened to the player’s width as panels opened and closed.
-
-In live coverage that continuity mattered most, because the broadcast could move on while someone was choosing another story. An “Up next” row below the player brought the next viewing choice close to the current clip, and the adjacent video list provided a broader route through coverage.
-
-The responsive layouts kept the player prominent as the available width changed. Desktop had room for horizontal video rows and a side panel; narrower layouts placed recommendations into vertical lists. The arrangement let browsing adapt to the screen while keeping the current video central.
+I worked through those arrangements in the prototypes and helped carry them into the production interface. The desktop arrangement could not simply shrink to fit. The surrounding recommendations needed a different layout while the player retained its place as the main activity.
 
 ![MSNBC video interface with a large player, clip details and an Up next row on the left, and a list of latest videos on the right.](/images/msnbc-interface.png)
 
-*Surviving interface capture, from December 2016 rather than launch day. The player, next-video choices, and broader browsing list share the same viewing surface.*
+*Surviving interface capture from December 2016, rather than launch day. The player, next-video choices, and broader browsing list share the same viewing surface.*
 
 ![MSNBC video mockup showing phone, tablet and desktop layouts: the player remains prominent, recommendations stack at narrower widths, and a discussion panel sits beside the desktop player.](/images/msnbc-watch-full-mockup.webp)
 
 *Responsive interface mockup showing the player and surrounding content at different screen widths.*
 
-### Through production to launch
+<h3 id="through-production-to-launch">Through production to launch</h3>
 
-The video platform launched on schedule within the six-month window. According to my project record, meeting that deadline helped avert the partner-litigation risk associated with a delayed launch.
+My implementation work included AngularJS components for the in-house CMS, integrated with its Drupal backend. I stayed involved as the interaction proposals became production code, working within the responsibilities shared by the internal team and vendors.
+
+The video platform launched within the six-month window. A delayed launch carried a risk of partner litigation; delivering on schedule helped avoid that risk. My contribution extended from proposing the interaction through prototyping and front-end implementation on the team that delivered it.

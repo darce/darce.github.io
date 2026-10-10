@@ -3,35 +3,49 @@ index: 20
 year: 2017
 title: 'Apple: iPhone X Launch & Marketing Tooling'
 subtitle: Responsive front-end implementation and campaign automation
-description: Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
-details: Contracted with Apple’s marketing team in Sunnyvale to support the iPhone X launch, building responsive landing pages, a CSS-animated email campaign, and CLI tools that streamlined campaign production workflows.
+description: >-
+  Implemented responsive iPhone X launch pages from supplied designs, developed
+  a CSS-animated email campaign, and automated campaign build, preview, and
+  deployment steps.
+details: >-
+  I contracted with Apple’s marketing team in Sunnyvale from July 2017 to March
+  2018, working on iPhone X launch pages and the tools used to prepare email
+  campaigns.
 links:
-- url: https://web.archive.org/web/20180101231024/https://www.apple.com/iphone-x/
-  label: iPhone X (Web Archive)
+  - url: 'https://web.archive.org/web/20180101231024/https://www.apple.com/iphone-x/'
+    label: iPhone X (Web Archive)
 thumbnail:
   src: iphonex.png
-  alt: iPhone X launch page, November 2017
+  alt: 'iPhone X launch page, November 2017'
   position: bottom left
   scale: 1.25
 images:
-- src: iphonex.png
-  alt: iPhone X launch page, November 2017
+  - src: iphonex.png
+    alt: 'iPhone X launch page, November 2017'
 tags:
-- Front-End
-- CSS3 Animations
-- Sass
-- JavaScript
-- Node.js
-- Bash
-- Gulp
-- Marketing Engineering
+  - Front-End Development
+  - Responsive Layout
+  - CSS Animation
+  - JavaScript
+  - Node.js
+  - Bash
+  - Gulp
+  - Campaign Tooling
 ---
-## iPhone X launch pages
+### iPhone X launch pages
 
-I worked with Apple’s marketing and design teams to build responsive landing pages for the iPhone X launch in November 2017. I translated the team’s static design specifications into responsive front-end code under the launch deadlines.
-## CSS-animated email campaign
+For the November 2017 iPhone X launch, I worked with Apple’s marketing and design teams to turn static design specifications into responsive landing pages. The designs established the visual treatment. My responsibility was to make that treatment work in the browser under the launch deadlines.
 
-I prototyped and developed a CSS-animated direct email campaign. CSS supplied the motion without JavaScript; implementation had to account for differences between email clients.
-## Campaign tooling
+I had to preserve the intended composition as the available width changed. The supplied layouts established the visual target; responsive code had to account for the sizes between them as well. My part of the launch was that implementation, working from the design team’s specifications.
 
-Campaign production involved repeated manual steps. I built command-line tools in Node.js, Bash, and Gulp to automate builds, previews, and deployment, giving the team a repeatable way to prepare an email campaign.
+### CSS-animated email campaign
+
+I also prototyped and developed a CSS-animated direct email campaign. The email itself carried the motion, without JavaScript. That introduced a different implementation constraint from the web pages: email clients varied in the CSS they supported.
+
+I used the prototype to work through the motion before developing the campaign implementation. Email-client compatibility was part of that work: an animation that worked on a web page still had to be considered within the more restricted environment of an email.
+
+### Campaign tooling
+
+Preparing campaigns involved repeated build, preview, and deployment steps. I wrote command-line tools in Node.js, Bash, and Gulp to automate that preparation and give the team a repeatable production process.
+
+The automation replaced repeated manual preparation with defined commands. It gave the team a way to prepare another campaign through the same build and preview process, with deployment steps included in the tooling.

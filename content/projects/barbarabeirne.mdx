@@ -1,59 +1,69 @@
 ---
 index: 40
-year: 2023, 2026
+year: 2026
 title: 'barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh'
-subtitle: Artist Archive / Portfolio
-description: Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
-details: In 2023, I recovered Barbara Beirne’s photographs from a compiled Flash file and rebuilt the site. In 2026, I rewrote it with Web Components, including keyboard navigation and a full-screen image carousel.
+subtitle: Recovering the photographs and rebuilding their web presentation
+description: >-
+  Recovered the images embedded in Barbara Beirne’s defunct Flash site in 2023,
+  then rebuilt its web presentation with Web Components, keyboard navigation,
+  and a full-screen carousel in 2026.
+details: >-
+  This project began with recovering photographs from a non-functional Flash
+  site in 2023. I rebuilt the portfolio around the recovered images, then
+  returned in 2026 to implement a Web Components version with keyboard
+  navigation and a full-screen carousel.
 links:
-- url: http://barbarabeirne.com/
-  label: Live Site
+  - url: 'http://barbarabeirne.com/'
+    label: Live Site
 thumbnail:
   src: barbara-beirne.jpg
   alt: A boy holding a rock to his ear. Image by Barbara Beirne
   position: top
 images:
-- src: barbara-beirne.jpg
-  alt: A boy holding a rock to his ear. Image by Barbara Beirne
+  - src: barbara-beirne.jpg
+    alt: A boy holding a rock to his ear. Image by Barbara Beirne
 tags:
-- Web Components
-- JavaScript
-- Sass
-- Rollup
-- Accessibility
-- Archive Recovery
+  - Web Components
+  - JavaScript
+  - Sass
+  - Rollup
+  - Accessibility
+  - Archive Recovery
 ---
-## Recovering a Flash archive in 2023
+### Recovering a Flash archive in 2023
 
-Barbara Beirne's photography archive lived entirely inside a Flash website that had stopped working years ago. The original source files and developer were unavailable. In 2023, I was brought in to recover the images and rebuild the site.
+Barbara Beirne’s photography archive was held inside a Flash website that had stopped working years earlier. The original source files were unavailable, and the original developer could not be brought back into the project. Before I could rebuild the portfolio, I needed to recover the photographs from the published site.
 
-## Recovering the images
+The surviving file was a compiled `.SWF`. It contained the images, but it was not an editable source project or a folder of photographs ready to move into a new website. That made asset recovery the first part of the development work.
 
-The images were embedded in a compiled .SWF binary file. I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract usable assets from the binary. It took some work to get clean exports, but the tool pulled the full image set.
+### Recovering the images
 
-![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)*Image extracted from a .SWF file using FFDec*
+I used [FFDec](https://blog.free-decompiler.com/), an open-source Flash decompiler, to extract the images embedded in the binary. Getting clean exports took additional work, but I recovered the full embedded image set and used it for the initial rebuild.
 
-## Rebuilding with Web Components in 2026
+![Black and white image of three Cambodian teens standing in front of high school lockers](/images/barbara-beirne-extracted-image.png)
 
-In 2026, I rewrote the live site with Web Components and JavaScript, using Rollup for the build and Sass for styling. The full-screen image carousel and navigation support keyboard interaction. Keeping the presentation in web components gave the archive a browser-based foundation for later maintenance.
+*Image extracted from the compiled Flash file using FFDec.*
 
-## Presenting her images
+Recovering those assets gave the project usable photographs again. It also let the new site present the work without depending on the Flash application that had previously contained it.
 
-Barbara's images carry a lot of weight. We decided that a minimal, stark design would frame her work best.
+### Rebuilding with Web Components in 2026
+
+I returned to the site in 2026 and rewrote it with Web Components and JavaScript, using Rollup for the build and Sass for styling. This was a later implementation pass on the recovered archive, separate from the 2023 recovery and initial rebuild.
+
+I implemented keyboard interaction for the navigation and full-screen carousel. Visitors could use those parts of the interface without relying on a mouse.
+
+### Presenting her images
+
+We chose a minimal, stark design to give Barbara’s photographs room. The navigation and viewing controls had to support looking through the archive without dominating the page.
+
+The full-screen carousel provides a larger view of a photograph, while the navigation supports moving through the archive. That made room for sustained viewing as well as moving on to the next photograph.
 
 ![A group of children climbing on a large pile of debris, one waving the Ulster Banner. Image by Barbara Beirne](/images/barbara-beirne-custom-carousel-belfast-8.jpg)
 
-## Feedback on the 2023 recovery
+### Feedback on the 2023 recovery
 
-Alison Cornyn supplied this testimonial in June 2023, after the recovery and initial rebuild:
+Alison Cornyn, an artist and the co-founder and creative director of Picture Projects, wrote after the recovery and initial rebuild:
 
-> "Daniel is exceptional. He was charged with recreating a photo website built initially in Flash that had long been non-functional.
-Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.
-The site is responsive and works seamlessly on all platforms and browsers.
-Most importantly, Daniel is truly a pleasure to work with. He is a great communicator, delivers on time, is a perfectionist -- in the best sense of the word - and is thoughtful and considerate.
-I had no references to go by when we hired Daniel and couldn't be more pleased with his work."
->> *Alison Cornyn*
+> “Daniel came up with suggestions and solutions that were beyond what the original site had and brought it all to life.”
 
->> *Artist + Co-Founder and Creative Director Picture Projects*
-
->> *June 13, 2023*
+*Alison Cornyn, June 13, 2023.*

@@ -2,34 +2,47 @@
 index: 50
 year: 2023
 title: 'bauhausdances.org: Visual Identity & Custom WordPress Theme'
-subtitle: Arts & Film (Independent)
-description: Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
-details: Debra McCall supplied the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. I developed the site’s visual treatment from the Hoop Dance sequence and built a custom WordPress theme with self-hosted video.
+subtitle: 'Visual design drawn from the films, implemented in WordPress'
+description: >-
+  Designed a film-derived visual treatment and built a custom WordPress theme
+  for Debra McCall’s Bauhaus Dances, with self-hosted video and caching.
+details: >-
+  Debra McCall supplied the films of her 1982 reconstruction of Oskar
+  Schlemmer’s Bauhaus Dances. I designed and built their web presentation in
+  2023, including the visual treatment and a custom WordPress theme.
 links:
-- url: http://bauhausdances.org
-  label: Launch Project
+  - url: 'http://bauhausdances.org'
+    label: Launch Project
 images:
-- src: bauhaus-dances.png
-  alt: Bauhaus Dances site inspired by the Hoop Dance sequence
+  - src: bauhaus-dances.png
+    alt: Bauhaus Dances site inspired by the Hoop Dance sequence
 tags:
-- WordPress
-- Custom Theme
-- PHP
-- CSS Animation
-- JavaScript
-- Video
-- Accessibility
+  - Visual Design
+  - WordPress
+  - Custom Theme
+  - PHP
+  - CSS Animation
+  - JavaScript
+  - Self-Hosted Video
 ---
-## A visual treatment drawn from the films
+### A visual treatment drawn from the films
 
-Filmmaker Debra McCall wanted a new website for the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. She supplied the films; I designed and implemented their web presentation.
+Debra McCall wanted a new website for the films of her 1982 reconstruction of Oskar Schlemmer’s Bauhaus Dances. She supplied the films. My work was to develop their web presentation and build a site she could manage independently.
 
-The visual direction grew out of the film’s Hoop Dance sequence, where white rings create stark geometric forms against a dark stage. I used that imagery as the basis for the site’s visual system and interaction language.
+The visual direction came from the Hoop Dance sequence. White rings form changing geometric arrangements around the dancer against a dark stage. I used those rings as the basis for the site’s visual treatment and interaction language, connecting the surrounding design to a specific passage in the films.
 
-![Reinfentanz performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
+![Hoop Dance performance. A dancer stands on one foot with her left foot stretched back, holding five white rings. Two rings form concentric circles near her head, three form concentric circles below her hips.](/images/bauhaus-dances-hoop-dance.jpg)
 
-A subtle ring-based interaction, derived from the Hoop Dance imagery, adds motion without overpowering the content.
+A subtle ring-based interaction carries that idea into the interface. The motion refers back to the filmed performance while leaving the films as the main material to watch. The same film sequence therefore informed both the graphic treatment and the motion I implemented.
 
-## Implementation
+<h3 id="implementation">A custom WordPress theme for the films</h3>
 
-I built a custom WordPress theme on top of [Underscores](https://underscores.me/) so the client could manage content independently. I implemented self-hosted video and caching, so the film presentation did not depend on third-party embeds.
+I built the site as a custom WordPress theme using [Underscores](https://underscores.me/) as the starting point. The theme combined PHP with JavaScript and CSS animation. WordPress provided the content-management interface, while the custom theme let me implement the film-derived design.
+
+That separation mattered for the handover. The visual treatment could be specific to this project without requiring the client to return to the code for routine content management. The client could manage the content through WordPress while the theme controlled its presentation.
+
+### Self-hosted video
+
+I implemented self-hosted video so the presentation did not depend on third-party embeds. I also added caching to support delivery of the media-heavy site.
+
+The result was a WordPress site built around McCall’s supplied films, with their presentation and supporting content under the site’s own management.

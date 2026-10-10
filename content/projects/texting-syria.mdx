@@ -2,33 +2,42 @@
 index: 30
 year: 2014
 title: 'Texting Syria: An Exhibition Across Photographs and Phones'
-subtitle: SMS development for Liam Maloney’s photography installation
+subtitle: PHP and Twilio development for Liam Maloney’s installation
 description: >-
-  I built the PHP and Twilio application for Liam Maloney’s Texting Syria,
-  delivering messages from recorded conversations to visitors’ own phones.
+  Built the PHP and Twilio application for Liam Maloney’s Texting Syria
+  installation, delivering previously recorded messages to exhibition visitors’
+  phones.
 details: >-
-  In 2014, I built the SMS application for photographer Liam Maloney’s Texting
-  Syria. Liam supplied the photographs, text, and translations. I developed the
-  software that delivered those messages to visitors’ own phones during the
-  exhibition.
+  In 2014, I developed the PHP and Twilio application for Texting Syria. Liam
+  supplied the photographs, text, and translations; I built the software that
+  delivered the exhibition’s messages.
 links:
-- url: https://photoville.com/projects/texting-syria/
-  label: Photoville exhibition record
+  - url: 'https://photoville.com/projects/texting-syria/'
+    label: Photoville exhibition record
 tags:
-- Exhibition
-- Interaction Development
-- SMS
-- Documentary Photography
+  - Exhibition
+  - Interaction Development
+  - PHP
+  - Twilio
+  - SMS
+  - Documentary Photography
 ---
+### Bringing the conversations into the exhibition
 
-## Bringing the conversations into the exhibition
+Liam Maloney photographed Syrians who had fled to Lebanon and were using their phones to keep in touch with family in Homs. His installation paired those photographs with text messages received at the time they were taken. The [Moving Walls collection](https://www.movingwalls.org/moving-walls/23/texting-syria.html) includes the photographs and exchanges translated from Arabic.
 
-Liam photographed Syrians who had fled to Lebanon and were keeping in touch with family in Homs by phone. The installation brought those photographs together with messages received at the time they were taken.
+The messages gave visitors words that the photographs could not show on their own. To bring those exchanges into the exhibition, I built an application that sent them to visitors’ phones through an SMS service.
 
-I wrote the application in PHP and integrated the Twilio API. Visitors connected to the exhibition’s SMS service and received a sequence of texts drawn from those earlier exchanges. Their own text-message inbox was the interface.
+### Building the SMS application
 
-## The visitor’s phone as part of the installation
+I wrote the application in PHP and integrated the Twilio API for message delivery. A visitor connected to the exhibition’s SMS service and received a sequence of texts drawn from the documented exchanges.
 
-Using SMS made the visitor’s own phone part of the exhibition. The photographs showed people keeping in touch with family elsewhere; the messages brought the words of those exchanges onto a device the visitor used for their own conversations.
+These were previously collected messages. Receiving them did not open a live conversation with the people in the photographs. Liam supplied the content and translations, and my work covered the software that made the SMS experience function.
 
-Texting Syria was exhibited at [Photoville New York in 2016](https://photoville.com/projects/texting-syria/). Liam’s photographs and artist statement are also documented in [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html).
+### The visitor’s phone as part of the installation
+
+The visitor read the texts in their own message inbox, where they would ordinarily receive messages from people they knew. That familiar interface became part of the installation alongside the photographs on display.
+
+The application connected the exhibition material to that everyday act of receiving a message. It used the phone already in the visitor’s hand as the place where the written exchange appeared.
+
+Texting Syria was exhibited at Photoville New York in 2016. Its [exhibition record](https://photoville.com/projects/texting-syria/) credits Liam Maloney, with coding by Daniel Arce. The [Moving Walls 23 artist statement](https://www.movingwalls.org/moving-walls/23/texting-syria.html) describes Liam’s documentary intent and the larger body of work to which the installation belongs.

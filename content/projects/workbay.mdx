@@ -3,37 +3,44 @@ index: 15
 year: 2026
 title: WorkBay
 subtitle: Keep coding tasks and review history available across AI sessions
-description: WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions
-  can retrieve the record across supported AI coding tools.
-details: I built WorkBay for my own AI-assisted development practice. Its public source documents the workflow and
-  state model.
+description: >-
+  Built WorkBay to preserve task decisions, review findings, and test evidence
+  across AI coding sessions, with SQLite records, MCP retrieval, and checks on
+  the normal Git development path.
+details: >-
+  I began WorkBay in June 2026 for my own AI-assisted development practice. Its
+  public source documents the task database, review workflow, and checks on the
+  normal Git development path.
 links:
-- url: https://github.com/darce/workbay
-  label: WorkBay on GitHub
+  - url: 'https://github.com/darce/workbay'
+    label: WorkBay on GitHub
 thumbnail:
   src: arp-collage-squares-laws-of-chance-1916.jpg
   alt: Blue and white rough-edged rectangles spaced across a grey paper background.
-  caption: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
-    paper on paper. Museum of Modern Art, New York. Public domain.
+  caption: >-
+    Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the
+    Laws of Chance), 1916–17. Torn-and-pasted paper on paper. Museum of Modern
+    Art, New York. Public domain.
   position: center
 masthead:
   src: arp-collage-squares-laws-of-chance-1916.jpg
   alt: Blue and white rough-edged rectangles spaced across a grey paper background.
-  caption: Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the Laws of Chance), 1916–17. Torn-and-pasted
-    paper on paper. Museum of Modern Art, New York. Public domain.
+  caption: >-
+    Jean (Hans) Arp, Untitled (Collage with Squares Arranged According to the
+    Laws of Chance), 1916–17. Torn-and-pasted paper on paper. Museum of Modern
+    Art, New York. Public domain.
   position: center
 tags:
-- Developer Tooling
-- AI-Assisted Development
-- Interaction Design
-- MCP
-- Python
-- SQLite
+  - Developer Tooling
+  - AI-Assisted Development
+  - MCP
+  - Python
+  - SQLite
+  - Review Workflows
 ---
+I move coding work between AI tools and sessions. While developing projects such as [AltContext](/projects/altcontext/), I found that a recap could describe a task as nearly finished while leaving out the review finding that still blocked it. The next session needed the finding and its evidence, not just an account of progress.
 
-WorkBay keeps the state of a coding task outside any one AI conversation. It preserves recorded decisions and unfinished review findings so a later session can resume the work, including when I switch between supported coding tools.
-
-I built WorkBay while developing projects such as [AltContext](/projects/altcontext/). A recap could say that a task was nearly finished while leaving out the finding that still blocked it. I needed the next session to retrieve that finding and its evidence, not infer the remaining work from a general account of progress.
+I built WorkBay to keep that record outside the conversation. It stores the active task and the decisions made against it, along with review findings and test evidence. A later session can retrieve what remains unresolved, including when I change coding tools.
 
 <Diagram
     src="/images/projects/workbay-journey.svg"
@@ -41,35 +48,37 @@ I built WorkBay while developing projects such as [AltContext](/projects/altcont
     caption="The task record carries decisions, findings, and evidence through the development workflow."
 />
 
-## Keep a record the next session can use
+### Keep a record the next session can use
 
-Each repository has a SQLite database at `.task-state/handoff.db`. The database holds the task record: what is active, which decisions have been made, what the reviews found, and which checks were run.
+Each repository has a SQLite database at `.task-state/handoff.db`. A task identifies the work, its branch, and its working copy. Decisions preserve their rationale. Review findings retain their severity and resolution status, while test records keep commands and results.
 
-A task identifies the work. Under it, decisions keep their rationale, findings keep their severity and resolution status, and test records keep commands and results. A later session can look up the unresolved finding before changing the code it concerns.
+A session loads a selected context packet from that database. The packet gives it relevant recorded history without requiring the entire earlier conversation. Optional semantic retrieval can find an older decision when the new question uses different wording.
 
-A session loads a selected context packet from the database. That packet brings recorded history into the current conversation without requiring the whole history to be repeated. Optional semantic retrieval supplies another way to find earlier decisions when the current question uses different words.
+I keep retrieval separate from approval. Finding a similar earlier fix can help a session decide what to inspect, but it cannot close a review finding or authorise a merge. The retrieved record has to be considered against the code being changed now.
 
-The retrieved records remain material to inspect. Similarity can suggest that an earlier fix is relevant; it cannot itself close a finding or authorise a merge.
+### Resume in another coding tool
 
-## Resume in another coding tool
+WorkBay exposes the database through Model Context Protocol (MCP) tools. Supported clients include Claude Code, Codex, Cursor, and VS Code Copilot. They can read the same project record even though they do not share a conversation.
 
-WorkBay exposes the same project record to supported tools, including Claude Code, Codex, Cursor, and VS Code Copilot. A session in another tool can retrieve the decisions and findings that the earlier session left behind.
+This makes a change of tool less dependent on access to the previous tool’s transcript. It also helps after a long session has compressed its context: WorkBay can reload the recorded state from the database.
 
-That continuity concerns recorded state. The tools still have different setup requirements and capabilities, and reasoning that was never recorded does not become available simply because the database exists. The recorded history gives the new session a starting point without relying on access to the earlier conversation.
+The continuity is limited to what was recorded. Authentication, available tools, and model capabilities still differ between clients, and unrecorded reasoning does not reappear. The useful property is that changing a coding tool does not mean abandoning the project’s accumulated task and review history.
 
-## Carry a review finding through to a change
+### Carry a review finding through to a change
 
-An authoring agent can submit work to a reviewing agent without sharing its conversation. The reviewer records findings against the task. Those findings remain available after the review session ends, so the author can retrieve them and address the changes they call for.
+An authoring agent can submit work to a reviewing agent without passing over its conversation. The reviewer writes findings against the task. When the author resumes, those findings are available to address rather than buried in a separate review transcript.
 
-A finding’s commit references connect its resolution to the code history. The next reviewer can inspect that history rather than accept a summary saying the problem was fixed. Checks on the normal development path use the recorded state before work is merged.
+A finding carries commit references for the fix on the branch and its later merge. That lets another reviewer inspect the code history behind a reported resolution. The review gate checks for unresolved high- and medium-severity findings, including whether a finding has been explicitly deferred or otherwise given an allowed disposition.
 
-Git hooks enforce parts of that path while they are installed and configured. They are not a security boundary against an unrestricted shell. WorkBay also supports bounded work in separate working copies, with review and merge authority kept outside the worker.
+I also moved routine task operations into commands that can run without a model turn. Creating a working copy, checking merge readiness, and closing a task do not need an agent to improvise the bookkeeping. Git hooks check the normal development path while they are installed and configured. An unrestricted shell can disable or bypass them; they are not a security boundary.
 
-<h2 id="review-the-interface-as-well-as-the-code">Review the interface as well as the code</h2>
+For self-contained work, WorkBay can hand a bounded task to another backend under a token cap. That worker does not merge its own changes. Review and merge authority remain outside the worker, so producing a change and accepting it are separate steps.
 
-Interface review needs more than a code diff. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory records the screens and their regions, the states each region can show, and the actions and flows that connect them.
+<h3 id="review-the-interface-as-well-as-the-code">Review the interface as well as the code</h3>
 
-That inventory can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can review these representations against [Heuristics Canon](/research/heuristics-canon/). The resulting findings can be added to the task record, addressed in the implementation, and checked again after the change.
+A code review may miss a problem that only becomes apparent when the interface is considered as a sequence of screens and states. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory describes screen regions, the states they can show, and the actions and flows between them.
+
+It can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can inspect these representations against [Heuristics Canon](/research/heuristics-canon/). Findings can then be attached to the task, addressed in implementation, and checked again after the change.
 
 <Diagram
     src="/images/projects/workbay-uxmap.svg"
@@ -77,14 +86,12 @@ That inventory can be rendered as ASCII screens, Mermaid flow diagrams, and Mark
     caption="The UX-map workflow makes the inventory and review material inspectable before implementation."
 />
 
-The workflow separates **validation**, **rendering**, and **critique**. Validation checks whether the map has an acceptable structure. Rendering makes that structure readable in different forms. Critique asks whether particular decisions need attention; it does not implement the answers. A limited automated check pack can also flag issues such as an action pointing to a nonexistent screen.
+Validation checks whether the map has an acceptable structure. Rendering makes it readable, while critique considers the decisions represented in it. A limited automated check pack can catch an action pointing to a nonexistent screen. None of those operations implements the proposed repair or establishes that the interface will work for its users.
 
-The public WorkBay repository includes the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany an explanation of a product.
+The public WorkBay repository contains the workflow instructions. The renderer and critique implementation belong to a companion Design Canvas package outside the public mirror. The [VSW interaction reference](/research/visual-search-workbench-screen-reference/) shows how text drawings can accompany a product explanation.
 
-## Use and evaluation
+### Use and evaluation
 
-I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. Its source documents persistence, retrieval, and checks against the recorded state; the linked research examines that mechanism and proposes how to measure its effect.
+I use WorkBay in my own development practice. Wider adoption and quantified effort savings have not been established. The useful evidence available so far concerns persistence, retrieval, and checks against the recorded state.
 
-[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes its use. [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation.
-
-Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
+[Project Memory Outside the Conversation](/research/agent-memory/) explains the mechanism. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) follows its use, and [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) sets out the proposed evaluation. Installation instructions and current package details are in the [WorkBay repository](https://github.com/darce/workbay).
