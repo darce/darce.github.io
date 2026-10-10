@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test'
 import tokens from '../../design-tokens/portfolio.tokens.json'
 
-test('PhotoShelter evidence alternates sides and wraps nearby prose when there is room', async ({ page }) => {
+test('PhotoShelter keeps narrative continuity around alternating evidence', async ({ page }) => {
     await page.goto('/projects/photoshelter/')
+    await page.evaluate(() => document.fonts.ready)
     const article = page.getByRole('article')
     const figures = article.locator('figure[data-layout="inset"]')
     await expect(figures).toHaveCount(3)
@@ -22,29 +23,24 @@ test('PhotoShelter evidence alternates sides and wraps nearby prose when there i
     }
 
     if (wraps) {
-        // Real text-line positions distinguish wrapping from a two-column box.
-        for (const figure of (await figures.all()).slice(1)) {
-            const geometry = await figure.evaluate(element => {
-                const next = element.nextElementSibling!
-                const range = document.createRange()
-                range.selectNodeContents(next)
-                const line = range.getClientRects()[0]
-                return {
-                    figure: element.getBoundingClientRect().toJSON(),
-                    image: element.querySelector('img')!.getBoundingClientRect().toJSON(),
-                    line: { x: line.x, y: line.y, right: line.right },
-                    side: getComputedStyle(element).float,
-                }
-            })
-            expect(geometry.line.y).toBeLessThan(geometry.image.bottom)
-            if (geometry.side === 'left') expect(geometry.line.x).toBeGreaterThan(geometry.figure.right)
-            else expect(geometry.line.right).toBeLessThan(geometry.figure.left)
-        }
-    }
+        // A second paragraph must continue beside the first GIF, rather than
+        // waiting for an image-and-paragraph row to finish.
+        const firstGif = (await figures.nth(1).boundingBox())!
+        const nextParagraph = article.locator('p').filter({ hasText: /^I built a custom keyboard layer/ })
+        const firstLine = await nextParagraph.evaluate(element => {
+            const range = document.createRange()
+            range.selectNodeContents(element)
+            const line = range.getClientRects()[0]
+            return { x: line.x, y: line.y }
+        })
+        expect(firstLine.y).toBeGreaterThan(firstGif.y)
+        expect(firstLine.y).toBeLessThan(firstGif.y + firstGif.height)
+        expect(firstLine.x).toBeGreaterThan(firstGif.x + firstGif.width)
 
-    const finalFigure = (await figures.last().boundingBox())!
-    const nextSection = (await article.getByRole('heading', { name: 'Carrying the patterns into later changes' }).boundingBox())!
-    expect(nextSection.y).toBeGreaterThanOrEqual(finalFigure.y + finalFigure.height)
+        const lastImage = (await figures.last().locator('img').boundingBox())!
+        const nextSection = (await article.getByRole('heading', { name: 'Carrying the patterns into later changes' }).boundingBox())!
+        expect(nextSection.y).toBeLessThan(lastImage.y + lastImage.height)
+    }
 })
 
 test('shared case studies preserve the full canvas and limit standalone prose', async ({ page }, testInfo) => {
@@ -63,6 +59,7 @@ test('shared case studies preserve the full canvas and limit standalone prose', 
         expect(canvas.width).toBeCloseTo(available, 0)
         const paragraphs = body.locator('[data-figure-start] > p:not(:has(img, picture))')
         expect(await paragraphs.count()).toBeGreaterThan(0)
+        const hasWrappingImage = await body.locator('figure[data-layout="inset"]').evaluateAll(elements => elements.some(element => getComputedStyle(element).float !== 'none'))
         const type = await paragraphs.evaluateAll(elements => elements.map(element => {
             const font = getComputedStyle(element)
             const canvas = document.createElement('canvas')
@@ -71,7 +68,7 @@ test('shared case studies preserve the full canvas and limit standalone prose', 
             return { width: element.getBoundingClientRect().width, character: ctx.measureText('0').width, leading: Number.parseFloat(font.lineHeight) / Number.parseFloat(font.fontSize) }
         }))
         for (const paragraph of type) {
-            expect(paragraph.width / paragraph.character).toBeLessThanOrEqual(75)
+            if (!hasWrappingImage) expect(paragraph.width / paragraph.character).toBeLessThanOrEqual(75)
             expect(paragraph.leading).toBeGreaterThanOrEqual(1.4)
         }
         if (route === '/projects/photoshelter/' && testInfo.project.name === 'desktop') {
@@ -83,6 +80,81 @@ test('shared case studies preserve the full canvas and limit standalone prose', 
             await expect(caption).toHaveCSS('opacity', '1')
         }
     }
+})
+
+test('full-size evidence opens an enlarged modal with zoom and keyboard dismissal', async ({ page }) => {
+    await page.goto('/projects/photoshelter/')
+    const originalURL = page.url()
+    const originalPages = page.context().pages().length
+    const originalOverflow = await page.evaluate(() => document.body.style.overflow)
+    const opener = page.getByRole('button', { name: 'View full size: Keyboard navigation for the main menu', exact: true })
+    for (const theme of ['light', 'dark']) {
+        if (theme === 'dark') await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+        await opener.scrollIntoViewIfNeeded()
+        const inlineImage = page.getByRole('article').locator('img[alt="Keyboard navigation for the main menu"]')
+        await expect.poll(() => inlineImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
+        const inlineWidth = (await inlineImage.boundingBox())!.width
+        await opener.click()
+        const dialog = page.getByRole('dialog', { name: 'Keyboard navigation for the main menu', exact: true })
+        await expect(dialog).toBeVisible()
+        await expect(dialog).toHaveCSS('font-family', await page.getByRole('article').evaluate(element => getComputedStyle(element).fontFamily))
+        await expect(dialog.getByRole('button', { name: 'Close', exact: true })).toBeFocused()
+        expect(page.url()).toBe(originalURL)
+        expect(page.context().pages()).toHaveLength(originalPages)
+        expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden')
+        for (const key of ['Tab', 'Tab', 'Tab', 'Shift+Tab', 'Shift+Tab']) {
+            await page.keyboard.press(key)
+            expect(await dialog.evaluate(element => element.contains(document.activeElement))).toBe(true)
+        }
+        await opener.evaluate(element => element.focus())
+        expect(await dialog.evaluate(element => element.contains(document.activeElement))).toBe(true)
+        const image = dialog.getByRole('img', { name: 'Keyboard navigation for the main menu', exact: true })
+        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+        // Measure painted pixels, not the larger object-fit element box.
+        const paintedWidth = () => image.evaluate((element: HTMLImageElement) => Math.min(element.clientWidth, element.clientHeight * element.naturalWidth / element.naturalHeight))
+        const fittedWidth = await paintedWidth()
+        if (page.viewportSize()!.width > 1024) expect(fittedWidth).toBeGreaterThan(inlineWidth)
+        await dialog.getByRole('button', { name: 'Zoom in', exact: true }).click()
+        expect(await paintedWidth()).toBeGreaterThan(fittedWidth * 1.9)
+        expect(await paintedWidth()).toBeGreaterThan(inlineWidth)
+        const viewport = dialog.getByRole('region', { name: 'Image', exact: true })
+        expect(await viewport.evaluate(element => element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight)).toBe(true)
+        await viewport.focus()
+        await page.keyboard.press('ArrowRight')
+        await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
+        // Panning an image must not trigger sibling-page swipe navigation.
+        await viewport.evaluate(element => {
+            const touch = (x: number) => new Touch({ identifier: 1, target: element, clientX: x, clientY: 200 })
+            element.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, touches: [touch(250)], changedTouches: [touch(250)] }))
+            element.dispatchEvent(new TouchEvent('touchend', { bubbles: true, changedTouches: [touch(100)] }))
+        })
+        expect(page.url()).toBe(originalURL)
+        await expect(dialog).toBeVisible()
+        await dialog.getByRole('button', { name: 'Fit to window', exact: true }).click()
+        expect(await paintedWidth()).toBeCloseTo(fittedWidth, 0)
+        await page.keyboard.press('Escape')
+        await expect(dialog).toHaveCount(0)
+        await expect(opener).toBeFocused()
+        expect(await page.evaluate(() => document.body.style.overflow)).toBe(originalOverflow)
+        await opener.click()
+        await dialog.getByRole('button', { name: 'Close', exact: true }).click()
+        await expect(dialog).toHaveCount(0)
+        await expect(opener).toBeFocused()
+    }
+
+    await page.addStyleTag({ content: 'html { font-size: 200%; }' })
+    const secondOpener = page.getByRole('button', { name: 'View full size: The main menu goes from mouse to keyboard control', exact: true })
+    await secondOpener.click()
+    const secondDialog = page.getByRole('dialog', { name: 'The main menu goes from mouse to keyboard control', exact: true })
+    await expect(secondDialog).toBeVisible()
+    expect(await secondDialog.evaluate(element => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+    const closeButton = secondDialog.getByRole('button', { name: 'Close', exact: true })
+    const closeBox = (await closeButton.boundingBox())!
+    expect(closeBox.x).toBeGreaterThanOrEqual(0)
+    expect(closeBox.x + closeBox.width).toBeLessThanOrEqual(page.viewportSize()!.width)
+    await closeButton.click()
+    await expect(secondDialog).toHaveCount(0)
+    await expect(secondOpener).toBeFocused()
 })
 
 test('inset figures reflow with narrow screens and reader text settings', async ({ page }) => {

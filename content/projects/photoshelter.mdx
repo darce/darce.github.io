@@ -46,11 +46,9 @@ That work also addressed a commercial risk. Institutional contracts associated w
   width={640}
   height={446}
   inspectable
->
+/>
 
 The interface used Polymer and Web Components, with interactive elements inside Shadow DOM boundaries. Those boundaries organised the implementation, but keyboard users still needed to move through a menu as a continuous interaction. Focus and keyboard events did not move cleanly between the components.
-
-</Figure>
 
 <Figure
   src="photoshelter-empty-trash.gif"
@@ -59,11 +57,9 @@ The interface used Polymer and Web Components, with interactive elements inside 
   width={640}
   height={329}
   inspectable
->
+/>
 
 I built a custom keyboard layer to bridge them. It kept menu items reachable as people moved between components and supported switching between mouse and keyboard without a separate mode. This was behaviour I had to implement across the interface; changing individual controls’ markup would not resolve the navigation problem on its own.
-
-</Figure>
 
 ### Carrying the patterns into later changes
 

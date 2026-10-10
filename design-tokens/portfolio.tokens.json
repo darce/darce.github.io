@@ -27,6 +27,12 @@
       "minimum-container": { "$type": "dimension", "$value": { "value": 42, "unit": "rem" }, "$description": "Only wrap prose when the actual full article canvas has this much space." },
       "width-share": { "$type": "number", "$value": 0.5, "$description": "Fraction of the full article canvas used by a desktop inset figure." },
       "gutter": { "$type": "dimension", "$value": "{spacing.large}" }
+    },
+    "viewer": {
+      "edge": { "$type": "dimension", "$value": "{spacing.medium}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.medium}" },
+      "control-size": { "$type": "dimension", "$value": { "value": 2.75, "unit": "rem" } },
+      "zoom-factor": { "$type": "number", "$value": 2 }
     }
   },
   "typography": {

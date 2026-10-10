@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
+import ImageViewer from '../../common/ImageViewer/ImageViewer'
 import styles from './ProjectDetails.module.scss'
 
 interface ArticleFigureProps {
@@ -20,6 +21,7 @@ const ArticleFigure: React.FC<ArticleFigureProps> = ({
     src, alt, caption, layout = 'inset', side = 'auto', width, height,
     inspectable = false, onError, children,
 }) => {
+    const [viewing, setViewing] = useState(false)
     const figure = <figure
         className={`${styles.articleFigure} ${layout === 'inset' ? styles.insetFigure : ''}`}
         data-layout={layout}
@@ -36,14 +38,18 @@ const ArticleFigure: React.FC<ArticleFigureProps> = ({
         <figcaption>
             {caption ?? alt}
             {inspectable && (
-                <a href={`/images/${src}`} target="_blank" rel="noopener noreferrer" aria-label={`View full size: ${alt}`}>
+                <button type="button" className={styles.inspectImage} aria-label={`View full size: ${alt}`} aria-haspopup="dialog" onClick={() => setViewing(true)}>
                     View full size
-                </a>
+                </button>
             )}
         </figcaption>
     </figure>
 
-    return children ? <div className={styles.figureFlow}>{figure}{children}</div> : figure
+    return <>
+        {figure}
+        {children}
+        {viewing && <ImageViewer src={src} alt={alt} width={width} height={height} onClose={() => setViewing(false)} />}
+    </>
 }
 
 export default ArticleFigure

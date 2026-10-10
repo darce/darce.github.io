@@ -149,25 +149,28 @@
         img {
             display: block;
         }
-
-        figcaption a {
-            display: block;
-            width: fit-content;
-            margin-top: $s-small;
-        }
     }
 
-    .figureFlow {
-        display: flow-root;
-        clear: both;
-        margin-bottom: $s-large;
+    .inspectImage {
+        display: block;
+        min-height: tokens.$article-viewer-control-size;
+        margin-top: $s-small;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        font: inherit;
+        text-align: left;
+        text-decoration: underline;
+        cursor: pointer;
 
-        > p:first-of-type {
-            margin-top: 0;
-        }
+        @include themeComponent($themes) {
+            color: t('link');
 
-        > :last-child {
-            margin-bottom: 0;
+            &:focus-visible {
+                outline: $s solid t('castShadow');
+                outline-offset: $s;
+            }
         }
     }
 
@@ -182,12 +185,16 @@
             }
 
             .insetFigure[data-side='left'],
-            .source[data-figure-start='left'] > :nth-child(odd of .figureFlow, .insetFigure) > .insetFigure[data-side='auto'],
-            .source[data-figure-start='right'] > :nth-child(even of .figureFlow, .insetFigure) > .insetFigure[data-side='auto'],
-            .source[data-figure-start='left'] > .insetFigure[data-side='auto']:nth-child(odd of .figureFlow, .insetFigure),
-            .source[data-figure-start='right'] > .insetFigure[data-side='auto']:nth-child(even of .figureFlow, .insetFigure) {
+            .source[data-figure-start='left'] > .insetFigure[data-side='auto']:nth-child(odd of .insetFigure),
+            .source[data-figure-start='right'] > .insetFigure[data-side='auto']:nth-child(even of .insetFigure) {
                 float: left;
                 margin: 0 tokens.$article-inset-gutter $s-large 0;
+            }
+
+            // Paragraph boxes must span the canvas so their line boxes can
+            // flow around a left inset and continue beneath either side.
+            .post:has(.insetFigure) .source > p {
+                max-inline-size: none;
             }
         }
     }
@@ -205,8 +212,7 @@
     .source {
         min-width: 0;
 
-        // Limit sustained prose, while the article and its evidence retain
-        // the full canvas. Figure groups need their full width for wrapping.
+        // Preserve a reading measure in text-only and stacked presentations.
         > p:not(:has(img, picture)) {
             max-inline-size: $type-measure;
         }
@@ -228,7 +234,6 @@
         }
 
         h3 {
-            clear: both;
             margin: $s-x-large 0 $s-medium;
             font-size: $type-h3;
             line-height: $type-lh-h3;
