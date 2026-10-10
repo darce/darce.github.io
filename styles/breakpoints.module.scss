@@ -1,5 +1,7 @@
-$mobileMax: 768px;
-$tabletMax: 1024px;
+@use 'generated/portfolio-tokens' as tokens;
+
+$mobileMax: tokens.$breakpoint-mobile-end;
+$tabletMax: tokens.$breakpoint-tablet-end;
 
 /** Export for component styles module import */
 :export {

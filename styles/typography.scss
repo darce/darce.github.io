@@ -1,3 +1,5 @@
+@use 'generated/portfolio-tokens' as tokens;
+
 @font-face {
     font-family: 'GeistMonoVariableVF';
     src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2');
@@ -25,14 +27,19 @@
 }
 
 /** Type scale — article body headings */
-$type-h2: 1.4rem;
-$type-h2-mobile: 1.2rem;
-$type-h3: 1.05rem;
-$type-lh-h2: 1.3;
-$type-lh-h3: 1.4;
-$type-wght-h2: 650;
-$type-wght-h3: 600;
+$type-measure: tokens.$article-measure-characters * 1ch;
+$type-lh-body: tokens.$typography-body-line-height;
+$type-lh-caption: tokens.$typography-caption-line-height;
+$type-caption: tokens.$typography-caption-size;
+$type-inset-min: tokens.$article-inset-minimum-container;
+$type-h2: tokens.$typography-h2-size;
+$type-h2-mobile: tokens.$typography-h2-mobile-size;
+$type-h3: tokens.$typography-h3-size;
+$type-lh-h2: tokens.$typography-h2-line-height;
+$type-lh-h3: tokens.$typography-h3-line-height;
+$type-wght-h2: tokens.$typography-h2-weight;
+$type-wght-h3: tokens.$typography-h3-weight;
 
 /** Page-title rhythm — header subtitle and article title share one line */
-$type-lh-title: 3rem;
-$type-lh-title-mobile: 1.3rem;
+$type-lh-title: tokens.$typography-page-title-rhythm-desktop;
+$type-lh-title-mobile: tokens.$typography-page-title-rhythm-mobile;

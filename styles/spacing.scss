@@ -1,9 +1,11 @@
-/** Spacing */
-$s: 2px;
-$s-small: $s * 3; //6
-$s-medium: $s-small * 2; //12
-$s-large: $s-medium * 2; //24
-$s-x-large: $s-large * 2; //48
+@use 'generated/portfolio-tokens' as tokens;
+
+/** Existing Sass API, backed by the shared DTCG token source. */
+$s: tokens.$spacing-base;
+$s-small: tokens.$spacing-small;
+$s-medium: tokens.$spacing-medium;
+$s-large: tokens.$spacing-large;
+$s-x-large: tokens.$spacing-x-large;
 
 /** Borders */
-$s-line: 1px;
+$s-line: tokens.$spacing-line;
