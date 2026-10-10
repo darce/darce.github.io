@@ -46,10 +46,13 @@ const Diagram = ({
     alt: string
     caption?: string
 }) => (
-    <figure className={styles.diagram}>
-        <img src={src} alt={alt} />
-        {caption ? <figcaption>{caption}</figcaption> : null}
-    </figure>
+    <ArticleFigure
+        src={src.replace(/^\/images\//, '')}
+        alt={alt}
+        caption={caption}
+        layout="wide"
+        className={styles.diagram}
+    />
 )
 
 const DiagramPair = ({ children }: { children: React.ReactNode }) => (

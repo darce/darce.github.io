@@ -8,6 +8,15 @@
     line-height: $type-lh-body;
     overflow-wrap: anywhere;
 
+    // All article captions use the masthead's credit treatment.
+    figcaption {
+        margin-top: $s-small;
+        font-size: $type-caption;
+        line-height: $type-lh-caption;
+        font-weight: 400;
+        font-style: italic;
+    }
+
     >h2 {
         font-size: tokens.$typography-article-title-size;
         line-height: tokens.$typography-article-title-line-height;
@@ -72,15 +81,6 @@
             object-fit: contain;
         }
 
-        // Credits remain distinct without fading below readable contrast.
-        figcaption {
-            margin-top: $s-small;
-            font-size: $type-caption;
-            line-height: $type-lh-caption;
-            font-weight: 400;
-            font-style: italic;
-        }
-
         @media (max-width: $tabletMax) {
             max-width: 100%;
             margin: 0 0 $s-large;
@@ -125,14 +125,6 @@
             object-fit: contain;
         }
 
-        figcaption {
-            margin-top: $s-small;
-            font-size: $type-caption;
-            line-height: $type-lh-caption;
-            font-weight: 400;
-            font-style: normal;
-        }
-
         // Clear floats after post content
         &::after {
             content: '';
@@ -151,22 +143,17 @@
         }
     }
 
-    .inspectImage {
+    .imageTrigger {
         display: block;
-        min-height: tokens.$article-viewer-control-size;
-        margin-top: $s-small;
+        width: 100%;
         padding: 0;
         border: 0;
         border-radius: 0;
         background: transparent;
-        font: inherit;
-        text-align: left;
-        text-decoration: underline;
-        cursor: pointer;
+        line-height: 0;
+        cursor: zoom-in;
 
         @include themeComponent($themes) {
-            color: t('link');
-
             &:focus-visible {
                 outline: $s solid t('castShadow');
                 outline-offset: $s;
@@ -211,6 +198,14 @@
 
     .source {
         min-width: 0;
+
+        // Comparisons, code, and text diagrams need their complete canvas.
+        > pre,
+        > table,
+        > .diagramPair,
+        > .asciiScreen {
+            clear: both;
+        }
 
         // Preserve a reading measure in text-only and stacked presentations.
         > p:not(:has(img, picture)) {
@@ -271,9 +266,6 @@
                 }
             }
 
-            figcaption {
-                margin-top: $s-small;
-            }
         }
 
         .diagramPair {

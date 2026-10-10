@@ -31,9 +31,11 @@ I built Visual Search Workbench around the point where finding a photograph turn
 
 The app searches photographs in folders you choose. You can start with words or a reference image, inspect the results, and use a promising photograph to find related pictures. Explore adds a similarity map linked to an image grid, with Places and Timeline views for examining the same selection by location or date.
 
-![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
-
-*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.6.*
+<Figure
+  src="work/sis-search-layer.png"
+  alt="A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection."
+  caption="These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.6."
+/>
 
 ### Give the search a starting point
 
@@ -43,7 +45,10 @@ A text query is useful when you can describe what you remember. A reference imag
 
 When a photograph becomes the query, a banner names the reference. **Back to text results** returns to the earlier search. Those controls make the change of query visible and give it a way back, so following one image does not require starting over.
 
-![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
+<Figure
+  src="work/sis-similarity-search.png"
+  alt="A flower photograph is named as the reference for Find similar, above the resulting images."
+/>
 
 A search for flowers, for example, might turn up a picture worth following for its colour. That photograph can then lead to references that would have been difficult to request with the original search terms.
 
@@ -53,9 +58,11 @@ I used UMAP for the **Similarity** view. It takes the images’ numerical repres
 
 The map is linked to the grid. Select a region and the photographs behind it appear below, where you can judge the images themselves and choose one to follow. That connection is important: the layout offers an overview, but the photographs are still what the person needs to inspect.
 
-![A Similarity map of a 2,314-photo collection, with photographs from a selected region shown in the grid.](/images/work/sis-layers-umap.png)
-
-*Selecting a region connects the overview to the photographs it contains.*
+<Figure
+  src="work/sis-layers-umap.png"
+  alt="A Similarity map of a 2,314-photo collection, with photographs from a selected region shown in the grid."
+  caption="Selecting a region connects the overview to the photographs it contains."
+/>
 
 The regions are not automatically named categories, and distances on the map are not exact measurements of visual difference. [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) develops the design idea; the [interaction reference](/research/visual-search-workbench-screen-reference/) follows the individual views and controls.
 
@@ -73,7 +80,10 @@ The same release fixed a preview crash caused by the people-name reader misinter
 
 Search can lead to a photograph whose subject would be useful in a composition. I added an experimental cutout feature that proposes subject layers with transparent backgrounds. The layers can be inspected and saved for use elsewhere.
 
-![A cat photograph with proposed cutout layers, each marked experimental.](/images/work/sis-cat-layers-detail.png)
+<Figure
+  src="work/sis-cat-layers-detail.png"
+  alt="A cat photograph with proposed cutout layers, each marked experimental."
+/>
 
 The proposed separation still needs judgment. An edge can be rough or a label can be wrong. Cutouts remain a secondary experiment alongside the search and exploration work.
 

@@ -1,5 +1,47 @@
 import { expect, test } from '@playwright/test'
 import tokens from '../../design-tokens/portfolio.tokens.json'
+import { articles } from '../support/content'
+import { buildItemPath } from '../../lib/routes'
+
+test('article captions share the masthead treatment without controls', async ({ page }) => {
+    await page.goto('/projects/workbay/')
+    const reference = await page.getByRole('article').locator('figure > figcaption').first().evaluate(element => {
+        const style = getComputedStyle(element)
+        return [style.fontFamily, style.fontSize, style.lineHeight, style.fontStyle, style.fontWeight, style.opacity, style.color]
+    })
+    for (const { section, slug } of articles) {
+        await page.goto(buildItemPath(section, slug))
+        const article = page.getByRole('article')
+        await expect(article).toBeVisible()
+        await expect(article.locator('figcaption button, figcaption a')).toHaveCount(0)
+        for (const caption of await article.locator('figcaption').all()) {
+            expect(await caption.evaluate(element => {
+                const style = getComputedStyle(element)
+                return [style.fontFamily, style.fontSize, style.lineHeight, style.fontStyle, style.fontWeight, style.opacity, style.color]
+            })).toEqual(reference)
+        }
+    }
+})
+
+test('work and research images share continuous inset or wide figure layouts', async ({ page }) => {
+    for (const { section, slug } of articles) {
+        await page.goto(buildItemPath(section, slug))
+        await page.evaluate(() => document.fonts.ready)
+        const body = page.getByRole('article').locator('[data-article-body]')
+        const canvas = (await body.boundingBox())!
+        const rootSize = await page.evaluate(() => Number.parseFloat(getComputedStyle(document.documentElement).fontSize))
+        const wraps = page.viewportSize()!.width > tokens.breakpoint['tablet-end'].$value.value && canvas.width >= tokens.article.inset['minimum-container'].$value.value * rootSize
+        for (const image of await body.locator('img').all()) {
+            expect(await image.evaluate(element => element.closest('figure')?.getAttribute('data-layout')), `${section}/${slug}: image uses shared figure`).toMatch(/^(inset|wide)$/)
+        }
+        for (const [index, figure] of (await body.locator('figure[data-layout="inset"]').all()).entries()) {
+            expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
+            await expect(figure).toHaveCSS('float', wraps ? (index % 2 === 0 ? 'right' : 'left') : 'none')
+            await expect(figure.locator('figcaption')).toContainText(/\S/)
+        }
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${section}/${slug}: no page overflow`).toBeLessThanOrEqual(1)
+    }
+})
 
 test('PhotoShelter keeps narrative continuity around alternating evidence', async ({ page }) => {
     await page.goto('/projects/photoshelter/')
@@ -87,14 +129,15 @@ test('full-size evidence opens an enlarged modal with zoom and keyboard dismissa
     const originalURL = page.url()
     const originalPages = page.context().pages().length
     const originalOverflow = await page.evaluate(() => document.body.style.overflow)
-    const opener = page.getByRole('button', { name: 'View full size: Keyboard navigation for the main menu', exact: true })
+    const opener = page.getByRole('button', { name: 'Expand image: Keyboard navigation for the main menu', exact: true })
     for (const theme of ['light', 'dark']) {
         if (theme === 'dark') await page.getByRole('button', { name: 'Switch to dark mode' }).click()
         await opener.scrollIntoViewIfNeeded()
         const inlineImage = page.getByRole('article').locator('img[alt="Keyboard navigation for the main menu"]')
         await expect.poll(() => inlineImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
         const inlineWidth = (await inlineImage.boundingBox())!.width
-        await opener.click()
+        await opener.focus()
+        await page.keyboard.press('Enter')
         const dialog = page.getByRole('dialog', { name: 'Keyboard navigation for the main menu', exact: true })
         await expect(dialog).toBeVisible()
         await expect(dialog).toHaveCSS('font-family', await page.getByRole('article').evaluate(element => getComputedStyle(element).fontFamily))
@@ -136,14 +179,15 @@ test('full-size evidence opens an enlarged modal with zoom and keyboard dismissa
         await expect(dialog).toHaveCount(0)
         await expect(opener).toBeFocused()
         expect(await page.evaluate(() => document.body.style.overflow)).toBe(originalOverflow)
-        await opener.click()
+        await opener.focus()
+        await page.keyboard.press('Space')
         await dialog.getByRole('button', { name: 'Close', exact: true }).click()
         await expect(dialog).toHaveCount(0)
         await expect(opener).toBeFocused()
     }
 
     await page.addStyleTag({ content: 'html { font-size: 200%; }' })
-    const secondOpener = page.getByRole('button', { name: 'View full size: The main menu goes from mouse to keyboard control', exact: true })
+    const secondOpener = page.getByRole('button', { name: 'Expand image: The main menu goes from mouse to keyboard control', exact: true })
     await secondOpener.click()
     const secondDialog = page.getByRole('dialog', { name: 'The main menu goes from mouse to keyboard control', exact: true })
     await expect(secondDialog).toBeVisible()
