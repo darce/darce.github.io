@@ -7,7 +7,7 @@ const TYPE_LABELS: Record<string, string> = {
 const STATUS_LABELS: Record<string, string> = {
     running: 'Evidence: in daily use',
     measured: 'Evidence: measurement complete',
-    registered: 'Evidence: measurement pending',
+    registered: 'Evidence: evaluation proposed',
     rerun: 'Evidence: rerun planned',
     closed: 'Evidence: closed',
 }

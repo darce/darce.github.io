@@ -36,7 +36,7 @@ const AboutPage: NextPageWithLayout<AboutPageProps> = ({ aboutData }) => {
     const aboutContent = aboutData[0]
     const headShotObj = aboutContent.metaData.images ? aboutContent.metaData.images[0] : null
 
-    const aboutPageDescription = 'About Daniel Arcé — product designer and design technologist working across product R&D, functional prototypes, accessibility, and delivery.'
+    const aboutPageDescription = 'About Daniel Arcé — Senior Front-End Developer & Design Technologist in Toronto, building production interfaces and working prototypes.'
 
     const mdxComponents = useMemo(() => ({
         Intro: ({ children }: { children?: ReactNode }) => (

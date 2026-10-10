@@ -1,10 +1,10 @@
 ---
 index: 10
 year: 2021
-title: 'PhotoShelter: Product R&D & Accessibility at Enterprise Scale'
-subtitle: 'Product R&D and accessibility for a large DAM platform'
-description: 'R&D prototyping that cut downstream implementation effort by an internal estimate of roughly 30%, and WCAG 2.1 audit and remediation on contracts worth a combined $9.2M ARR that were exposed if compliance could not be demonstrated, across a media platform serving 80,000+ users and 1B+ files.'
-details: 'PhotoShelter is a cloud Digital Asset Management platform serving 80,000+ users and hosting 1B+ files. Working with the Chief Architect, I prototyped new product workflows outside the production path to surface integration problems early — the workflow-automation prototype informed the Smart Galleries feature and reduced later development effort by an internal estimate of roughly 30%. I also led the WCAG 2.1 audit and remediation that protected $9.2M ARR in institutional contracts and mentored four developers on accessible engineering practice.'
+title: 'PhotoShelter: Production Accessibility & Workflow Prototypes'
+subtitle: 'Keyboard interaction, audit remediation, and product prototyping'
+description: 'Led front-end accessibility remediation for PhotoShelter, built custom keyboard behaviour across Web Components and Shadow DOM, and prototyped workflows with the Chief Architect.'
+details: 'At the time of this work, PhotoShelter’s cloud Digital Asset Management platform served 80,000+ users and hosted 1B+ files. I led its WCAG 2.1 audit and front-end remediation, mentored four developers, and built exploratory workflow prototypes with the Chief Architect.'
 links:
 - url: http://www.photoshelter.com
   label: PhotoShelter.com
@@ -24,34 +24,28 @@ tags:
 - Enterprise SaaS
 ---
 
-## R&D prototyping
+## Keyboard access across the production interface
 
-Working with the Chief Architect, I built exploratory prototypes outside the production timeline to answer product questions cheaply and catch integration problems before they reached production.
+PhotoShelter’s core menus needed keyboard support. I led the WCAG 2.1 audit and front-end remediation, addressing unlabeled controls and missing ARIA attributes alongside the deeper navigation problems. The accessibility work helped protect institutional contracts associated with $9.2M in annual recurring revenue (ARR) that were at risk if the product could not demonstrate the required accessibility compliance.
 
-### Workflow automation interface
+![Keyboard navigation for the main menu](/images/photoshelter-keyboard-navigation.gif)
 
-This prototype informed the [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries) feature. Building it outside the production path surfaced integration issues earlier and reduced development effort by an internal estimate of roughly 30%.
+*Keyboard navigation for PhotoShelter’s main menu.*
 
-### Client-side image blur comparison
+Polymer and Web Components put interactive elements inside Shadow DOM boundaries. Focus and keyboard events did not move cleanly across those boundaries. I built a custom keyboard layer to bridge them, keeping menu items reachable as people moved between components.
 
-Built with OpenCV.js to test whether image analysis could run fully in the browser without backend resources. The prototype showed that lightweight computer-vision workflows were viable in static-file environments, even though it did not ship as a standalone feature.
+![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)
 
-## Accessibility
+*Moving from mouse to keyboard control without a mode switch.*
 
-PhotoShelter's customer base includes universities and professional sports organizations, and several key contracts worth a combined $9.2M ARR were exposed if the product could not demonstrate [ADA](https://www.ada.gov/law-and-regs/ada/) and WCAG compliance. I led the WCAG 2.1 audit and front-end remediation effort for PhotoShelter's core product to close that gap.
+This work covered the behaviour of the interface as well as its markup. I mentored four developers on accessibility patterns and introduced review checklists for new work, so the team could carry those patterns into later changes.
 
-The initial audit surfaced two classes of issues: fast fixes such as missing ARIA attributes and unlabeled controls, and deeper structural problems such as mouse-only navigation across core menus.
+## A workflow prototype that informed Smart Galleries
 
-### Keyboard navigation for every menu
+Working with the Chief Architect, I built exploratory prototypes outside the production path. We could try a workflow and expose its integration problems before committing it to production development.
 
-![Keyboard navigation for main menu](/images/photoshelter-keyboard-navigation.gif)*Keyboard navigation for the main menu*
+The workflow-automation prototype informed [Smart Galleries](https://support.photoshelterbrands.com/hc/en-us/articles/10657698741655-Smart-Galleries). An internal estimate put the reduction in later implementation effort at roughly 30%.
 
-Before this work, every menu in the product was mouse-only. Keyboard access is essential for users with limited mobility and speeds things up for power users who prefer shortcuts.
+## Testing image analysis in the browser
 
-The hardest part was keyboard support across Shadow DOM-based components. Because PhotoShelter relied on Polymer and Web Components, focus and keyboard events did not move cleanly across shadow boundaries. I built a custom layer to bridge those boundaries so interactive elements remained reachable and usable without switching interaction modes.
-
-![The main menu goes from mouse to keyboard control](/images/photoshelter-empty-trash.gif)*Mouse to keyboard control, no mode switch needed*
-
-## Team adoption
-
-I mentored four developers on accessibility patterns and introduced review checklists so accessibility was built into new work rather than added later as remediation.
+I also built an OpenCV.js prototype to compare image blur in the browser, without backend processing. It tested a lightweight image-analysis workflow in a static-file environment and did not ship as a standalone feature.

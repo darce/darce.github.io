@@ -15,7 +15,7 @@ Remove About's card frames, shadows and category badges. Use a continuous articl
 | Static biography and email action share the project-card idiom | PERC-02, INT-01: appearance should agree with meaning and action | Ordinary prose sections; visibly linked email text |
 | Generic badges duplicate or weakly qualify the headings | Principle 5: rank substance before styling | Let descriptive headings carry the section purpose |
 | Removing the grid creates longer lines | TYPE-01, TYPE-02, TYPE-03 | Cap prose at 68ch; 1rem body text with 1.75 leading |
-| Borders previously supplied grouping | UI-03: more space between groups than within | Larger section-heading gaps than paragraph gaps |
+| Borders previously supplied grouping | PERC-01: more space between groups than within | Larger section-heading gaps than paragraph gaps |
 
 Rule locations: `lexicons/design-aesthetics.md` (LAY, TYPE), `lexicons/interaction-ux.md` (PERC, INT), `lexicons/engineering.md` (UI), and `PRINCIPLES.md` (principles 5 and 10). Sources include *Asymmetric Typography*, *The Elements of Typographic Style Applied to the Web*, *Designing with the Mind in Mind*, *Designing Interfaces*, and *Refactoring UI*; see the corpus `SOURCES.md` for rule-specific provenance.
 

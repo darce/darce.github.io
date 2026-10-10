@@ -11,7 +11,7 @@ details: This selective interaction reference combines existing application capt
   schematics.
 thumbnail:
   src: work/sis-similarity-search.png
-  alt: Visual Search Workbench showing Find-similar results for a flower photograph used as the reference image.
+  alt: Visual Search Workbench showing Find similar results with a flower photograph as the reference image.
   position: center
 tags:
 - Visual Search
@@ -22,7 +22,7 @@ tags:
 
 This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
-The application captures are the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
+The current downloadable release is 0.2.6. The application captures remain the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
 ## 1. Give the search a starting point
 
@@ -68,8 +68,6 @@ Text query ► [A] [B] [C] [D]
 
 </AsciiScreen>
 
-The result has become a direction through the collection. Following it can bring useful material into view even when that material was difficult to describe in the first query.
-
 ## 3. Explore a region on the Similarity map
 
 The **Similarity** view offers a spatial arrangement of related images. That arrangement is built with UMAP, which takes numerical image representations, identifies their neighbourhood relationships, and looks for a layout that preserves those relationships in fewer dimensions.
@@ -104,7 +102,7 @@ Similarity overview
 
 </AsciiScreen>
 
-Nearby marks suggest material to inspect. Their spacing is not an exact measure of how different the photographs are. Judging the photographs in the grid is what gives the map selection a purpose.
+Spacing between map marks is not an exact measure of how different the photographs are. Inspect the selection in the grid to judge the images themselves.
 
 ## 4. Examine the selection by place or time
 
@@ -130,7 +128,7 @@ The proposed layers can be inspected and saved for use elsewhere. A recognisable
 
 ## Use the reference to review the interaction
 
-This sequence connects a query to a result, a result to another query, and a map region to the images it contains. I use representations like these to examine whether the next action follows clearly from the current selection.
+I use this reference to check whether each selection has a clear next action and a way to return to the earlier search.
 
 A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
 

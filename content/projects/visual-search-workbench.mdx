@@ -5,10 +5,10 @@ title: Visual Search Workbench
 subtitle: Find a picture, then follow its visual neighbours
 description: Search your photo folders by words or an example image, then explore related pictures on a UMAP map.
   Processing stays on the Mac.
-details: I designed and built this macOS app. Release 0.2.3 is available for Apple Silicon Macs.
+details: I designed and built this macOS app. Release 0.2.6 is available for Apple Silicon and Intel Macs.
 links:
 - url: https://dl.darce.xyz/
-  label: Download for macOS — Apple Silicon
+  label: Download for macOS
 thumbnail:
   src: work/sis-search-layer.png
   alt: Visual Search Workbench showing flower photographs in a search-results grid, with a selected image open beside
@@ -23,13 +23,13 @@ tags:
 - Core ML
 ---
 
-Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. A similarity map offers another route through the collection, without requiring you to tag the photographs first.
+Visual Search Workbench lets you find photographs in your own folders and explore where they lead. Start with words or a reference picture, inspect the results, then make a promising image the next search. In Explore, a similarity map connects regions to photographs in the linked grid. Places and Timeline offer other ways to examine the selection, without requiring advance tagging.
 
-I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon Macs, keeps image processing on-device, and has been tested on an 8 GB machine.
+I designed and built the app to explore this movement between finding a picture and developing a visual direction. The app runs on Apple Silicon and Intel Macs. The [0.2.6 release](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), published 25 September 2026, fixed a preview crash caused by the app’s people-name reader misinterpreting a metadata value in photos from some cameras.
 
 ![A search for flowers returns photographs from a film-scan collection, with a selected image open for inspection.](/images/work/sis-search-layer.png)
 
-*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.3.*
+*These application captures show version 0.2.0, under the earlier name Semantic Image Search. The downloadable release documented here is 0.2.6.*
 
 ## Give the search a starting point
 
@@ -41,7 +41,7 @@ Drop a reference picture into the app, or choose **Find similar** on a photograp
 
 ![A flower photograph is named as the reference for Find similar, above the resulting images.](/images/work/sis-similarity-search.png)
 
-A result can therefore become a new direction. You might begin by looking for flowers and continue because a particular image suggests something useful for a colour study. That is the kind of exploration I wanted the app to support.
+A search for flowers might lead to a picture worth following for a colour study. Using that picture as the reference lets the next search follow the visual interest it raised.
 
 ## Explore the collection on a map
 
@@ -61,6 +61,8 @@ A selection can be explored through **Similarity**, **Places**, or **Timeline**.
 
 The selection carries between those views, and each view retains its zoom and pan when you change tabs. You can examine the same material from another angle without rebuilding the view. Selecting an individual photograph opens its available file metadata, including camera information, capture time, and location.
 
+For 0.2.6, I made the latest requested time range take precedence over an older asynchronous result. After a slider drag, selection and results follow that request. The plot and timeline also appear before dates and locations finish loading, then fill in as that metadata arrives. These changes are documented in the [release notes](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6).
+
 ## Take a cutout into another project
 
 A useful photograph may contain a subject you want to use in a composition. The app’s experimental cutout feature proposes subject layers with transparent backgrounds. Those layers can be inspected and saved for use elsewhere.
@@ -73,10 +75,10 @@ The layers still require judgment: an edge can be rough, a label can be wrong, o
 
 The app bundles the search and cutout models, so they are available without a first-launch model download. The models process the photographs locally. My network checks found no gallery data leaving the device in the tested flows.
 
-The 8 GB test establishes a working configuration rather than a memory requirement for every library. Larger collections still need measurement, and an outside-user study has not yet run. That study needs to examine both finding a remembered image and discovering useful material for a creative brief.
+The app worked in my documented checks on an 8 GB Apple Silicon Mac. Larger-library performance and peak memory still need measurement. An outside-user study has not run; it needs to test both finding a remembered image and discovering useful references for a creative brief.
 
 ## Download
 
-[Download Visual Search Workbench 0.2.3](https://dl.darce.xyz/) for Apple Silicon, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.3.dmg`, approximately 295 MB.
+[Download Visual Search Workbench 0.2.6](https://dl.darce.xyz/) for Apple Silicon or Intel, macOS 14 or later. Choose `VisualSearchWorkbench-0.2.6.dmg`, approximately 296 MB.
 
 The app is not notarized by Apple, so macOS may block its first launch. The release instructions explain the **Privacy & Security → Open Anyway** option. The [GitHub release repository](https://github.com/darce/visual-search-workbench) provides the built app, model-licence information, and a `SHA256SUMS` file. It does not publish the application source.

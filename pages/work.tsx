@@ -9,32 +9,29 @@ import { SITE_URL, SITE_NAME } from '../lib/seo'
 
 const GROUPS: GroupDefinition[] = [
     {
-        "id": "independent-products",
-        "title": "Independent products",
-        "description": "Visual exploration and image description are the focus of these products. I design and build both the interfaces and the software behind them.",
-        "slugs": [
-            "visual-search-workbench",
-            "altcontext"
-        ]
+        id: 'work-with-teams',
+        title: 'Production work with teams',
+        description: 'Front-end implementation, keyboard interaction, and prototypes carried into production with internal teams and external partners.',
+        slugs: ['photoshelter', 'msnbc', 'apple'],
     },
     {
-        "id": "work-with-teams",
-        "title": "Product work with teams",
-        "description": "These projects connect working prototypes to production work. They include media interactions, enterprise accessibility, and launch delivery.",
-        "slugs": [
-            "photoshelter",
-            "msnbc",
-            "apple"
-        ]
+        id: 'independent-products',
+        title: 'Independent applications',
+        description: 'Visual Search Workbench is released for macOS. AltContext is in development. I design and build their interfaces and supporting software.',
+        slugs: ['visual-search-workbench', 'altcontext'],
     },
     {
-        "id": "development-tools",
-        "title": "Tools for design and development",
-        "description": "Development produces decisions and review findings worth keeping. WorkBay makes those records available to the next coding session.",
-        "slugs": [
-            "workbay"
-        ]
-    }
+        id: 'archives-and-exhibitions',
+        title: 'Archives and exhibitions',
+        description: 'Web and exhibition experiences built around material supplied by photographers and filmmakers.',
+        slugs: ['texting-syria', 'barbarabeirne', 'bauhausdances'],
+    },
+    {
+        id: 'development-tools',
+        title: 'Development tools',
+        description: 'WorkBay keeps coding tasks, decisions, and review evidence retrievable across sessions in my own practice.',
+        slugs: ['workbay'],
+    },
 ]
 
 interface WorkProps {
@@ -42,7 +39,7 @@ interface WorkProps {
 }
 
 const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
-    const description = "Product design and front-end development by Daniel Arcé: visual-search and image-description products, work with teams, and development tools."
+    const description = "Front-end development by Daniel Arcé: production interfaces, accessibility, independent image applications, archives, and exhibition experiences."
     const groups = groupPortfolioItems(projectsData, GROUPS, {"id": "more-work", "title": "Further work", "description": "Other projects from my practice."})
     const orderedItems = groups.flatMap(group => group.items)
     const itemListJsonLd = {
@@ -69,7 +66,7 @@ const Work: NextPageWithLayout<WorkProps> = ({ projectsData }) => {
             <PortfolioGroups
                 section="projects"
                 title="Work"
-                description="My work combines interaction design with front-end development. Independent products let me investigate new interactions; product work with teams carries ideas into production; tools for design and development support the decisions made along the way."
+                description="I develop production interfaces and use working prototypes to make interaction decisions. These projects cover work with teams, independent applications, archives, and exhibition experiences."
                 groups={groups}
             />
         </>

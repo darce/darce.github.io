@@ -11,7 +11,7 @@ const GROUPS: GroupDefinition[] = [
     {
         "id": "visual-exploration",
         "title": "Visual exploration",
-        "description": "The design article explains the role of UMAP in visual browsing. The interaction reference follows the path from a query to a map selection.",
+        "description": "Search, UMAP maps, and linked image grids offer different routes through a photo collection. These studies explain the method and the controls.",
         "slugs": [
             "visual-search-workbench-process",
             "visual-search-workbench-screen-reference"
@@ -20,7 +20,7 @@ const GROUPS: GroupDefinition[] = [
     {
         "id": "project-memory",
         "title": "Project memory",
-        "description": "The implementation explains the record. The field note describes its use. The evaluation proposal asks whether that use reduces work.",
+        "description": "Stored decisions and review findings can inform a later coding session. The implementation and field observations are available; a controlled savings comparison is still proposed.",
         "slugs": [
             "agent-memory",
             "interrogating-agent-memory",
@@ -69,7 +69,7 @@ const Research: NextPageWithLayout<ResearchProps> = ({ researchData }) => {
             <PortfolioGroups
                 section="research"
                 title="Research"
-                description="These articles develop three questions from the work. Visual exploration asks how images can lead to other images. Project memory asks what earlier decisions contribute to a new coding session. Design and engineering review asks how a critique can guide the next change."
+                description="Visual search, project memory, and source-linked review recur in my development work. These essays explain their mechanisms, examine observations from my practice, and describe evaluations still to be run. The browser studies make market depth and rotation mathematics interactive."
                 groups={groups}
             />
         </>

@@ -7,15 +7,16 @@ type: experiment
 status: registered
 description: An audit snapshot describes WorkBay context packets. A proposed paired comparison tests whether they
   reduce task token use without lowering quality.
-details: This page preserves an earlier audit snapshot and a proposed evaluation. No controlled savings result is
-  reported.
+details: Three project databases supply descriptive audit figures. A proposed paired trial would test a 20% token-reduction target at comparable quality.
 thumbnail:
   src: research/stripe-drawing-danica-phelps.jpg
-  alt: Danica Phelps, stripe drawing, 2013. Graphite and watercolor on paper. © Danica Phelps.
+  alt: Looping grey lines overlap a car drawing; handwritten numbers and two rows of red, dark, and pale stripes sit below.
+  caption: Danica Phelps, stripe drawing, 2013. Graphite and watercolor on paper. © Danica Phelps.
   position: center
 masthead:
   src: research/stripe-drawing-danica-phelps.jpg
-  alt: Danica Phelps, stripe drawing, 2013. Graphite and watercolor on paper. © Danica Phelps.
+  alt: Looping grey lines overlap a car drawing; handwritten numbers and two rows of red, dark, and pale stripes sit below.
+  caption: Danica Phelps, stripe drawing, 2013. Graphite and watercolor on paper. © Danica Phelps.
   position: center
 tags:
 - Agent Workflows
@@ -26,9 +27,9 @@ tags:
 
 Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
 
-This proposed WorkBay evaluation asks whether a task-relevant context packet reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
+A task-relevant context packet is useful if it reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
 
-The argument has three parts: **the audit snapshot**, **the comparison**, and **the decision criterion**. The audit snapshot describes the recorded cost and contents. The comparison tests whether supplying the history changes the work. The decision criterion specifies what result would justify a savings claim. No controlled-trial result is reported here.
+The audit gives a starting point for that test: the recorded size and contents of context packets. It cannot establish their effect on task outcomes.
 
 ## The audit snapshot describes cost and contents
 
@@ -49,7 +50,7 @@ These figures are descriptive aggregates from that audit. The summary does not p
     caption="Each step is ten times the tokens. The markers compare two audit aggregates; they do not measure savings or the full cost of memory."
 />
 
-The three steps between the packet and median-task markers show a difference of roughly a thousandfold. The packet’s recorded size is small relative to those task totals. That comparison concerns the amount of text supplied at the start, not the complete cost of remembering. Retrieval, later context use, and decisions made from stale material may add costs elsewhere. A token count is also not itself a monetary return.
+The average initial packet is roughly a thousandth of the median recorded task total. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
 
 ### The audit cannot establish an effect
 
@@ -69,8 +70,6 @@ The resolution figures have a similar boundary. A written resolution establishes
 
 The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
 
-The comparison needs **calibration**, a **content probe**, and **matched task pairs**. Each stage answers a different question before the savings claim is assessed.
-
 <Diagram
     src="/images/research/econ-design.svg?v=4"
     alt="Four stages: calibrate variation with A/A pairs, compare relevant and unrelated packets, run matched memory-versus-cold pairs, then report token effects alongside blinded quality."
@@ -87,7 +86,7 @@ Keeping unsuccessful attempts in the analysis matters because a quick failure ca
 
 ## The decision criterion includes quality
 
-The existing proposal sets a target of at least a **20% reduction in token use**, while keeping blinded quality within an acceptable margin declared before the trial. The target is a decision criterion, not a prediction.
+The proposal sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
 
 The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
 
@@ -103,6 +102,6 @@ This is a proposed evaluation, not a completed or externally registered study. T
 
 ## The decision in the meantime
 
-I use WorkBay to retain inspectable project history and resume work across coding sessions. Those capabilities can be examined in the implementation. Whether supplying selected history also reduces total work at comparable quality remains open until the comparison is run.
+I use WorkBay to retain inspectable project history and resume work across coding sessions. Until the comparison is run, I can assess the recorded history and retrieval behaviour, but cannot claim measured effort savings.
 
 [Project Memory Outside the Conversation](/research/agent-memory/) describes that implementation. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes how I use it in practice.

@@ -1,10 +1,10 @@
 ---
 index: 12
 year: 2014
-title: 'MSNBC Video: From Product Concept to Launch in Six Months'
-subtitle: 'Product definition, interaction design, working prototypes, and launch'
-description: 'Helped take MSNBC’s dedicated video experience from initial product definition through functional prototypes, interaction design, production development, and an on-schedule launch.'
-details: 'As Senior Design Technologist and Front-End Developer, I helped take MSNBC’s dedicated video experience from initial product definition through working prototypes, interaction design, production development, and launch. I proposed collapsible panes that kept the player running while viewers read comments and browsed live and archived coverage.'
+title: 'MSNBC Video: Browsing Around Continuous Playback'
+subtitle: 'Interaction prototypes and production AngularJS development'
+description: 'Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.'
+details: 'As Senior Design Technologist and Front-End Developer, I proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.'
 links:
 - url: https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study
   label: Lullabot on the broader MSNBC.com rebuild
@@ -13,7 +13,7 @@ thumbnail:
   alt: MSNBC video player beside a list of latest coverage, with an Up next row below
   position: top
 tags:
-- Product Design
+- Interaction Prototyping
 - Interaction Design
 - Prototyping
 - Front-End
@@ -21,33 +21,31 @@ tags:
 - Drupal
 - Media Platform
 ---
-## Context
+## A dedicated video experience after the site rebuild
 
 MSNBC.com had recently been rebuilt on Drupal following the Microsoft/NBC split. [Lullabot’s account](https://www.lullabot.com/articles/msnbc-video-and-drupalcon-case-study) describes the broader site as a ground-up rebuild that launched in October 2013. Once that site was live, the network needed a dedicated video experience.
 
-The new surface had to support watching live and archived coverage while discovering what to watch next. Sending viewers away from the player to browse would break that continuity. The product problem was to make exploration and playback work together on the same page.
+The new surface had to support watching live and archived coverage while discovering what to watch next. Browsing needed to stay on the viewing page so the stream could continue while someone chose what to watch next.
 
-My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. Working prototypes therefore had to move the team toward a production decision within a fixed delivery window.
+My project record describes a hard six-month deadline, with partner-litigation risk if the launch slipped. The prototypes had to settle interface behaviour in time for production development.
 
 ## My role
 
-I used functional prototypes to propose how the video experience should behave, then implemented front-end patterns for production. Doing both the design and the implementation meant I could carry a question into working software and refine it with the team.
+I proposed interface behaviour in functional prototypes and implemented front-end patterns for production. The prototypes gave the team a way to try a proposal before deciding how to build it.
 
-I collaborated with MSNBC’s internal team, external vendors, and stakeholders as the prototypes evolved. I proposed and implemented interface patterns within that shared process; I did not independently own the entire product direction or the broader MSNBC.com rebuild. My remit covered the dedicated video experience and the AngularJS components I contributed to MSNBC’s in-house CMS, which I integrated with the Drupal backend powering the broader site.
+I worked with MSNBC’s internal team, external vendors, and stakeholders. My remit covered the dedicated video experience and the AngularJS components I contributed to the in-house CMS, integrated with the Drupal backend. The broader MSNBC.com redesign was a separate team effort.
 
 ## The video platform
 
 ### From concept to working prototypes
 
-The initial concept centred on continuous viewing: a person should be able to watch coverage while looking through related stories and engagement features. I translated that goal into working prototypes, so the conversation could move from a proposed layout to how the interface behaved.
+I prototyped ways to browse coverage and comments around a running player. After several iterations with stakeholders, I helped carry the agreed interactions into the production AngularJS interface.
 
-The prototypes went through multiple iterations with stakeholders. I then carried those proposals into production development, so the behaviour the prototypes settled is the behaviour that shipped.
+### Collapsible panels around a running player
 
-### Collapsible panes around a running player
+My proposal was to give the surrounding content its own collapsible panels. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
 
-My proposal was to give the surrounding content its own collapsible panes. The player kept running while a viewer opened the discussion, scanned the latest coverage, or closed both to watch at full width. Choosing what to watch next never required leaving the page or interrupting the stream.
-
-That put playback and conversation on screen at the same time. Comments usually lived below the fold or on a separate page, so a viewer who wanted to read them gave up the video to do it. Here they sat beside the player and could be dismissed. The arrangement is unremarkable on a video site today; in 2013 it was a proposal that needed a working prototype before the team would commit to it.
+Comments sat beside the player and could be dismissed. The prototype made that arrangement testable within the page, including what happened to the player’s width as panels opened and closed.
 
 In live coverage that continuity mattered most, because the broadcast could move on while someone was choosing another story. An “Up next” row below the player brought the next viewing choice close to the current clip, and the adjacent video list provided a broader route through coverage.
 
@@ -64,4 +62,3 @@ The responsive layouts kept the player prominent as the available width changed.
 ### Through production to launch
 
 The video platform launched on schedule within the six-month window. According to my project record, meeting that deadline helped avert the partner-litigation risk associated with a delayed launch.
-

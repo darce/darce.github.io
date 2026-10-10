@@ -46,14 +46,13 @@ describe('Visual Search Workbench case (QM-REPOSITION-01 s2)', () => {
     })
 
     it('routes the download through the redirect that outlives the release layout', () => {
-        // The published link is dl.darce.xyz, not the GitHub URL underneath it.
+        // The download link is dl.darce.xyz, not the GitHub asset URL underneath it.
         // That redirect exists so the bytes can move — different host, different
         // release layout — by editing one line of proxy config instead of every
-        // page that ever linked them. Hardcoding the GitHub URL in prose forfeits
-        // exactly the property the redirect was built to buy, and a page is the
-        // one place where a link outlives the decision that put it there.
+        // page that ever linked them. Versioned release-note citations document
+        // maintenance evidence; they do not replace the stable download route.
         expect(content).toMatch(/\]\(https:\/\/dl\.darce\.xyz\/?\)/)
-        expect(content).not.toMatch(/\]\(https:\/\/github\.com\/darce\/visual-search-workbench\/releases/)
+        expect(content).not.toMatch(/\]\(https:\/\/github\.com\/darce\/visual-search-workbench\/releases\/(?:download|latest)(?:\/|\))/)
     })
 
     it('reaches the download from the top of the page, not only from the case study', () => {

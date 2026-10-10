@@ -8,6 +8,7 @@ export interface MetaLink {
 export interface MetaImage {
     src: string
     alt: string
+    caption?: string
     position?: string
     scale?: number
 }
