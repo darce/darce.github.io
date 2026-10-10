@@ -22,10 +22,10 @@
     }
   },
   "article": {
-    "measure-characters": { "$type": "number", "$value": 72, "$description": "Monospaced reading measure; the web consumer multiplies by 1ch." },
+    "measure-characters": { "$type": "number", "$value": 72, "$description": "Standalone monospaced prose measure, not article or media width; the web consumer multiplies by 1ch." },
     "inset": {
-      "minimum-container": { "$type": "dimension", "$value": { "value": 42, "unit": "rem" }, "$description": "Only wrap prose when the actual article column has this much space." },
-      "width-share": { "$type": "number", "$value": 0.5 },
+      "minimum-container": { "$type": "dimension", "$value": { "value": 42, "unit": "rem" }, "$description": "Only wrap prose when the actual full article canvas has this much space." },
+      "width-share": { "$type": "number", "$value": 0.5, "$description": "Fraction of the full article canvas used by a desktop inset figure." },
       "gutter": { "$type": "dimension", "$value": "{spacing.large}" }
     }
   },

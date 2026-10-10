@@ -1,11 +1,6 @@
 import React from 'react'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
-import tokens from '../../../design-tokens/portfolio.tokens.json'
 import styles from './ProjectDetails.module.scss'
-
-const tabletEnd = tokens.breakpoint['tablet-end'].$value
-const articleMeasure = tokens.article['measure-characters'].$value
-const insetShare = tokens.article.inset['width-share'].$value
 
 interface ArticleFigureProps {
     /** Local image path under /images. */
@@ -35,7 +30,7 @@ const ArticleFigure: React.FC<ArticleFigureProps> = ({
             alt={alt}
             width={width}
             height={height}
-            sizes={`auto, (max-width: ${tabletEnd.value}${tabletEnd.unit}) 100vw, ${articleMeasure * (layout === 'inset' ? insetShare : 1)}ch`}
+            sizes="auto, 100vw"
             onError={onError}
         />
         <figcaption>

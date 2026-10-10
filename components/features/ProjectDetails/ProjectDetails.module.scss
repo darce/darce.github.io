@@ -91,7 +91,6 @@
     .metadata {
         flex: 1 1 0;
         min-width: 0;
-        max-inline-size: $type-measure;
 
         border-top: 2px solid;
 
@@ -105,6 +104,7 @@
 
         p {
             margin-top: $s-small;
+            max-inline-size: $type-measure;
         }
 
         @media (max-width: $tabletMax) {
@@ -113,7 +113,6 @@
     }
 
     .post {
-        max-inline-size: $type-measure;
         container: article-body / inline-size;
 
         @media (max-width: $tabletMax) {
@@ -205,6 +204,12 @@
 
     .source {
         min-width: 0;
+
+        // Limit sustained prose, while the article and its evidence retain
+        // the full canvas. Figure groups need their full width for wrapping.
+        > p:not(:has(img, picture)) {
+            max-inline-size: $type-measure;
+        }
 
         // Hierarchical section typography: a major section opens with a 2px
         // rule; subsections rely on scale and weight alone
