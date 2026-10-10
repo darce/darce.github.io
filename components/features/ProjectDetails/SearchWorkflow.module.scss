@@ -1,0 +1,65 @@
+@use '../../../styles/generated/portfolio-tokens' as tokens;
+
+.figure {
+    inline-size: var(--workflow-width);
+    max-inline-size: 100%;
+    margin: 0 0 tokens.$spacing-large;
+    float: none;
+    clear: none;
+
+    figcaption {
+        contain: inline-size;
+    }
+}
+
+.canvas {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    overflow: visible;
+    color: inherit;
+    font-family: inherit;
+    font-size: 16px;
+
+    text {
+        fill: currentColor;
+    }
+}
+
+.selection {
+    font-size: 18px;
+}
+
+.title {
+    font-weight: 650;
+    font-variation-settings: 'wght' 650;
+}
+
+.panel,
+.photo {
+    fill: none;
+    stroke: currentColor;
+    stroke-opacity: 0.35;
+}
+
+.selected {
+    fill: color-mix(in srgb, currentColor 8%, transparent);
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.point {
+    fill: currentColor;
+    opacity: 0.35;
+}
+
+.link,
+.returnLink {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+}
+
+.returnLink {
+    stroke-dasharray: 4 3;
+}

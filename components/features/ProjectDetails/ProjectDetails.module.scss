@@ -301,6 +301,7 @@
             @container article-body (min-width: #{$type-inset-min}) {
                 .insetFigure,
                 .source .asciiScreen,
+                .source [data-workflow],
                 .source > pre,
                 .source > section > pre {
                     // Reserve legible prose in type units. This is a maximum,
@@ -309,6 +310,7 @@
                 }
 
                 .source .asciiScreen,
+                .source [data-workflow],
                 .source > pre,
                 .source > section > pre {
                     float: right;

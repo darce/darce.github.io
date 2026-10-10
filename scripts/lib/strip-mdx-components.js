@@ -19,6 +19,10 @@ function stripMdxComponents(content) {
         // The provider supplies runtime state, but its children are the actual
         // explanation. Preserve them in the text export.
         .replace(/<\/?OrderBookProvider\b[^>]*>/g, '')
+        // Vector workflows need a textual explanation in the export too.
+        .replace(
+            /<SearchWorkflow\b[^>]*\blabel="([^"]*)"[^>]*>\s*([\s\S]*?)\s*<\/SearchWorkflow>/g,
+            (_match, label, caption) => `${label}\n\n_${caption}_`)
         // Remove JSX component tags like <OrderBook />, <Cube />, etc.
         .replace(/<[A-Z][A-Za-z]*\b[^>]*\/>/g, '')
         // AsciiScreen is unwrapped, not dropped. The prose points straight at

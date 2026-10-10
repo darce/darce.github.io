@@ -4,6 +4,7 @@ import { MarkdownData } from '../../../types'
 import { MDXRemote } from 'next-mdx-remote'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
 import ArticleFigure from './ArticleFigure'
+import SearchWorkflow from './SearchWorkflow'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
@@ -83,6 +84,7 @@ const mdxComponents = {
     DiagramPair,
     PullQuote,
     AsciiScreen,
+    SearchWorkflow,
     Figure: ArticleFigure,
     hr: () => null,
 }

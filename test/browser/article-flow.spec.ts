@@ -15,7 +15,7 @@ async function firstLine(paragraph: Locator) {
 
 test('screen reference fits evidence to its content and flows copy beside it', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'Checks desktop flow at several actual article widths')
-    const codeWidths: number[] = []
+    const diagramWidths: number[] = []
     const imageWidths: number[] = []
     for (const width of [1280, 1440, 1920]) {
         await page.setViewportSize({ width, height: 1000 })
@@ -24,29 +24,16 @@ test('screen reference fits evidence to its content and flows copy beside it', a
         const article = page.getByRole('article')
         const body = article.locator('[data-article-body]')
         const canvas = (await body.boundingBox())!
-        const diagrams = body.locator('figure[role="img"]')
+        const diagrams = body.locator('figure[data-workflow]')
         await expect(diagrams).toHaveCount(3)
         for (const diagram of await diagrams.all()) {
             const box = (await diagram.boundingBox())!
-            const contentWidth = await diagram.locator('pre').evaluate(element => {
-                const code = element.querySelector('code')!
-                const font = getComputedStyle(code)
-                const context = document.createElement('canvas').getContext('2d')!
-                context.font = `${font.fontSize} ${font.fontFamily}`
-                const text = Math.max(...code.textContent!.trimEnd().split('\n').map(line => context.measureText(line).width))
-                const padding = [element, code].reduce((sum, node) => {
-                    const style = getComputedStyle(node)
-                    return sum + Number.parseFloat(style.paddingLeft) + Number.parseFloat(style.paddingRight)
-                        + Number.parseFloat(style.borderLeftWidth) + Number.parseFloat(style.borderRightWidth)
-                }, 0)
-                return text + padding
-            })
-            expect(box.width, 'diagram uses the width of its longest line').toBeCloseTo(contentWidth, 0)
+            const contentWidth = await diagram.locator('svg').evaluate(element => element.getBoundingClientRect().width)
+            expect(box.width, 'caption does not reserve space beside the graphic').toBeCloseTo(contentWidth, 0)
             expect(box.width).toBeLessThan(canvas.width - 200)
-            expect(await diagram.locator('pre').evaluate(element => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
         }
         const diagramBox = (await diagrams.first().boundingBox())!
-        codeWidths.push(diagramBox.width)
+        diagramWidths.push(diagramBox.width)
         const explanation = article.locator('p').filter({ hasText: /^The search uses an index/ })
         const line = await firstLine(explanation)
         expect(line.y).toBeGreaterThanOrEqual(diagramBox.y)
@@ -103,7 +90,7 @@ test('screen reference fits evidence to its content and flows copy beside it', a
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
     }
-    expect(Math.max(...codeWidths) - Math.min(...codeWidths), 'code width follows the content, not a canvas fraction').toBeLessThanOrEqual(1)
+    expect(Math.max(...diagramWidths) - Math.min(...diagramWidths), 'graphic width follows its own reading size, not a canvas fraction').toBeLessThanOrEqual(1)
     expect(Math.max(...imageWidths) - Math.min(...imageWidths), 'image width follows its own aspect and reading size').toBeLessThanOrEqual(1)
 })
 
@@ -119,9 +106,6 @@ test('screen reference stacks at narrow widths and enlarged text while retaining
             expect(box.x).toBeGreaterThanOrEqual(0)
             expect(box.x + box.width).toBeLessThanOrEqual(width)
         }
-        for (const code of await body.locator('figure[role="img"] pre, figure[role="img"] code').all()) {
-            await expect(code).toHaveCSS('white-space', 'pre')
-        }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
     }
 })
@@ -135,7 +119,7 @@ test('screen reference retains labelled schematics and image inspection in both 
         const diagrams = body.locator('figure[role="img"]')
         for (const diagram of await diagrams.all()) {
             await expect(diagram).toHaveAttribute('aria-label', /\S/)
-            await expect(diagram.locator('[aria-hidden="true"]')).toHaveCount(1)
+            await expect(diagram.locator('svg[aria-hidden="true"]')).toHaveCount(1)
         }
         const opener = body.locator('figure[data-layout="inset"] button').first()
         await opener.focus()

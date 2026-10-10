@@ -23,27 +23,13 @@ tags:
 
 This reference follows a path through [Visual Search Workbench](/projects/visual-search-workbench/): give the search a starting point, make a promising picture the next query, then explore related material on the Similarity map. The selected images remain available in the grid for inspection and further use.
 
-The current downloadable release is 0.2.6. The application captures remain the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The text drawings are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
+The current downloadable release is 0.2.6. The application captures remain the existing 0.2.0 screenshots; the descriptions draw on the 0.2.3 product record. **The workflow graphics are explanatory schematics, not screenshots, exact layouts, or newly verified interface strings.** Letters stand for photographs rather than measured search results.
 
 <section>
 
 ## 1. Give the search a starting point
 
-<AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
-
-```text
-Photo folders you choose
-          │
-      Search index
-          │
-  Words or reference image
-          │
-    Candidate photographs
-       [A] [B] [C]
-       [D] [E] [F]
-```
-
-</AsciiScreen>
+<SearchWorkflow kind="entry" label="Search choices: words and a reference image are alternative query inputs. Both lead to candidate photographs in the image grid.">Schematic: two ways to start a search.</SearchWorkflow>
 
 The search uses an index of the folders you choose. The index lets the app compare their photographs while the originals remain in place. It accepts a text query or a reference image, with neither route requiring advance tagging.
 
@@ -60,21 +46,7 @@ A text query is useful when you can describe what you want. A reference image is
   alt="Find similar results with a flower photograph identified as the reference image."
 />
 
-<AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
-
-```text
-Text query ► [A] [B] [C] [D]
-                    │
-               Find similar
-                    │
-              B is the reference
-                    │
-                [E] [F] [G]
-                    │
-             Back to text results
-```
-
-</AsciiScreen>
+<SearchWorkflow kind="similar" label="Screen storyboard: open photograph B from text results. Find similar makes B the reference for new results E, F, and G. Back to text results returns to the original results.">Schematic: B is the new query.</SearchWorkflow>
 
 <div data-flow-copy="short">
 
@@ -100,29 +72,7 @@ The **Similarity** view offers a spatial arrangement of related images. That arr
 
 In practical terms, UMAP turns many-number comparisons into places to browse on a screen. Those places are suggestions for exploration, not automatically named categories. The [design article](/research/visual-search-workbench-process/) explains the method and how it differs from search ranking.
 
-<AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
-
-```text
-Similarity overview
-┌───────────────────────────┐
-│   . .              . .    │
-│  ┌─────────┐              │
-│  │ A  B  C │      . .     │
-│  └─────────┘              │
-│       . .                 │
-└───────────────────────────┘
-       Selected region
-              │
-              ▾
-      Linked image grid
-      ┌───────────────────┐
-      │ [A]  [B]  [C]     │
-      │ Inspect these     │
-      │ photographs       │
-      └───────────────────┘
-```
-
-</AsciiScreen>
+<SearchWorkflow kind="selection" label="Linked views: selecting a map region containing A, B, and C shows the same photographs in the image grid. The outlined region and outlined grid items identify the same selection; other map points remain outside it.">Schematic: A, B and C stay selected in both views.</SearchWorkflow>
 
 A selected region becomes a set of photographs in the linked grid. The grid lets you inspect the images behind the marks and choose whether any is worth following.
 
@@ -169,7 +119,7 @@ The proposed layers can be inspected and saved for use elsewhere. A recognisable
 
 I use this reference to check whether each selection has a clear next action and a way to return to the earlier search.
 
-A structured UX map can provide an interface inventory and render it as text screens for human and AI review. The running interface still needs to be checked for behaviour and visual quality. The schematics on this page are selective explanations; they are not claimed as generated UX-map output or as drawings checked by the product’s source-string tests.
+The diagrams separate query choices, screen changes, and selection links. They are selective explanations; the running interface still needs to be checked for behaviour and visual quality. Text wireframes remain useful for describing the arrangement of interface elements.
 
 Read [Finding a Visual Direction with UMAP](/research/visual-search-workbench-process/) for the design idea, or return to the [product page](/projects/visual-search-workbench/) for installation and release status.
 

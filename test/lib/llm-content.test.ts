@@ -11,6 +11,13 @@ const full = fs.readFileSync(path.join(process.cwd(), 'public/llms-full.txt'), '
 const index = fs.readFileSync(path.join(process.cwd(), 'public/llms.txt'), 'utf8')
 
 describe('generated text exports reflect the current source inventory', () => {
+    it('preserves workflow meaning and captions for readers of the text export', () => {
+        const source = '<SearchWorkflow kind="similar" label="Open a photograph, choose Find similar, and return with Back to text results.">Schematic: the chosen photograph remains the reference.</SearchWorkflow>'
+        const text = stripMdxComponents(source)
+        expect(text).toContain('Open a photograph, choose Find similar, and return with Back to text results.')
+        expect(text).toContain('Schematic: the chosen photograph remains the reference.')
+        expect(text).not.toMatch(/SearchWorkflow|kind=|label=/)
+    })
     it('keeps inset figure evidence and its explanation in the text alternative', () => {
         const source = '<Figure src="menu.gif" alt="Focus moving through a menu" caption="Keyboard navigation." width={640} height={446} inspectable>\n\nFocus must cross component boundaries.\n\n</Figure>'
         const text = stripMdxComponents(source)
