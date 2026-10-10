@@ -4,7 +4,7 @@
 > **Author**: Codex coordinator
 > **Project**: darce.github.io
 > **Task ID**: PORTFOLIO-COPY-01
-> **Task Plan Status**: reviewed; publication pending
+> **Task Plan Status**: proposed
 > **Target Branch**: `feature/portfolio-copy-01`
 > **Review Coverage Target**: 1
 
@@ -201,52 +201,42 @@ Proof: no unresolved substantive findings, successful required checks, successfu
 
 ### Context and ownership
 
-- [x] Load the authoritative repository rules, pinned canon, source distillations, and task state.
-- [x] Confirm the exact requested remote models and efforts; transport the matching canon snapshot.
-- [x] Keep résumé and corpus paths unchanged.
+- [ ] Load the authoritative repository rules, pinned canon, source distillations, and task state.
+- [ ] Confirm the exact requested remote models and efforts; transport the matching canon snapshot.
+- [ ] Keep résumé and corpus paths unchanged.
 
 ### Slice 1
 
-- [x] Update masthead, homepage, About, index descriptions, metadata, and generated text.
-- [x] Review and improve all eight project articles and all eight research articles.
-- [x] Add the verified Texting Syria case and public AltContext guide link.
-- [x] Add optional image-caption preservation and rendering with backward compatibility.
-- [x] Run focused tests, check, build, and rendered layout/link inspection.
+- [ ] Update masthead, homepage, About, index descriptions, metadata, and generated text.
+- [ ] Review and improve all eight project articles and all eight research articles.
+- [ ] Add the verified Texting Syria case and public AltContext guide link.
+- [ ] Add optional image-caption preservation and rendering with backward compatibility.
+- [ ] Run focused tests, check, build, and rendered layout/link inspection.
 
 ### Slice 2
 
-- [x] Complete the section-by-section review ledger with actual defects and remedies.
-- [x] Complete the art and STE assessment using primary sources and explicit evidence limits.
-- [x] Create a prioritized asset backlog with verifiable acceptance conditions.
+- [ ] Complete the section-by-section review ledger with actual defects and remedies.
+- [ ] Complete the art and STE assessment using primary sources and explicit evidence limits.
+- [ ] Create a prioritized asset backlog with verifiable acceptance conditions.
 
 ### Slice 3
 
-- [x] Run the requested independent Claude remote review and resolve substantive findings.
+- [ ] Run the requested independent Claude remote review and resolve substantive findings.
 - [ ] Complete branch readiness and closure gates, merge, and publish.
 - [ ] Verify the live site and record deployment evidence.
 
 ## Review Readiness
 
-- [x] The optional-caption contract has validation, normalization, and rendering proof.
-- [x] The review covers every section and article, including claims retained rather than rewritten.
-- [x] The handoff records checks, model provenance, remaining asset needs, and deployment status.
+- [ ] The optional-caption contract has validation, normalization, and rendering proof.
+- [ ] The review covers every section and article, including claims retained rather than rewritten.
+- [ ] The handoff records checks, model provenance, remaining asset needs, and deployment status.
 
 ## Success Criteria
 
 - [ ] darce.xyz consistently presents the front-end/development foundation and design-technologist practice.
-- [x] All public articles have been reviewed for specificity, explanatory structure, and repetitive prose.
-- [x] The intentional art pairings remain, with useful image descriptions and proper visible attribution.
-- [x] Texting Syria's end-to-end implementation is represented accurately.
-- [x] The requested remote implementation and independent review have verifiable model/effort provenance.
-- [x] The asset backlog and scoped STE admission assessment are delivered, without changing résumés or either canon corpus.
+- [ ] All public articles have been reviewed for specificity, explanatory structure, and repetitive prose.
+- [ ] The intentional art pairings remain, with useful image descriptions and proper visible attribution.
+- [ ] Texting Syria's end-to-end implementation is represented accurately.
+- [ ] The requested remote implementation and independent review have verifiable model/effort provenance.
+- [ ] The asset backlog and scoped STE admission assessment are delivered, without changing résumés or either canon corpus.
 - [ ] The live Pages deployment contains the reviewed changes.
-
-## Acceptance record
-
-Implementation used Codex remote `gpt-6.1-sol`, `xhigh`; independent reviews used Claude remote `claude-opus-5-5`, `high`. The public source is accepted in the recorded MCP reviews; findings and their dispositions remain in MCP. Canon authority is release 0.25.6.
-
-The coordinator independently verified the normal check, 217 tests, production build/static export, all 46 desktop/mobile route checks, five artwork figures, the signed-out public guide and its apply/undo behavior. The two final precision edits received an additional four rendered route checks. Generated sitemap dates were regenerated from the repository history; all 22 URLs remain.
-
-The upstream remote preflight request is [issue 23](https://github.com/darce/agentic-protocol-monorepo/issues/23). Semantic retrieval recovered the earlier isolated Linux dependency preparation; dependencies were provisioned before the correction runs. Résumé files and both canon/research corpus directories remain unchanged.
-
-Publication and live verification are pending at this checkpoint.
