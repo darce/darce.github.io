@@ -309,16 +309,22 @@ I prototyped and developed a CSS-animated direct email campaign. CSS supplied th
 Campaign production involved repeated manual steps. I built command-line tools in Node.js, Bash, and Gulp to automate builds, previews, and deployment, giving the team a repeatable way to prepare an email campaign.
 
 ### Texting Syria: An Exhibition Across Photographs and Phones
-*End-to-end implementation for Liam Maloney’s installation*
+*SMS development for Liam Maloney’s photography installation*
 Year: 2014
 Tags: Exhibition, Interaction Development, SMS, Documentary Photography
-Summary: Liam Maloney supplied the photographs, text, and translations. I developed the experience end to end, connecting the exhibition with actual messages delivered to visitors’ phones through an SMS server.
+Summary: I built the PHP and Twilio application for Liam Maloney’s Texting Syria, delivering messages from recorded conversations to visitors’ own phones.
 
-Texting Syria brings Liam Maloney’s photographs together with actual text messages. Maloney supplied the photographs, text, and translations; I developed the SMS experience end to end in 2014 using the Twilio API.
+## Bringing the conversations into the exhibition
 
-The exhibition invited visitors to connect to an SMS server and receive a series of actual messages on their own phones. According to Maloney’s project statement, those texts had been received when the photographs were taken.
+Liam photographed Syrians who had fled to Lebanon and were keeping in touch with family in Homs by phone. The installation brought those photographs together with messages received at the time they were taken.
 
-Photoville NY exhibited the project in 2016. Its [exhibition record](https://photoville.com/projects/texting-syria/) credits Liam Maloney “with coding by Daniel Arce” and documents the SMS interaction. [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html) provides the photographs and Maloney’s statement about people in Lebanon keeping in touch with family in Syria.
+I wrote the application in PHP and integrated the Twilio API. Visitors connected to the exhibition’s SMS service and received a sequence of texts drawn from those earlier exchanges. Their own text-message inbox was the interface.
+
+## The visitor’s phone as part of the installation
+
+Using SMS made the visitor’s own phone part of the exhibition. The photographs showed people keeping in touch with family elsewhere; the messages brought the words of those exchanges onto a device the visitor used for their own conversations.
+
+Texting Syria was exhibited at [Photoville New York in 2016](https://photoville.com/projects/texting-syria/). Liam’s photographs and artist statement are also documented in [Moving Walls 23](https://www.movingwalls.org/moving-walls/23/texting-syria.html).
 
 ### barbarabeirne.com: Archive Recovery, Rebuild & 2026 Refresh
 *Artist Archive / Portfolio*

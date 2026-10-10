@@ -15,7 +15,7 @@
 - /projects/msnbc/ — Proposed and prototyped collapsible panels around continuous video playback, then helped deliver the AngularJS interface with MSNBC’s internal team and vendors.
 - /projects/workbay/ — WorkBay records tasks, decisions, review findings, and test evidence in the repository. Later sessions can retrieve the record across supported AI coding tools.
 - /projects/apple/ — Implemented responsive iPhone X launch pages from design specifications, developed a CSS-animated email campaign, and automated campaign build and preview steps
-- /projects/texting-syria/ — Liam Maloney supplied the photographs, text, and translations. I developed the experience end to end, connecting the exhibition with actual messages delivered to visitors’ phones through an SMS server.
+- /projects/texting-syria/ — I built the PHP and Twilio application for Liam Maloney’s Texting Syria, delivering messages from recorded conversations to visitors’ own phones.
 - /projects/barbarabeirne/ — Recovered a photography archive from a defunct Flash site, rebuilt the portfolio, and later rewrote the live site with Web Components
 - /projects/bauhausdances/ — Designed a visual identity rooted in the film’s source material and built a custom WordPress theme with self-hosted video
 
