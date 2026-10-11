@@ -1,0 +1,25 @@
+ components/features/ProjectDetails/ArticleCode.tsx |  25 ++
+ .../ProjectDetails/ProjectDetails.module.scss      |  86 ++++-
+ .../features/ProjectDetails/ProjectDetails.tsx     |  20 +-
+ content/research/agent-memory.mdx                  |  49 ++-
+ content/research/economics-of-agent-memory.mdx     |  54 ++-
+ content/research/heuristics-canon.mdx              |  41 ++-
+ content/research/interrogating-agent-memory.mdx    |  40 +-
+ content/research/order-book.mdx                    |  43 ++-
+ content/research/rotation-matrices.mdx             |  71 +++-
+ .../research/visual-search-workbench-process.mdx   |  65 ++--
+ docs/research/research-review-01-implementation.md | 296 +++++++++++++++
+ docs/research/research-review-01-inventory.md      | 403 +++++++++++++++++++++
+ docs/research/research-review-01-qa.md             | 108 ++++++
+ package.json                                       |   2 +-
+ public/images/research/econ-scale.svg              |   6 +-
+ public/llms-full.txt                               | 190 ++++++----
+ scripts/generate-econ-diagrams.py                  |  50 +--
+ scripts/generate-llm-content.js                    |  10 +-
+ scripts/lib/strip-mdx-components.js                |   7 +-
+ test/browser/article-flow.spec.ts                  | 102 ++++++
+ test/browser/research.config.ts                    |  19 +
+ test/components/projectImageCaptions.test.tsx      |  60 +++
+ test/lib/llm-content.test.ts                       |  38 ++
+ test/support/verify-research-export.ts             |  31 ++
+ 24 files changed, 1638 insertions(+), 178 deletions(-)

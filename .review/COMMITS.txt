@@ -1,0 +1,4 @@
+2ce34cb00faf offload: Committed the factual QA report; scoped checks pass, but six
+496b7e6fe1ff offload: All seven articles and production renderer/export changes are
+1a7392d85aeb offload: Committed the refreshed seven-article inventory; all 28 scoped
+3b6185305cc8 offload: Committed the 241-line inventory report; scoped verification is
