@@ -1,10 +1,1 @@
-0b34588ab273 offload: Committed the three-path keyboard-motion fix as f57508d for
-0d140e8617db offload: Committed the two-path keyboard oracle correction as
-2002d3841525 offload: Committed bounded browser harness repairs as 4e2e9fa for native
-3bd215135924 offload: Committed the factual QA report and expanded article, theme,
-0e0a981f74ad offload: Committed F1–F5 corrections; native browser acceptance remains
-52f686e9d076 chore(review): procure governed context payload
-2ce34cb00faf offload: Committed the factual QA report; scoped checks pass, but six
-496b7e6fe1ff offload: All seven articles and production renderer/export changes are
-1a7392d85aeb offload: Committed the refreshed seven-article inventory; all 28 scoped
-3b6185305cc8 offload: Committed the 241-line inventory report; scoped verification is
+a618dd21d83c offload: Committed narrow CI corrections; local checks pass, with
