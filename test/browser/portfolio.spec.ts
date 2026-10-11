@@ -110,18 +110,31 @@ for (const { file, slug, section } of projects) {
     })
 }
 
-for (const { section, slug } of drawings) {
+for (const { section, slug, file } of drawings) {
+    const source = fs.readFileSync(file, 'utf8')
+    const authoredDrawings = [...source.matchAll(/<AsciiScreen\b[^>]*>/g)]
+    const alternatives = authoredDrawings.map(([tag]) => tag.match(/\blabel="([^"]*)"/)?.[1])
     test(`${slug}: ASCII drawings retain their accessible alternative and do not wrap`, async ({ page }) => {
         await page.goto(buildItemPath(section, slug))
-        const drawings = page.getByRole('article').locator('figure[role="img"]')
+        // SVG workflows share the image role; only ASCII figures contain preformatted text.
+        const article = page.getByRole('article')
+        const drawings = article.locator('figure[role="img"]').filter({ has: page.locator('pre') })
+        expect(authoredDrawings.length).toBeGreaterThan(0)
+        await expect(drawings).toHaveCount(authoredDrawings.length)
         expect(await drawings.count()).toBeGreaterThan(0)
-        for (const figure of await drawings.all()) {
-            await expect(figure).toHaveAccessibleName(/\S/)
-            const pre = figure.locator('pre')
-            await expect(pre).toHaveCSS('white-space', 'pre')
-            const foreground = await pre.evaluate(element => getComputedStyle(element).color)
-            expect(foreground).toBe(await cssColor(page, palettes.ink))
-            expect(contrastRatio(foreground, await paintedBackground(pre))).toBeGreaterThanOrEqual(wcag.textContrast)
+        for (const palette of Object.values(themes)) {
+            await expect.poll(() => paintedBackground(article)).toBe(await cssColor(page, palette.backgroundColor))
+            for (const [index, figure] of (await drawings.all()).entries()) {
+                expect(alternatives[index]).toMatch(/\S/)
+                await expect(figure).toHaveAccessibleName(alternatives[index]!)
+                await expect(figure).toHaveAccessibleName(/\S/)
+                const pre = figure.locator('pre')
+                await expect(pre).toHaveCSS('white-space', 'pre')
+                const foreground = await pre.evaluate(element => getComputedStyle(element).color)
+                expect(foreground).toBe(await cssColor(page, palettes.ink))
+                expect(contrastRatio(foreground, await paintedBackground(pre))).toBeGreaterThanOrEqual(wcag.textContrast)
+            }
+            await changeTheme(page)
         }
     })
 }

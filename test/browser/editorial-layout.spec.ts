@@ -237,12 +237,14 @@ test('full-size evidence opens a fitted modal with an icon close control and key
         await page.keyboard.press('Escape')
         await expect(dialog).toHaveCount(0)
         await expect(opener).toBeFocused()
-        expect(await page.evaluate(() => document.body.style.overflow)).toBe(originalOverflow)
+        // Native dialog dismissal/focus return can precede the viewer's effect cleanup.
+        await expect.poll(() => page.evaluate(() => document.body.style.overflow), 'Escape completes scroll unlock').toBe(originalOverflow)
         await opener.focus()
         await page.keyboard.press('Space')
         await dialog.getByRole('button', { name: 'Close', exact: true }).click()
         await expect(dialog).toHaveCount(0)
         await expect(opener).toBeFocused()
+        await expect.poll(() => page.evaluate(() => document.body.style.overflow), 'Close completes scroll unlock').toBe(originalOverflow)
     }
 
     await page.addStyleTag({ content: 'html { font-size: 200%; }' })
@@ -258,6 +260,7 @@ test('full-size evidence opens a fitted modal with an icon close control and key
     await closeButton.click()
     await expect(secondDialog).toHaveCount(0)
     await expect(secondOpener).toBeFocused()
+    await expect.poll(() => page.evaluate(() => document.body.style.overflow), 'Close after text resize completes scroll unlock').toBe(originalOverflow)
 })
 
 test('inset figures reflow with narrow screens and reader text settings', async ({ page }) => {
