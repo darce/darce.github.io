@@ -1074,9 +1074,11 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In 
 
 The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
 
-![An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z.](/images/research/rotation-f-projection.svg?v=16)
+The next plate keeps the physical screen-plane construction: its scale is $d/(d - z)$. The long brace runs from the eye to the near object's depth, not from the screen to the object. Dividing the drawn screen coordinates by $d$ gives the demo's normalized coordinates.
 
-*Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle.*
+![An eye at world z = d, a screen at world z = 0, and two same-size coral trees behind it at negative world z. The depth axis points away from the eye. Green rays intersect the physical screen: solid rays show the larger near image, dashed rays the smaller far image. A short brace marks eye-to-screen distance d; a long brace marks the whole eye-to-near-object depth d minus z. The equation is screen-plane scale = d/(d − z). Divide screen coordinates by d for the demo’s normalized scale.](/images/research/rotation-f-projection.svg?v=17)
+
+*Physical screen-plane scale = d/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle. Divide screen coordinates by d to get the demo’s normalized projection.*
 
 ```typescript
 const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {

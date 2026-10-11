@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { expect, test, type Locator } from '@playwright/test'
-import { auditBrowser, changeTheme } from '../support/browser'
+import { auditBrowser, changeTheme, expectCodeContrast, primaryNavigation, themeButton } from '../support/browser'
 
 const route = '/research/visual-search-workbench-screen-reference/'
 
@@ -158,6 +158,23 @@ const researchSlugs = [
     'economics-of-agent-memory', 'heuristics-canon', 'rotation-matrices', 'order-book',
 ]
 
+test('theme switching preserves the preference and article across both directions and reload', async ({ page }) => {
+    await page.goto('/research/rotation-matrices/')
+    const body = page.getByRole('article').locator('[data-article-body]')
+    const originalCode = await body.locator('pre').allTextContents()
+    for (const appearance of ['dark', 'light', 'dark'] as const) {
+        await changeTheme(page)
+        expect(await page.evaluate(() => localStorage.getItem('theme-preference'))).toBe(appearance)
+        expect(await body.locator('pre').allTextContents()).toEqual(originalCode)
+    }
+    await page.reload()
+    await expect(themeButton(page)).toHaveAttribute('aria-label', 'Switch to light mode')
+    await auditBrowser(page)
+    await expectCodeContrast(body.locator('pre code'))
+    await changeTheme(page)
+    expect(await page.evaluate(() => localStorage.getItem('theme-preference'))).toBe('light')
+})
+
 for (const slug of researchSlugs) {
     test(`${slug} retains complete evidence, source order and accessible diagrams in both themes`, async ({ page }, testInfo) => {
         // Avoid depending on a successful external market connection.
@@ -173,10 +190,13 @@ for (const slug of researchSlugs) {
         for (const theme of ['light', 'dark']) {
             if (theme === 'dark') await changeTheme(page)
             await auditBrowser(page)
+            await expectCodeContrast(blocks.locator('code'))
             for (const [index, block] of (await blocks.all()).entries()) {
                 expect(await block.textContent(), 'all code bytes survive highlighting in source order').toBe(fences[index])
                 await expect(block).toHaveCSS('white-space', 'pre')
                 await expect(block.locator('code')).toHaveCSS('white-space', 'pre')
+                await expect(block.locator('code')).toHaveCSS('overflow-x', 'visible')
+                await expect(block.locator('code')).toHaveCSS('overflow-y', 'visible')
                 await expect(block).toHaveCSS('overflow-x', 'auto')
                 const columns = Number(await block.getAttribute('data-code-columns'))
                 if (columns >= 68) {
@@ -216,22 +236,91 @@ for (const slug of researchSlugs) {
     })
 }
 
+async function keyboardScrollToLineEnd(block: Locator) {
+    const page = block.page()
+    await block.scrollIntoViewIfNeeded()
+    const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
+    expect(maximum, 'this check must exercise an actual overflowing code region').toBeGreaterThan(1)
+    // Enter through the document's Tab sequence, including image buttons.
+    await primaryNavigation(page).focus()
+    for (let tabs = 0; tabs < 100 && !await block.evaluate(element => element === document.activeElement); tabs++) {
+        await page.keyboard.press('Tab')
+    }
+    await expect(block).toBeFocused()
+    await page.keyboard.press('Home')
+    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
+    await page.keyboard.press('ArrowRight')
+    await expect.poll(() => block.evaluate(element => element.scrollLeft), 'real ArrowRight scrolls the focused pre').toBeGreaterThan(0)
+    await page.keyboard.press('End')
+    await expect.poll(() => block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft), 'End reaches the whole long-line extent').toBeLessThanOrEqual(1)
+    const lineEnds = await block.locator('code').evaluate(code => {
+        const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
+        const nodes: Text[] = []
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) nodes.push(node as Text)
+        const text = code.textContent!
+        const offsets = [...text.matchAll(/\S(?=\s*(?:\n|$))/g)].map(match => match.index)
+        const ends = offsets.map(offset => {
+            let remaining = offset
+            const node = nodes.find(node => {
+                if (remaining < node.length) return true
+                remaining -= node.length
+                return false
+            })!
+            const range = document.createRange()
+            range.setStart(node, remaining)
+            range.setEnd(node, remaining + 1)
+            const rect = range.getBoundingClientRect()
+            return { left: rect.left, right: rect.right }
+        })
+        const pre = code.closest('pre')!
+        const region = pre.getBoundingClientRect()
+        return { ends, viewportLeft: region.left + pre.clientLeft, viewportRight: region.left + pre.clientLeft + pre.clientWidth }
+    })
+    const rightmost = lineEnds.ends.reduce((a, b) => b.right > a.right ? b : a)
+    expect(rightmost.left, 'the terminal character of the longest rendered line is visible at End').toBeGreaterThanOrEqual(lineEnds.viewportLeft - 1)
+    expect(rightmost.right).toBeLessThanOrEqual(lineEnds.viewportRight + 1)
+    // Return to the beginning so evidence captures do not retain a clipped line.
+    await page.keyboard.press('Home')
+    const finalLine = await block.locator('code').evaluate(code => {
+        const pre = code.closest('pre')!
+        const range = document.createRange()
+        const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
+        let last: Text | null = null
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) if (node.textContent?.trimEnd()) last = node as Text
+        const end = last!.textContent!.trimEnd().length
+        range.setStart(last!, end - 1)
+        range.setEnd(last!, end)
+        const rect = range.getBoundingClientRect()
+        const region = pre.getBoundingClientRect()
+        return { left: rect.left, right: rect.right, viewportLeft: region.left + pre.clientLeft, viewportRight: region.left + pre.clientLeft + pre.clientWidth }
+    })
+    expect(finalLine.left, 'the final source line remains reachable at Home').toBeGreaterThanOrEqual(finalLine.viewportLeft - 1)
+    expect(finalLine.right).toBeLessThanOrEqual(finalLine.viewportRight + 1)
+}
+
 test('seven research articles contain overflow at mobile and 200% text sizes', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'One explicit viewport matrix covers all seven pages')
     for (const slug of researchSlugs) {
-        for (const [width, enlarged] of [[320, false], [768, false], [1440, true]] as const) {
+        for (const [width, enlarged] of [[320, false], [768, false], [320, true], [1440, true]] as const) {
             await page.setViewportSize({ width, height: 1000 })
             await page.goto(`/research/${slug}/`)
             if (enlarged) await page.addStyleTag({ content: 'html { font-size: 200%; }' })
             const body = page.getByRole('article').locator('[data-article-body]')
+            let overflowing = 0
+            let intrinsicOverflowing = 0
             for (const block of await body.locator('pre').all()) {
                 await expect(block).toHaveCSS('float', 'none')
-                const scroll = await block.evaluate(element => {
-                    element.scrollLeft = element.scrollWidth
-                    return { end: element.scrollLeft, maximum: element.scrollWidth - element.clientWidth }
-                })
-                expect(scroll.end).toBeCloseTo(scroll.maximum, 0)
+                await expect(block.locator('code')).toHaveCSS('overflow-x', 'visible')
+                await expect(block.locator('code')).toHaveCSS('overflow-y', 'visible')
+                const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
+                if (maximum > 1 && await block.getAttribute('tabindex') === '0') {
+                    await keyboardScrollToLineEnd(block)
+                    overflowing++
+                    if (await block.getAttribute('data-code-layout') === 'intrinsic') intrinsicOverflowing++
+                }
             }
+            if (width === 320 && ['rotation-matrices', 'order-book'].includes(slug)) expect(overflowing, `${slug}: keyboard proof includes an overflowing region, enlarged=${enlarged}`).toBeGreaterThan(0)
+            if (width === 320 && slug === 'order-book') expect(intrinsicOverflowing, 'normally short code still scrolls when the viewport is narrow').toBeGreaterThan(0)
             expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${slug}, ${width}px, enlarged=${enlarged}`).toBeLessThanOrEqual(1)
         }
     }

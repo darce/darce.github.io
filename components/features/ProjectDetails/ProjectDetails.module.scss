@@ -248,7 +248,8 @@
                 box-sizing: border-box;
                 overflow-x: auto;
                 max-block-size: none;
-                // Rehype's highlight theme pins paper and ink together.
+                // Keep the code plate and its scoped highlight ink together
+                // in both themes (including the unhighlighted text).
                 background: #fff;
                 color: $ink;
             }
@@ -256,6 +257,23 @@
             pre code {
                 display: block;
                 padding: 0;
+                inline-size: max-content;
+                min-inline-size: 100%;
+                // The focusable pre owns both axes; no nested code scroller.
+                overflow: visible;
+                background: transparent;
+                color: $ink;
+
+                :global(.hljs-built_in),
+                :global(.hljs-symbol) {
+                    // GitHub's #e36209 is only 3.48:1 on this white plate.
+                    color: #953800;
+                }
+
+                :global(.hljs-addition) {
+                    // Also cover highlighted diff text on its own pale ground.
+                    color: #1b6b2e;
+                }
             }
 
             // Each content section shrinks around its own evidence and prose,

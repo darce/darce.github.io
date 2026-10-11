@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { expect, test } from '@playwright/test'
 import tokens from '../../design-tokens/portfolio.tokens.json'
 import { articles } from '../support/content'
@@ -24,7 +25,7 @@ test('article captions share the masthead treatment without controls', async ({ 
 })
 
 test('work and research images share continuous inset or wide figure layouts', async ({ page }) => {
-    for (const { section, slug } of articles) {
+    for (const { section, slug, file } of articles) {
         await page.goto(buildItemPath(section, slug))
         await page.evaluate(() => document.fonts.ready)
         const body = page.getByRole('article').locator('[data-article-body]')
@@ -35,15 +36,60 @@ test('work and research images share continuous inset or wide figure layouts', a
         for (const image of await body.locator('img').all()) {
             expect(await image.evaluate(element => element.closest('figure')?.getAttribute('data-layout')), `${section}/${slug}: image uses shared figure`).toMatch(/^(inset|wide)$/)
         }
-        for (const [index, figure] of (await body.locator('figure[data-layout="inset"]').all()).entries()) {
+        // A pair owns its children's layout. Only standalone insets float.
+        const figures = await body.locator('figure[data-layout="inset"]').all()
+        let standaloneIndex = 0
+        for (const figure of figures) {
+            if (await figure.evaluate(element => Boolean(element.closest('[data-diagram-pair]')))) continue
             if (contentFlow) {
                 expect((await figure.boundingBox())!.width).toBeLessThanOrEqual(canvas.width)
             } else {
                 expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
             }
-            const side = contentFlow ? (await figure.getAttribute('data-side') === 'left' ? 'left' : 'right') : (index % 2 === 0 ? 'right' : 'left')
+            const side = contentFlow ? (await figure.getAttribute('data-side') === 'left' ? 'left' : 'right') : (standaloneIndex % 2 === 0 ? 'right' : 'left')
+            standaloneIndex++
             await expect(figure).toHaveCSS('float', wraps ? side : 'none')
             await expect(figure.locator('figcaption')).toContainText(/\S/)
+        }
+        const expectedPairs = [...fs.readFileSync(file, 'utf8').matchAll(/<DiagramPair>([\s\S]*?)<\/DiagramPair>/g)]
+            .map(match => [...match[1].matchAll(/\balt="([^"]*)"/g)].map(image => image[1]))
+        const pairs = body.locator('[data-diagram-pair]')
+        await expect(pairs).toHaveCount(expectedPairs.length)
+        for (const [index, pair] of (await pairs.all()).entries()) {
+            await expect(pair).toHaveCSS('display', 'flex')
+            await expect(pair).toHaveCSS('flex-wrap', 'wrap')
+            const children = pair.locator(':scope > figure')
+            expect(await children.locator('img').evaluateAll(images => images.map(image => image.getAttribute('alt'))), 'pair keeps authored source order').toEqual(expectedPairs[index])
+            const pairBox = (await pair.boundingBox())!
+            const boxes = []
+            const nativeWidths = []
+            for (const child of await children.all()) {
+                await expect(child).toHaveCSS('float', 'none')
+                await expect(child.locator('figcaption')).toContainText(/\S/)
+                const image = child.locator('img')
+                await image.scrollIntoViewIfNeeded()
+                await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+                const native = await image.evaluate((element: HTMLImageElement) => ({ width: element.naturalWidth, height: element.naturalHeight }))
+                const imageBox = (await image.boundingBox())!
+                expect(imageBox.width, 'diagram labels retain their intrinsic reading size').toBeCloseTo(native.width, 0)
+                expect(imageBox.width / imageBox.height).toBeCloseTo(native.width / native.height, 2)
+                const box = (await child.boundingBox())!
+                expect(box.width).toBeCloseTo(Math.min(native.width, pairBox.width), 0)
+                expect(box.x).toBeGreaterThanOrEqual(pairBox.x - 1)
+                expect(box.x + box.width).toBeLessThanOrEqual(pairBox.x + pairBox.width + 1)
+                expect(box.y).toBeGreaterThanOrEqual(pairBox.y - 1)
+                expect(box.y + box.height).toBeLessThanOrEqual(pairBox.y + pairBox.height + 1)
+                boxes.push(box)
+                nativeWidths.push(native.width)
+            }
+            expect(boxes).toHaveLength(2)
+            const gap = await pair.evaluate(element => Number.parseFloat(getComputedStyle(element).columnGap))
+            if (nativeWidths[0] + nativeWidths[1] + gap <= pairBox.width + 1) {
+                expect(boxes[1].y, 'figures share a row when their intrinsic sizes fit').toBeCloseTo(boxes[0].y, 0)
+                expect(boxes[1].x).toBeGreaterThanOrEqual(boxes[0].x + boxes[0].width + gap - 1)
+            } else {
+                expect(boxes[1].y, 'figures wrap in source order when their intrinsic sizes do not fit').toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height + gap - 1)
+            }
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${section}/${slug}: no page overflow`).toBeLessThanOrEqual(1)
     }

@@ -5,7 +5,6 @@
 
 body {
     background-color: $paper;
-    transition: background-color 0.3s;
     text-wrap: pretty;
 }
 
@@ -29,7 +28,8 @@ body[data-theme='dark'] {
 
 a {
     text-decoration: none;
-    transition: color 200ms $ease-decel;
+    // Theme ink and its ground change together; interpolation can cross
+    // below the contrast floor even when both endpoint palettes pass.
 }
 
 // Prose links remain identifiable without depending on color differences.

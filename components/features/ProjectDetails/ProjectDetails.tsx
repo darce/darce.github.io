@@ -68,7 +68,7 @@ const Diagram = ({
 )
 
 const DiagramPair = ({ children }: { children: React.ReactNode }) => (
-    <div className={styles.diagramPair}>{children}</div>
+    <div className={styles.diagramPair} data-diagram-pair>{children}</div>
 )
 
 const PullQuote = ({ children }: { children: React.ReactNode }) => (

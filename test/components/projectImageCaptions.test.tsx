@@ -135,3 +135,42 @@ describe('the seven research articles compile through the production renderer', 
         }
     })
 })
+
+it('projection evidence matches independent near and far physical-plane calculations', () => {
+    const svg = fs.readFileSync(path.join(process.cwd(), 'public/images/research/rotation-f-projection.svg'), 'utf8')
+    const plate = new DOMParser().parseFromString(svg, 'image/svg+xml')
+    // This is the plate's specified scene, evaluated without the generator or
+    // demo projection module: eye world z=d, screen z=0, depth=d-worldZ.
+    const d = 1.38
+    const toPlate = (height: number, lateral: number, depth: number) => [
+        70 + 142 * (0.88 * depth + 0.52 * lateral),
+        250 + 142 * (-0.92 * height - 0.38 * depth + 0.30 * lateral),
+    ]
+    for (const { worldZ, lateral, radius } of [
+        { worldZ: -0.92, lateral: 0.56, radius: '3.0' },
+        { worldZ: -2.05, lateral: -0.60, radius: '2.8' },
+    ]) {
+        const depth = d - worldZ
+        const physicalScale = d / depth
+        const top = toPlate(0.78 * physicalScale, lateral * physicalScale, d)
+        const bottom = toPlate(0, lateral * physicalScale, d)
+        const dots = Array.from(plate.querySelectorAll(`circle[r="${radius}"]`))
+        expect(dots).toHaveLength(2)
+        for (const [index, expected] of [top, bottom].entries()) {
+            expect(Math.abs(Number(dots[index].getAttribute('cx')) - expected[0])).toBeLessThanOrEqual(0.051)
+            expect(Math.abs(Number(dots[index].getAttribute('cy')) - expected[1])).toBeLessThanOrEqual(0.051)
+        }
+        expect(Math.abs(Number(dots[1].getAttribute('cy')) - Number(dots[0].getAttribute('cy')) - 142 * 0.92 * 0.78 * physicalScale)).toBeLessThanOrEqual(0.101)
+        expect((0.78 * physicalScale) / d).toBeCloseTo(0.78 / depth, 12)
+    }
+    const depthBrace = Array.from(plate.querySelectorAll('line[stroke="#464c5c"][stroke-width="1.8"]'))
+        .map(line => ({
+            dx: Number(line.getAttribute('x2')) - Number(line.getAttribute('x1')),
+            dy: Number(line.getAttribute('y2')) - Number(line.getAttribute('y1')),
+        })).sort((a, b) => Math.hypot(b.dx, b.dy) - Math.hypot(a.dx, a.dy))[0]
+    // The whole eye-to-near-object depth is 2.30, not the 0.92 gap.
+    expect(Math.abs(depthBrace.dx - 142 * 0.88 * 2.30)).toBeLessThanOrEqual(0.101)
+    expect(Math.abs(depthBrace.dy + 142 * 0.38 * 2.30)).toBeLessThanOrEqual(0.101)
+    expect(plate.documentElement.textContent?.replace(/\s+/g, ' ')).toContain('screen-plane scale = d / (d − z)')
+    expect(plate.documentElement.textContent).toContain('depth')
+})

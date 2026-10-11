@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import Head from "next/head";
 import Script from 'next/script'
 import { useRouter } from 'next/router'
-import { Theme } from '@radix-ui/themes'
+import { Theme, useThemeContext } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
 import { HeaderDataProvider } from '../contexts/HeaderContext'
 import { FooterDataProvider } from '../contexts/FooterContext'
@@ -30,14 +30,22 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout
 }
 
+const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+// Radix's root applies its appearance prop through an effect. Derive custom
+// styles from that effective appearance so neither palette paints ahead of
+// the other, while preserving the mounted article and its interactive state.
+const ThemeSurface = ({ children }: { children: ReactNode }) => {
+    const { appearance } = useThemeContext()
+    useBeforePaint(() => {
+        document.body.setAttribute('data-theme', appearance)
+    }, [appearance])
+    return <div className={appearance === 'dark' ? 'theme--dark' : 'theme--default'} data-theme={appearance}>{children}</div>
+}
+
 const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
     const router = useRouter()
     const { appearance } = useTheme()
-
-    /** Sync body data-theme for SCSS dark styles */
-    useEffect(() => {
-        document.body.setAttribute('data-theme', appearance)
-    }, [appearance])
 
     useEffect(() => {
         trackPageView(router.asPath)
@@ -56,7 +64,6 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
     }, [router.asPath, router.events])
 
     const getLayout = Component.getLayout ?? ((page) => page)
-    const themeClass = appearance === 'dark' ? 'theme--dark' : 'theme--default'
 
     return (
         <Theme appearance={appearance} accentColor="cyan" grayColor="gray" radius="medium">
@@ -113,9 +120,9 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
                     </>
                 )}
                 <ErrorBoundary>
-                    <div className={themeClass}>
+                    <ThemeSurface>
                         {getLayout(<Component {...pageProps} />)}
-                    </div>
+                    </ThemeSurface>
                 </ErrorBoundary>
             </BreadcrumbProvider>
             </FooterDataProvider>

@@ -4,6 +4,7 @@
 .nav {
     @include themeComponent($themes) {
         background-color: t('surface');
+        color: t('text');
     }
 
     display: flex;
@@ -48,6 +49,7 @@
             padding: $s-small $s-large;
             text-decoration: none;
             color: inherit;
+            transition: none;
             cursor: pointer;
             position: relative;
 
@@ -70,8 +72,7 @@
                 left: 0;
                 width: 0;
                 height: 2px;
-                transition: width 300ms $ease-decel,
-                            background-color 200ms $ease-decel;
+                transition: width 300ms $ease-decel;
 
                 @include themeComponent($themes) {
                     background-color: t('link');
@@ -103,6 +104,12 @@
         display: flex;
         align-items: center;
         padding: $s-medium $s-large;
+
+        > button {
+            // Keep the existing lift, but switch the control stroke with its
+            // ground instead of fading a light-theme stroke on dark paper.
+            transition-property: transform;
+        }
 
         @media (max-width: $tabletMax) {
             padding: $s-medium $s-large $s-medium 0;
@@ -166,6 +173,7 @@
     }
 
     .breadcrumbArrow {
+        transition: none;
         @include themeComponent($themes) {
             color: t('link');
         }

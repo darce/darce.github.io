@@ -10,7 +10,7 @@ function textContent(node: React.ReactNode): string {
     return React.Children.toArray(node).map(textContent).join('')
 }
 
-const ArticleCode = ({ children, ...props }: React.ComponentPropsWithoutRef<'pre'>) => {
+const ArticleCode = ({ children, onKeyDown, ...props }: React.ComponentPropsWithoutRef<'pre'>) => {
     const illustration = React.useContext(CodeIsIllustration)
     const columns = Math.max(0, ...textContent(children).split('\n').map(line => {
         let column = 0
@@ -19,7 +19,17 @@ const ArticleCode = ({ children, ...props }: React.ComponentPropsWithoutRef<'pre
     }))
     // A 68-column lower bound includes lines just below 80, plus padding.
     // The intrinsic branch still stacks when the canvas cannot fit prose.
-    return <pre {...props} data-code-columns={columns} data-code-layout={columns >= 68 ? 'wide' : 'intrinsic'} tabIndex={illustration ? undefined : 0} aria-label={illustration ? undefined : 'Code example'}>{children}</pre>
+    return <pre {...props} data-code-columns={columns} data-code-layout={columns >= 68 ? 'wide' : 'intrinsic'} tabIndex={illustration ? undefined : 0} aria-label={illustration ? undefined : 'Code example'} onKeyDown={event => {
+        onKeyDown?.(event)
+        const region = event.currentTarget
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || region.scrollWidth <= region.clientWidth) return
+        // Arrow keys retain native scrolling. Home/End expose both ends of
+        // a long line without moving the reader to another part of the page.
+        if (event.key === 'Home' || event.key === 'End') {
+            event.preventDefault()
+            region.scrollLeft = event.key === 'Home' ? 0 : region.scrollWidth
+        }
+    }}>{children}</pre>
 }
 
 export default ArticleCode

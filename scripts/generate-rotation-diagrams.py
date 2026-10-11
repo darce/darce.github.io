@@ -259,6 +259,7 @@ class Axes:
     reach: tuple = (1.35, 1.35, 1.25)
     highlight: str | None = None
     prefix: str = "ax"
+    z_label: str = "z"
 
     def draw(self, cam: Camera) -> tuple[list[str], list]:
         o = cam.project((0, 0, 0) if cam.kind != "flat" else (0, 0))
@@ -281,7 +282,11 @@ class Axes:
                 dy = 14 if cam.kind == "pinhole" else 6
                 parts.append(_text(tip[0] + 10, tip[1] + dy, "y", size=15, fill=color))
             else:
-                parts.append(_text(tip[0] - 16, tip[1] - 4, "z", size=15, fill=color))
+                if self.z_label == "z":
+                    parts.append(_text(tip[0] - 16, tip[1] - 4, "z", size=15, fill=color))
+                else:
+                    parts.append(_text(tip[0] + 8, tip[1] - 4, self.z_label, size=15, fill=color))
+                    pts.append((tip[0] + 8 + len(self.z_label) * 9, tip[1] - 20))
             pts.append(tip)
         return parts, pts
 
@@ -1004,9 +1009,12 @@ def f_projection() -> str:
     d, hgt = 1.38, 0.78
     # Opposite sides so the two images do not nest; y_near kept inside the film.
     y_near, y_far = 0.56, -0.60
-    z_near, z_far = 0.92, 2.05
+    # Article world convention: eye at z=d, screen at z=0, objects
+    # behind the screen at negative world z. The drawing's third component
+    # is eye-relative depth d-z, not world z or the screen-to-object gap.
+    world_z_near, world_z_far = -0.92, -2.05
     eye = (0.0, 0.0, 0.0)
-    zn, zf = d + z_near, d + z_far
+    zn, zf = d - world_z_near, d - world_z_far
     near_top, near_bot = (hgt, y_near, zn), (0.0, y_near, zn)
     far_top, far_bot = (hgt, y_far, zf), (0.0, y_far, zf)
     sn_top, sn_bot = _pin(near_top, d), _pin(near_bot, d)
@@ -1016,7 +1024,7 @@ def f_projection() -> str:
     screen = Screen(d, hx=1.22, hy=1.10, clip_id="fp-film")
     scene = Scene(cam, "fp")
     scene.add(
-        Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp"),
+        Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp", z_label="depth"),
         screen,
         Tree(far_top, far_bot, CORAL),
         Tree(near_top, near_bot, CORAL),
@@ -1032,7 +1040,7 @@ def f_projection() -> str:
         Dot(sn_top, INK, 3.0),
         Dot(sn_bot, INK, 3.0),
         Brace(eye, plane, "d", BLUE, offset=34, size=16),
-        Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
+        Brace(eye, n_z, "d − z", INK2, offset=62, math=True),
         Eye(),
     )
     parts, pts = scene.gather()
@@ -1043,7 +1051,7 @@ def f_projection() -> str:
         _eq(
             eq[0],
             eq[1] - 18,
-            [("perspective scale", INK)],
+            [("screen-plane scale", INK)],
             size=15,
         )
     )
@@ -1052,7 +1060,9 @@ def f_projection() -> str:
             eq[0],
             eq[1],
             [
-                ("= 1 / (", INK),
+                ("= ", INK),
+                ("d", BLUE, True),
+                (" / (", INK),
                 ("d", BLUE, True),
                 (" − ", INK2),
                 ("z", INK2, True),
