@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { expect, test, type Locator } from '@playwright/test'
+import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test'
 import { auditBrowser, changeTheme, expectCodeContrast, primaryNavigation, themeButton } from '../support/browser'
 
 const route = '/research/visual-search-workbench-screen-reference/'
@@ -13,6 +13,44 @@ async function firstLine(paragraph: Locator) {
         range.setEnd(node, Math.min(node.textContent!.length, 20))
         return range.getBoundingClientRect().toJSON()
     })
+}
+
+async function captureArticleEvidence(page: Page, body: Locator, testInfo: TestInfo, slug: string, appearance: 'light' | 'dark') {
+    await page.waitForFunction(theme => {
+        const radix = document.querySelector('.radix-themes[data-is-root-theme]')
+        const custom = document.querySelector(theme === 'dark' ? '.theme--dark' : '.theme--default')
+        return document.body.getAttribute('data-theme') === theme && radix?.classList.contains(theme) && custom?.getAttribute('data-theme') === theme
+    }, appearance)
+    await page.evaluate(async () => {
+        await Promise.all(document.getAnimations().filter(animation =>
+            animation instanceof CSSTransition && /color|background/.test(animation.transitionProperty)
+        ).map(animation => animation.finished.catch(() => {})))
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+    })
+
+    for (const image of await body.locator('img').all()) {
+        await image.scrollIntoViewIfNeeded()
+        await image.evaluate(element => (element as HTMLImageElement).decode())
+    }
+    await page.evaluate(() => window.scrollTo(0, 0))
+
+    const profile = testInfo.project.name
+    await page.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-flow-full.png`), fullPage: true })
+
+    const firstCode = body.locator('pre').first()
+    if (await firstCode.count()) {
+        await firstCode.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-code-first-viewport.png`), animations: 'disabled' })
+    }
+    for (const [index, workflow] of (await body.locator('figure[data-workflow]').all()).entries()) {
+        await workflow.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-workflow-${index + 1}.png`), animations: 'disabled' })
+    }
+    if (slug === 'rotation-matrices') {
+        const projection = body.locator('img[src*="rotation-f-projection"]')
+        if (await projection.count()) {
+            await projection.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-projection.png`), animations: 'disabled' })
+        }
+    }
+    await page.evaluate(() => window.scrollTo(0, 0))
 }
 
 test('screen reference fits evidence to its content and flows copy beside it', async ({ page }, testInfo) => {
@@ -132,9 +170,9 @@ test('screen reference stacks at narrow widths and enlarged text while retaining
     }
 })
 
-test('screen reference retains labelled schematics and image inspection in both themes', async ({ page }) => {
+test('screen reference retains labelled schematics and image inspection in both themes', async ({ page }, testInfo) => {
     await page.goto(route)
-    for (const theme of ['light', 'dark']) {
+    for (const theme of ['light', 'dark'] as const) {
         if (theme === 'dark') await changeTheme(page)
         await auditBrowser(page)
         const body = page.getByRole('article').locator('[data-article-body]')
@@ -147,6 +185,9 @@ test('screen reference retains labelled schematics and image inspection in both 
         await opener.focus()
         await page.keyboard.press('Enter')
         await expect(page.getByRole('dialog')).toBeVisible()
+        const dialog = page.getByRole('dialog')
+        await dialog.locator('img').evaluate(image => (image as HTMLImageElement).decode())
+        await dialog.screenshot({ path: testInfo.outputPath(`visual-search-screen-reference-${testInfo.project.name}-${theme}-viewer.png`), animations: 'disabled' })
         await page.keyboard.press('Escape')
         await expect(page.getByRole('dialog')).toHaveCount(0)
         await expect(opener).toBeFocused()
@@ -187,8 +228,9 @@ for (const slug of researchSlugs) {
         const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
         const blocks = body.locator('pre')
         await expect(blocks).toHaveCount(fences.length)
-        for (const theme of ['light', 'dark']) {
+        for (const theme of ['light', 'dark'] as const) {
             if (theme === 'dark') await changeTheme(page)
+            await captureArticleEvidence(page, body, testInfo, slug, theme)
             await auditBrowser(page)
             await expectCodeContrast(blocks.locator('code'))
             for (const [index, block] of (await blocks.all()).entries()) {
@@ -229,9 +271,6 @@ for (const slug of researchSlugs) {
                 expect(box.width / box.height).toBeCloseTo(ratio, 1)
             }
             expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
-            if (['visual-search-workbench-process', 'rotation-matrices', 'economics-of-agent-memory'].includes(slug)) {
-                await page.screenshot({ path: testInfo.outputPath(`${slug}-${testInfo.project.name}-${theme}.png`), fullPage: true })
-            }
         }
     })
 }
