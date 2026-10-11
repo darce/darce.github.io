@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 import tokens from '../../design-tokens/portfolio.tokens.json'
 import { articles } from '../support/content'
 import { buildItemPath } from '../../lib/routes'
+import { expectImagesReady } from '../support/browser'
 
 test('article captions share the masthead treatment without controls', async ({ page }) => {
     await page.goto('/projects/workbay/')
@@ -60,35 +61,43 @@ test('work and research images share continuous inset or wide figure layouts', a
             await expect(pair).toHaveCSS('flex-wrap', 'wrap')
             const children = pair.locator(':scope > figure')
             expect(await children.locator('img').evaluateAll(images => images.map(image => image.getAttribute('alt'))), 'pair keeps authored source order').toEqual(expectedPairs[index])
-            const pairBox = (await pair.boundingBox())!
-            const boxes = []
-            const nativeWidths = []
             for (const child of await children.all()) {
                 await expect(child).toHaveCSS('float', 'none')
                 await expect(child.locator('figcaption')).toContainText(/\S/)
-                const image = child.locator('img')
-                await image.scrollIntoViewIfNeeded()
-                await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
-                const native = await image.evaluate((element: HTMLImageElement) => ({ width: element.naturalWidth, height: element.naturalHeight }))
-                const imageBox = (await image.boundingBox())!
+            }
+            await expectImagesReady(children.locator('img'))
+            // Sample after every lazy image is decoded, in one viewport frame.
+            // Scrolling a child between parent/child reads makes parentY stale.
+            const { pairBox, samples, columnGap, rowGap } = await pair.evaluate(element => ({
+                pairBox: element.getBoundingClientRect().toJSON(),
+                columnGap: Number.parseFloat(getComputedStyle(element).columnGap),
+                rowGap: Number.parseFloat(getComputedStyle(element).rowGap),
+                samples: [...element.querySelectorAll(':scope > figure')].map(child => {
+                    const image = child.querySelector('img')!
+                    return {
+                        box: child.getBoundingClientRect().toJSON(),
+                        imageBox: image.getBoundingClientRect().toJSON(),
+                        native: { width: image.naturalWidth, height: image.naturalHeight },
+                    }
+                }),
+            }))
+            for (const { box, imageBox, native } of samples) {
                 expect(imageBox.width, 'diagram labels retain their intrinsic reading size').toBeCloseTo(native.width, 0)
                 expect(imageBox.width / imageBox.height).toBeCloseTo(native.width / native.height, 2)
-                const box = (await child.boundingBox())!
                 expect(box.width).toBeCloseTo(Math.min(native.width, pairBox.width), 0)
                 expect(box.x).toBeGreaterThanOrEqual(pairBox.x - 1)
                 expect(box.x + box.width).toBeLessThanOrEqual(pairBox.x + pairBox.width + 1)
                 expect(box.y).toBeGreaterThanOrEqual(pairBox.y - 1)
                 expect(box.y + box.height).toBeLessThanOrEqual(pairBox.y + pairBox.height + 1)
-                boxes.push(box)
-                nativeWidths.push(native.width)
             }
+            const boxes = samples.map(sample => sample.box)
+            const nativeWidths = samples.map(sample => sample.native.width)
             expect(boxes).toHaveLength(2)
-            const gap = await pair.evaluate(element => Number.parseFloat(getComputedStyle(element).columnGap))
-            if (nativeWidths[0] + nativeWidths[1] + gap <= pairBox.width + 1) {
+            if (nativeWidths[0] + nativeWidths[1] + columnGap <= pairBox.width + 1) {
                 expect(boxes[1].y, 'figures share a row when their intrinsic sizes fit').toBeCloseTo(boxes[0].y, 0)
-                expect(boxes[1].x).toBeGreaterThanOrEqual(boxes[0].x + boxes[0].width + gap - 1)
+                expect(boxes[1].x).toBeGreaterThanOrEqual(boxes[0].x + boxes[0].width + columnGap - 1)
             } else {
-                expect(boxes[1].y, 'figures wrap in source order when their intrinsic sizes do not fit').toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height + gap - 1)
+                expect(boxes[1].y, 'figures wrap in source order when their intrinsic sizes do not fit').toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height + rowGap - 1)
             }
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${section}/${slug}: no page overflow`).toBeLessThanOrEqual(1)

@@ -7,6 +7,18 @@ import type { AxeResults } from 'axe-core'
 // Independent WCAG requirements are the oracle, not values read from the site's CSS.
 export const wcag = { minimumTarget: 24, textContrast: 4.5 }
 
+export async function expectImagesReady(images: Locator) {
+    for (const image of await images.all()) {
+        // Off-screen loading="lazy" images need a viewport visit before decode.
+        // A broken image rejects decode rather than consuming the case budget.
+        await image.scrollIntoViewIfNeeded()
+        await image.evaluate(element => (element as HTMLImageElement).decode())
+        expect(await image.evaluate((element: HTMLImageElement) =>
+            element.complete && element.naturalWidth > 0 && element.naturalHeight > 0
+        ), 'image decoded with nonzero intrinsic dimensions').toBe(true)
+    }
+}
+
 export async function auditBrowser(page: Page) {
     await waitForTheme(page, await requestedAppearance(page))
     await page.addScriptTag({ path: createRequire(path.join(process.cwd(), 'package.json')).resolve('axe-core/axe.min.js') })

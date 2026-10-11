@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test'
-import { auditBrowser, changeTheme, expectCodeContrast, primaryNavigation, themeButton } from '../support/browser'
+import { auditBrowser, changeTheme, expectCodeContrast, expectImagesReady, primaryNavigation, themeButton } from '../support/browser'
 
 const route = '/research/visual-search-workbench-screen-reference/'
 
@@ -28,10 +28,7 @@ async function captureArticleEvidence(page: Page, body: Locator, testInfo: TestI
         await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
     })
 
-    for (const image of await body.locator('img').all()) {
-        await image.scrollIntoViewIfNeeded()
-        await image.evaluate(element => (element as HTMLImageElement).decode())
-    }
+    await expectImagesReady(body.locator('img'))
     await page.evaluate(() => window.scrollTo(0, 0))
 
     const profile = testInfo.project.name
@@ -46,9 +43,8 @@ async function captureArticleEvidence(page: Page, body: Locator, testInfo: TestI
     }
     if (slug === 'rotation-matrices') {
         const projection = body.locator('img[src*="rotation-f-projection"]')
-        if (await projection.count()) {
-            await projection.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-projection.png`), animations: 'disabled' })
-        }
+        await expect(projection).toHaveCount(1)
+        await projection.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-projection.png`), animations: 'disabled' })
     }
     await page.evaluate(() => window.scrollTo(0, 0))
 }
@@ -85,8 +81,7 @@ test('screen reference fits evidence to its content and flows copy beside it', a
         await expect(figures).toHaveCount(2)
         for (const figure of await figures.all()) {
             const image = figure.locator('img')
-            await image.scrollIntoViewIfNeeded()
-            await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+            await expectImagesReady(image)
             const figureBox = (await figure.boundingBox())!
             const imageBox = (await image.boundingBox())!
             expect(figureBox.width, 'caption does not reserve an empty image gutter').toBeCloseTo(imageBox.width, 0)
@@ -136,8 +131,7 @@ test('query explanation and storyboard share a row above a full-width screenshot
         const body = page.getByRole('article').locator('[data-article-body]')
         const section = body.locator('section').filter({ has: page.getByRole('heading', { name: '2. Make a result the next query', exact: true }) })
         const image = section.locator('figure img')
-        await image.scrollIntoViewIfNeeded()
-        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+        await expectImagesReady(image)
         const diagram = (await section.locator('figure[data-workflow="similar"]').boundingBox())!
         const copy = await firstLine(section.locator('p').first())
         const lastParagraph = (await section.locator('p').last().boundingBox())!
@@ -217,20 +211,20 @@ test('theme switching preserves the preference and article across both direction
 })
 
 for (const slug of researchSlugs) {
-    test(`${slug} retains complete evidence, source order and accessible diagrams in both themes`, async ({ page }, testInfo) => {
-        // Avoid depending on a successful external market connection.
-        await page.routeWebSocket(/binance/, socket => socket.close())
-        await page.goto(`/research/${slug}/`)
-        await page.evaluate(() => document.fonts.ready)
-        const body = page.getByRole('article').locator('[data-article-body]')
-        await expect(body).toHaveAttribute('data-article-layout', 'flow')
-        const source = fs.readFileSync(path.join(process.cwd(), 'content/research', slug + '.mdx'), 'utf8')
-        const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
-        const blocks = body.locator('pre')
-        await expect(blocks).toHaveCount(fences.length)
-        for (const theme of ['light', 'dark'] as const) {
+    for (const theme of ['light', 'dark'] as const) {
+        test(`${slug} retains complete evidence, source order and accessible diagrams in ${theme}`, async ({ page }) => {
+            // Avoid depending on a successful external market connection.
+            await page.routeWebSocket(/binance/, socket => socket.close())
+            await page.goto(`/research/${slug}/`)
+            await page.evaluate(() => document.fonts.ready)
+            const body = page.getByRole('article').locator('[data-article-body]')
+            await expect(body).toHaveAttribute('data-article-layout', 'flow')
+            const source = fs.readFileSync(path.join(process.cwd(), 'content/research', slug + '.mdx'), 'utf8')
+            const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
+            const blocks = body.locator('pre')
+            await expect(blocks).toHaveCount(fences.length)
             if (theme === 'dark') await changeTheme(page)
-            await captureArticleEvidence(page, body, testInfo, slug, theme)
+            await expectImagesReady(body.locator('img'))
             await auditBrowser(page)
             await expectCodeContrast(blocks.locator('code'))
             for (const [index, block] of (await blocks.all()).entries()) {
@@ -262,8 +256,6 @@ for (const slug of researchSlugs) {
             }
             for (const figure of await body.locator('figure[data-layout]').all()) {
                 const image = figure.locator('img')
-                await image.scrollIntoViewIfNeeded()
-                await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
                 await expect(image).toHaveAttribute('alt', /\S/)
                 await expect(figure.locator('figcaption')).toContainText(/\S/)
                 const box = (await image.boundingBox())!
@@ -271,8 +263,16 @@ for (const slug of researchSlugs) {
                 expect(box.width / box.height).toBeCloseTo(ratio, 1)
             }
             expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
-        }
-    })
+        })
+        test(`${slug} captures full article and detail evidence in ${theme}`, async ({ page }, testInfo) => {
+            await page.routeWebSocket(/binance/, socket => socket.close())
+            await page.goto(`/research/${slug}/`)
+            await page.evaluate(() => document.fonts.ready)
+            if (theme === 'dark') await changeTheme(page)
+            const body = page.getByRole('article').locator('[data-article-body]')
+            await captureArticleEvidence(page, body, testInfo, slug, theme)
+        })
+    }
 }
 
 async function keyboardScrollToLineEnd(block: Locator) {
@@ -281,7 +281,6 @@ async function keyboardScrollToLineEnd(block: Locator) {
     const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
     expect(maximum, 'this check must exercise an actual overflowing code region').toBeGreaterThan(1)
     // Enter through the document's Tab sequence, including image buttons.
-    await primaryNavigation(page).focus()
     for (let tabs = 0; tabs < 100 && !await block.evaluate(element => element === document.activeElement); tabs++) {
         await page.keyboard.press('Tab')
     }
@@ -320,6 +319,7 @@ async function keyboardScrollToLineEnd(block: Locator) {
     expect(rightmost.right).toBeLessThanOrEqual(lineEnds.viewportRight + 1)
     // Return to the beginning so evidence captures do not retain a clipped line.
     await page.keyboard.press('Home')
+    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
     const finalLine = await block.locator('code').evaluate(code => {
         const pre = code.closest('pre')!
         const range = document.createRange()
@@ -337,14 +337,17 @@ async function keyboardScrollToLineEnd(block: Locator) {
     expect(finalLine.right).toBeLessThanOrEqual(finalLine.viewportRight + 1)
 }
 
-test('seven research articles contain overflow at mobile and 200% text sizes', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== 'desktop', 'One explicit viewport matrix covers all seven pages')
-    for (const slug of researchSlugs) {
-        for (const [width, enlarged] of [[320, false], [768, false], [320, true], [1440, true]] as const) {
+for (const slug of researchSlugs) {
+    for (const [width, enlarged] of [[320, false], [768, false], [320, true], [1440, true]] as const) {
+        // research.config runs these explicit viewports once, in desktop.
+        test(`${slug} contains code overflow at ${width}px and ${enlarged ? '200%' : '100%'} root-font text resize @viewport-matrix`, async ({ page }) => {
+            await page.routeWebSocket(/binance/, socket => socket.close())
             await page.setViewportSize({ width, height: 1000 })
             await page.goto(`/research/${slug}/`)
             if (enlarged) await page.addStyleTag({ content: 'html { font-size: 200%; }' })
+            await page.evaluate(() => document.fonts.ready)
             const body = page.getByRole('article').locator('[data-article-body]')
+            await primaryNavigation(page).focus()
             let overflowing = 0
             let intrinsicOverflowing = 0
             for (const block of await body.locator('pre').all()) {
@@ -352,7 +355,11 @@ test('seven research articles contain overflow at mobile and 200% text sizes', a
                 await expect(block.locator('code')).toHaveCSS('overflow-x', 'visible')
                 await expect(block.locator('code')).toHaveCSS('overflow-y', 'visible')
                 const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
-                if (maximum > 1 && await block.getAttribute('tabindex') === '0') {
+                // Labelled ASCII illustrations have a prose alternative and
+                // intentionally omit code tab stops; every code scroller must work.
+                const illustration = await block.evaluate(element => Boolean(element.closest('figure[role="img"]')))
+                if (maximum > 1 && !illustration) {
+                    await expect(block).toHaveAttribute('tabindex', '0')
                     await keyboardScrollToLineEnd(block)
                     overflowing++
                     if (await block.getAttribute('data-code-layout') === 'intrinsic') intrinsicOverflowing++
@@ -361,9 +368,9 @@ test('seven research articles contain overflow at mobile and 200% text sizes', a
             if (width === 320 && ['rotation-matrices', 'order-book'].includes(slug)) expect(overflowing, `${slug}: keyboard proof includes an overflowing region, enlarged=${enlarged}`).toBeGreaterThan(0)
             if (width === 320 && slug === 'order-book') expect(intrinsicOverflowing, 'normally short code still scrolls when the viewport is narrow').toBeGreaterThan(0)
             expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${slug}, ${width}px, enlarged=${enlarged}`).toBeLessThanOrEqual(1)
-        }
+        })
     }
-})
+}
 
 test('short market payload takes intrinsic width and leaves usable copy beside it', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'Desktop intrinsic width check')

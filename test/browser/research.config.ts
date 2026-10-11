@@ -7,6 +7,11 @@ import base from '../../playwright.config'
 export default defineConfig({
     ...base,
     testDir: __dirname,
+    // Each explicit viewport/text-size case is independent of profile width.
+    // Run the full matrix once without multiplying intentional skips.
+    projects: base.projects?.map(project => project.name === 'desktop'
+        ? project
+        : { ...project, grepInvert: /@viewport-matrix/ }),
     webServer: base.webServer && !Array.isArray(base.webServer)
         ? { ...base.webServer, cwd: path.resolve(__dirname, '../..') }
         : base.webServer,
