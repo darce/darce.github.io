@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
+import os from 'node:os'
+import vm from 'node:vm'
 import matter from 'gray-matter'
 import { createRequire } from 'node:module'
 import { allContentFiles, articles } from '../support/content'
@@ -52,4 +54,40 @@ describe('generated text exports reflect the current source inventory', () => {
         expect(full).toContain(stripMdxComponents(content).trim())
         expect(full).not.toMatch(/<\/?(?:AsciiScreen|Intro|AboutCard|PullQuote)\b/)
     })
+})
+
+it('preserves existing diagram alternatives, paired diagrams, and their captions', () => {
+    const source = '<DiagramPair>\n<Diagram src="/images/research/rotation-ccw.svg?v=7" alt="Positive turn with y up" caption="A geometric convention, not a measurement." />\n<Diagram src="/images/research/rotation-cw.svg?v=7" alt="Same turn with screen y down" />\n</DiagramPair>'
+    const text = stripMdxComponents(source)
+    expect(text).toContain('![Positive turn with y up](/images/research/rotation-ccw.svg?v=7)')
+    expect(text).toContain('*A geometric convention, not a measurement.*')
+    expect(text).toContain('![Same turn with screen y down](/images/research/rotation-cw.svg?v=7)')
+    expect(text).not.toMatch(/DiagramPair|<Diagram/)
+})
+
+
+it('test-only generation updates text exports idempotently without touching the sitemap', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'portfolio-export-'))
+    try {
+        for (const dir of ['scripts/lib', 'lib', 'public', 'content/research']) fs.mkdirSync(path.join(root, dir), { recursive: true })
+        for (const file of ['scripts/generate-llm-content.js', 'scripts/lib/strip-mdx-components.js', 'lib/siteMeta.json']) fs.copyFileSync(file, path.join(root, file))
+        fs.writeFileSync(path.join(root, 'public/sitemap.xml'), 'canonical sitemap sentinel')
+        fs.writeFileSync(path.join(root, 'content/research/example.mdx'), '---\ntitle: Fresh article\nsubtitle: Export check\n---\nFresh evidence.')
+        const nodeRequire = createRequire(import.meta.url)
+        const generate = (...args: string[]) => vm.runInNewContext(fs.readFileSync('scripts/generate-llm-content.js', 'utf8'), {
+            __dirname: path.join(root, 'scripts'), process: { argv: ['node', 'generator', ...args] }, console,
+            require: (id: string) => id === 'child_process' ? { execSync: () => '2026-01-01' }
+                : id.startsWith('.') ? nodeRequire(path.resolve(root, 'scripts', id)) : nodeRequire(id),
+        })
+        generate('--skip-sitemap')
+        const first = fs.readFileSync(path.join(root, 'public/llms-full.txt'), 'utf8')
+        expect(first).toContain('Fresh evidence.')
+        generate('--skip-sitemap')
+        expect(fs.readFileSync(path.join(root, 'public/llms-full.txt'), 'utf8')).toBe(first)
+        expect(fs.readFileSync(path.join(root, 'public/sitemap.xml'), 'utf8')).toBe('canonical sitemap sentinel')
+        generate()
+        expect(fs.readFileSync(path.join(root, 'public/sitemap.xml'), 'utf8')).toContain('/research/example/')
+    } finally {
+        fs.rmSync(root, { recursive: true, force: true })
+    }
 })

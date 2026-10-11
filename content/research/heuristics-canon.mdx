@@ -1,5 +1,6 @@
 ---
 index: 6
+articleLayout: flow
 year: 2026
 title: Heuristics Canon
 subtitle: Connect a review finding to a reason for changing the work
@@ -30,43 +31,65 @@ tags:
 - Research
 ---
 
+<section>
+
 A review becomes useful when its finding is specific enough to examine. “Improve the navigation” leaves the problem open to interpretation. A finding that identifies two conflicting destinations gives the designer something to inspect and a decision to make.
 
 Heuristics Canon is a collection I maintain to support that kind of critique in design, engineering, and writing. I use it with people and AI tools to connect an observed issue to a reason for changing it. A cited rule makes that reason available to challenge as well as to apply.
+
+</section>
+
+<section>
 
 ## Make the rule inspectable
 
 A Canon rule has an observable **trigger**, a proposed **action**, and a **question** that tests whether it applies. The trigger identifies a situation in the artifact under review. The action suggests what to do about it. The question helps the reviewer decide whether the situation actually warrants that response.
 
-A stable ID identifies the rule, and a source reference records its basis. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
+A stable ID identifies the rule, and a source reference records its basis. This article uses the pinned release **v0.25.6**. Its three force levels distinguish a blocking rule (**B**), a strong default requiring a named exemption (**S**), and a contextual judgment (**J**). A rule’s trigger and exemptions still decide whether it applies. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
 
 The rules are grouped into lexicons, including interaction design, accessibility, engineering, and writing. These are parts of the same review practice: an interface decision may depend on implementation constraints, while a claim about that interface may need a different kind of evidence. A review retrieves the relevant rules rather than applying the whole collection as a checklist.
+
+</section>
+
+<section>
 
 ## Review a map and the images it represents
 
 Visual Search Workbench connects a Similarity map with an image grid. Reviewing that connection raises two separate questions: **does the selection remain recognisable across the views**, and **does the explanation describe the map accurately**?
 
-**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-15).
+**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15 **Coordinate multiple views**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#viz-15) (*Visualization Analysis and Design (Munzner)*).
 
-**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-18) supplies a check on that inference.
+**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18 **A topology-preserving projection is not a metric map**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#viz-18) (*UMAP: Uniform Manifold Approximation and Projection*) supplies a check on that inference.
 
 These examples show how a rule can focus a critique. They do not establish that the map helps people explore a collection. The [VSW design article](/research/visual-search-workbench-process/) treats that as a separate evaluation question.
+
+</section>
+
+<section>
 
 ## Carry the finding into the work
 
 My workflow combines the Canon with [WorkBay](/projects/workbay/). An interface can be inventoried in a UX map and rendered as text screens or flow diagrams. A reviewer examines those representations and records a finding with the rule and artifact it concerns.
 
-A task stores the finding alongside the change that addresses it. On the next review, the reviewer can compare the result with the original issue and record whether it was resolved.
+In my workflow, a task stores the finding alongside the change that addresses it. A useful finding names the artifact, the observed defect, the triggered rule’s ID and name, its source and locator, and the version used. For example: a caption treats a UMAP gap as a measured difference; narrow the caption under VIZ-18, then check the revised wording against the method’s limits. On the next review, the reviewer can compare the result with the original issue and record whether it was resolved.
 
 The running interface remains part of that review. A map can expose an action or flow, but it does not reproduce the entire visual and interactive experience.
+
+</section>
+
+<section>
 
 ## Question the finding before changing the product
 
 Before changing the product, I check whether the cited defect actually exists.
 
-In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. This is a field example of testing a finding, not an accuracy measurement for the Canon.
+In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. The review date, inspected-site list, and adjudication record are not supplied here. These are unverified figures from my practice, not an accuracy measurement for the Canon.
 
 Another recorded correction concerned a failure described as present in shipped work. The failure existed only in a constructed test input, so the claim had to be narrowed before it could justify a production change. In both cases, examining the basis of the finding changed the proposed work.
+
+</section>
+
+<section>
 
 ## Keep the source and version with the reasoning
 
@@ -74,7 +97,11 @@ A source reference lets the reviewer examine the basis of a rule. The artifact m
 
 The writing lexicon makes this boundary explicit: some rules are provisional editorial checks, not proof of AI authorship. Repeating a topic can help a reader follow an explanation, for example; repetition alone does not establish that the prose should be changed. The effect on the passage matters.
 
-A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. The [consumer guide](https://github.com/darce/heuristics-canon/blob/main/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
+A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. I first retrieve only rules whose triggers match the artifact, then read their complete rows, related principles, and every reasoning card listing the kept IDs. Digest checks detect a changed release copy; they do not prove the rules are correct. The [consumer guide](https://github.com/darce/heuristics-canon/blob/v0.25.6/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
+
+</section>
+
+<section>
 
 ## Measure review quality, not the number of citations
 
@@ -83,3 +110,5 @@ Whether the collection improves review outcomes over a smaller checklist or anot
 A comparison would need to examine consequential findings, missed defects, false positives, and reviewer effort on comparable artifacts. Counting cited rule IDs would measure activity without showing which consequential defects the review found or missed.
 
 The [public repository](https://github.com/darce/heuristics-canon) contains the rules, source references, and longer reasoning cards for decisions that need more context.
+
+</section>

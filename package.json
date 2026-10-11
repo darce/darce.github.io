@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "vitest run",
-        "pretest": "npm run tokens && npm run images && node scripts/generate-llm-content.js",
+        "pretest": "npm run tokens && npm run images && node scripts/generate-llm-content.js --skip-sitemap",
         "test:watch": "vitest",
         "test:a11y": "vitest run test/a11y",
         "images": "node scripts/generate-image-variants.js",

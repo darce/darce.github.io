@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { render, within } from '@testing-library/react'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -73,5 +74,64 @@ describe('image metadata through the real MDX pipeline', () => {
         const project = await parseFixture({ links: [link] })
         const container = expectFigures(project, [])
         expect(within(container).getByRole('link', { name: link.label })).toHaveAttribute('href', link.url)
+    })
+})
+
+// Real MDX serialization catches highlight spans, JSX escaping, and renderer
+// registration failures that a test of a string-length helper would miss.
+describe('article code preserves literal evidence and chooses width by content', () => {
+    it('keeps short blocks intrinsic and near-80-column blocks wide in source order', async () => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'portfolio-code-'))
+        try {
+            fs.mkdirSync(path.join(root, 'content', 'research'), { recursive: true })
+            const samples = [
+                'const markup = "<Widget />"',
+                'x'.repeat(67), 'x'.repeat(71), 'x'.repeat(79),
+                'x'.repeat(81), 'x'.repeat(92), '\t' + 'x'.repeat(65),
+            ]
+            const file = path.join(root, 'content', 'research', 'fixture.mdx')
+            fs.writeFileSync(file, matter.stringify(samples.map(code => '```typescript\n' + code + '\n```\n\nFollowing copy.').join('\n\n'), { title, subtitle, articleLayout: 'flow' }))
+            const { metaData, mdxSource } = await parseMarkdownFile(file)
+            if (!mdxSource) throw new Error('Missing serialized code')
+            const { container } = render(<ProjectDetails project={{ slug: 'fixture', metaData, mdxSource }} />)
+            const blocks = Array.from(container.querySelectorAll('pre'))
+            expect(blocks).toHaveLength(samples.length)
+            expect(blocks.map(block => block.textContent)).toEqual(samples.map(code => code + '\n'))
+            expect(blocks.map(block => block.getAttribute('data-code-layout'))).toEqual(['intrinsic', 'intrinsic', 'wide', 'wide', 'wide', 'wide', 'wide'])
+            expect(blocks.map(block => block.getAttribute('data-code-columns'))).toEqual(['27', '67', '71', '79', '81', '92', '69'])
+            for (const block of blocks) {
+                expect(block).toHaveAttribute('tabindex', '0')
+                expect(block.nextElementSibling?.textContent).toBe('Following copy.')
+            }
+        } finally {
+            fs.rmSync(root, { recursive: true, force: true })
+        }
+    })
+})
+
+describe('the seven research articles compile through the production renderer', () => {
+    it.each(['agent-memory', 'visual-search-workbench-process', 'interrogating-agent-memory', 'economics-of-agent-memory', 'heuristics-canon', 'rotation-matrices', 'order-book'])('%s keeps authored code and diagram evidence', async slug => {
+        const file = path.join(process.cwd(), 'content/research', slug + '.mdx')
+        const { metaData, mdxSource } = await parseMarkdownFile(file)
+        if (!mdxSource) throw new Error('Missing article serialization')
+        const source = matter(fs.readFileSync(file, 'utf8')).content
+        const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
+        const container = document.createElement('div')
+        container.innerHTML = renderToStaticMarkup(<ProjectDetails project={{ slug, metaData, mdxSource }} />)
+        expect(container.querySelector('[data-article-body]')).toHaveAttribute('data-article-layout', 'flow')
+        expect(Array.from(container.querySelectorAll('pre')).map(pre => pre.textContent)).toEqual(fences)
+        const diagrams = [...source.matchAll(/<Diagram\b[^>]*\balt="([^"]*)"[^>]*\bcaption="([^"]*)"/g)]
+        for (const [, alt, caption] of diagrams) {
+            const image = within(container).getByRole('img', { name: alt })
+            expect(image.closest('figure')?.querySelector('figcaption')?.textContent).toBe(caption)
+            const localSource = image.getAttribute('src')!.split('?')[0]
+            const svg = fs.readFileSync(path.join(process.cwd(), 'public', localSource), 'utf8')
+            const root = svg.match(/<svg\b[^>]*>/)![0]
+            expect(image).toHaveAttribute('width', root.match(/\bwidth="([\d.]+)"/)![1])
+            expect(image).toHaveAttribute('height', root.match(/\bheight="([\d.]+)"/)![1])
+        }
+        for (const [, alternative] of source.matchAll(/<SearchWorkflow\b[^>]*\blabel="([^"]*)"/g)) {
+            expect(within(container).getByRole('img', { name: alternative })).toHaveAttribute('aria-label', alternative)
+        }
     })
 })

@@ -5,6 +5,8 @@ import { MDXRemote } from 'next-mdx-remote'
 import ResponsiveImage from '../../common/ResponsiveImage/ResponsiveImage'
 import ArticleFigure from './ArticleFigure'
 import SearchWorkflow from './SearchWorkflow'
+import ArticleCode, { CodeIsIllustration } from './ArticleCode'
+import { OrderBookProvider } from '../OrderBook/OrderBookMetrics'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github.css'
@@ -23,7 +25,8 @@ const NoScriptFallback = () => (
 )
 
 const OrderBook = dynamic(() => import('../OrderBook/OrderBook'), { ssr: false, loading: NoScriptFallback })
-const OrderBookProvider = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.OrderBookProvider), { ssr: false })
+// The provider's socket starts in an effect. Rendering it on the server keeps
+// its article children visible before JavaScript or a network connection.
 const BestBid = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestBid), { ssr: false })
 const BestAsk = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestAsk), { ssr: false })
 const Spread = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.Spread), { ssr: false })
@@ -42,16 +45,24 @@ const Diagram = ({
     src,
     alt,
     caption,
+    layout = 'wide',
+    width,
+    height,
 }: {
     src: string
     alt: string
     caption?: string
+    layout?: 'inset' | 'wide'
+    width?: number
+    height?: number
 }) => (
     <ArticleFigure
         src={src.replace(/^\/images\//, '')}
         alt={alt}
         caption={caption}
-        layout="wide"
+        layout={layout}
+        width={width}
+        height={height}
         className={styles.diagram}
     />
 )
@@ -68,7 +79,9 @@ const PullQuote = ({ children }: { children: React.ReactNode }) => (
 // single labelled image and hide the box-drawing from assistive tech
 const AsciiScreen = ({ label, children }: { label: string; children: React.ReactNode }) => (
     <figure role="img" aria-label={label} className={styles.asciiScreen}>
-        <div aria-hidden="true">{children}</div>
+        <CodeIsIllustration.Provider value={true}>
+            <div aria-hidden="true">{children}</div>
+        </CodeIsIllustration.Provider>
     </figure>
 )
 
@@ -86,6 +99,7 @@ const mdxComponents = {
     AsciiScreen,
     SearchWorkflow,
     Figure: ArticleFigure,
+    pre: ArticleCode,
     hr: () => null,
 }
 

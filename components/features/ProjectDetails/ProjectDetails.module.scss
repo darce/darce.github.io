@@ -226,6 +226,38 @@
         }
 
         .source {
+            :global(.katex-display) {
+                clear: both;
+                max-inline-size: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+
+            // Code is literal evidence. Preserve every column and contain
+            // horizontal scrolling inside the block at narrow/zoomed widths.
+            pre,
+            pre code {
+                white-space: pre;
+                overflow-wrap: normal;
+                word-break: normal;
+                word-wrap: normal;
+                tab-size: 4;
+            }
+
+            pre {
+                box-sizing: border-box;
+                overflow-x: auto;
+                max-block-size: none;
+                // Rehype's highlight theme pins paper and ink together.
+                background: #fff;
+                color: $ink;
+            }
+
+            pre code {
+                display: block;
+                padding: 0;
+            }
+
             // Each content section shrinks around its own evidence and prose,
             // so a short diagram cannot leave a wide empty gutter at 1920px.
             > section {
@@ -233,7 +265,7 @@
                 inline-size: fit-content;
                 max-inline-size: 100%;
 
-                &:has(> table) {
+                &:has(> table, > pre[data-code-layout='wide'], > figure[data-layout='wide']) {
                     inline-size: 100%;
                 }
 
@@ -355,6 +387,58 @@
                     margin: 0 tokens.$article-inset-gutter $s-large 0;
                 }
             }
+        }
+
+        // This follows the inset rules intentionally: long examples clear
+        // every preceding float and own the complete article canvas.
+        .source pre[data-code-layout='wide'] {
+            float: none;
+            clear: both;
+            inline-size: 100%;
+            max-inline-size: 100%;
+            margin: 0 0 $s-large;
+        }
+
+        .source .diagramPair {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $s-large;
+            clear: both;
+
+            .diagram {
+                float: none;
+                clear: none;
+                margin: 0;
+                max-inline-size: 100%;
+                flex: 0 1 auto;
+            }
+        }
+
+        // Vector plates have small, explanatory labels. Keep their authored
+        // scale instead of shrinking the text with the picture. The viewport
+        // scrolls on narrow canvases and the existing viewer opens the whole
+        // plate; its prose alternative and caption remain outside the scroll.
+        .source .diagram {
+            inline-size: min(var(--figure-native-width, 100%), 100%);
+
+            .imageTrigger {
+                overflow-x: auto;
+            }
+
+            img {
+                inline-size: var(--figure-native-width, 100%);
+                min-inline-size: var(--figure-native-width, 0);
+                max-inline-size: none;
+                max-block-size: none;
+                block-size: auto;
+            }
+        }
+
+        .source .diagram[data-layout='wide'] {
+            float: none;
+            clear: both;
+            inline-size: 100%;
+            max-inline-size: 100%;
         }
     }
 

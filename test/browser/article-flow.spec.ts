@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { expect, test, type Locator } from '@playwright/test'
 import { auditBrowser, changeTheme } from '../support/browser'
 
@@ -149,4 +151,104 @@ test('screen reference retains labelled schematics and image inspection in both 
         await expect(page.getByRole('dialog')).toHaveCount(0)
         await expect(opener).toBeFocused()
     }
+})
+
+const researchSlugs = [
+    'agent-memory', 'visual-search-workbench-process', 'interrogating-agent-memory',
+    'economics-of-agent-memory', 'heuristics-canon', 'rotation-matrices', 'order-book',
+]
+
+for (const slug of researchSlugs) {
+    test(`${slug} retains complete evidence, source order and accessible diagrams in both themes`, async ({ page }, testInfo) => {
+        // Avoid depending on a successful external market connection.
+        await page.routeWebSocket(/binance/, socket => socket.close())
+        await page.goto(`/research/${slug}/`)
+        await page.evaluate(() => document.fonts.ready)
+        const body = page.getByRole('article').locator('[data-article-body]')
+        await expect(body).toHaveAttribute('data-article-layout', 'flow')
+        const source = fs.readFileSync(path.join(process.cwd(), 'content/research', slug + '.mdx'), 'utf8')
+        const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
+        const blocks = body.locator('pre')
+        await expect(blocks).toHaveCount(fences.length)
+        for (const theme of ['light', 'dark']) {
+            if (theme === 'dark') await changeTheme(page)
+            await auditBrowser(page)
+            for (const [index, block] of (await blocks.all()).entries()) {
+                expect(await block.textContent(), 'all code bytes survive highlighting in source order').toBe(fences[index])
+                await expect(block).toHaveCSS('white-space', 'pre')
+                await expect(block.locator('code')).toHaveCSS('white-space', 'pre')
+                await expect(block).toHaveCSS('overflow-x', 'auto')
+                const columns = Number(await block.getAttribute('data-code-columns'))
+                if (columns >= 68) {
+                    await expect(block).toHaveAttribute('data-code-layout', 'wide')
+                    await expect(block).toHaveCSS('float', 'none')
+                    const box = (await block.boundingBox())!
+                    const canvas = (await body.boundingBox())!
+                    expect(box.width).toBeCloseTo(canvas.width, 0)
+                    if (page.viewportSize()!.width >= 1440) {
+                        expect(await block.evaluate(element => element.scrollWidth - element.clientWidth), 'complete long lines fit when the canvas is wide enough').toBeLessThanOrEqual(1)
+                    }
+                }
+            }
+            for (const heading of await body.locator('h2').all()) await expect(heading).toHaveCSS('border-top-width', '0px')
+            for (const diagram of await body.locator('[data-workflow]').all()) {
+                await expect(diagram).toHaveAttribute('aria-label', /\S/)
+                await expect(diagram.locator('svg')).toHaveAttribute('aria-hidden', 'true')
+                for (const text of await diagram.locator('svg text').all()) {
+                    expect(await text.evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize) * (element as SVGGraphicsElement).getScreenCTM()!.a)).toBeGreaterThanOrEqual(13)
+                }
+            }
+            for (const figure of await body.locator('figure[data-layout]').all()) {
+                const image = figure.locator('img')
+                await image.scrollIntoViewIfNeeded()
+                await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+                await expect(image).toHaveAttribute('alt', /\S/)
+                await expect(figure.locator('figcaption')).toContainText(/\S/)
+                const box = (await image.boundingBox())!
+                const ratio = await image.evaluate((element: HTMLImageElement) => element.naturalWidth / element.naturalHeight)
+                expect(box.width / box.height).toBeCloseTo(ratio, 1)
+            }
+            expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
+            if (['visual-search-workbench-process', 'rotation-matrices', 'economics-of-agent-memory'].includes(slug)) {
+                await page.screenshot({ path: testInfo.outputPath(`${slug}-${testInfo.project.name}-${theme}.png`), fullPage: true })
+            }
+        }
+    })
+}
+
+test('seven research articles contain overflow at mobile and 200% text sizes', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'One explicit viewport matrix covers all seven pages')
+    for (const slug of researchSlugs) {
+        for (const [width, enlarged] of [[320, false], [768, false], [1440, true]] as const) {
+            await page.setViewportSize({ width, height: 1000 })
+            await page.goto(`/research/${slug}/`)
+            if (enlarged) await page.addStyleTag({ content: 'html { font-size: 200%; }' })
+            const body = page.getByRole('article').locator('[data-article-body]')
+            for (const block of await body.locator('pre').all()) {
+                await expect(block).toHaveCSS('float', 'none')
+                const scroll = await block.evaluate(element => {
+                    element.scrollLeft = element.scrollWidth
+                    return { end: element.scrollLeft, maximum: element.scrollWidth - element.clientWidth }
+                })
+                expect(scroll.end).toBeCloseTo(scroll.maximum, 0)
+            }
+            expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${slug}, ${width}px, enlarged=${enlarged}`).toBeLessThanOrEqual(1)
+        }
+    }
+})
+
+test('short market payload takes intrinsic width and leaves usable copy beside it', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'Desktop intrinsic width check')
+    await page.setViewportSize({ width: 1920, height: 1000 })
+    await page.goto('/research/order-book/')
+    const body = page.getByRole('article').locator('[data-article-body]')
+    const code = body.locator('pre[data-code-layout="intrinsic"]').first()
+    await expect(code).toHaveCSS('float', 'right')
+    const box = (await code.boundingBox())!
+    const canvas = (await body.boundingBox())!
+    expect(box.width).toBeLessThan(canvas.width - 250)
+    const copy = await firstLine(body.locator('p').filter({ hasText: /^The first bid level/ }))
+    expect(copy.y).toBeGreaterThanOrEqual(box.y)
+    expect(copy.y).toBeLessThan(box.y + box.height)
+    expect(copy.x + copy.width).toBeLessThan(box.x)
 })

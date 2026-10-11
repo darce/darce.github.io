@@ -1,5 +1,6 @@
 ---
 index: 5
+articleLayout: flow
 year: 2026
 title: Testing Whether Project Memory Saves Work
 subtitle: What an audit shows, what a comparison must test, and what would count as a useful result
@@ -7,7 +8,7 @@ type: experiment
 status: registered
 description: An audit snapshot describes WorkBay context packets. A proposed paired comparison tests whether they
   reduce task token use without lowering quality.
-details: Three project databases supply descriptive audit figures. A proposed paired trial would test a 20% token-reduction target at comparable quality.
+details: An author-reported audit supplies descriptive figures with incomplete provenance. A proposed paired trial would test a 20% token-reduction target at comparable quality.
 thumbnail:
   src: research/stripe-drawing-danica-phelps.jpg
   alt: Looping grey lines overlap a car drawing; handwritten numbers and two rows of red, dark, and pale stripes sit below.
@@ -25,15 +26,21 @@ tags:
 - Research
 ---
 
+<section>
+
 Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
 
 A task-relevant context packet is useful if it reduces total token use **without lowering outcome quality**. Fewer tokens alone would not establish a useful result if the agent completed less of the task or introduced more errors.
 
 The audit gives a starting point for that test: the recorded size and contents of context packets. It cannot establish their effect on task outcomes.
 
+</section>
+
+<section>
+
 ## The audit snapshot describes cost and contents
 
-An earlier audit examined three project `handoff.db` databases. Its summary reported small initial context packets alongside much larger recorded task totals. It also found that most findings marked resolved had a written resolution.
+My summary of an earlier audit describes three project `handoff.db` databases. The audit date and reproducible extract are unavailable here. A **token** is a unit of text processed by a model; task totals can include many requests and retries. Its summary reported small initial context packets alongside much larger recorded task totals. It also found that most findings marked resolved had a written resolution.
 
 | Audit observation | What it describes |
 | --- | --- |
@@ -42,15 +49,18 @@ An earlier audit examined three project `handoff.db` databases. Its summary repo
 | Recorded tasks ranging from a few thousand to hundreds of millions of tokens | A heterogeneous workload, including very large tasks split across worker lanes. |
 | About 99% of resolved findings carrying a written resolution; no audited codebase below 97% | Whether a resolution was recorded, not whether another task would benefit from it. |
 
-These figures are descriptive aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
+These figures are unverified, author-reported aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
 
 <Diagram
-    src="/images/research/econ-scale.svg?v=2"
+    src="/images/research/econ-scale.svg?v=3"
+    layout="inset"
+    width={520}
+    height={244}
     alt="On a logarithmic ruler, the average packet is around three hundred tokens and the median recorded task around three hundred thousand, about three tenfold steps apart."
     caption="Each step is ten times the tokens. The markers compare two audit aggregates; they do not measure savings or the full cost of memory."
 />
 
-The average initial packet is roughly a thousandth of the median recorded task total. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
+Dividing those two summary figures gives `300 / 300,000 = 0.001`, or 0.1%. This compares a mean packet size with a median task total across different observations; it is neither a matched-task overhead estimate nor a savings measurement. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
 
 ### The audit cannot establish an effect
 
@@ -58,6 +68,9 @@ The audit’s main limitation is an instrumentation mismatch. Interactive sessio
 
 <Diagram
     src="/images/research/econ-gap.svg?v=2"
+    layout="inset"
+    width={520}
+    height={300}
     alt="Interactive sessions have packet marks but no audited token meter. Orchestrated lanes have meter marks but no packets. A crossed-out connection shows the missing overlap."
     caption="In this audit, one group received the intervention and the other supplied the measurement. Neither group supplies both sides needed to estimate the effect."
 />
@@ -66,12 +79,19 @@ That mismatch prevents a meaningful treated-versus-untreated comparison. The two
 
 The resolution figures have a similar boundary. A written resolution establishes that material exists to retrieve. It does not establish that retrieval selects the right resolution, or that an agent uses it well. Those effects belong in the comparison.
 
+</section>
+
+<section>
+
 ## The comparison tests whether the packet changes the work
 
 The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
 
 <Diagram
     src="/images/research/econ-design.svg?v=4"
+    layout="inset"
+    width={420}
+    height={390}
     alt="Four stages: calibrate variation with A/A pairs, compare relevant and unrelated packets, run matched memory-versus-cold pairs, then report token effects alongside blinded quality."
     caption="The proposed sequence separates normal run-to-run variation, the relevance of the content, and the effect of supplying it. The readout must include quality."
 />
@@ -80,28 +100,42 @@ The proposed comparison runs each selected task twice from the same base commit:
 
 **The content probe** compares a relevant packet with an equally sized unrelated packet. This tests whether relevant content makes a difference beyond merely adding text. A relevant-versus-unrelated result would not, by itself, establish a benefit over receiving no packet.
 
-**Matched task pairs** provide that final comparison. Each pair contains one run with the relevant packet and one without it. A reviewer who does not know which condition produced the work scores both results against a fixed rubric. The system records total tokens per assigned task, including unsuccessful attempts.
+**Matched task pairs** provide the no-packet comparison. Each pair contains one run with the relevant packet and one without it. A reviewer who does not know which condition produced the work scores both results against a fixed rubric. The system records total tokens per assigned task, including unsuccessful attempts. The protocol must count packet preparation, embedding and retrieval, repeated context input, output, retries, and review effort consistently. For money rather than tokens, each category needs its applicable rate; cached input and output may cost different amounts. This article supplies no provider-price forecast.
 
 Keeping unsuccessful attempts in the analysis matters because a quick failure can use fewer tokens than a completed task. The quality assessment and failure rate must therefore accompany the token result.
 
+</section>
+
+<section>
+
 ## The decision criterion includes quality
 
-The proposal sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
+The proposal uses a **quality margin**: the largest acceptable deterioration on a predefined review rubric. It sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
 
-The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
+The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. For each task, compare the memory-run total with the cold-run total before aggregating; report absolute totals as well as ratios, since a small-task percentage can hide a large-task cost. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
 
 The initial comparison would concern one repository’s workload. A result there would not establish the same effect for other projects, models, or teams without further evaluation.
 
+</section>
+
+<section>
+
 ## Specify the measurement before running it
 
-The protocol still needs its operational definitions completed. The interactive task meter and packet-selection rule must be recorded and frozen. The quality rubric, acceptable quality margin, and sample-size procedure must be specified before the main comparison.
+The protocol still needs its operational definitions completed. The interactive task meter and packet-selection rule must be recorded and frozen. The quality rubric, acceptable quality margin, and sample-size procedure (how many task pairs the uncertainty target requires) must be specified before the main comparison.
 
 Those definitions determine what the result will mean. Changing them after inspecting the results could change which runs count as successful or which apparent saving meets the target. Fixing them first makes the eventual decision checkable.
 
-This is a proposed evaluation, not a completed or externally registered study. The Canon’s [UXR-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#uxr-01) and [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01) supply relevant checks: measure at the level of the claim and use a controlled comparison for the claimed effect.
+This is a proposed evaluation, not a completed or externally registered study. Canon v0.25.6 supplies review prompts, not empirical validation: [UXR-01 **Match claim to validation level**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#uxr-01) (*Visualization Analysis and Design (Munzner)*; *Spatial Semiotics and Spatial Mental Models*, ch. 3) keeps the method aligned with the claim. [EXP-01 **Base-rate idea failure**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/epistemics.md#exp-01) (*Trustworthy Online Controlled Experiments*, ch. 1) asks for a controlled comparison or an explicitly lower-trust method.
+
+</section>
+
+<section>
 
 ## The decision in the meantime
 
 I use WorkBay to retain inspectable project history and resume work across coding sessions. Until the comparison is run, I can assess the recorded history and retrieval behaviour, but cannot claim measured effort savings.
 
 [Project Memory Outside the Conversation](/research/agent-memory/) describes that implementation. [Five Questions I Ask the Project Record](/research/interrogating-agent-memory/) describes how I use it in practice.
+
+</section>

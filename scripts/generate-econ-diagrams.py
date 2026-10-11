@@ -64,31 +64,31 @@ def sq(x, y, side, fill) -> str:
 
 
 def econ_scale() -> str:
-    # log ruler: one decade per 60px, axis spans seven decades
-    x0, step = 40, 60
+    # Absolute log10 axis. Only the two reported aggregates are plotted;
+    # unverified task-range endpoints are not invented as coordinates.
+    from math import log10
 
-    def at(d: float) -> float:
-        return x0 + step * d
+    def at(tokens: float) -> float:
+        return 44 + 62 * (log10(tokens) - 2)
 
-    b = []
-    b.append(line(x0, 120, at(7), 120))
-    for i in range(8):
-        b.append(line(at(i), 114, at(i), 126, width=1))
-    # the packet, half a decade in
-    b.append(sq(at(0.5) - 5, 102, 10, CORAL))
-    b.append(line(at(0.5), 102, at(0.5), 96, stroke=CORAL, width=1))
-    b.append(text(at(0.5), 88, "the packet", size=12, fill=CORAL, anchor="middle"))
-    # a typical task, three decades above the packet
-    b.append(sq(at(3.5) - 5, 102, 10, INK))
-    b.append(line(at(3.5), 102, at(3.5), 96, width=1))
-    b.append(text(at(3.5), 88, "the median task", size=12, anchor="middle"))
-    # the observed spread of tasks
-    b.append(line(at(1), 140, at(6), 140, width=1))
-    b.append(line(at(1), 134, at(1), 140, width=1))
-    b.append(line(at(6), 134, at(6), 140, width=1))
-    b.append(text(at(3.5), 160, "tasks, smallest to largest", size=12, fill=INK2, anchor="middle"))
-    b.append(text(x0, 190, "each step to the right is ten times the tokens", size=11, fill=INK2))
-    return svg(520, 210, "scale", "".join(b))
+    b = [line(at(100), 124, at(1_000_000_000), 124)]
+    for exponent in range(2, 10):
+        x = at(10 ** exponent)
+        b.append(line(x, 118, x, 130, width=1))
+    for value, label in [(100, "100"), (10_000, "10k"),
+                         (1_000_000, "1M"), (100_000_000, "100M")]:
+        b.append(text(at(value), 154, label, size=14, anchor="middle"))
+    for value, label, color in [(300, "mean packet ≈300", CORAL),
+                                (300_000, "median task ≈300k", INK)]:
+        x = at(value)
+        b.append(sq(x - 5, 104, 10, color))
+        label_y = 56 if value == 300 else 82
+        b.append(line(x, 104, x, label_y + 8, stroke=color, width=1))
+        b.append(text(x, label_y, label, size=14, fill=color,
+                      anchor="start" if value == 300 else "middle"))
+    b.append(text(44, 190, "Tokens · logarithmic scale · each tick ×10", size=14))
+    b.append(text(44, 218, "Author-reported aggregates; not measured savings", size=14))
+    return svg(520, 244, "scale", "".join(b))
 
 
 def econ_gap() -> str:

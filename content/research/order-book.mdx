@@ -1,12 +1,13 @@
 ---
 index: 20
+articleLayout: flow
 year: 2024
 title: 'Live Order Book: Real-Time Market Visualization'
 subtitle: Streaming top-of-book depth with WebSockets and React
 type: 'note'
 status: 'closed'
 description: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
-details: An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. React and TypeScript render the top 20 bid and ask levels in real time over a direct WebSocket connection.
+details: An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. A 20-level stream supplies the metrics; the table shows 10 levels per side and the depth chart shows 15.
 links:
 - url: https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
   label: Binance WebSocket Streams
@@ -24,14 +25,23 @@ tags:
 - Cryptocurrency
 ---
 
+<OrderBookProvider>
+
+<section>
+
 ## What is an Order Book?
 
 In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book records resting buy and sell orders, grouped by price.
 
-Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
-<OrderBookProvider>
+Below, the demo attempts to connect to Binance’s partial depth stream through a **WebSocket**, a persistent connection that lets the exchange push updates. It requests 20 price levels on each side at 100 ms intervals, as specified in the [partial-depth stream documentation](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#partial-book-depth-streams). The table displays 10 levels per side, the depth chart displays 15, and metrics use the received 20. Connection failure or unavailable data prevents a current reading.
+
+For BTC/USDT, **BTC** (bitcoin) is the base asset being bought or sold; **USDT** (Tether) is the quote asset in which its price is stated. Prices are USDT per BTC, not US dollars. The demo’s dollar-sign price labels are a display shorthand, not a currency conversion.
 
 <OrderBook />
+
+</section>
+
+<section>
 
 ## Bids and asks
 
@@ -55,6 +65,10 @@ Together, best bid and best ask define the **top of book**.
 
 ---
 
+</section>
+
+<section>
+
 ## Read the displayed volume and spread
 
 ### Order Imbalance
@@ -67,7 +81,7 @@ Displayed volume does not tell us how many traders placed the orders or whether 
 
 Every order in the book has a **size**, how many units someone wants to buy or sell at that price.
 
-For example, Binance might send:
+Here is an invented two-level example in **JSON**, a text format for structured data. For a hypothetical BASE/USDT pair, each inner pair contains price (USDT per BASE), then quantity (BASE units). These numbers are not a BTC snapshot:
 
 ```json
 {
@@ -76,7 +90,7 @@ For example, Binance might send:
 }
 ```
 
-The first bid level contains 1,500 units at 2.35 in the quote currency; the first ask level contains 1,200 units at 2.36. Each level can aggregate several orders.
+The first bid level contains 1,500 BASE units at 2.35 USDT per BASE; the first ask level contains 1,200 BASE units at 2.36 USDT per BASE. Quantity is measured in the base asset, as distinguished from quote-asset spending in Binance’s [new-order documentation](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade). Each level can aggregate several orders.
 
 **Total volume** is just adding up all the sizes on each side:
 
@@ -100,7 +114,7 @@ Subtract ask volume from bid volume, then divide by their combined volume.
 const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
 ```
 
-For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined.
+For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined. The inline card currently substitutes zero for an undefined ratio; that empty-data placeholder must not be interpreted as evidence of a balanced market.
 
 | Result | What It Means |
 |--------|---------------|
@@ -139,30 +153,37 @@ The colored bars aggregate **volume at each price level**. Longer bars mean more
 
 Depth shows where displayed size is concentrated and which price levels an immediate order may consume. This partial view cannot account for orders beyond the displayed levels or changes before execution.
 
-</OrderBookProvider>
 
 ---
 
+</section>
+
+<section>
+
 ## How Trades Execute
 
-A trade occurs when a buy order and a sell order cross.
+A buy can execute when its price condition permits matching an available sell, and conversely for a sell. The following is a simplified execution model; the displayed depth is neither a trade instruction nor a guarantee of execution.
 
 Two basic order types:
 
 1. **Market order**  
    - “Buy now, whatever the best available price is.”  
-   - Matches immediately against the best prices on the opposite side.  
+   - Attempts to match against available prices on the opposite side; the price is not guaranteed.
    - Consumes liquidity.
 
 2. **Limit order**  
    - “Buy at 93,000 or better (lower).”  
    - Can execute immediately if it crosses an available price.
-   - Any unfilled portion that rests in the book provides liquidity.
+   - An unfilled portion supplies resting liquidity only if the order’s conditions allow it.
 
 When a market buy arrives, it lifts the lowest ask.  
 When a market sell arrives, it hits the highest bid.  
-Each match removes volume from those levels and the book updates.
+A large order may consume several price levels and receive several execution prices. A **partial fill** means only part of the requested quantity executed. Binance’s [time-in-force and order-status definitions](https://developers.binance.com/docs/binance-spot-api-docs/enums#time-in-force-timeinforce) distinguish orders that may rest until cancelled (GTC), those that cancel an unfilled remainder immediately (IOC), and those requiring a complete immediate fill (FOK). Orders can expire after a partial fill; visible liquidity can also change before execution.
 
 ---
 
 *Data streamed from [Binance's public WebSocket API](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams). This page is not affiliated with or endorsed by Binance.*
+
+</section>
+
+</OrderBookProvider>

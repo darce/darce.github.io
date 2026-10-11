@@ -271,6 +271,10 @@ I move coding work between AI tools and sessions. While developing projects such
 
 I built WorkBay to keep that record outside the conversation. It stores the active task and the decisions made against it, along with review findings and test evidence. A later session can retrieve what remains unresolved, including when I change coding tools.
 
+![Plan, task, work, review, gate, and merge share one durable record. Sessions can end between stages; review findings persist into the gate.](/images/projects/workbay-journey.svg)
+
+*The task record carries decisions, findings, and evidence through the development workflow.*
+
 ### Keep a record the next session can use
 
 Each repository has a SQLite database at `.task-state/handoff.db`. A task identifies the work, its branch, and its working copy. Decisions preserve their rationale. Review findings retain their severity and resolution status, while test records keep commands and results.
@@ -302,6 +306,10 @@ Review the interface as well as the code
 A code review may miss a problem that only becomes apparent when the interface is considered as a sequence of screens and states. I use WorkBay’s UX-map workflow to inventory an existing interface or examine a proposed change. The inventory describes screen regions, the states they can show, and the actions and flows between them.
 
 It can be rendered as ASCII screens, Mermaid flow diagrams, and Markdown. People and AI tools can inspect these representations against [Heuristics Canon](/research/heuristics-canon/). Findings can then be attached to the task, addressed in implementation, and checked again after the change.
+
+![An inventory of jobs, screens, states, and flows feeds a renderer. It produces ASCII wireframes, Mermaid flows, and Markdown tables for critique by canon rule ID.](/images/projects/workbay-uxmap.svg)
+
+*The UX-map workflow makes the inventory and review material inspectable before implementation.*
 
 Validation checks whether the map has an acceptable structure. Rendering makes it readable, while critique considers the decisions represented in it. A limited automated check pack can catch an action pointing to a nonexistent screen. None of those operations implements the proposed repair or establishes that the interface will work for its users.
 
@@ -449,23 +457,13 @@ A design study of the implemented interaction: how a search, a UMAP map, and an 
 
 A useful picture can change what you are looking for. You may start with a subject in mind, then notice a colour relationship or composition worth following. That shift interests me because it turns search into part of developing an idea.
 
-[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
+[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP (Uniform Manifold Approximation and Projection) map offers regions of related images to explore.
 
 A selected map region opens its photographs in the linked image grid, where their composition, colour, and subject can be judged together.
 
-```text
-Photo folders you choose
-          │
-      Search index
-          │
-  Words or reference image
-          │
-    Candidate photographs
-       [A] [B] [C]
-       [D] [E] [F]
-```
+Chosen photo folders supply an index. Words or a reference image query that index to produce candidate photographs.
 
-_Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs._
+_Search is a path into the collection; the candidates still need visual judgment._
 
 ![The Similarity map in Visual Search Workbench, with photographs from a selected region available in the grid.](/images/work/sis-layers-umap.png)
 
@@ -479,19 +477,9 @@ Visual exploration has a less definite endpoint. A photograph can be useful beca
 
 VSW lets a result become the next query through **Find similar**. The chosen image becomes the reference for a new ranking, with its name visible above the results. **Back to text results** provides a return to the earlier search. These controls make it possible to follow an image without treating every query as an unrelated start.
 
-```text
-Text query ► [A] [B] [C] [D]
-                    │
-               Find similar
-                    │
-              B is the reference
-                    │
-                [E] [F] [G]
-                    │
-             Back to text results
-```
+Text results contain photograph B. Open B, choose Find similar to use it as a reference, then return with Back to text results.
 
-_Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results._
+_A chosen photograph changes the query; the return path recovers the earlier text results._
 
 ![A photograph used as a Find similar reference, with the reference named and a return to text results available.](/images/work/sis-similarity-search.png)
 
@@ -518,8 +506,6 @@ Two settings help explain why maps can look different: **neighbourhood size** an
 ## The image grid makes the map usable
 
 A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
-
-The grid supplies what the point cloud cannot: the photographs themselves, at a size that lets you judge whether the selected region suits the brief.
 
 ```text
 Similarity overview
@@ -549,7 +535,7 @@ The grid and map also need distinct interpretations. A search ranking compares t
 
 Local processing was a design constraint for the app. The photographs stay in the folders the person chooses, and the models ship with the application. I tested that arrangement on an 8 GB Apple Silicon Mac.
 
-That constraint extends beyond running the model. The [0.2.6 release record](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6) documents the latest-range decision described in the [case study](/projects/visual-search-workbench/#look-at-the-selection-by-place-or-time), slider corrections, and metadata filling in after the plot and timeline appear. The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
+That constraint extends beyond running the model. My [case study](/projects/visual-search-workbench/#look-at-the-selection-by-place-or-time) describes the latest-range decision, slider corrections, and metadata filling in after the plot and timeline appear. I associate those changes with the [0.2.6 release record](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), which was unavailable during this article’s source review; the release-specific claims remain my account. The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
 
 ## Test retrieval and exploration separately
 
@@ -649,11 +635,15 @@ A later coding session needs more than an account of what happened. It may need 
 
 The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
 
+![Session A writes decisions, findings, and results into handoff.db. Its conversation is outside session B’s view, but selected records reach session B as a small context packet.](/images/research/memory-loop.svg?v=2)
+
+*The database connects sessions: the next conversation receives a selection of recorded work without needing the earlier transcript.*
+
 I use this record to [examine earlier decisions](/research/interrogating-agent-memory/). Whether supplying it reduces work at comparable quality remains a [question for evaluation](/research/economics-of-agent-memory/).
 
 ## The record preserves decisions and evidence
 
-Each WorkBay repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records.
+In my WorkBay setup, each repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records. The [project’s persistence description](https://github.com/darce/workbay#what-persists-exactly) supports this broad architecture; this article describes my setup, rather than a guarantee about every installation.
 
 Those records keep different aspects of the work distinct. A decision has a rationale. A finding has a status and a recorded resolution. A test has a command and result, with task and commit information helping connect the evidence to the work it concerns.
 
@@ -663,23 +653,31 @@ A later session can therefore retrieve a decision as a decision. It need not rec
 
 Retrieval depends on what the session already knows. A known task or finding can be looked up directly. Known wording can be found through full-text search. A question phrased differently from the earlier record can use optional semantic retrieval.
 
-Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
+Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs. Reimers and Gurevych’s [Sentence-BERT paper](https://arxiv.org/abs/1908.10084) demonstrates this approach for sentence similarity; it does not identify the model or establish retrieval quality in my WorkBay setup.
+
+![A question becomes a numerical vector. In a schematic two-dimensional view, it sits near an earlier rationale and farther from an unrelated note.](/images/research/memory-vector.svg?v=2)
+
+*The nearby rationale is a candidate to read. This simplified view shows similarity, which does not establish that the earlier constraint still applies.*
 
 Suppose retrieval finds the rationale for an approach rejected earlier. The session can compare the recorded constraint with the current implementation before deciding whether that rejection still holds.
 
 ### Keep the index tied to the record
 
-The embeddings form an index over selected fields in the database. Links and text fingerprints connect the index entries to their source records. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
+The embeddings form an index over selected fields in the database. The design links each index entry to its source record and a text fingerprint: a value computed from the text to detect when it changes. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
 
-The related-prior-work tool returns candidates for a human or agent to read. Its contract prevents those candidates from automatically closing findings or becoming inputs to a merge decision. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
+The related-prior-work tool is intended to return candidates for a human or agent to read. My design rule is that a candidate must never, by itself, close a finding or authorise a merge. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
 
-The tool also reports why a lookup returns nothing. An empty store, an unavailable provider, incompatible model information, and no result above the threshold are distinct outcomes. In particular, no result above the threshold does not prove the relevant history is absent. The [retrieval implementation](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) documents these boundaries.
+A lookup needs to distinguish an empty store from an unavailable embedding service, an incompatible index, or no candidate meeting the similarity cutoff. An empty result alone cannot prove the relevant history is absent. These are safeguards to check in the installed version. The exact [retrieval module](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) was unavailable during this article’s source review, so its current status categories and enforcement are not verified here.
 
 ## The context packet gives the session a selection
 
 A context packet brings selected records into the current conversation. The packet must be bounded because the conversation still has finite space. Loading every past record would compete with the task the session is meant to complete.
 
-The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
+![The stored record feeds two alternative retrieval paths: exact lookup and full-text search, or optional semantic search. Both lead to a selected context packet; the semantic index links back to its source rows.](/images/research/memory-layers.svg?v=2)
+
+*Read from the top down: preserve the record, choose a retrieval path, then select what the session needs. Semantic search is optional.*
+
+The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. This is my unverified audit summary: no dated extract, row counts, or per-project denominator accompanies it. It describes the material I reported having available, rather than a current distribution or a target for other projects.
 
 A selected record earns its place in the packet if it supplies a constraint, unresolved finding, or other evidence the next decision needs. A paragraph that merely sounds relevant can consume the same space without helping the task.
 
@@ -688,6 +686,10 @@ A selected record earns its place in the packet if it supplies a constraint, unr
 The structured record can be exported and read by different supported coding tools. A session in a new tool can retrieve history written by another tool without having its entire conversation. The new tool still needs its own authentication and setup, and its capabilities may differ.
 
 The database stays out of version control by default because it can contain sensitive project material. Keeping the file local does not make every use of its contents private: a context packet sent to a hosted model sends that selected material to the provider. Export and model use both require attention to what the record contains.
+
+![A local database stays out of version control by default. Selected rows can cross the machine boundary through an export or a packet sent to a hosted model.](/images/research/memory-boundary.svg?v=2)
+
+*Local storage and model use have different boundaries. Sending a context packet to a hosted model sends those selected records to its provider.*
 
 ## Test what the record changes
 
@@ -709,13 +711,17 @@ In [WorkBay](/projects/workbay/), I look up decisions, findings, test records, o
 
 A review usually concerns the work in front of it. A sequence of reviews can reveal trouble that keeps returning across tasks. The project record makes that sequence available even when no single session has seen all of it.
 
-In one earlier audit, roughly three quarters of the recorded reviews in a small project had failed. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
+![A column of records marks failed reviews in coral. One session sees only two rows, while a cluster of failures appears farther down the complete record.](/images/research/memory-window.svg?v=2)
+
+*A session sees a small slice; the record can reveal repetition across tasks. The rows are schematic, not the audit sample.*
+
+In my summary of an earlier audit, roughly three quarters of the recorded reviews in a small project had failed. The audit date, review count, and underlying rows are not available here; this remains an author-reported observation. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
 
 I inspected the findings behind the count to see whether they shared a constraint or arose from different causes. The proportion directed that investigation; the findings had to support the diagnosis.
 
 ## Does a useful fix already exist?
 
-A new finding may resemble a problem recorded under different wording. Semantic retrieval can surface an earlier resolution, which a human or agent can compare with the current code.
+A new finding may resemble a problem recorded under different wording. Semantic retrieval—searching by similarity between numerical text representations—can surface an earlier resolution, which a human or agent can compare with the current code.
 
 The resolution may contain more than a patch. It can preserve the constraint that made the patch necessary or the reason a simpler change failed. That explanation helps determine whether the earlier fix applies now.
 
@@ -731,11 +737,11 @@ A changed requirement may justify a changed decision. The record should make tha
 
 ## What supports the completion claim?
 
-A completion claim needs evidence tied to the work being assessed. WorkBay can preserve review verdicts and test records alongside task and commit information. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
+A completion claim needs evidence tied to the work being assessed. In my WorkBay workflow, review verdicts (the reviewer’s pass or fail decision) and test records sit alongside task and commit information. A commit identifies a particular revision of the code. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
 
 The revision matters because a test result from earlier code does not automatically establish the state of the current code. A useful review follows the evidence back to the change instead of relying on a summary saying that the task passed.
 
-Another model can perform that review without inheriting the author’s conversation. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
+A second model can be given that evidence without inheriting the author’s conversation. Independence of the conversation does not guarantee a correct review; the reviewer still needs to examine the changed code and the relevant checks. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
 
 ## What has already failed?
 
@@ -755,7 +761,7 @@ My use of these lookups has not established how often retrieval finds the right 
 *What an audit shows, what a comparison must test, and what would count as a useful result*
 Tags: Agent Workflows, Evaluation, Token Use, Research
 Summary: An audit snapshot describes WorkBay context packets. A proposed paired comparison tests whether they reduce task token use without lowering quality.
-Three project databases supply descriptive audit figures. A proposed paired trial would test a 20% token-reduction target at comparable quality.
+An author-reported audit supplies descriptive figures with incomplete provenance. A proposed paired trial would test a 20% token-reduction target at comparable quality.
 
 Project history is worth supplying to a coding session when it helps the session complete the task. It may prevent a repeated investigation or bring an important constraint back into view. It may also distract the agent or revive a decision that no longer applies.
 
@@ -765,7 +771,7 @@ The audit gives a starting point for that test: the recorded size and contents o
 
 ## The audit snapshot describes cost and contents
 
-An earlier audit examined three project `handoff.db` databases. Its summary reported small initial context packets alongside much larger recorded task totals. It also found that most findings marked resolved had a written resolution.
+My summary of an earlier audit describes three project `handoff.db` databases. The audit date and reproducible extract are unavailable here. A **token** is a unit of text processed by a model; task totals can include many requests and retries. Its summary reported small initial context packets alongside much larger recorded task totals. It also found that most findings marked resolved had a written resolution.
 
 | Audit observation | What it describes |
 | --- | --- |
@@ -774,13 +780,21 @@ An earlier audit examined three project `handoff.db` databases. Its summary repo
 | Recorded tasks ranging from a few thousand to hundreds of millions of tokens | A heterogeneous workload, including very large tasks split across worker lanes. |
 | About 99% of resolved findings carrying a written resolution; no audited codebase below 97% | Whether a resolution was recorded, not whether another task would benefit from it. |
 
-These figures are descriptive aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
+These figures are unverified, author-reported aggregates from that audit. The summary does not provide the underlying rows or per-measure sample sizes, so the figures should not be treated as a general performance benchmark.
 
-The average initial packet is roughly a thousandth of the median recorded task total. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
+![On a logarithmic ruler, the average packet is around three hundred tokens and the median recorded task around three hundred thousand, about three tenfold steps apart.](/images/research/econ-scale.svg?v=3)
+
+*Each step is ten times the tokens. The markers compare two audit aggregates; they do not measure savings or the full cost of memory.*
+
+Dividing those two summary figures gives `300 / 300,000 = 0.001`, or 0.1%. This compares a mean packet size with a median task total across different observations; it is neither a matched-task overhead estimate nor a savings measurement. Retrieval, later context use, and decisions made from stale material can add costs beyond that initial packet. These token aggregates do not establish a monetary return.
 
 ### The audit cannot establish an effect
 
 The audit’s main limitation is an instrumentation mismatch. Interactive sessions received context packets but lacked the audited task-level token measurement used in the analysis. Orchestrated worker lanes supplied token measurements but did not receive those packets.
+
+![Interactive sessions have packet marks but no audited token meter. Orchestrated lanes have meter marks but no packets. A crossed-out connection shows the missing overlap.](/images/research/econ-gap.svg?v=2)
+
+*In this audit, one group received the intervention and the other supplied the measurement. Neither group supplies both sides needed to estimate the effect.*
 
 That mismatch prevents a meaningful treated-versus-untreated comparison. The two groups differ in their work and measurement as well as their use of project history. A controlled comparison must record both the intervention and its cost for the same assigned tasks.
 
@@ -790,29 +804,33 @@ The resolution figures have a similar boundary. A written resolution establishes
 
 The proposed comparison runs each selected task twice from the same base commit: once with a frozen, task-relevant packet and once without that packet. Both runs receive the same task specification, model configuration, and resource limits. Their order is randomised, and neither updates shared memory until the pair is complete.
 
+![Four stages: calibrate variation with A/A pairs, compare relevant and unrelated packets, run matched memory-versus-cold pairs, then report token effects alongside blinded quality.](/images/research/econ-design.svg?v=4)
+
+*The proposed sequence separates normal run-to-run variation, the relevance of the content, and the effect of supplying it. The readout must include quality.*
+
 **Calibration** uses A/A pairs: two cold runs with the same starting conditions. The variation between those attempts estimates how much results can differ without the memory intervention. That variation informs the sample-size procedure for the main comparison.
 
 **The content probe** compares a relevant packet with an equally sized unrelated packet. This tests whether relevant content makes a difference beyond merely adding text. A relevant-versus-unrelated result would not, by itself, establish a benefit over receiving no packet.
 
-**Matched task pairs** provide that final comparison. Each pair contains one run with the relevant packet and one without it. A reviewer who does not know which condition produced the work scores both results against a fixed rubric. The system records total tokens per assigned task, including unsuccessful attempts.
+**Matched task pairs** provide the no-packet comparison. Each pair contains one run with the relevant packet and one without it. A reviewer who does not know which condition produced the work scores both results against a fixed rubric. The system records total tokens per assigned task, including unsuccessful attempts. The protocol must count packet preparation, embedding and retrieval, repeated context input, output, retries, and review effort consistently. For money rather than tokens, each category needs its applicable rate; cached input and output may cost different amounts. This article supplies no provider-price forecast.
 
 Keeping unsuccessful attempts in the analysis matters because a quick failure can use fewer tokens than a completed task. The quality assessment and failure rate must therefore accompany the token result.
 
 ## The decision criterion includes quality
 
-The proposal sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
+The proposal uses a **quality margin**: the largest acceptable deterioration on a predefined review rubric. It sets a target of at least a **20% reduction in token use**, with blinded quality kept within an acceptable margin declared before the trial. This is a proposed decision criterion; no controlled savings result has been measured.
 
-The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
+The readout should report the paired effect with an uncertainty interval, alongside the quality comparison and failure rate. A reduction in tokens would qualify only if the quality condition also holds. For each task, compare the memory-run total with the cold-run total before aggregating; report absolute totals as well as ratios, since a small-task percentage can hide a large-task cost. An inconclusive interval would remain inconclusive rather than being presented as a savings result.
 
 The initial comparison would concern one repository’s workload. A result there would not establish the same effect for other projects, models, or teams without further evaluation.
 
 ## Specify the measurement before running it
 
-The protocol still needs its operational definitions completed. The interactive task meter and packet-selection rule must be recorded and frozen. The quality rubric, acceptable quality margin, and sample-size procedure must be specified before the main comparison.
+The protocol still needs its operational definitions completed. The interactive task meter and packet-selection rule must be recorded and frozen. The quality rubric, acceptable quality margin, and sample-size procedure (how many task pairs the uncertainty target requires) must be specified before the main comparison.
 
 Those definitions determine what the result will mean. Changing them after inspecting the results could change which runs count as successful or which apparent saving meets the target. Fixing them first makes the eventual decision checkable.
 
-This is a proposed evaluation, not a completed or externally registered study. The Canon’s [UXR-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#uxr-01) and [EXP-01](https://github.com/darce/heuristics-canon/blob/main/lexicons/epistemics.md#exp-01) supply relevant checks: measure at the level of the claim and use a controlled comparison for the claimed effect.
+This is a proposed evaluation, not a completed or externally registered study. Canon v0.25.6 supplies review prompts, not empirical validation: [UXR-01 **Match claim to validation level**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#uxr-01) (*Visualization Analysis and Design (Munzner)*; *Spatial Semiotics and Spatial Mental Models*, ch. 3) keeps the method aligned with the claim. [EXP-01 **Base-rate idea failure**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/epistemics.md#exp-01) (*Trustworthy Online Controlled Experiments*, ch. 1) asks for a controlled comparison or an explicitly lower-trust method.
 
 ## The decision in the meantime
 
@@ -834,7 +852,7 @@ Heuristics Canon is a collection I maintain to support that kind of critique in 
 
 A Canon rule has an observable **trigger**, a proposed **action**, and a **question** that tests whether it applies. The trigger identifies a situation in the artifact under review. The action suggests what to do about it. The question helps the reviewer decide whether the situation actually warrants that response.
 
-A stable ID identifies the rule, and a source reference records its basis. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
+A stable ID identifies the rule, and a source reference records its basis. This article uses the pinned release **v0.25.6**. Its three force levels distinguish a blocking rule (**B**), a strong default requiring a named exemption (**S**), and a contextual judgment (**J**). A rule’s trigger and exemptions still decide whether it applies. Those references let another reviewer follow the reasoning without relying on the first reviewer’s explanation alone. Where the basis is provisional or unsourced practice, the collection marks that distinction.
 
 The rules are grouped into lexicons, including interaction design, accessibility, engineering, and writing. These are parts of the same review practice: an interface decision may depend on implementation constraints, while a claim about that interface may need a different kind of evidence. A review retrieves the relevant rules rather than applying the whole collection as a checklist.
 
@@ -842,9 +860,9 @@ The rules are grouped into lexicons, including interaction design, accessibility
 
 Visual Search Workbench connects a Similarity map with an image grid. Reviewing that connection raises two separate questions: **does the selection remain recognisable across the views**, and **does the explanation describe the map accurately**?
 
-**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-15).
+**The selection** is a coordination problem. Selecting a region on the map should leave the same material recognisable in the grid, where the photographs can be inspected. The Canon records that principle as [VIZ-15 **Coordinate multiple views**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#viz-15) (*Visualization Analysis and Design (Munzner)*).
 
-**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18](https://github.com/darce/heuristics-canon/blob/main/lexicons/interaction-ux.md#viz-18) supplies a check on that inference.
+**The explanation** is an interpretation problem. Wording that presents a gap between UMAP groups as an exact measure of visual difference would claim more than the layout supports. [VIZ-18 **A topology-preserving projection is not a metric map**](https://github.com/darce/heuristics-canon/blob/v0.25.6/lexicons/interaction-ux.md#viz-18) (*UMAP: Uniform Manifold Approximation and Projection*) supplies a check on that inference.
 
 These examples show how a rule can focus a critique. They do not establish that the map helps people explore a collection. The [VSW design article](/research/visual-search-workbench-process/) treats that as a separate evaluation question.
 
@@ -852,7 +870,7 @@ These examples show how a rule can focus a critique. They do not establish that 
 
 My workflow combines the Canon with [WorkBay](/projects/workbay/). An interface can be inventoried in a UX map and rendered as text screens or flow diagrams. A reviewer examines those representations and records a finding with the rule and artifact it concerns.
 
-A task stores the finding alongside the change that addresses it. On the next review, the reviewer can compare the result with the original issue and record whether it was resolved.
+In my workflow, a task stores the finding alongside the change that addresses it. A useful finding names the artifact, the observed defect, the triggered rule’s ID and name, its source and locator, and the version used. For example: a caption treats a UMAP gap as a measured difference; narrow the caption under VIZ-18, then check the revised wording against the method’s limits. On the next review, the reviewer can compare the result with the original issue and record whether it was resolved.
 
 The running interface remains part of that review. A map can expose an action or flow, but it does not reproduce the entire visual and interactive experience.
 
@@ -860,7 +878,7 @@ The running interface remains part of that review. A map can expose an action or
 
 Before changing the product, I check whether the cited defect actually exists.
 
-In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. This is a field example of testing a finding, not an accuracy measurement for the Canon.
+In an earlier review from my practice, an agent proposed changing roughly forty code sites it had classified as defective. Checking that classification first found that about a third were false positives, and the proposed sweep narrowed. The review date, inspected-site list, and adjudication record are not supplied here. These are unverified figures from my practice, not an accuracy measurement for the Canon.
 
 Another recorded correction concerned a failure described as present in shipped work. The failure existed only in a constructed test input, so the claim had to be narrowed before it could justify a production change. In both cases, examining the basis of the finding changed the proposed work.
 
@@ -870,7 +888,7 @@ A source reference lets the reviewer examine the basis of a rule. The artifact m
 
 The writing lexicon makes this boundary explicit: some rules are provisional editorial checks, not proof of AI authorship. Repeating a topic can help a reader follow an explanation, for example; repetition alone does not establish that the prose should be changed. The effect on the passage matters.
 
-A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. The [consumer guide](https://github.com/darce/heuristics-canon/blob/main/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
+A review also needs the version of the rule it used. An ID can remain stable while the wording or source changes. I first retrieve only rules whose triggers match the artifact, then read their complete rows, related principles, and every reasoning card listing the kept IDs. Digest checks detect a changed release copy; they do not prove the rules are correct. The [consumer guide](https://github.com/darce/heuristics-canon/blob/v0.25.6/AGENTS.md) describes version and digest checks so the basis of an earlier critique can be recovered.
 
 ## Measure review quality, not the number of citations
 
@@ -902,7 +920,17 @@ Rotation matrices perform that transformation. In this demo, the math is done di
 
 Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
 
+Angles below are in **radians**: a quarter turn is $\pi/2$. Coordinates are multiplied as column vectors, and these are active rotations: points move while the axes stay fixed. The right-hand convention determines each sign, as in Lynch and Park’s [Modern Robotics rotation-matrix explanation](https://modernrobotics.northwestern.edu/nu-gm-book-resource/3-2-1-rotation-matrices-part-1-of-2/).
+
 Each axis has its own matrix. In the plane perpendicular to that axis the picture is a 2D rotation: counterclockwise when $y$ points up (the math convention), clockwise when $y$ points down (the screen).
+
+![A coral arrow starting on the x-axis and turning left by an angle theta, with y pointing up.](/images/research/rotation-ccw.svg?v=7)
+
+*θ measured left from +x. This is the usual math picture, with y pointing up.*
+
+![A coral arrow starting on the x-axis and turning right by an angle theta, with y pointing down.](/images/research/rotation-cw.svg?v=7)
+
+*θ measured right from +x. Screens number y downward, so the same matrix looks clockwise.*
 
 ### Around X
 
@@ -960,7 +988,13 @@ To rotate a vertex, multiply the matrix by its coordinates:
 
 $$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
 
+For example, $R_z(\pi/2)(1,0,0)^T = (0,1,0)^T$: positive $x$ turns to positive $y$. Rotation preserves length; only the later scaling and projection change the on-screen size.
+
 The result $(x', y', z')$ is the rotated position. Do that for every vertex and the whole shape turns. The origin stays put.
+
+![A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow.](/images/research/rotation-apply.svg?v=7)
+
+*Apply R to every corner. Same L, turned by θ. Ghost is before, coral is after.*
 
 In this demo, that math is done in plain TypeScript:
 ```typescript
@@ -984,6 +1018,24 @@ The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z
 This demo uses **column vectors** and $v' = Mv$ (matrix on the left). Composition is right-to-left: apply $R_x$, then $R_y$, then $R_z$. Rotations are **active** (they move the cube; the axes stay put) and **right-handed**: a positive angle is counterclockwise when you look along the axis toward the origin. Screens flip $y$, so the same $R_z$ looks clockwise on the page. The view step later is not a rotation — it is a projective scale.
 
 Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ then $z$. Matrix multiplication is not commutative. Walk it one turn at a time:
+
+![Step 1. An L lies on the xy plane. Axes x, y, and z meet at the origin.](/images/research/rotation-combine-1.svg?v=7)
+
+*1 · Start. The L sits on the xy plane.*
+![Step 2. The L has turned around z. Ghost shows the start pose. The L is still on the floor.](/images/research/rotation-combine-2.svg?v=7)
+
+*2 · Apply Rz. It turns around z and stays on the floor.*
+
+![Step 3. The L from step 2 has now tipped around x. Ghost is the after-Rz pose.](/images/research/rotation-combine-3.svg?v=7)
+
+*3 · Then Rx. That pose tips around x.*
+![Step 4. Other order: the L first tipped around x, then turned around z. A coral arrow marks the last turn. The pose does not match step 3.](/images/research/rotation-combine-4.svg?v=7)
+
+*4 · Other order: Rx first, then Rz. Same two turns, different pose.*
+
+![Two coral L poses side by side. Left is Rz then Rx. Right is Rx then Rz. A not-equals sign sits between them.](/images/research/rotation-combine-5.svg?v=7)
+
+*5 · The two finals. Same turns, opposite order — not the same pose.*
 
 A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
 
@@ -1016,7 +1068,15 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
 
 Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In coordinates measured from the eye, the same horizontal construction is $B_x = A_x \cdot d / A_z$: $A_z$ then denotes eye-relative depth, rather than the demo's world-space $z$.
 
+![An eye in front of a screen. A coral tree in space spans height in space; its projection on the screen spans height on screen. A ray through both tops. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left.](/images/research/rotation-perspective.svg?v=17)
+
+*Height on screen is a shrink of height in space. Same colors as the braces.*
+
 The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
+
+![An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z.](/images/research/rotation-f-projection.svg?v=16)
+
+*Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle.*
 
 ```typescript
 const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
@@ -1033,7 +1093,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => 
     return result
 }
 ```
-This simplified projection works for a small demo, though in a more robust renderer you’d guard against points crossing the projection plane.
+For $d=4$, a point with $x=2$ and $z=0$ projects to $x=0.5$; at $z=2$ it projects to $x=1$. The denominator is zero at the eye plane $z=d$, not at the screen plane $z=0$. A robust renderer must clip points before they reach or cross the eye plane; this demo does not implement that clipping.
 
 Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
 
@@ -1065,7 +1125,7 @@ The browser decides how to composite the transformed elements. This experiment m
 
 ## The complete code
 
-The functions from the article, in one place, in the order the cube runs them. This is `lib/matrixTransformations.ts` plus the vertex `div`s.
+This reference puts the transformation steps together so they can be read without moving between sections. It is a simplified equivalent of `lib/matrixTransformations.ts`, whose multiplication routine handles matrix dimensions explicitly. Despite its name, `scaleXYZ` scales only $x$ and $y$; $z$ is left unchanged. The final JSX fragment belongs inside the React component, where `vertices`, `styles`, and `center` are supplied. The fragment and functions are not a standalone application.
 
 ```typescript
 interface Vertex {
@@ -1175,13 +1235,15 @@ export const transformPoints = (
 *Streaming top-of-book depth with WebSockets and React*
 Tags: React, TypeScript, WebSocket, Binance API, Data Visualization, Market Microstructure, Cryptocurrency
 Summary: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
-An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. React and TypeScript render the top 20 bid and ask levels in real time over a direct WebSocket connection.
+An interactive explainer of bids, asks, spread, and order-book depth using Binance’s public depth stream. A 20-level stream supplies the metrics; the table shows 10 levels per side and the depth chart shows 15.
 
 ## What is an Order Book?
 
 In a marketplace, some market participants want to **buy**, and others want to **sell**. An order book records resting buy and sell orders, grouped by price.
 
-Below is a **live view** of Binance order-book depth near the current market price. React and TypeScript handle rendering, while a direct WebSocket connection streams the top 20 bid and ask levels in real time.
+Below, the demo attempts to connect to Binance’s partial depth stream through a **WebSocket**, a persistent connection that lets the exchange push updates. It requests 20 price levels on each side at 100 ms intervals, as specified in the [partial-depth stream documentation](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#partial-book-depth-streams). The table displays 10 levels per side, the depth chart displays 15, and metrics use the received 20. Connection failure or unavailable data prevents a current reading.
+
+For BTC/USDT, **BTC** (bitcoin) is the base asset being bought or sold; **USDT** (Tether) is the quote asset in which its price is stated. Prices are USDT per BTC, not US dollars. The demo’s dollar-sign price labels are a display shorthand, not a currency conversion.
 
 ## Bids and asks
 
@@ -1217,7 +1279,7 @@ Displayed volume does not tell us how many traders placed the orders or whether 
 
 Every order in the book has a **size**, how many units someone wants to buy or sell at that price.
 
-For example, Binance might send:
+Here is an invented two-level example in **JSON**, a text format for structured data. For a hypothetical BASE/USDT pair, each inner pair contains price (USDT per BASE), then quantity (BASE units). These numbers are not a BTC snapshot:
 
 ```json
 {
@@ -1226,7 +1288,7 @@ For example, Binance might send:
 }
 ```
 
-The first bid level contains 1,500 units at 2.35 in the quote currency; the first ask level contains 1,200 units at 2.36. Each level can aggregate several orders.
+The first bid level contains 1,500 BASE units at 2.35 USDT per BASE; the first ask level contains 1,200 BASE units at 2.36 USDT per BASE. Quantity is measured in the base asset, as distinguished from quote-asset spending in Binance’s [new-order documentation](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade). Each level can aggregate several orders.
 
 **Total volume** is just adding up all the sizes on each side:
 
@@ -1250,7 +1312,7 @@ Subtract ask volume from bid volume, then divide by their combined volume.
 const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
 ```
 
-For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined.
+For nonzero combined volume, the result lies between -1 and +1. If both sides are empty, the ratio is undefined. The inline card currently substitutes zero for an undefined ratio; that empty-data placeholder must not be interpreted as evidence of a balanced market.
 
 | Result | What It Means |
 |--------|---------------|
@@ -1292,23 +1354,23 @@ Depth shows where displayed size is concentrated and which price levels an immed
 
 ## How Trades Execute
 
-A trade occurs when a buy order and a sell order cross.
+A buy can execute when its price condition permits matching an available sell, and conversely for a sell. The following is a simplified execution model; the displayed depth is neither a trade instruction nor a guarantee of execution.
 
 Two basic order types:
 
 1. **Market order**  
    - “Buy now, whatever the best available price is.”  
-   - Matches immediately against the best prices on the opposite side.  
+   - Attempts to match against available prices on the opposite side; the price is not guaranteed.
    - Consumes liquidity.
 
 2. **Limit order**  
    - “Buy at 93,000 or better (lower).”  
    - Can execute immediately if it crosses an available price.
-   - Any unfilled portion that rests in the book provides liquidity.
+   - An unfilled portion supplies resting liquidity only if the order’s conditions allow it.
 
 When a market buy arrives, it lifts the lowest ask.  
 When a market sell arrives, it hits the highest bid.  
-Each match removes volume from those levels and the book updates.
+A large order may consume several price levels and receive several execution prices. A **partial fill** means only part of the requested quantity executed. Binance’s [time-in-force and order-status definitions](https://developers.binance.com/docs/binance-spot-api-docs/enums#time-in-force-timeinforce) distinguish orders that may rest until cancelled (GTC), those that cancel an unfilled remainder immediately (IOC), and those requiring a complete immediate fill (FOK). Orders can expire after a partial fill; visible liquidity can also change before execution.
 
 ---
 

@@ -1,5 +1,6 @@
 ---
 index: 1
+articleLayout: flow
 year: 2026
 title: Finding a Visual Direction with UMAP
 subtitle: How similarity search becomes a way to explore a photo collection
@@ -21,33 +22,26 @@ tags:
 - Research
 ---
 
+<section>
+
 A useful picture can change what you are looking for. You may start with a subject in mind, then notice a colour relationship or composition worth following. That shift interests me because it turns search into part of developing an idea.
 
-[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP map offers regions of related images to explore.
+[Visual Search Workbench](/projects/visual-search-workbench/) gives that shift a path through a photo collection. A search produces candidates; a candidate can become the next query. Alongside the search, a UMAP (Uniform Manifold Approximation and Projection) map offers regions of related images to explore.
 
 A selected map region opens its photographs in the linked image grid, where their composition, colour, and subject can be judged together.
 
-<AsciiScreen label="Interaction schematic: chosen folders supply an index. Either a text query or a reference image leads to a grid of candidate photographs.">
-
-```text
-Photo folders you choose
-          │
-      Search index
-          │
-  Words or reference image
-          │
-    Candidate photographs
-       [A] [B] [C]
-       [D] [E] [F]
-```
-
-</AsciiScreen>
+<SearchWorkflow kind="entry" label="Chosen photo folders supply an index. Words or a reference image query that index to produce candidate photographs.">Search is a path into the collection; the candidates still need visual judgment.</SearchWorkflow>
 
 <Figure
   src="work/sis-layers-umap.png"
+  layout="wide"
   alt="The Similarity map in Visual Search Workbench, with photographs from a selected region available in the grid."
   caption="Application capture from version 0.2.0. The companion interaction reference draws on the 0.2.3 product record."
 />
+
+</section>
+
+<section>
 
 ## Search can lead somewhere you did not expect
 
@@ -57,26 +51,17 @@ Visual exploration has a less definite endpoint. A photograph can be useful beca
 
 VSW lets a result become the next query through **Find similar**. The chosen image becomes the reference for a new ranking, with its name visible above the results. **Back to text results** provides a return to the earlier search. These controls make it possible to follow an image without treating every query as an unrelated start.
 
-<AsciiScreen label="Interaction schematic: a text query returns candidate photographs; choosing photograph B as a reference opens a new similarity search, with a return path to the text results.">
-
-```text
-Text query ► [A] [B] [C] [D]
-                    │
-               Find similar
-                    │
-              B is the reference
-                    │
-                [E] [F] [G]
-                    │
-             Back to text results
-```
-
-</AsciiScreen>
+<SearchWorkflow kind="similar" label="Text results contain photograph B. Open B, choose Find similar to use it as a reference, then return with Back to text results.">A chosen photograph changes the query; the return path recovers the earlier text results.</SearchWorkflow>
 
 <Figure
   src="work/sis-similarity-search.png"
+  layout="wide"
   alt="A photograph used as a Find similar reference, with the reference named and a return to text results available."
 />
+
+</section>
+
+<section>
 
 ## The map makes related images browsable
 
@@ -98,11 +83,13 @@ The layout also changes how relationships look. A wide gap between groups is not
 
 Two settings help explain why maps can look different: **neighbourhood size** and **minimum distance**. Neighbourhood size determines how broadly the method looks around each item, shifting emphasis between fine local detail and a wider arrangement. Minimum distance affects how tightly points can pack in the layout. The [parameter guide](https://umap-learn.readthedocs.io/en/latest/parameters.html) illustrates both effects. These are explanations of the method, not controls I am claiming the current app exposes.
 
+</section>
+
+<section>
+
 ## The image grid makes the map usable
 
 A region on the map becomes an image selection. That selection appears in the grid, where you can inspect the photographs at a useful size. A promising photograph can then supply the reference for another search.
-
-The grid supplies what the point cloud cannot: the photographs themselves, at a size that lets you judge whether the selected region suits the brief.
 
 <AsciiScreen label="Conceptual map-to-grid relationship, not a reconstruction of the application: selecting a region containing photographs A, B, and C shows those same photographs in the linked grid. Other regions remain outside the selection.">
 
@@ -130,11 +117,19 @@ Similarity overview
 
 The grid and map also need distinct interpretations. A search ranking compares the query with the image representations. The distance between marks on the displayed map is not that ranking. Keeping those roles clear lets the map support browsing without asking it to be a precise measuring instrument.
 
+</section>
+
+<section>
+
 ## Keep the exploration on an everyday Mac
 
 Local processing was a design constraint for the app. The photographs stay in the folders the person chooses, and the models ship with the application. I tested that arrangement on an 8 GB Apple Silicon Mac.
 
-That constraint extends beyond running the model. The [0.2.6 release record](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6) documents the latest-range decision described in the [case study](/projects/visual-search-workbench/#look-at-the-selection-by-place-or-time), slider corrections, and metadata filling in after the plot and timeline appear. The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
+That constraint extends beyond running the model. My [case study](/projects/visual-search-workbench/#look-at-the-selection-by-place-or-time) describes the latest-range decision, slider corrections, and metadata filling in after the plot and timeline appear. I associate those changes with the [0.2.6 release record](https://github.com/darce/visual-search-workbench/releases/tag/v0.2.6), which was unavailable during this article’s source review; the release-specific claims remain my account. The 8 GB test identifies a working configuration; larger-library performance and peak memory still need measurement.
+
+</section>
+
+<section>
 
 ## Test retrieval and exploration separately
 
@@ -145,3 +140,5 @@ That evaluation needs to distinguish **retrieval** from **exploration**. Retriev
 For retrieval, I would examine completion, mistakes, and effort. For exploration, I would examine the images people keep, the paths they take, and their reasons for continuing from one picture to another. Comparing the map with the grid and image-to-image search would help establish what the map contributes.
 
 An exploration study would need to allow for a useful selection that takes someone beyond the subject they first searched for.
+
+</section>

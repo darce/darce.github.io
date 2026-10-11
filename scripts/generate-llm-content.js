@@ -192,12 +192,16 @@ const about = readSection('about')
 
 const llmsTxt = generateLlmsTxt(projects, research)
 const llmsFullTxt = generateLlmsFullTxt(projects, research, about)
-const sitemap = generateSitemap(projects, research)
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), llmsTxt)
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms-full.txt'), llmsFullTxt)
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemap)
 
 console.log(`Generated llms.txt (${llmsTxt.length} bytes)`)
 console.log(`Generated llms-full.txt (${llmsFullTxt.length} bytes)`)
-console.log(`Generated sitemap.xml (${STATIC_PAGES.length + projects.length + research.length} URLs)`)
+// Test prerequisites still refresh both text exports, but must not rewrite
+// canonical history-derived dates in a shallow or synthetic lane checkout.
+// Production generation (including prebuild) retains sitemap generation.
+if (!process.argv.includes('--skip-sitemap')) {
+    fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), generateSitemap(projects, research))
+    console.log(`Generated sitemap.xml (${STATIC_PAGES.length + projects.length + research.length} URLs)`)
+}

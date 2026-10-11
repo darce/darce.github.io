@@ -9,13 +9,14 @@ function stripMdxComponents(content) {
     return protectedContent
         // A Figure carries editorial evidence, not runtime-only UI. Keep its
         // image alternative, caption, and any prose wrapped beside it.
-        .replace(/<Figure\b([^>]*)>/g, (_match, attributes) => {
+        .replace(/<(Figure|Diagram)\b([^>]*)>/g, (_match, component, attributes) => {
             const src = attributes.match(/\bsrc="([^"]*)"/)?.[1]
             const alt = attributes.match(/\balt="([^"]*)"/)?.[1]
             const caption = attributes.match(/\bcaption="([^"]*)"/)?.[1]
-            return [src && alt ? `![${alt}](/images/${src})` : '', caption ? `*${caption}*` : ''].filter(Boolean).join('\n\n')
+            const imagePath = component === 'Diagram' ? src : `/images/${src}`
+            return [src && alt ? `![${alt}](${imagePath})` : '', caption ? `*${caption}*` : ''].filter(Boolean).join('\n\n')
         })
-        .replace(/<\/Figure>/g, '')
+        .replace(/<\/Figure>|<\/?DiagramPair\b[^>]*>/g, '')
         // The provider supplies runtime state, but its children are the actual
         // explanation. Preserve them in the text export.
         .replace(/<\/?OrderBookProvider\b[^>]*>/g, '')

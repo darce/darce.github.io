@@ -1,5 +1,6 @@
 ---
 index: 3
+articleLayout: flow
 year: 2026
 title: Project Memory Outside the Conversation
 subtitle: The record, retrieval layer, and context packet behind WorkBay
@@ -27,34 +28,50 @@ tags:
 - Research
 ---
 
+<section>
+
 A later coding session needs more than an account of what happened. It may need the reason an approach was rejected, the finding that remains unresolved, or the test result behind a completion claim. [WorkBay](/projects/workbay/) keeps that material in a project record outside the conversation.
 
 The design has three parts: a **record**, a **retrieval layer**, and a **context packet**. The record preserves decisions and evidence. The retrieval layer finds material that may matter to the current task. The context packet gives the next session a selected portion to read.
 
 <Diagram
     src="/images/research/memory-loop.svg?v=2"
+    layout="inset"
+    width={520}
+    height={310}
     alt="Session A writes decisions, findings, and results into handoff.db. Its conversation is outside session B’s view, but selected records reach session B as a small context packet."
     caption="The database connects sessions: the next conversation receives a selection of recorded work without needing the earlier transcript."
 />
 
 I use this record to [examine earlier decisions](/research/interrogating-agent-memory/). Whether supplying it reduces work at comparable quality remains a [question for evaluation](/research/economics-of-agent-memory/).
 
+</section>
+
+<section>
+
 ## The record preserves decisions and evidence
 
-Each WorkBay repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records.
+In my WorkBay setup, each repository has a SQLite file at `.task-state/handoff.db`. SQLite stores the database locally without requiring a separate database server. The database contains tasks, decisions, review findings, blockers, and test records. The [project’s persistence description](https://github.com/darce/workbay#what-persists-exactly) supports this broad architecture; this article describes my setup, rather than a guarantee about every installation.
 
 Those records keep different aspects of the work distinct. A decision has a rationale. A finding has a status and a recorded resolution. A test has a command and result, with task and commit information helping connect the evidence to the work it concerns.
 
 A later session can therefore retrieve a decision as a decision. It need not reconstruct the rationale from a recap saying that planning was completed. The rationale still needs to be checked against present requirements, but the earlier reasoning is available for that check.
 
+</section>
+
+<section>
+
 ## The retrieval layer finds material in the record
 
 Retrieval depends on what the session already knows. A known task or finding can be looked up directly. Known wording can be found through full-text search. A question phrased differently from the earlier record can use optional semantic retrieval.
 
-Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs.
+Semantic retrieval compares numerical representations called **embeddings**. An embedding represents a piece of text as a list of numbers. Comparing these representations can bring related records into view even when their wording differs. Reimers and Gurevych’s [Sentence-BERT paper](https://arxiv.org/abs/1908.10084) demonstrates this approach for sentence similarity; it does not identify the model or establish retrieval quality in my WorkBay setup.
 
 <Diagram
     src="/images/research/memory-vector.svg?v=2"
+    layout="inset"
+    width={420}
+    height={382}
     alt="A question becomes a numerical vector. In a schematic two-dimensional view, it sits near an earlier rationale and farther from an unrelated note."
     caption="The nearby rationale is a candidate to read. This simplified view shows similarity, which does not establish that the earlier constraint still applies."
 />
@@ -63,11 +80,15 @@ Suppose retrieval finds the rationale for an approach rejected earlier. The sess
 
 ### Keep the index tied to the record
 
-The embeddings form an index over selected fields in the database. Links and text fingerprints connect the index entries to their source records. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
+The embeddings form an index over selected fields in the database. The design links each index entry to its source record and a text fingerprint: a value computed from the text to detect when it changes. Those records remain available independently of the index, so the index can be rebuilt without becoming the authoritative version of a decision.
 
-The related-prior-work tool returns candidates for a human or agent to read. Its contract prevents those candidates from automatically closing findings or becoming inputs to a merge decision. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
+The related-prior-work tool is intended to return candidates for a human or agent to read. My design rule is that a candidate must never, by itself, close a finding or authorise a merge. Similarity can change which record looks worth inspecting; it cannot establish that two findings are duplicates or that either has been fixed.
 
-The tool also reports why a lookup returns nothing. An empty store, an unavailable provider, incompatible model information, and no result above the threshold are distinct outcomes. In particular, no result above the threshold does not prove the relevant history is absent. The [retrieval implementation](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) documents these boundaries.
+A lookup needs to distinguish an empty store from an unavailable embedding service, an incompatible index, or no candidate meeting the similarity cutoff. An empty result alone cannot prove the relevant history is absent. These are safeguards to check in the installed version. The exact [retrieval module](https://github.com/darce/workbay/blob/main/packages/mcp-workbay-handoff/src/workbay_handoff_mcp/embeddings/related_prior_work.py) was unavailable during this article’s source review, so its current status categories and enforcement are not verified here.
+
+</section>
+
+<section>
 
 ## The context packet gives the session a selection
 
@@ -75,13 +96,20 @@ A context packet brings selected records into the current conversation. The pack
 
 <Diagram
     src="/images/research/memory-layers.svg?v=2"
+    layout="inset"
+    width={520}
+    height={378}
     alt="The stored record feeds two alternative retrieval paths: exact lookup and full-text search, or optional semantic search. Both lead to a selected context packet; the semantic index links back to its source rows."
     caption="Read from the top down: preserve the record, choose a retrieval path, then select what the session needs. Semantic search is optional."
 />
 
-The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. That historical distribution describes the material available to retrieve; it is not a target for every project.
+The choice of records therefore matters. In an earlier audit of my repositories, review findings accounted for roughly four fifths of embedded entries, with decision rationales making up most of the remainder. This is my unverified audit summary: no dated extract, row counts, or per-project denominator accompanies it. It describes the material I reported having available, rather than a current distribution or a target for other projects.
 
 A selected record earns its place in the packet if it supplies a constraint, unresolved finding, or other evidence the next decision needs. A paragraph that merely sounds relevant can consume the same space without helping the task.
+
+</section>
+
+<section>
 
 ## Portability follows the record
 
@@ -91,10 +119,19 @@ The database stays out of version control by default because it can contain sens
 
 <Diagram
     src="/images/research/memory-boundary.svg?v=2"
+    layout="inset"
+    width={520}
+    height={300}
     alt="A local database stays out of version control by default. Selected rows can cross the machine boundary through an export or a packet sent to a hosted model."
     caption="Local storage and model use have different boundaries. Sending a context packet to a hosted model sends those selected records to its provider."
 />
 
+</section>
+
+<section>
+
 ## Test what the record changes
 
 Reasoning that was never recorded cannot be retrieved, and useful records can still be missed. The [proposed evaluation](/research/economics-of-agent-memory/) tests the resulting question: does a session receiving selected history complete comparable work with less effort?
+
+</section>

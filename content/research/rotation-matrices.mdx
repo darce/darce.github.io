@@ -1,5 +1,6 @@
 ---
 index: 10
+articleLayout: flow
 year: 2024
 title: 3D Without Canvas or WebGL
 subtitle: Rotation matrices and perspective projection in TypeScript and CSS
@@ -8,8 +9,8 @@ status: closed
 description: A browser experiment that makes rotation matrices and perspective projection, normally abstracted by WebGL, visible using only TypeScript, DOM elements, and CSS transforms
 details: Move your mouse to rotate the cube. A hands-on study of rotation matrices and perspective projection, implemented in TypeScript and rendered with CSS transforms.
 links:
-- url: https://en.wikipedia.org/wiki/Rotation_matrix
-  label: Rotation Matrix
+- url: https://modernrobotics.northwestern.edu/nu-gm-book-resource/3-2-1-rotation-matrices-part-1-of-2/
+  label: Modern Robotics — rotation matrices
 thumbnail:
   src: research/rotation-perspective.svg
   alt: An eye in front of a screen. A coral tree in space projects to a smaller tree on the screen. Height on screen is a shrink of height in space.
@@ -21,11 +22,17 @@ tags:
 - CSS Transforms
 ---
 
+<section>
+
 <Cube />
 
 Move your mouse over the cube to rotate it. Each of its eight vertices is a `div`; TypeScript computes the rotated coordinates and CSS transforms position the dots.
 
 The DOM rendering is a deliberate constraint that keeps the calculation visible, from matrix multiplication to motion on screen.
+
+</section>
+
+<section>
 
 ## Rotate eight points
 
@@ -35,21 +42,33 @@ To rotate the cube, we need new coordinates for every vertex—coordinates that 
 
 Rotation matrices perform that transformation. In this demo, the math is done directly in TypeScript and the result is pushed into CSS transforms.
 
+</section>
+
+<section>
+
 ## One Axis at a Time
 
 Rotation around an axis leaves that axis unchanged. Rotating around $z$ moves points in the $xy$-plane. Rotating around $x$ moves points in the $yz$-plane.
+
+Angles below are in **radians**: a quarter turn is $\pi/2$. Coordinates are multiplied as column vectors, and these are active rotations: points move while the axes stay fixed. The right-hand convention determines each sign, as in Lynch and Park’s [Modern Robotics rotation-matrix explanation](https://modernrobotics.northwestern.edu/nu-gm-book-resource/3-2-1-rotation-matrices-part-1-of-2/).
 
 Each axis has its own matrix. In the plane perpendicular to that axis the picture is a 2D rotation: counterclockwise when $y$ points up (the math convention), clockwise when $y$ points down (the screen).
 
 <DiagramPair>
 <Diagram
     src="/images/research/rotation-ccw.svg?v=7"
+    layout="inset"
+    width={360}
+    height={348}
     alt="A coral arrow starting on the x-axis and turning left by an angle theta, with y pointing up."
     caption="θ measured left from +x. This is the usual math picture, with y pointing up."
 />
 
 <Diagram
     src="/images/research/rotation-cw.svg?v=7"
+    layout="inset"
+    width={360}
+    height={348}
     alt="A coral arrow starting on the x-axis and turning right by an angle theta, with y pointing down."
     caption="θ measured right from +x. Screens number y downward, so the same matrix looks clockwise."
 />
@@ -105,16 +124,25 @@ const rotationZ = (vertexArray: Vertex[], angle: number): Vertex[] => {
 }
 ```
 
+</section>
+
+<section>
+
 ## Applying a Rotation
 
 To rotate a vertex, multiply the matrix by its coordinates:
 
 $$\begin{bmatrix} x' \\ y' \\ z' \end{bmatrix} = R \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix}$$
 
+For example, $R_z(\pi/2)(1,0,0)^T = (0,1,0)^T$: positive $x$ turns to positive $y$. Rotation preserves length; only the later scaling and projection change the on-screen size.
+
 The result $(x', y', z')$ is the rotated position. Do that for every vertex and the whole shape turns. The origin stays put.
 
 <Diagram
     src="/images/research/rotation-apply.svg?v=7"
+    layout="inset"
+    width={460}
+    height={360}
     alt="A flat x-y plane. A dashed L sits on the x-axis; a coral L is the same figure turned by theta. The turn arc has an arrow."
     caption="Apply R to every corner. Same L, turned by θ. Ghost is before, coral is after."
 />
@@ -134,6 +162,10 @@ const matrixMultiplyVertex = (matrix: number[][], vertex: Vertex): Vertex => {
 }
 ```
 
+</section>
+
+<section>
+
 ## Combining Rotations
 
 The cube above uses all three matrices in sequence: $R_x$, then $R_y$, then $R_z$.
@@ -145,11 +177,17 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 <DiagramPair>
 <Diagram
     src="/images/research/rotation-combine-1.svg?v=7"
+    layout="inset"
+    width={490}
+    height={320}
     alt="Step 1. An L lies on the xy plane. Axes x, y, and z meet at the origin."
     caption="1 · Start. The L sits on the xy plane."
 />
 <Diagram
     src="/images/research/rotation-combine-2.svg?v=7"
+    layout="inset"
+    width={490}
+    height={320}
     alt="Step 2. The L has turned around z. Ghost shows the start pose. The L is still on the floor."
     caption="2 · Apply Rz. It turns around z and stays on the floor."
 />
@@ -157,11 +195,17 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 <DiagramPair>
 <Diagram
     src="/images/research/rotation-combine-3.svg?v=7"
+    layout="inset"
+    width={490}
+    height={320}
     alt="Step 3. The L from step 2 has now tipped around x. Ghost is the after-Rz pose."
     caption="3 · Then Rx. That pose tips around x."
 />
 <Diagram
     src="/images/research/rotation-combine-4.svg?v=7"
+    layout="inset"
+    width={490}
+    height={320}
     alt="Step 4. Other order: the L first tipped around x, then turned around z. A coral arrow marks the last turn. The pose does not match step 3."
     caption="4 · Other order: Rx first, then Rz. Same two turns, different pose."
 />
@@ -169,6 +213,9 @@ Order matters. Rotating first around $z$ then around $x$ is not the same as $x$ 
 
 <Diagram
     src="/images/research/rotation-combine-5.svg?v=7"
+    layout="wide"
+    width={860}
+    height={320}
     alt="Two coral L poses side by side. Left is Rz then Rx. Right is Rx then Rz. A not-equals sign sits between them."
     caption="5 · The two finals. Same turns, opposite order — not the same pose."
 />
@@ -192,6 +239,10 @@ export const transformPoints = (
 }
 ```
 
+</section>
+
+<section>
+
 ## From 3D to Screen
 
 After rotation the cube is still in 3D. The screen is 2D.
@@ -206,6 +257,9 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In 
 
 <Diagram
     src="/images/research/rotation-perspective.svg?v=17"
+    layout="wide"
+    width={606}
+    height={456}
     alt="An eye in front of a screen. A coral tree in space spans height in space; its projection on the screen spans height on screen. A ray through both tops. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
     caption="Height on screen is a shrink of height in space. Same colors as the braces."
 />
@@ -214,6 +268,9 @@ The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale**
 
 <Diagram
     src="/images/research/rotation-f-projection.svg?v=16"
+    layout="inset"
+    width={524}
+    height={452}
     alt="An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z."
     caption="Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle."
 />
@@ -233,7 +290,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => 
     return result
 }
 ```
-This simplified projection works for a small demo, though in a more robust renderer you’d guard against points crossing the projection plane.
+For $d=4$, a point with $x=2$ and $z=0$ projects to $x=0.5$; at $z=2$ it projects to $x=1$. The denominator is zero at the eye plane $z=d$, not at the screen plane $z=0$. A robust renderer must clip points before they reach or cross the eye plane; this demo does not implement that clipping.
 
 Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
 
@@ -263,9 +320,13 @@ The browser handles the actual positioning. We compute the math; CSS does the re
 
 The browser decides how to composite the transformed elements. This experiment makes the coordinate calculation inspectable; it supplies no GPU-performance measurement or production-rendering comparison.
 
+</section>
+
+<section>
+
 ## The complete code
 
-The functions from the article, in one place, in the order the cube runs them. This is `lib/matrixTransformations.ts` plus the vertex `div`s.
+This reference puts the transformation steps together so they can be read without moving between sections. It is a simplified equivalent of `lib/matrixTransformations.ts`, whose multiplication routine handles matrix dimensions explicitly. Despite its name, `scaleXYZ` scales only $x$ and $y$; $z$ is left unchanged. The final JSX fragment belongs inside the React component, where `vertices`, `styles`, and `center` are supplied. The fragment and functions are not a standalone application.
 
 ```typescript
 interface Vertex {
@@ -370,3 +431,5 @@ export const transformPoints = (
 ))}
 ```
 ---
+
+</section>

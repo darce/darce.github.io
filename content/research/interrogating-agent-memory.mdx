@@ -1,5 +1,6 @@
 ---
 index: 4
+articleLayout: flow
 year: 2026
 title: Five Questions I Ask the Project Record
 subtitle: Look for recurring trouble, earlier fixes, decision reasons, completion evidence, and failed approaches
@@ -26,11 +27,17 @@ tags:
 - Field Notes
 ---
 
+<section>
+
 I use the project record when the next coding decision depends on work outside the current conversation. The record can bring back an earlier rationale or show that a new-looking failure has already occurred across several tasks.
 
 In [WorkBay](/projects/workbay/), I look up decisions, findings, test records, or blockers according to what the current task needs.
 
 [Project Memory Outside the Conversation](/research/agent-memory/) explains how those records are stored and retrieved.
+
+</section>
+
+<section>
 
 ## Where does trouble repeat?
 
@@ -38,21 +45,32 @@ A review usually concerns the work in front of it. A sequence of reviews can rev
 
 <Diagram
     src="/images/research/memory-window.svg?v=2"
+    layout="inset"
+    width={380}
+    height={360}
     alt="A column of records marks failed reviews in coral. One session sees only two rows, while a cluster of failures appears farther down the complete record."
     caption="A session sees a small slice; the record can reveal repetition across tasks. The rows are schematic, not the audit sample."
 />
 
-In one earlier audit, roughly three quarters of the recorded reviews in a small project had failed. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
+In my summary of an earlier audit, roughly three quarters of the recorded reviews in a small project had failed. The audit date, review count, and underlying rows are not available here; this remains an author-reported observation. That pattern prompted a closer look at the architecture. The count did not establish the cause: task selection and review practice could also have affected the proportion.
 
 I inspected the findings behind the count to see whether they shared a constraint or arose from different causes. The proportion directed that investigation; the findings had to support the diagnosis.
 
+</section>
+
+<section>
+
 ## Does a useful fix already exist?
 
-A new finding may resemble a problem recorded under different wording. Semantic retrieval can surface an earlier resolution, which a human or agent can compare with the current code.
+A new finding may resemble a problem recorded under different wording. Semantic retrieval—searching by similarity between numerical text representations—can surface an earlier resolution, which a human or agent can compare with the current code.
 
 The resolution may contain more than a patch. It can preserve the constraint that made the patch necessary or the reason a simpler change failed. That explanation helps determine whether the earlier fix applies now.
 
 An earlier fix remains a candidate until its conditions and recorded status have been checked. Copying the patch without that check would replace repeated investigation with a different risk: applying the right answer to the wrong problem.
+
+</section>
+
+<section>
 
 ## Why was this approach chosen?
 
@@ -62,13 +80,21 @@ For example, a later session may question why a site uses static output rather t
 
 A changed requirement may justify a changed decision. The record should make that change deliberate, not keep the original choice closed forever. Its value is distinguishing a new reason from an old debate whose reasoning has been forgotten.
 
+</section>
+
+<section>
+
 ## What supports the completion claim?
 
-A completion claim needs evidence tied to the work being assessed. WorkBay can preserve review verdicts and test records alongside task and commit information. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
+A completion claim needs evidence tied to the work being assessed. In my WorkBay workflow, review verdicts (the reviewer’s pass or fail decision) and test records sit alongside task and commit information. A commit identifies a particular revision of the code. That information lets another reviewer inspect which commands ran, what they returned, and which revision they concern.
 
 The revision matters because a test result from earlier code does not automatically establish the state of the current code. A useful review follows the evidence back to the change instead of relying on a summary saying that the task passed.
 
-Another model can perform that review without inheriting the author’s conversation. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
+A second model can be given that evidence without inheriting the author’s conversation. Independence of the conversation does not guarantee a correct review; the reviewer still needs to examine the changed code and the relevant checks. Semantic search may help locate the relevant discussion, but the completion assessment depends on the exact records and the code.
+
+</section>
+
+<section>
 
 ## What has already failed?
 
@@ -78,8 +104,14 @@ The reason distinguishes an option that was temporarily unavailable from one tha
 
 The history therefore does not forbid another attempt. It makes the next attempt answer a specific question: what has changed since this failed?
 
+</section>
+
+<section>
+
 ## From a useful lookup to an evaluated benefit
 
 My use of these lookups has not established how often retrieval finds the right material or how much work it saves.
 
 [Testing Whether Project Memory Saves Work](/research/economics-of-agent-memory/) proposes a comparison of task effort and quality to evaluate that benefit.
+
+</section>
