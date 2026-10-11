@@ -1,8 +1,58 @@
+diff --git a/components/composite/Nav/Nav.module.scss b/components/composite/Nav/Nav.module.scss
+--- a/components/composite/Nav/Nav.module.scss
++++ b/components/composite/Nav/Nav.module.scss
+@@ -4,6 +4,7 @@
+ .nav {
+     @include themeComponent($themes) {
+         background-color: t('surface');
++        color: t('text');
+     }
+ 
+     display: flex;
+@@ -48,6 +49,7 @@
+             padding: $s-small $s-large;
+             text-decoration: none;
+             color: inherit;
++            transition: none;
+             cursor: pointer;
+             position: relative;
+ 
+@@ -70,8 +72,7 @@
+                 left: 0;
+                 width: 0;
+                 height: 2px;
+-                transition: width 300ms $ease-decel,
+-                            background-color 200ms $ease-decel;
++                transition: width 300ms $ease-decel;
+ 
+                 @include themeComponent($themes) {
+                     background-color: t('link');
+@@ -104,6 +105,12 @@
+         align-items: center;
+         padding: $s-medium $s-large;
+ 
++        > button {
++            // Keep the existing lift, but switch the control stroke with its
++            // ground instead of fading a light-theme stroke on dark paper.
++            transition-property: transform;
++        }
++
+         @media (max-width: $tabletMax) {
+             padding: $s-medium $s-large $s-medium 0;
+         }
+@@ -166,6 +173,7 @@
+     }
+ 
+     .breadcrumbArrow {
++        transition: none;
+         @include themeComponent($themes) {
+             color: t('link');
+         }
 diff --git a/components/features/ProjectDetails/ArticleCode.tsx b/components/features/ProjectDetails/ArticleCode.tsx
 new file mode 100644
 --- /dev/null
 +++ b/components/features/ProjectDetails/ArticleCode.tsx
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,42 @@
 +import React from 'react'
 +
 +export const CodeIsIllustration = React.createContext(false)
@@ -15,7 +65,7 @@ new file mode 100644
 +    return React.Children.toArray(node).map(textContent).join('')
 +}
 +
-+const ArticleCode = ({ children, ...props }: React.ComponentPropsWithoutRef<'pre'>) => {
++const ArticleCode = ({ children, onKeyDown, ...props }: React.ComponentPropsWithoutRef<'pre'>) => {
 +    const illustration = React.useContext(CodeIsIllustration)
 +    const columns = Math.max(0, ...textContent(children).split('\n').map(line => {
 +        let column = 0
@@ -24,14 +74,31 @@ new file mode 100644
 +    }))
 +    // A 68-column lower bound includes lines just below 80, plus padding.
 +    // The intrinsic branch still stacks when the canvas cannot fit prose.
-+    return <pre {...props} data-code-columns={columns} data-code-layout={columns >= 68 ? 'wide' : 'intrinsic'} tabIndex={illustration ? undefined : 0} aria-label={illustration ? undefined : 'Code example'}>{children}</pre>
++    return <pre {...props} data-code-columns={columns} data-code-layout={columns >= 68 ? 'wide' : 'intrinsic'} tabIndex={illustration ? undefined : 0} aria-label={illustration ? undefined : 'Code example'} onKeyDown={event => {
++        onKeyDown?.(event)
++        const region = event.currentTarget
++        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || region.scrollWidth <= region.clientWidth) return
++        // Native horizontal arrow animation can outlive a subsequent Home/End.
++        // Keep these commands discrete so the last key determines the position;
++        // Tab and vertical keys retain their native behavior.
++        let left: number
++        switch (event.key) {
++            case 'ArrowLeft': left = region.scrollLeft - 40; break
++            case 'ArrowRight': left = region.scrollLeft + 40; break
++            case 'Home': left = 0; break
++            case 'End': left = region.scrollWidth; break
++            default: return
++        }
++        event.preventDefault()
++        region.scrollTo({ left, behavior: 'instant' })
++    }}>{children}</pre>
 +}
 +
 +export default ArticleCode
 diff --git a/components/features/ProjectDetails/ProjectDetails.module.scss b/components/features/ProjectDetails/ProjectDetails.module.scss
 --- a/components/features/ProjectDetails/ProjectDetails.module.scss
 +++ b/components/features/ProjectDetails/ProjectDetails.module.scss
-@@ -226,6 +226,38 @@
+@@ -226,6 +226,56 @@
          }
  
          .source {
@@ -57,7 +124,8 @@ diff --git a/components/features/ProjectDetails/ProjectDetails.module.scss b/com
 +                box-sizing: border-box;
 +                overflow-x: auto;
 +                max-block-size: none;
-+                // Rehype's highlight theme pins paper and ink together.
++                // Keep the code plate and its scoped highlight ink together
++                // in both themes (including the unhighlighted text).
 +                background: #fff;
 +                color: $ink;
 +            }
@@ -65,12 +133,29 @@ diff --git a/components/features/ProjectDetails/ProjectDetails.module.scss b/com
 +            pre code {
 +                display: block;
 +                padding: 0;
++                inline-size: max-content;
++                min-inline-size: 100%;
++                // The focusable pre owns both axes; no nested code scroller.
++                overflow: visible;
++                background: transparent;
++                color: $ink;
++
++                :global(.hljs-built_in),
++                :global(.hljs-symbol) {
++                    // GitHub's #e36209 is only 3.48:1 on this white plate.
++                    color: #953800;
++                }
++
++                :global(.hljs-addition) {
++                    // Also cover highlighted diff text on its own pale ground.
++                    color: #1b6b2e;
++                }
 +            }
 +
              // Each content section shrinks around its own evidence and prose,
              // so a short diagram cannot leave a wide empty gutter at 1920px.
              > section {
-@@ -233,7 +265,7 @@
+@@ -233,7 +283,7 @@
                  inline-size: fit-content;
                  max-inline-size: 100%;
  
@@ -79,7 +164,7 @@ diff --git a/components/features/ProjectDetails/ProjectDetails.module.scss b/com
                      inline-size: 100%;
                  }
  
-@@ -356,6 +388,58 @@
+@@ -356,6 +406,58 @@
                  }
              }
          }
@@ -160,7 +245,7 @@ diff --git a/components/features/ProjectDetails/ProjectDetails.tsx b/components/
  const BestBid = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestBid), { ssr: false })
  const BestAsk = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.BestAsk), { ssr: false })
  const Spread = dynamic(() => import('../OrderBook/OrderBookMetrics').then(mod => mod.Spread), { ssr: false })
-@@ -42,16 +45,24 @@ const Diagram = ({
+@@ -42,22 +45,30 @@ const Diagram = ({
      src,
      alt,
      caption,
@@ -186,6 +271,13 @@ diff --git a/components/features/ProjectDetails/ProjectDetails.tsx b/components/
          className={styles.diagram}
      />
  )
+ 
+ const DiagramPair = ({ children }: { children: React.ReactNode }) => (
+-    <div className={styles.diagramPair}>{children}</div>
++    <div className={styles.diagramPair} data-diagram-pair>{children}</div>
+ )
+ 
+ const PullQuote = ({ children }: { children: React.ReactNode }) => (
 @@ -68,7 +79,9 @@ const PullQuote = ({ children }: { children: React.ReactNode }) => (
  // single labelled image and hide the box-drawing from assistive tech
  const AsciiScreen = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -969,7 +1061,7 @@ diff --git a/content/research/rotation-matrices.mdx b/content/research/rotation-
  ## From 3D to Screen
  
  After rotation the cube is still in 3D. The screen is 2D.
-@@ -206,6 +257,9 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In
+@@ -206,16 +257,24 @@ Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In
  
  <Diagram
      src="/images/research/rotation-perspective.svg?v=17"
@@ -979,17 +1071,25 @@ diff --git a/content/research/rotation-matrices.mdx b/content/research/rotation-
      alt="An eye in front of a screen. A coral tree in space spans height in space; its projection on the screen spans height on screen. A ray through both tops. Braces mark d and depth. The equation height on screen = height in space times d over depth sits at the top left."
      caption="Height on screen is a shrink of height in space. Same colors as the braces."
  />
-@@ -214,6 +268,9 @@ The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale**
  
+ The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
+ 
++The next plate keeps the physical screen-plane construction: its scale is $d/(d - z)$. The long brace runs from the eye to the near object's depth, not from the screen to the object. Dividing the drawn screen coordinates by $d$ gives the demo's normalized coordinates.
++
  <Diagram
-     src="/images/research/rotation-f-projection.svg?v=16"
+-    src="/images/research/rotation-f-projection.svg?v=16"
+-    alt="An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z."
+-    caption="Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle."
++    src="/images/research/rotation-f-projection.svg?v=17"
 +    layout="inset"
-+    width={524}
++    width={577}
 +    height={452}
-     alt="An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z."
-     caption="Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle."
++    alt="An eye at world z = d, a screen at world z = 0, and two same-size coral trees behind it at negative world z. The depth axis points away from the eye. Green rays intersect the physical screen: solid rays show the larger near image, dashed rays the smaller far image. A short brace marks eye-to-screen distance d; a long brace marks the whole eye-to-near-object depth d minus z. The equation is screen-plane scale = d/(d − z). Divide screen coordinates by d for the demo’s normalized scale."
++    caption="Physical screen-plane scale = d/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle. Divide screen coordinates by d to get the demo’s normalized projection."
  />
-@@ -233,7 +290,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] =>
+ 
+ ```typescript
+@@ -233,7 +292,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] =>
      return result
  }
  ```
@@ -998,7 +1098,7 @@ diff --git a/content/research/rotation-matrices.mdx b/content/research/rotation-
  
  Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
  
-@@ -263,9 +320,13 @@ The browser handles the actual positioning. We compute the math; CSS does the re
+@@ -263,9 +322,13 @@ The browser handles the actual positioning. We compute the math; CSS does the re
  
  The browser decides how to composite the transformed elements. This experiment makes the coordinate calculation inspectable; it supplies no GPU-performance measurement or production-rendering comparison.
  
@@ -1013,7 +1113,7 @@ diff --git a/content/research/rotation-matrices.mdx b/content/research/rotation-
  
  ```typescript
  interface Vertex {
-@@ -370,3 +431,5 @@ export const transformPoints = (
+@@ -370,3 +433,5 @@ export const transformPoints = (
  ))}
  ```
  ---
@@ -1151,6 +1251,319 @@ diff --git a/content/research/visual-search-workbench-process.mdx b/content/rese
  An exploration study would need to allow for a useful selection that takes someone beyond the subject they first searched for.
 +
 +</section>
+diff --git a/docs/research/research-review-01-browser-reliability.md b/docs/research/research-review-01-browser-reliability.md
+new file mode 100644
+--- /dev/null
++++ b/docs/research/research-review-01-browser-reliability.md
+@@ -0,0 +1,85 @@
++# RESEARCH-REVIEW-01 browser harness reliability
++
++This harness-only slice starts from history-stripped checkout `04c98e5` and
++uses the immutable native evidence in
++`/home/gate/workbay-sandbox/research-evidence-0e0a981` (author source `0e0a981`).
++That run recorded 48 passes, 8 intentional skips, 7 unexpected results and
++zero flaky results. It remains a failed run; this change does not close F1–F5.
++
++## Causes and corrections
++
++- The recorded article image loop polled readiness without bringing lazy
++  images into view. Capture preparation subsequently added viewport visits;
++  a shared helper now scrolls and decodes each image before functional image
++  assertions, captures and paired geometry. Decode errors fail the case, and
++  complete/nonzero intrinsic dimensions remain required.
++- The rotation case combined both themes, full-document accessibility,
++  token checks and screenshots in 30 seconds. Completed rotation axe calls
++  in the preserved traces took roughly 3.3–6.2 seconds; the later calls were
++  interrupted by the case deadline, without returned contrast violations.
++  Functional cases now cover one article/theme/profile each. Separate
++  capture cases retain all seven articles, both themes, all three profiles,
++  full pages, first code blocks, workflow figures and the required rotation
++  projection. Existing pilot layout and both-theme viewer captures remain.
++- The keyboard case combined 28 article/viewport/text-size combinations.
++  Each combination now has its own 30-second case, selected once in the
++  desktop project by `research.config.ts`. Tab traversal starts at navigation
++  once per case and continues through source-ordered code blocks, instead of
++  restarting for every block. Every overflowing code example must have its
++  tab stop and pass real Tab/ArrowRight/End/Home and terminal-glyph checks.
++  Semantically labelled ASCII illustrations retain their existing prose
++  alternative and intentionally absent code tab stops. The 200% setting is
++  root-font text resize, not browser zoom.
++- The paired parent rectangle was read before child image scrolling, while
++  child rectangles were read afterward. All pair, child and image rectangles,
++  intrinsic dimensions and row/column gaps now come from one synchronous
++  `evaluate` after decoding. Standalone float checks and paired flex/wrap,
++  source order, captions, intrinsic size, aspect ratio and containment remain.
++
++Full-document axe, 4.5:1 token/text and 3:1 control contrast, transient and
++settled theme agreement, literal fence bytes/order, full-width long code and
++page-overflow checks remain. No timeout increase, retries, production edits
++or essential-check exclusions were added.
++
++Decisions retain Canon v0.25.6 [A11Y-01] **Contrast floors**
++(*WCAG 2.2*, SC 1.4.3), [A11Y-11] **Keyboard walk** (*WCAG 2.2*, SC 2.1.1),
++and [LAY-24] **Content-and-frame grid** (*Thinking with Type*, ch. 3).
++Rendered verification is escalated to the coordinator's native rerun.
++The pinned manifest SHA and all 53 listed file digests were verified; no
++reasoning card lists those retained IDs. Graph tools were unavailable after
++tool discovery, so exact source and trace reads supplied the evidence.
++
++## Verification and remaining native QA
++
++- Installed 1,060 exact-lock packages with
++  `npm ci --offline --ignore-scripts --cache .task-state/npm-cache`, using an
++  ignored copy of the read-only donor cache.
++- `npm test -- test/lib/llm-content.test.ts test/lib/design-tokens.test.ts test/components/projectImageCaptions.test.tsx`:
++  **39 passed in 3 files**.
++- `npm run typecheck:test`: passed.
++- `npm exec -- eslint test/browser/article-flow.spec.ts test/browser/editorial-layout.spec.ts test/browser/research.config.ts test/support/browser.ts`:
++  passed after the final harness edit.
++- Playwright `--list --reporter=json` for the three assigned browser specs:
++  passed. A Node assertion over that listing verified 151 invocations,
++  including 42 functional article cases, 42 capture cases and 28 explicit
++  desktop-project viewport cases, with 30-second budgets and zero retries.
++  An initial listing validator queried retries at the wrong JSON level;
++  the corrected project-level check passed. Listing does not launch a browser.
++- `node test/support/verify-research-export.ts` initially could not run because
++  this checkout lacked `out/`. `npm exec -- next build --webpack` then passed
++  with 24 static pages; export verification passed on rerun for all seven
++  articles and the pilot query row/full-width image. The direct build used
++  existing generated assets and left production sources unchanged. Existing
++  workspace-root and module-type inference warnings remain.
++- `git diff --check`: passed. Only the six lane-owned paths have changes.
++
++The coordinator must run the following, then inspect the complete captures
++and any failures:
++
++```sh
++npm run test:browser -- --config test/browser/research.config.ts test/browser/article-flow.spec.ts test/browser/editorial-layout.spec.ts test/browser/workflow-graphics.spec.ts --workers 2 --retries 0 --reporter=json
++```
++
++Browser launch is known to
++be blocked by this sandbox's EPERM boundary; no native browser result or
++product finding resolution is claimed here.
+diff --git a/docs/research/research-review-01-corrections.md b/docs/research/research-review-01-corrections.md
+new file mode 100644
+--- /dev/null
++++ b/docs/research/research-review-01-corrections.md
+@@ -0,0 +1,218 @@
++# RESEARCH-REVIEW-01 correction slice
++
++This slice implements F1–F5 from the actual read-only adjudication at
++`/home/gate/workbay-sandbox/research-adjudication-2ce34cb/review.json`.
++It is based on the history-stripped sandbox commit `f455594` on
++`feature/research-review-01`. Browser acceptance remains pending the coordinator's
++native rerun; these changes do not close the findings by themselves.
++
++## F1 — scoped highlighted-code contrast
++
++Article flow code retains a white plate in both themes and 14px normal code at
++the default root size. Plain code explicitly uses `#171920`. Within article
++`pre code`, built-in/symbol tokens change from `#e36209` to `#953800`. The full
++installed GitHub palette inspection also found diff additions at 4.4756:1 on
++`#f0fff4`; their scoped foreground changes to `#1b6b2e`.
++
++Independent sRGB/WCAG calculations over the installed stylesheet, with the
++scoped overrides applied, give the following source-palette ratios. This is
++not a claim that browser-computed pairs have been measured in this sandbox.
++
++| Token group | Foreground | Ground | Ratio |
++| --- | --- | --- | --- |
++| Plain code | `#171920` | white | 17.5535 |
++| Keyword/type/doctag/template | `#d73a49` | white | 4.5743 |
++| Title/class/function | `#6f42c1` | white | 6.5111 |
++| Attribute/literal/meta/number/operator/variable/selector | `#005cc5` | white | 6.2929 |
++| String/regexp | `#032f62` | white | 13.2338 |
++| Built-in/symbol | `#953800` | white | 7.3851 |
++| Comment/code/formula | `#6a737d` | white | 4.8151 |
++| Name/quote/selector tag or pseudo | `#22863a` | white | 4.6264 |
++| Substitution/emphasis/strong | `#24292e` | white | 14.6685 |
++| Section | `#005cc5` | white | 6.2929 |
++| Bullet | `#735c0f` | white | 6.4285 |
++| Addition | `#1b6b2e` | `#f0fff4` | 6.3702 |
++| Deletion | `#b31d28` | `#ffeef0` | 6.0004 |
++
++The browser oracle walks every meaningful code text node, including plain
++text and nested highlight spans, and checks each actual foreground/ancestor
++ground at 4.5:1 in both themes on each configured profile. Axe remains enabled
++for the entire document, including navigation, without exclusions.
++
++Decision: Canon v0.25.6 [A11Y-01] **Contrast floors (1.4.3/1.4.11)**
++(*Web Content Accessibility Guidelines 2.2*, SC 1.4.3;
++*The WebAIM Million*, 2026), B. Source-palette calculations pass; rendered
++pair verification is explicitly escalated to the native rerun.
++
++## F2 — keyboard-operable horizontal code scrolling
++
++The focusable `pre` owns horizontal scrolling. Its child `code` has visible
++overflow on both axes and max-content width, preserving intrinsic long-line
++extent. All authored bytes, preformatted whitespace, four-column tabs, and
++the existing 68-column wide-block cutoff remain intact. Home/End move to the
++horizontal beginning/end only when the region overflows; Arrow keys retain
++native scrolling. Existing authored key handlers are respected.
++
++The browser matrix covers 320px and 768px, plus 200% root text at 320px and
++1440px. Overflowing code must be entered through actual Tab navigation;
++ArrowRight must increase the focused `pre` offset; End must reach its full
++extent and expose the rightmost rendered line endpoint; Home must expose the
++final source-line endpoint. Rotation and order-book must actually overflow
++at 320px, including normally short intrinsic order-book code. No test assigns
++`scrollLeft` to simulate success, and zero overflow cannot satisfy the
++keyboard proof. The page-overflow and literal-byte checks remain.
++
++Decision: [A11Y-11] **Keyboard walk (2.1.1/2.1.2/2.4.3/2.4.7)**
++(*Web Content Accessibility Guidelines 2.2*, SC 2.1.1), B. Actual browser
++keyboard proof is escalated to the native rerun.
++
++## F3 — physical projection and normalized demo coordinates
++
++The article convention is eye world `z=d`, screen world `z=0`, objects at
++negative world `z`. The plate's third coordinate is positive eye-relative
++depth `D=d−z`, not world `z`. Its axis is now labelled **depth**. The physical
++screen multiplier is `d/D`; dividing physical screen coordinates by `d`
++gives the demo multiplier `1/D`. The long brace now covers the whole
++eye-to-near-object segment rather than the screen-to-object gap. The equation,
++caption, alternative, adjacent explanation and generated llms export agree.
++
++Independent calculations for the specified scene (`d=1.38`, object height
++`0.78`) are:
++
++| Quantity | Near | Far |
++| --- | --- | --- |
++| World z | −0.92 | −2.05 |
++| Eye-relative depth D | 2.30 | 3.43 |
++| Original lateral coordinate | 0.56 | −0.60 |
++| Physical multiplier d/D | 0.600000000000 | 0.402332361516 |
++| Physical screen height | 0.468000000000 | 0.313819241983 |
++| Physical screen lateral coordinate | 0.336000000000 | −0.241399416910 |
++| Normalized height | 0.339130434783 | 0.227405247813 |
++| Normalized lateral coordinate | 0.243478260870 | −0.174927113703 |
++| SVG top point | (267.25504, 128.70928) | (224.619867, 124.254239) |
++| SVG bottom point | (267.25504, 189.8488) | (224.619867, 165.251585) |
++| SVG projected height | 61.13952 | 40.997346 |
++
++The plate camera maps `(height,lateral,depth)` to
++`(70+142*(0.88*depth+0.52*lateral),
++250+142*(-0.92*height-0.38*depth+0.30*lateral))`.
++The full near-depth brace has expected SVG delta `(287.408,−124.108)`;
++the generated rounded delta is `(287.4,−124.1)`. The new scoped component
++regression independently checks both near/far top and bottom dots, projected
++heights, normalization, the whole-depth brace, and the physical equation.
++It imports neither the generator nor the demo projection module.
++
++Regeneration actually used Python 3.12.7 from the managed lane `.venv`, the
++stdlib-only canonical generator, and only its owned projection output:
++
++```sh
++lane_root="$(git rev-parse --show-toplevel)" || exit 1
++resolved_python="$lane_root/.venv/bin/python"
++test -x "$resolved_python" || exit 1
++"$resolved_python" - <<'PY'
++import runpy
++from pathlib import Path
++module = runpy.run_path('scripts/generate-rotation-diagrams.py')
++Path('public/images/research/rotation-f-projection.svg').write_text(module['f_projection']())
++PY
++```
++
++The resulting SVG is 577×452. Its bytes were compared with a fresh canonical
++function invocation. Independent stdlib SVG-coordinate assertions passed.
++`sharp` rasterized the final SVG to `/tmp/research-projection-corrected.png`,
++which was inspected visually: labels and both braces are visible. This is
++local raster inspection, not native browser evidence.
++
++Decision: [WRIT-71] **Unpack private knowledge** (*The Sense of Style*, ch. 3),
++S. The explicit coordinate mapping and normalization explanation supply the
++missing inference; the independent calculations support the geometry.
++
++## F4 — coordinated theme rendering and honest audit timing
++
++Radix's installed root Theme synchronizes its appearance prop through an
++effect. The custom theme wrapper now derives its appearance from Radix's
++effective context, and updates the body ground in a layout effect before
++paint. This preserves mounted article state instead of remounting the theme
++tree. Navigation sets its foreground and background from the same scoped
++palette. Global link-ink and body-ground fades are removed. Navigation retains
++underline-width motion, and the theme control retains its lift, while their
++theme colors and control stroke switch without interpolation.
++
++`changeTheme` samples real navigation text/background and theme-control
++stroke/background pairs before clicking and on animation frames through
++completion. Every text sample must meet 4.5:1; control strokes must meet 3:1.
++Body, custom and Radix appearances must agree in every sampled frame.
++Steady audits wait for the requested effective appearances, relevant active
++color/background transitions, and two animation frames. Waiting is accompanied
++by the product correction and transition sampling, not used to hide a transient
++failure. Both switch directions and preference persistence across reload have
++a browser regression. No contrast floor is lowered and Nav is not excluded.
++
++Decision: [A11Y-01] **Contrast floors (1.4.3/1.4.11)**
++(*Web Content Accessibility Guidelines 2.2*, SC 1.4.3;
++*The WebAIM Million*, 2026), B. Both transient and settled browser measurements
++are escalated to the native rerun. The original observation is not restated
++as a proven persistent dark-navigation palette defect.
++
++## F5 — object-specific layout oracle
++
++DiagramPair has a semantic `data-diagram-pair` marker. The layout test retains
++standalone-inset float assertions and separately checks paired figures using
++their existing flex/wrap layout. It verifies source alternatives in authored
++order, native image dimensions and aspect ratios, captions, figure containment,
++and shared-row versus wrapped-row geometry from the actual frame and intrinsic
++sizes. Paired children still have `float:none`; no product float change was
++made to satisfy the old invalid oracle.
++
++Decision: [LAY-24] **Content-and-frame grid** (*Thinking with Type*, ch. 3), S.
++The test distinguishes content objects and their containing frame; actual
++browser layout proof is escalated to the native rerun.
++
++## Verification and remaining proof
++
++Graph-first discovery was attempted through available tool metadata and the
++codebase-memory skill. No graph tools were exposed, so direct reads were used.
++The specified read-only Canon v0.25.6 manifest hash is
++`ce0953e41cf3fc836cf9d8a5a8e7975173d26da8cf178480bfbd1d33bf41cb7d`;
++all 53 listed file digests were verified. No reasoning card lists the four
++retained IDs. The brief's older generic v0.25.3 pointer was superseded by its
++explicit v0.25.6 pin. This Node repository's Python stub has `package=false`;
++no unrelated package import-origin probe applies.
++
++Commands actually executed:
++
++- Copied the exact-lock read-only dependency donor into ignored
++  `.task-state/npm-cache`; `npm ci --ignore-scripts --offline --cache .task-state/npm-cache`
++  installed 1060 packages successfully.
++- Managed lane Python stdlib manifest/digest checks, canonical projection
++  regeneration and independent SVG calculations: passed.
++- `node` stdin sRGB calculation over every installed GitHub token color group:
++  first identified the failing addition pair; final corrected palette passed.
++- `node` stdin `sharp` rasterization: passed; final raster viewed.
++- `npm test -- test/lib/llm-content.test.ts test/lib/design-tokens.test.ts test/components/projectImageCaptions.test.tsx`:
++  **39 tests passed in 3 files**, with the normal pretest `--skip-sitemap` path;
++  a final rerun after all production/test edits passed the same 39 tests.
++- Initial `npm run typecheck:test` and `npm run typecheck` ran before image
++  generation completed and failed on the absent generated image manifest.
++  Both were rerun after generation and **passed**.
++- `npm run lint`: **passed, 0 errors / 6 existing warnings**; rerun after final
++  production/test edits produced the same result.
++- `timeout 180s npm run build -- --webpack`: **passed**, with 24 static pages
++  generated. Next reported its existing multi-lockfile workspace-root warning.
++  The build's synthetic sitemap dates were restored from the exact prebuild
++  snapshot; the sitemap has no remaining diff.
++- `node test/support/verify-research-export.ts`: **passed** for all seven
++  research articles and the pilot query row/full-width image. Rotation's eight
++  and order-book's three fenced blocks retain every byte and source order.
++  Node emitted its module-type inference warning; exit status was zero.
++- `git diff --check`: passed.
++- `node` stdin Playwright `chromium.launch({headless:true})`: **blocked**.
++  Installed Chromium headless shell 1248 aborted in `sandbox_host_linux.cc:41`
++  with `shutdown: Operation not permitted (1)` / SIGTRAP. No browser suite was
++  run and no browser QA pass is claimed.
++
++The coordinator must run the committed browser oracles on the native host,
++including all three profiles, both themes, actual keyboard scrolling, paired
++layout and transition frames. Keep the existing workflow-graphics and full
++document accessibility checks. Native browser proof is the remaining blocking
++acceptance evidence for F1/F2/F4/F5, and native visual confirmation for F3.
 diff --git a/docs/research/research-review-01-implementation.md b/docs/research/research-review-01-implementation.md
 new file mode 100644
 --- /dev/null
@@ -1860,6 +2273,247 @@ new file mode 100644
 +- Build, typecheck, lint, browser previews and seven-page responsive/zoom checks
 +  remain downstream under brief #125. Only the allowed lane suite ran; no
 +  preview or visual pass is claimed.
+diff --git a/docs/research/research-review-01-keyboard-motion.md b/docs/research/research-review-01-keyboard-motion.md
+new file mode 100644
+--- /dev/null
++++ b/docs/research/research-review-01-keyboard-motion.md
+@@ -0,0 +1,73 @@
++# RESEARCH-REVIEW-01 horizontal keyboard motion
++
++Native evidence for source `0d140e8617db47efcdc681f0954e4cd609043fba`
++in `/home/gate/workbay-sandbox/research-evidence-0d140e8` remains red:
++all four order-book keyboard cases failed after successful Tab, ArrowRight,
++End maximum-extent and longest-line terminal-glyph checks. Home ended at
++38px, 39px and 38px for 320/100%, 768/100% and 1440/200%, respectively.
++At 320/200%, Home briefly reached zero before the first glyph moved left
++to 8px, below its required 23px bound. These percentages are root-font
++text resize, not browser zoom. The prior build and export passed.
++
++The read-only `research-keyboard-diagnostic-0d140e8/stdout.json` trajectories
++show rapid ArrowRight → End → Home returning from zero to final offsets
++32/32/32/6px in the four viewports. Waiting for the native arrow animation
++to finish (40/40/40/8px) leaves subsequent Home at zero throughout the
++samples. The separate `research-keyboard-instant-diagnostic-0d140e8/stdout.json`
++substituted-handler experiment still ends at 35/36/32/6px when only Home/End
++use `behavior: 'instant'`. Both experiments use programmatic focus and are
++causal diagnostics, not source-ordered Tab or production validation.
++
++`ArticleCode` now prevents default unmodified horizontal ArrowLeft/ArrowRight
++scrolling and applies one immediate 40px step per keydown, clamped by the
++browser to the available extent. Home and End use the same immediate scroll
++API. Preventing the arrow animation at its origin makes the last horizontal
++command determine the position; changing only the endpoint API was insufficient.
++The existing caller handler, `defaultPrevented`, modifier and overflow guards
++remain. Tab and vertical keys retain native behavior.
++
++The existing browser helper enters each scroller through actual source-ordered
++Tab input. It now checks immediate ArrowRight movement, ArrowLeft reversal,
++another ArrowRight, End maximum extent and Home zero without eventual-position
++polling. Longest-line terminal-glyph and first-glyph Home bounds remain exact
++within the existing 1px geometry tolerance. The prior final-source-glyph
++correction remains: measure Home, then End if needed, then at most 100 real
++arrow presses toward the glyph. Each command is measured without the former
++100ms key duration. Exhaustion still fails both final-glyph bounds; focus must
++remain on the pre, and a final Home must immediately restore zero. Tests never
++assign scroll offsets or move a glyph with `scrollIntoView`.
++
++The single accessible pre, literal source bytes/order, illustration exception,
++68-column classification, unwrapped/untruncated code and font sizes remain
++intact. Article/MDX/CSS/theme/viewer/export files are untouched. Existing
++sole-scroller, page-overflow, both-theme 4.5:1 contrast, seven-article capture
++and three-profile coverage remain in the same suite.
++
++Canon v0.25.6: all 53 release-manifest file digests match. [A11Y-11]
++**Keyboard walk (2.1.1/2.1.2/2.4.3/2.4.7)** (Web Content Accessibility
++Guidelines 2.2, SC 2.1.1; `lexicons/accessibility.md#a11y-11`) supports keeping
++real keyboard entry and traversal. No reasoning card lists this ID.
++[A11Y-01] **Contrast floors (1.4.3/1.4.11)** (Web Content Accessibility
++Guidelines 2.2, SC 1.4.3 + The WebAIM Million, 2026) has no new color-change
++trigger; the existing contrast audits remain. Graph tools were unavailable,
++so discovery used exact source and evidence files.
++
++Lane checks on 2026-10-11:
++
++- `npm test -- test/lib/llm-content.test.ts test/lib/design-tokens.test.ts test/components/projectImageCaptions.test.tsx`: 39 tests passed across 3 files, including normal pretest generation.
++- `npm run typecheck:test`: passed after pretest generated the image manifest; the earlier invocation failed on that missing generated file.
++- `npx --no-install eslint components/features/ProjectDetails/ArticleCode.tsx test/browser/article-flow.spec.ts`: passed.
++- `npm run test:browser -- --config test/browser/research.config.ts test/browser/article-flow.spec.ts test/browser/editorial-layout.spec.ts test/browser/workflow-graphics.spec.ts --list`: 151 cases in 3 files, including all four order-book cases; listing only.
++- `git diff --check`: passed.
++
++The prompt's unvalidated runner notice was raised for clarification; the current
++`pyproject.toml` already declares `npm` in `runner_commands`, satisfying its
++specified remedy without any settings edit. Dependencies came from an own,
++ignored `.npm` copy of the supplied read-only donor via
++`npm ci --offline --ignore-scripts --cache .npm`. This is a package-less Node
++lane, so Python package import-origin checks do not apply.
++
++Native validation of this production handler and final independent adjudication
++remain coordinator work. No browser launch was attempted in the established
++EPERM sandbox; the historical native failures and diagnostic evidence are
++unchanged. This slice does not claim a new native pass.
+diff --git a/docs/research/research-review-01-keyboard-oracle.md b/docs/research/research-review-01-keyboard-oracle.md
+new file mode 100644
+--- /dev/null
++++ b/docs/research/research-review-01-keyboard-oracle.md
+@@ -0,0 +1,67 @@
++# RESEARCH-REVIEW-01 keyboard oracle correction
++
++The serial native evidence for source HEAD `2002d3841525b99cf3bd57398ae5840f4d8b422b`
++in `/home/gate/workbay-sandbox/research-targeted-2002d38` reproduces four
++order-book failures at the old `article-flow.spec.ts:337`. Each assertion
++incorrectly requires the final source character to fit after Home:
++
++| Viewport / root-font size | Required right edge ≤ | Actual right edge |
++| --- | ---: | ---: |
++| 320px / 100% | 297 | 634.53125 |
++| 768px / 100% | 745 | 811.46875 |
++| 320px / 200% | 297 | 1232.953125 |
++| 1440px / 200% | 1393 | 1773.953125 |
++
++The serial runs reach the preceding Tab, native ArrowRight, End maximum-extent,
++longest rendered line terminal-glyph, and Home-offset-zero checks. The source
++contains long final lines; Home exposes their beginning. The 200% cases resize
++the root font; they do not exercise browser zoom.
++
++`keyboardScrollToLineEnd` now measures the first non-whitespace source glyph at
++Home. It measures the final non-whitespace source glyph at Home, then End if
++necessary. If neither position exposes that glyph, at most 100 real arrow
++presses, each with a 100ms key duration, move toward its measured bounds. The
++final character must satisfy both viewport edges within the existing 1px
++tolerance, and the scroller must retain focus. Exhausting the traversal fails
++the geometry assertions. A final Home restores offset zero.
++
++Real source-ordered Tab entry, native ArrowRight movement, End maximum extent,
++and the longest rendered line's terminal-glyph proof remain mandatory. There
++are no added skips, retries, timeout changes, test scroll-offset assignments,
++or glyph `scrollIntoView` calls. The existing scroller viewport visit remains.
++Production code, MDX, layout, literal fenced bytes/order, single-scroller
++checks, theme/contrast audits, document-overflow checks, wide-code
++classification, and the existing ASCII illustration exception are unchanged.
++
++The read-only canon v0.25.6 accessibility lexicon matches its release-manifest
++SHA-256. [A11Y-11] **Keyboard walk**
++([WCAG 2.2 SC 2.1.1](https://www.w3.org/TR/WCAG22/#keyboard), canon
++`lexicons/accessibility.md#a11y-11`) informs retaining real keyboard proof;
++native verification of the corrected oracle is pending. [A11Y-01]
++**Contrast floors** (same canon lexicon, `#a11y-01`) has no new color-change
++trigger in this slice; existing 4.5:1 code/theme audits remain intact. Graph
++tools were unavailable, so discovery used exact source/evidence reads.
++
++Executed in this lane on 2026-10-11:
++
++- `npm test -- test/lib/llm-content.test.ts test/lib/design-tokens.test.ts test/components/projectImageCaptions.test.tsx` — 39 tests passed in 3 files;
++  its normal pretest generated tokens, image variants, and LLM content.
++- `npm run typecheck:test` — passed.
++- `npx --no-install eslint test/browser/article-flow.spec.ts` — passed.
++- `npm run test:browser -- --config test/browser/research.config.ts test/browser/article-flow.spec.ts test/browser/editorial-layout.spec.ts test/browser/workflow-graphics.spec.ts --list`
++  — 151 cases in 3 files, including all four order-book viewport cases;
++  listing only, not a native pass.
++- `git diff --check` — passed.
++
++Dependencies were installed with `npm ci --offline --ignore-scripts --cache .npm`
++using this lane's ignored copy of the supplied read-only donor cache. Native
++browser execution is reserved for the coordinator because the browser sandbox
++failure is already established; no browser launch was attempted here.
++
++Historical evidence remains red: the complete native run in
++`/home/gate/workbay-sandbox/research-evidence-2002d38-v2` has 151 cases,
++136 passes, 6 skips, and 9 unexpected failures, with all 42 capture cases
++passing and 84 PNGs. Its five deadline failures pass in the serial rerun; the
++four oracle failures above persist there. This correction does not claim a
++new native pass, erase that evidence, or replace the coordinator's independent
++final review.
+diff --git a/docs/research/research-review-01-qa-corrections.md b/docs/research/research-review-01-qa-corrections.md
+new file mode 100644
+--- /dev/null
++++ b/docs/research/research-review-01-qa-corrections.md
+@@ -0,0 +1,86 @@
++# Research Review 01 QA corrections: factual evidence record
++
++This is a factual QA record and capture-preparation change. It does not adjudicate or close findings F1–F5. The immutable native browser gate remains red.
++
++## Source and run binding
++
++The immutable evidence at `/home/gate/workbay-sandbox/research-evidence-0e0a981` records the original author source commit `0e0a981f74adf940ff62155dccbb4a5e1d3385b7` and source tree `885bd66a58976ed342a88bc6642ecd106d2bd220`. Its history-stripped native checkout head is `04ed8addeb18e467bf7ad236c330ad28c069e25c`. This lane's history-stripped base commit is `cf84c20e5aeaa01bc73f56e45f73c199bff3e77f`, with the same base tree `885bd66a58976ed342a88bc6642ecd106d2bd220`. The author commit, native checkout head, and lane base commit are distinct identities; the tree hash is the source-content binding.
++
++The prior immutable run at `/home/gate/workbay-sandbox/research-evidence-496b7e6` records author commit `496b7e6fe1ffdf28d6cba9287e478817011f5144` and tree `d13fb17cc350b205f23055ff6567770c89d93fe0`.
++
++For the newer evidence, `summary.json` records `npm run build -- --webpack` exit 0 in 40.468 s, `node test/support/verify-research-export.ts` exit 0 in 2.480 s, and this native browser command exit 1 in 305.451 s:
++
++```sh
++npm run test:browser -- --config test/browser/research.config.ts test/browser/article-flow.spec.ts test/browser/editorial-layout.spec.ts test/browser/workflow-graphics.spec.ts --workers 2 --retries 0 --reporter=json
++```
++
++The reporter JSON in `browser-stdout.log` contains 63 invocations across `mobile`, `tablet`, and `desktop`: **48 passed, 8 skipped, 7 unexpected (4 timed out and 3 failed), 0 flaky**. Reporter duration is 303,986 ms. The summary's browser exit code is 1. The older immutable reporter records 46 passed, 8 skipped, 6 unexpected, and 0 flaky.
++
++## Seven unexpected results in the newer native run
++
++All paths below are within `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results`. Each result has an `error-context.md` and `trace.zip` in its listed result directory. The named test source location is the declaration; the assertion or awaited operation column identifies the recorded failure site.
++
++| Profile and test | Recorded site and values | Actual reporter error |
++| --- | --- | --- |
++| `mobile` — `rotation-matrices retains complete evidence, source order and accessible diagrams in both themes` | `test/browser/article-flow.spec.ts:224:47`, called from line 224 in the image loop; test declaration line 179. The poll condition was `image.complete && image.naturalWidth > 0` and required `true`. No boolean result was recorded. | Test timeout at 30,000 ms; the final locator error says the target page/context/browser was closed while evaluating the image. Artifacts: `article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-mobile/{error-context.md,trace.zip}`. |
++| `tablet` — same rotation-matrices article test | `test/support/browser.ts:13:44` inside `auditBrowser`, called at `test/browser/article-flow.spec.ts:192`; test declaration line 179. The pending operation was `axe.run(document, ...)`; no axe result or violation values were returned. | Test timeout at 30,000 ms while awaiting `page.evaluate`. Artifacts: `article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-tablet/{error-context.md,trace.zip}`. |
++| `desktop` — same rotation-matrices article test | `test/support/browser.ts:13:44` inside `auditBrowser`, called at `test/browser/article-flow.spec.ts:192`; test declaration line 179. The pending operation was `axe.run(document, ...)`; no axe result or violation values were returned. | Test timeout at 30,000 ms while awaiting `page.evaluate`. Artifacts: `article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-desktop/{error-context.md,trace.zip}`. |
++| `desktop` — `seven research articles contain overflow at mobile and 200% text sizes` | `test/browser/article-flow.spec.ts:246:51` in `keyboardScrollToLineEnd`, called from line 317; test declaration line 301. The target resolved as visible `pre.nth(4)` with `data-code-columns="55"` and `data-code-layout="intrinsic"`; the operation waiting for an active-element boolean did not return one. | Test timeout at 30,000 ms during `locator.evaluate`. No later ArrowRight, End, or Home result was recorded for this target. The error-context DOM snapshot is the “3D Without Canvas or WebGL” article. Artifacts: `article-flow-seven-researc-9f792-t-mobile-and-200-text-sizes-desktop/{error-context.md,trace.zip}`. |
++| `mobile` — `work and research images share continuous inset or wide figure layouts` | `test/browser/editorial-layout.spec.ts:80:31`. The check required child `box.y >= pairBox.y - 1`; expected `>= 2344.40625`, received `186.40625`. | `toBeGreaterThanOrEqual` failed. Artifacts: `editorial-layout-work-and--a887c-nset-or-wide-figure-layouts-mobile/{error-context.md,trace.zip}`. |
++| `tablet` — same editorial-layout test | `test/browser/editorial-layout.spec.ts:80:31`. The check required child `box.y >= pairBox.y - 1`; expected `>= 1590.671875`, received `185.671875`. | `toBeGreaterThanOrEqual` failed. Artifacts: `editorial-layout-work-and--a887c-nset-or-wide-figure-layouts-tablet/{error-context.md,trace.zip}`. |
++| `desktop` — same editorial-layout test | `test/browser/editorial-layout.spec.ts:80:31`. The check required child `box.y >= pairBox.y - 1`; expected `>= 1791.3125`, received `186.3125`. | `toBeGreaterThanOrEqual` failed. Artifacts: `editorial-layout-work-and--a887c-nset-or-wide-figure-layouts-desktop/{error-context.md,trace.zip}`. |
++
++The timeout rows record where the browser run stopped; they do not establish why the operation did not finish. The three geometry rows record the test's comparison and returned values; they do not by themselves identify a product cause.
++
++## Earlier observations and later check status
++
++The original run's reporter and error contexts contain these observations:
++
++- **F1 / contrast:** The rotation-matrices code audit reported `#e36209` on `#ffffff` at **3.48:1** against the **4.5:1** expected floor for 27 `.hljs-built_in` tokens per rotation profile in mobile, tablet, and desktop (the original Max report's count). The tablet `agent-memory` audit reported four primary-navigation text nodes (`home`, `work`, `research`, `about`) at **1.2:1**, foreground `#202020`, background `#2c2e34`, with 4.5:1 expected.
++- **F2 / keyboard scrolling:** The original mobile `order-book` audit reported `scrollable-region-focusable` on `.language-json` and two TypeScript code regions: “Element should have focusable content” and “Element should be focusable”. That audit failed before later article checks in that invocation.
++- **F4 / theme observations:** The `agent-memory` 1.2:1 navigation readings above are the original settled audit's recorded values. In the newer reporter, the existing “theme switching preserves the preference and article across both directions and reload” case passed in all three profiles. That case calls the transient frame sampler and settled theme wait; its JSON result contains no sampled frame count or per-frame ratios. The rotation article produced light PNGs for all three profiles; the desktop and tablet cases later timed out in `auditBrowser`, while mobile timed out in the subsequent image-readiness loop. No full dark rotation PNG was produced in those three result directories.
++- **F5 / standalone versus paired layout:** The original desktop editorial test expected the first inset figure's CSS float to be `right` and received `none` at `test/browser/editorial-layout.spec.ts:45`; the original Max report identifies that rotation figure as a `DiagramPair` child, not a standalone inset. The newer test excludes figures inside `[data-diagram-pair]` from that standalone loop and checks pairs separately; its three current failures are the child/pair `y` comparisons listed above. The reporter does not adjudicate whether those values indicate a test or product defect.
++- **F3 / projection visuals:** The inspected newer full-page rotation captures show the article and its diagrams at full-page scale. The evidence does not include a dedicated element capture of the revised `rotation-f-projection.svg`. Full-page viewing is not sufficient to assess SVG clipping or small-label legibility.
++
++In the newer JSON, no unexpected result is a `color-contrast` violation. The complete `agent-memory` article case passed for all three profiles. The rotation mobile case progressed beyond its audit and code-contrast steps before the image-readiness timeout; desktop and tablet completed their light-theme screenshot path but did not return a dark-theme axe result. This records the executed steps, not an all-article/all-theme contrast clearance.
++
++The original five findings remain open for the orchestrator's review. This QA report neither resolves nor reclassifies them.
++
++## Native PNG and trace inspection
++
++I viewed all 15 PNGs present in the newer immutable evidence tree:
++
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-mobile/visual-search-workbench-process-mobile-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-mobile/visual-search-workbench-process-mobile-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-tablet/visual-search-workbench-process-tablet-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-tablet/visual-search-workbench-process-tablet-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-desktop/visual-search-workbench-process-desktop-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-visual-search-76ede-ble-diagrams-in-both-themes-desktop/visual-search-workbench-process-desktop-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-mobile/economics-of-agent-memory-mobile-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-mobile/economics-of-agent-memory-mobile-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-tablet/economics-of-agent-memory-tablet-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-tablet/economics-of-agent-memory-tablet-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-desktop/economics-of-agent-memory-desktop-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-economics-of--2809d-ble-diagrams-in-both-themes-desktop/economics-of-agent-memory-desktop-dark.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-mobile/rotation-matrices-mobile-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-tablet/rotation-matrices-tablet-light.png`
++- `/home/gate/workbay-sandbox/research-evidence-0e0a981/test-results/article-flow-rotation-matr-42202-ble-diagrams-in-both-themes-desktop/rotation-matrices-desktop-light.png`
++
++I also viewed the last embedded screencast JPEG in each of the seven failure traces, extracted for inspection as `/tmp/qa-rotation-mobile-last.jpeg`, `/tmp/qa-rotation-tablet-last.jpeg`, `/tmp/qa-rotation-desktop-last.jpeg`, `/tmp/qa-keyboard-last.jpeg`, `/tmp/qa-layout-last.jpeg`, `/tmp/qa-layout-tablet-last.jpeg`, and `/tmp/qa-layout-desktop-last.jpeg`. These are viewport frames around the recorded failure states, not new test results. The full-page PNGs are very tall and were rendered at reduced fit-to-view size (the desktop visual-search PNG is 1408 × 7036); code and SVG labels are too small at that display scale for a legibility conclusion.
++
++The newer immutable run contains no captures for four article slugs (`agent-memory`, `interrogating-agent-memory`, `heuristics-canon`, and `order-book`), no dark rotation captures, no pilot/viewer dialog captures, and no dedicated readable code or projection element captures.
++
++## Capture preparation in this lane
++
++Only the existing capture/attachment flow in `test/browser/article-flow.spec.ts` was extended. Before the unchanged per-theme checks, it now waits for body, custom, and Radix theme attributes to agree, waits for color/background transitions and two animation frames, decodes article images after scrolling them into view, then restores the page to the top. The existing article loop writes full-page `flow` captures for all seven `researchSlugs`, both themes, and each configured `mobile`, `tablet`, and `desktop` profile. It also writes a first-code-block viewport capture when a code block exists, each workflow-figure element, and the rotation projection image when present. The existing screen-reference test now captures the open image viewer in both themes for each profile after decoding its image.
++
++These are capture instructions for a future native browser run, not new native evidence. No article, style, component, assertion, threshold, keyboard sequence, source-order check, or overflow check was changed. The existing 200% test is a root-font-size/style resize at its configured viewport; it is not browser zoom.
++
++## Lane verification and remaining proof
++
++- `npm ci --ignore-scripts --offline --cache .task-state/npm-cache`: completed from the copied exact-lock donor cache; 1,060 packages installed. The donor cache was not modified.
++- `npm test -- test/lib/llm-content.test.ts test/lib/design-tokens.test.ts test/components/projectImageCaptions.test.tsx`: **39 tests passed in 3 files**.
++- `npm run typecheck:test`: passed (exit 0).
++- `git diff --check`: recorded after the final report edit.
++
++The native browser command above was read from immutable evidence and was not rerun in this sandbox. The new screenshot code has therefore not produced native captures yet. Native rerun and inspection of the resulting full seven-article/theme/profile matrix, viewer captures, code/projection element captures, accessibility checks, keyboard scrolling, pair geometry, and F3 SVG labels remain unverified. No browser pass or publication claim is made.
 diff --git a/docs/research/research-review-01-qa.md b/docs/research/research-review-01-qa.md
 new file mode 100644
 --- /dev/null
@@ -1985,6 +2639,71 @@ diff --git a/package.json b/package.json
          "test:watch": "vitest",
          "test:a11y": "vitest run test/a11y",
          "images": "node scripts/generate-image-variants.js",
+diff --git a/pages/_app.tsx b/pages/_app.tsx
+--- a/pages/_app.tsx
++++ b/pages/_app.tsx
+@@ -1,11 +1,11 @@
+-import { useEffect } from 'react'
++import { useEffect, useLayoutEffect } from 'react'
+ import type { ReactElement, ReactNode } from 'react'
+ import type { NextPage } from 'next'
+ import type { AppProps, NextWebVitalsMetric } from 'next/app'
+ import Head from "next/head";
+ import Script from 'next/script'
+ import { useRouter } from 'next/router'
+-import { Theme } from '@radix-ui/themes'
++import { Theme, useThemeContext } from '@radix-ui/themes'
+ import '@radix-ui/themes/styles.css'
+ import { HeaderDataProvider } from '../contexts/HeaderContext'
+ import { FooterDataProvider } from '../contexts/FooterContext'
+@@ -30,14 +30,22 @@ type AppPropsWithLayout = AppProps & {
+     Component: NextPageWithLayout
+ }
+ 
+-const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
+-    const router = useRouter()
+-    const { appearance } = useTheme()
++const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect
+ 
+-    /** Sync body data-theme for SCSS dark styles */
+-    useEffect(() => {
++// Radix's root applies its appearance prop through an effect. Derive custom
++// styles from that effective appearance so neither palette paints ahead of
++// the other, while preserving the mounted article and its interactive state.
++const ThemeSurface = ({ children }: { children: ReactNode }) => {
++    const { appearance } = useThemeContext()
++    useBeforePaint(() => {
+         document.body.setAttribute('data-theme', appearance)
+     }, [appearance])
++    return <div className={appearance === 'dark' ? 'theme--dark' : 'theme--default'} data-theme={appearance}>{children}</div>
++}
++
++const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
++    const router = useRouter()
++    const { appearance } = useTheme()
+ 
+     useEffect(() => {
+         trackPageView(router.asPath)
+@@ -56,7 +64,6 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
+     }, [router.asPath, router.events])
+ 
+     const getLayout = Component.getLayout ?? ((page) => page)
+-    const themeClass = appearance === 'dark' ? 'theme--dark' : 'theme--default'
+ 
+     return (
+         <Theme appearance={appearance} accentColor="cyan" grayColor="gray" radius="medium">
+@@ -113,9 +120,9 @@ const AppShell = ({ Component, pageProps }: AppPropsWithLayout) => {
+                     </>
+                 )}
+                 <ErrorBoundary>
+-                    <div className={themeClass}>
++                    <ThemeSurface>
+                         {getLayout(<Component {...pageProps} />)}
+-                    </div>
++                    </ThemeSurface>
+                 </ErrorBoundary>
+             </BreadcrumbProvider>
+             </FooterDataProvider>
 diff --git a/public/images/research/econ-scale.svg b/public/images/research/econ-scale.svg
 --- a/public/images/research/econ-scale.svg
 +++ b/public/images/research/econ-scale.svg
@@ -1997,6 +2716,51 @@ diff --git a/public/images/research/econ-scale.svg b/public/images/research/econ
 -<line x1="40" y1="120" x2="460" y2="120" stroke="#171920" stroke-width="1.5" fill="none"/><line x1="40" y1="114" x2="40" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="100" y1="114" x2="100" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="160" y1="114" x2="160" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="220" y1="114" x2="220" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="280" y1="114" x2="280" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="340" y1="114" x2="340" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="400" y1="114" x2="400" y2="126" stroke="#171920" stroke-width="1" fill="none"/><line x1="460" y1="114" x2="460" y2="126" stroke="#171920" stroke-width="1" fill="none"/><rect x="65.0" y="102" width="10" height="10" fill="#d9253f"/><line x1="70.0" y1="102" x2="70.0" y2="96" stroke="#d9253f" stroke-width="1" fill="none"/><text x="70.0" y="88" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#d9253f" text-anchor="middle">the packet</text><rect x="245.0" y="102" width="10" height="10" fill="#171920"/><line x1="250.0" y1="102" x2="250.0" y2="96" stroke="#171920" stroke-width="1" fill="none"/><text x="250.0" y="88" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#171920" text-anchor="middle">the median task</text><line x1="100" y1="140" x2="400" y2="140" stroke="#171920" stroke-width="1" fill="none"/><line x1="100" y1="134" x2="100" y2="140" stroke="#171920" stroke-width="1" fill="none"/><line x1="400" y1="134" x2="400" y2="140" stroke="#171920" stroke-width="1" fill="none"/><text x="250.0" y="160" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="12" fill="#464c5c" text-anchor="middle">tasks, smallest to largest</text><text x="40" y="190" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="11" fill="#464c5c" text-anchor="start">each step to the right is ten times the tokens</text>
 +<line x1="44.0" y1="124" x2="478.0" y2="124" stroke="#171920" stroke-width="1.5" fill="none"/><line x1="44.0" y1="118" x2="44.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="106.0" y1="118" x2="106.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="168.0" y1="118" x2="168.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="230.0" y1="118" x2="230.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="292.0" y1="118" x2="292.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="354.0" y1="118" x2="354.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="416.0" y1="118" x2="416.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><line x1="478.0" y1="118" x2="478.0" y2="130" stroke="#171920" stroke-width="1" fill="none"/><text x="44.0" y="154" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">100</text><text x="168.0" y="154" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">10k</text><text x="292.0" y="154" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">1M</text><text x="416.0" y="154" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">100M</text><rect x="68.58151779261908" y="104" width="10" height="10" fill="#d9253f"/><line x1="73.58151779261908" y1="104" x2="73.58151779261908" y2="64" stroke="#d9253f" stroke-width="1" fill="none"/><text x="73.58151779261908" y="56" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#d9253f" text-anchor="start">mean packet ≈300</text><rect x="254.58151779261908" y="104" width="10" height="10" fill="#171920"/><line x1="259.5815177926191" y1="104" x2="259.5815177926191" y2="90" stroke="#171920" stroke-width="1" fill="none"/><text x="259.5815177926191" y="82" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="middle">median task ≈300k</text><text x="44" y="190" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="start">Tokens · logarithmic scale · each tick ×10</text><text x="44" y="218" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#171920" text-anchor="start">Author-reported aggregates; not measured savings</text>
  </svg>
+diff --git a/public/images/research/rotation-f-projection.svg b/public/images/research/rotation-f-projection.svg
+--- a/public/images/research/rotation-f-projection.svg
++++ b/public/images/research/rotation-f-projection.svg
+@@ -1,5 +1,5 @@
+-<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -118.5 524.1 452.2" width="524" height="452" role="img">
+-<rect x="24.0" y="-118.5" width="524.1" height="452.2" fill="#ffffff"/>
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="24.0 -118.5 577.1 452.2" width="577" height="452" role="img">
++<rect x="24.0" y="-118.5" width="577.1" height="452.2" fill="#ffffff"/>
+ <defs>
+ <marker id="fp-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#171920"/></marker>
+ <marker id="fp-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d9253f"/></marker>
+@@ -11,7 +11,7 @@
+ <line x1="70.0" y1="250.0" x2="158.6" y2="301.1" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
+ <text x="168.6" y="315.1" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">y</text>
+ <line x1="70.0" y1="250.0" x2="526.1" y2="53.0" stroke="#171920" stroke-width="1.5" fill="none" marker-end="url(#fp-ink)"/>
+-<text x="510.1" y="49.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">z</text>
++<text x="534.1" y="49.0" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="15" fill="#171920" text-anchor="start">depth</text>
+ <clipPath id="fp-film"><polygon points="161.2,-30.7 323.7,63.0 323.7,311.6 161.2,217.9"/></clipPath>
+ <polygon points="161.2,-30.7 323.7,63.0 323.7,311.6 161.2,217.9" fill="#3c00f7" fill-opacity="0.10" stroke="#3c00f7" stroke-width="1.6"/>
+ <text x="242.4" y="-44.7" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="14" fill="#3c00f7" text-anchor="middle">screen</text>
+@@ -56,17 +56,17 @@
+ <line x1="255.9" y1="206.7" x2="252.4" y2="198.5" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+ <line x1="169.7" y1="244.0" x2="172.5" y2="250.4" stroke="#3c00f7" stroke-width="1.8" fill="none"/>
+ <text x="181.2" y="274.6" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="16" fill="#3c00f7" text-anchor="middle" font-style="italic">d</text>
+-<line x1="251.6" y1="196.7" x2="255.1" y2="204.9" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+-<line x1="255.1" y1="204.9" x2="370.1" y2="155.3" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+-<line x1="370.1" y1="155.3" x2="366.5" y2="147.0" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+-<line x1="312.6" y1="180.1" x2="315.4" y2="186.5" stroke="#464c5c" stroke-width="1.8" fill="none"/>
+-<text x="324.1" y="210.7" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="14" fill="#464c5c" text-anchor="middle" font-style="italic">d − z</text>
++<line x1="91.0" y1="298.7" x2="94.6" y2="306.9" stroke="#464c5c" stroke-width="1.8" fill="none"/>
++<line x1="94.6" y1="306.9" x2="382.0" y2="182.8" stroke="#464c5c" stroke-width="1.8" fill="none"/>
++<line x1="382.0" y1="182.8" x2="378.4" y2="174.5" stroke="#464c5c" stroke-width="1.8" fill="none"/>
++<line x1="238.3" y1="244.9" x2="241.1" y2="251.3" stroke="#464c5c" stroke-width="1.8" fill="none"/>
++<text x="249.8" y="275.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="14" fill="#464c5c" text-anchor="middle" font-style="italic">d − z</text>
+ <circle cx="70.0" cy="250.0" r="20" fill="#ffffff" stroke="none"/>
+ <path d="M70.0,250.0 L82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7 Z" fill="#ffffff" stroke="none"/>
+ <path d="M85.6,234.4 L70.0,250.0 L85.6,265.6" fill="none" stroke="#171920" stroke-width="1.8" stroke-linejoin="miter"/>
+ <path d="M82.7,237.3 A18.0,18.0 0 0 1 82.7,262.7" fill="none" stroke="#171920" stroke-width="1.8"/>
+-<text x="46.0" y="-86.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">perspective scale</tspan></text>
+-<text x="46.0" y="-68.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">= 1 / (</tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> − </tspan><tspan fill="#464c5c" font-style="italic">z</tspan><tspan fill="#171920">)</tspan></text>
++<text x="46.0" y="-86.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">screen-plane scale</tspan></text>
++<text x="46.0" y="-68.5" font-family="Cambria Math, 'STIX Two Math', 'Times New Roman', Times, serif" font-size="15" text-anchor="start"><tspan fill="#171920">= </tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#171920"> / (</tspan><tspan fill="#3c00f7" font-style="italic">d</tspan><tspan fill="#464c5c"> − </tspan><tspan fill="#464c5c" font-style="italic">z</tspan><tspan fill="#171920">)</tspan></text>
+ <line x1="46.0" y1="-46.5" x2="68.0" y2="-46.5" stroke="#0c8a3e" stroke-width="1.8" fill="none"/>
+ <text x="74.0" y="-42.5" font-family="ui-monospace, GeistMonoVariableVF, Helvetica, monospace" font-size="13" fill="#171920" text-anchor="start">near</text>
+ <line x1="46.0" y1="-28.5" x2="68.0" y2="-28.5" stroke="#0c8a3e" stroke-width="1.45" fill="none" stroke-dasharray="5 3"/>
 diff --git a/public/llms-full.txt b/public/llms-full.txt
 --- a/public/llms-full.txt
 +++ b/public/llms-full.txt
@@ -2377,7 +3141,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  A single rotation about an arbitrary axis $\hat{u}$ is the same idea in one step: the part of $\vec{v}$ along $\hat{u}$ is fixed; the rest spins in the plane of $\theta$.
  
  ```typescript
-@@ -1016,8 +1068,16 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
+@@ -1016,8 +1068,18 @@ $$\text{height on screen} = \text{height in space} \times \frac{d}{\text{depth}}
  
  Depth here is $d - z$. Farther away means a larger depth, so a smaller mark. In coordinates measured from the eye, the same horizontal construction is $B_x = A_x \cdot d / A_z$: $A_z$ then denotes eye-relative depth, rather than the demo's world-space $z$.
  
@@ -2387,14 +3151,16 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
 +
  The demo stores $d$ as `eyeDistance` and uses a normalized **perspective scale** $s = 1/(d - z)$. This omits the fixed numerator $d$ from the screen-plane formula above, giving a different overall scale while retaining the inverse-depth relationship. At the same eye distance, farther points land closer to the centre.
  
-+![An eye, a screen, and two same-size coral trees at different depths. Green rays run from the eye to each tree’s top and base. A stacked key marks solid as near and dashed as far. On the screen the near image is large and the far image is small and closer to the middle, both fully on the film. Braces mark d and d minus z.](/images/research/rotation-f-projection.svg?v=16)
++The next plate keeps the physical screen-plane construction: its scale is $d/(d - z)$. The long brace runs from the eye to the near object's depth, not from the screen to the object. Dividing the drawn screen coordinates by $d$ gives the demo's normalized coordinates.
 +
-+*Perspective scale = 1/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle.*
++![An eye at world z = d, a screen at world z = 0, and two same-size coral trees behind it at negative world z. The depth axis points away from the eye. Green rays intersect the physical screen: solid rays show the larger near image, dashed rays the smaller far image. A short brace marks eye-to-screen distance d; a long brace marks the whole eye-to-near-object depth d minus z. The equation is screen-plane scale = d/(d − z). Divide screen coordinates by d for the demo’s normalized scale.](/images/research/rotation-f-projection.svg?v=17)
++
++*Physical screen-plane scale = d/(d − z). Solid rays = near, dashed = far. Farther away → smaller on the screen, closer to the middle. Divide screen coordinates by d to get the demo’s normalized projection.*
 +
  ```typescript
  const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] => {
      const result: Vertex[] = []
-@@ -1033,7 +1093,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] =>
+@@ -1033,7 +1095,7 @@ const projectPoints = (vertexArray: Vertex[], eyeDistance: number): Vertex[] =>
      return result
  }
  ```
@@ -2403,7 +3169,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  Each frame, eight vertices become eight screen positions. Those positions render as the dots you see above.
  
-@@ -1065,7 +1125,7 @@ The browser decides how to composite the transformed elements. This experiment m
+@@ -1065,7 +1127,7 @@ The browser decides how to composite the transformed elements. This experiment m
  
  ## The complete code
  
@@ -2412,7 +3178,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  ```typescript
  interface Vertex {
-@@ -1175,13 +1235,15 @@ export const transformPoints = (
+@@ -1175,13 +1237,15 @@ export const transformPoints = (
  *Streaming top-of-book depth with WebSockets and React*
  Tags: React, TypeScript, WebSocket, Binance API, Data Visualization, Market Microstructure, Cryptocurrency
  Summary: An interactive guide to bids, asks, spread, and visible market depth using live Binance WebSocket data
@@ -2430,7 +3196,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  ## Bids and asks
  
-@@ -1217,7 +1279,7 @@ Displayed volume does not tell us how many traders placed the orders or whether
+@@ -1217,7 +1281,7 @@ Displayed volume does not tell us how many traders placed the orders or whether
  
  Every order in the book has a **size**, how many units someone wants to buy or sell at that price.
  
@@ -2439,7 +3205,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  ```json
  {
-@@ -1226,7 +1288,7 @@ For example, Binance might send:
+@@ -1226,7 +1290,7 @@ For example, Binance might send:
  }
  ```
  
@@ -2448,7 +3214,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  **Total volume** is just adding up all the sizes on each side:
  
-@@ -1250,7 +1312,7 @@ Subtract ask volume from bid volume, then divide by their combined volume.
+@@ -1250,7 +1314,7 @@ Subtract ask volume from bid volume, then divide by their combined volume.
  const orderImbalance = (totalBidVolume - totalAskVolume) / (totalBidVolume + totalAskVolume)
  ```
  
@@ -2457,7 +3223,7 @@ diff --git a/public/llms-full.txt b/public/llms-full.txt
  
  | Result | What It Means |
  |--------|---------------|
-@@ -1292,23 +1354,23 @@ Depth shows where displayed size is concentrated and which price levels an immed
+@@ -1292,23 +1356,23 @@ Depth shows where displayed size is concentrated and which price levels an immed
  
  ## How Trades Execute
  
@@ -2568,6 +3334,83 @@ diff --git a/scripts/generate-llm-content.js b/scripts/generate-llm-content.js
 +    fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), generateSitemap(projects, research))
 +    console.log(`Generated sitemap.xml (${STATIC_PAGES.length + projects.length + research.length} URLs)`)
 +}
+diff --git a/scripts/generate-rotation-diagrams.py b/scripts/generate-rotation-diagrams.py
+--- a/scripts/generate-rotation-diagrams.py
++++ b/scripts/generate-rotation-diagrams.py
+@@ -259,6 +259,7 @@ class Axes:
+     reach: tuple = (1.35, 1.35, 1.25)
+     highlight: str | None = None
+     prefix: str = "ax"
++    z_label: str = "z"
+ 
+     def draw(self, cam: Camera) -> tuple[list[str], list]:
+         o = cam.project((0, 0, 0) if cam.kind != "flat" else (0, 0))
+@@ -281,7 +282,11 @@ class Axes:
+                 dy = 14 if cam.kind == "pinhole" else 6
+                 parts.append(_text(tip[0] + 10, tip[1] + dy, "y", size=15, fill=color))
+             else:
+-                parts.append(_text(tip[0] - 16, tip[1] - 4, "z", size=15, fill=color))
++                if self.z_label == "z":
++                    parts.append(_text(tip[0] - 16, tip[1] - 4, "z", size=15, fill=color))
++                else:
++                    parts.append(_text(tip[0] + 8, tip[1] - 4, self.z_label, size=15, fill=color))
++                    pts.append((tip[0] + 8 + len(self.z_label) * 9, tip[1] - 20))
+             pts.append(tip)
+         return parts, pts
+ 
+@@ -1004,9 +1009,12 @@ def f_projection() -> str:
+     d, hgt = 1.38, 0.78
+     # Opposite sides so the two images do not nest; y_near kept inside the film.
+     y_near, y_far = 0.56, -0.60
+-    z_near, z_far = 0.92, 2.05
++    # Article world convention: eye at z=d, screen at z=0, objects
++    # behind the screen at negative world z. The drawing's third component
++    # is eye-relative depth d-z, not world z or the screen-to-object gap.
++    world_z_near, world_z_far = -0.92, -2.05
+     eye = (0.0, 0.0, 0.0)
+-    zn, zf = d + z_near, d + z_far
++    zn, zf = d - world_z_near, d - world_z_far
+     near_top, near_bot = (hgt, y_near, zn), (0.0, y_near, zn)
+     far_top, far_bot = (hgt, y_far, zf), (0.0, y_far, zf)
+     sn_top, sn_bot = _pin(near_top, d), _pin(near_bot, d)
+@@ -1016,7 +1024,7 @@ def f_projection() -> str:
+     screen = Screen(d, hx=1.22, hy=1.10, clip_id="fp-film")
+     scene = Scene(cam, "fp")
+     scene.add(
+-        Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp"),
++        Axes(reach=(1.32, 1.20, zf + 0.22), prefix="fp", z_label="depth"),
+         screen,
+         Tree(far_top, far_bot, CORAL),
+         Tree(near_top, near_bot, CORAL),
+@@ -1032,7 +1040,7 @@ def f_projection() -> str:
+         Dot(sn_top, INK, 3.0),
+         Dot(sn_bot, INK, 3.0),
+         Brace(eye, plane, "d", BLUE, offset=34, size=16),
+-        Brace(plane, n_z, "d − z", INK2, offset=32, math=True),
++        Brace(eye, n_z, "d − z", INK2, offset=62, math=True),
+         Eye(),
+     )
+     parts, pts = scene.gather()
+@@ -1043,7 +1051,7 @@ def f_projection() -> str:
+         _eq(
+             eq[0],
+             eq[1] - 18,
+-            [("perspective scale", INK)],
++            [("screen-plane scale", INK)],
+             size=15,
+         )
+     )
+@@ -1052,7 +1060,9 @@ def f_projection() -> str:
+             eq[0],
+             eq[1],
+             [
+-                ("= 1 / (", INK),
++                ("= ", INK),
++                ("d", BLUE, True),
++                (" / (", INK),
+                 ("d", BLUE, True),
+                 (" − ", INK2),
+                 ("z", INK2, True),
 diff --git a/scripts/lib/strip-mdx-components.js b/scripts/lib/strip-mdx-components.js
 --- a/scripts/lib/strip-mdx-components.js
 +++ b/scripts/lib/strip-mdx-components.js
@@ -2589,16 +3432,122 @@ diff --git a/scripts/lib/strip-mdx-components.js b/scripts/lib/strip-mdx-compone
          // The provider supplies runtime state, but its children are the actual
          // explanation. Preserve them in the text export.
          .replace(/<\/?OrderBookProvider\b[^>]*>/g, '')
+diff --git a/styles/global.scss b/styles/global.scss
+--- a/styles/global.scss
++++ b/styles/global.scss
+@@ -5,7 +5,6 @@
+ 
+ body {
+     background-color: $paper;
+-    transition: background-color 0.3s;
+     text-wrap: pretty;
+ }
+ 
+@@ -29,7 +28,8 @@ body[data-theme='dark'] {
+ 
+ a {
+     text-decoration: none;
+-    transition: color 200ms $ease-decel;
++    // Theme ink and its ground change together; interpolation can cross
++    // below the contrast floor even when both endpoint palettes pass.
+ }
+ 
+ // Prose links remain identifiable without depending on color differences.
 diff --git a/test/browser/article-flow.spec.ts b/test/browser/article-flow.spec.ts
 --- a/test/browser/article-flow.spec.ts
 +++ b/test/browser/article-flow.spec.ts
-@@ -1,3 +1,5 @@
+@@ -1,5 +1,7 @@
+-import { expect, test, type Locator } from '@playwright/test'
+-import { auditBrowser, changeTheme } from '../support/browser'
 +import fs from 'node:fs'
 +import path from 'node:path'
- import { expect, test, type Locator } from '@playwright/test'
- import { auditBrowser, changeTheme } from '../support/browser'
++import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test'
++import { auditBrowser, changeTheme, expectCodeContrast, expectImagesReady, primaryNavigation, themeButton } from '../support/browser'
  
-@@ -150,3 +152,103 @@ test('screen reference retains labelled schematics and image inspection in both
+ const route = '/research/visual-search-workbench-screen-reference/'
+ 
+@@ -13,6 +15,40 @@ async function firstLine(paragraph: Locator) {
+     })
+ }
+ 
++async function captureArticleEvidence(page: Page, body: Locator, testInfo: TestInfo, slug: string, appearance: 'light' | 'dark') {
++    await page.waitForFunction(theme => {
++        const radix = document.querySelector('.radix-themes[data-is-root-theme]')
++        const custom = document.querySelector(theme === 'dark' ? '.theme--dark' : '.theme--default')
++        return document.body.getAttribute('data-theme') === theme && radix?.classList.contains(theme) && custom?.getAttribute('data-theme') === theme
++    }, appearance)
++    await page.evaluate(async () => {
++        await Promise.all(document.getAnimations().filter(animation =>
++            animation instanceof CSSTransition && /color|background/.test(animation.transitionProperty)
++        ).map(animation => animation.finished.catch(() => {})))
++        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
++    })
++
++    await expectImagesReady(body.locator('img'))
++    await page.evaluate(() => window.scrollTo(0, 0))
++
++    const profile = testInfo.project.name
++    await page.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-flow-full.png`), fullPage: true })
++
++    const firstCode = body.locator('pre').first()
++    if (await firstCode.count()) {
++        await firstCode.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-code-first-viewport.png`), animations: 'disabled' })
++    }
++    for (const [index, workflow] of (await body.locator('figure[data-workflow]').all()).entries()) {
++        await workflow.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-workflow-${index + 1}.png`), animations: 'disabled' })
++    }
++    if (slug === 'rotation-matrices') {
++        const projection = body.locator('img[src*="rotation-f-projection"]')
++        await expect(projection).toHaveCount(1)
++        await projection.screenshot({ path: testInfo.outputPath(`${slug}-${profile}-${appearance}-projection.png`), animations: 'disabled' })
++    }
++    await page.evaluate(() => window.scrollTo(0, 0))
++}
++
+ test('screen reference fits evidence to its content and flows copy beside it', async ({ page }, testInfo) => {
+     test.skip(testInfo.project.name !== 'desktop', 'Checks desktop flow at several actual article widths')
+     const diagramWidths: number[] = []
+@@ -45,8 +81,7 @@ test('screen reference fits evidence to its content and flows copy beside it', a
+         await expect(figures).toHaveCount(2)
+         for (const figure of await figures.all()) {
+             const image = figure.locator('img')
+-            await image.scrollIntoViewIfNeeded()
+-            await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
++            await expectImagesReady(image)
+             const figureBox = (await figure.boundingBox())!
+             const imageBox = (await image.boundingBox())!
+             expect(figureBox.width, 'caption does not reserve an empty image gutter').toBeCloseTo(imageBox.width, 0)
+@@ -96,8 +131,7 @@ test('query explanation and storyboard share a row above a full-width screenshot
+         const body = page.getByRole('article').locator('[data-article-body]')
+         const section = body.locator('section').filter({ has: page.getByRole('heading', { name: '2. Make a result the next query', exact: true }) })
+         const image = section.locator('figure img')
+-        await image.scrollIntoViewIfNeeded()
+-        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
++        await expectImagesReady(image)
+         const diagram = (await section.locator('figure[data-workflow="similar"]').boundingBox())!
+         const copy = await firstLine(section.locator('p').first())
+         const lastParagraph = (await section.locator('p').last().boundingBox())!
+@@ -130,9 +164,9 @@ test('screen reference stacks at narrow widths and enlarged text while retaining
+     }
+ })
+ 
+-test('screen reference retains labelled schematics and image inspection in both themes', async ({ page }) => {
++test('screen reference retains labelled schematics and image inspection in both themes', async ({ page }, testInfo) => {
+     await page.goto(route)
+-    for (const theme of ['light', 'dark']) {
++    for (const theme of ['light', 'dark'] as const) {
+         if (theme === 'dark') await changeTheme(page)
+         await auditBrowser(page)
+         const body = page.getByRole('article').locator('[data-article-body]')
+@@ -145,8 +179,241 @@ test('screen reference retains labelled schematics and image inspection in both
+         await opener.focus()
+         await page.keyboard.press('Enter')
+         await expect(page.getByRole('dialog')).toBeVisible()
++        const dialog = page.getByRole('dialog')
++        await dialog.locator('img').evaluate(image => (image as HTMLImageElement).decode())
++        await dialog.screenshot({ path: testInfo.outputPath(`visual-search-screen-reference-${testInfo.project.name}-${theme}-viewer.png`), animations: 'disabled' })
+         await page.keyboard.press('Escape')
+         await expect(page.getByRole('dialog')).toHaveCount(0)
          await expect(opener).toBeFocused()
      }
  })
@@ -2608,25 +3557,46 @@ diff --git a/test/browser/article-flow.spec.ts b/test/browser/article-flow.spec.
 +    'economics-of-agent-memory', 'heuristics-canon', 'rotation-matrices', 'order-book',
 +]
 +
++test('theme switching preserves the preference and article across both directions and reload', async ({ page }) => {
++    await page.goto('/research/rotation-matrices/')
++    const body = page.getByRole('article').locator('[data-article-body]')
++    const originalCode = await body.locator('pre').allTextContents()
++    for (const appearance of ['dark', 'light', 'dark'] as const) {
++        await changeTheme(page)
++        expect(await page.evaluate(() => localStorage.getItem('theme-preference'))).toBe(appearance)
++        expect(await body.locator('pre').allTextContents()).toEqual(originalCode)
++    }
++    await page.reload()
++    await expect(themeButton(page)).toHaveAttribute('aria-label', 'Switch to light mode')
++    await auditBrowser(page)
++    await expectCodeContrast(body.locator('pre code'))
++    await changeTheme(page)
++    expect(await page.evaluate(() => localStorage.getItem('theme-preference'))).toBe('light')
++})
++
 +for (const slug of researchSlugs) {
-+    test(`${slug} retains complete evidence, source order and accessible diagrams in both themes`, async ({ page }, testInfo) => {
-+        // Avoid depending on a successful external market connection.
-+        await page.routeWebSocket(/binance/, socket => socket.close())
-+        await page.goto(`/research/${slug}/`)
-+        await page.evaluate(() => document.fonts.ready)
-+        const body = page.getByRole('article').locator('[data-article-body]')
-+        await expect(body).toHaveAttribute('data-article-layout', 'flow')
-+        const source = fs.readFileSync(path.join(process.cwd(), 'content/research', slug + '.mdx'), 'utf8')
-+        const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
-+        const blocks = body.locator('pre')
-+        await expect(blocks).toHaveCount(fences.length)
-+        for (const theme of ['light', 'dark']) {
++    for (const theme of ['light', 'dark'] as const) {
++        test(`${slug} retains complete evidence, source order and accessible diagrams in ${theme}`, async ({ page }) => {
++            // Avoid depending on a successful external market connection.
++            await page.routeWebSocket(/binance/, socket => socket.close())
++            await page.goto(`/research/${slug}/`)
++            await page.evaluate(() => document.fonts.ready)
++            const body = page.getByRole('article').locator('[data-article-body]')
++            await expect(body).toHaveAttribute('data-article-layout', 'flow')
++            const source = fs.readFileSync(path.join(process.cwd(), 'content/research', slug + '.mdx'), 'utf8')
++            const fences = [...source.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map(match => match[1])
++            const blocks = body.locator('pre')
++            await expect(blocks).toHaveCount(fences.length)
 +            if (theme === 'dark') await changeTheme(page)
++            await expectImagesReady(body.locator('img'))
 +            await auditBrowser(page)
++            await expectCodeContrast(blocks.locator('code'))
 +            for (const [index, block] of (await blocks.all()).entries()) {
 +                expect(await block.textContent(), 'all code bytes survive highlighting in source order').toBe(fences[index])
 +                await expect(block).toHaveCSS('white-space', 'pre')
 +                await expect(block.locator('code')).toHaveCSS('white-space', 'pre')
++                await expect(block.locator('code')).toHaveCSS('overflow-x', 'visible')
++                await expect(block.locator('code')).toHaveCSS('overflow-y', 'visible')
 +                await expect(block).toHaveCSS('overflow-x', 'auto')
 +                const columns = Number(await block.getAttribute('data-code-columns'))
 +                if (columns >= 68) {
@@ -2650,8 +3620,6 @@ diff --git a/test/browser/article-flow.spec.ts b/test/browser/article-flow.spec.
 +            }
 +            for (const figure of await body.locator('figure[data-layout]').all()) {
 +                const image = figure.locator('img')
-+                await image.scrollIntoViewIfNeeded()
-+                await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
 +                await expect(image).toHaveAttribute('alt', /\S/)
 +                await expect(figure.locator('figcaption')).toContainText(/\S/)
 +                const box = (await image.boundingBox())!
@@ -2659,33 +3627,144 @@ diff --git a/test/browser/article-flow.spec.ts b/test/browser/article-flow.spec.
 +                expect(box.width / box.height).toBeCloseTo(ratio, 1)
 +            }
 +            expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
-+            if (['visual-search-workbench-process', 'rotation-matrices', 'economics-of-agent-memory'].includes(slug)) {
-+                await page.screenshot({ path: testInfo.outputPath(`${slug}-${testInfo.project.name}-${theme}.png`), fullPage: true })
-+            }
-+        }
-+    })
++        })
++        test(`${slug} captures full article and detail evidence in ${theme}`, async ({ page }, testInfo) => {
++            await page.routeWebSocket(/binance/, socket => socket.close())
++            await page.goto(`/research/${slug}/`)
++            await page.evaluate(() => document.fonts.ready)
++            if (theme === 'dark') await changeTheme(page)
++            const body = page.getByRole('article').locator('[data-article-body]')
++            await captureArticleEvidence(page, body, testInfo, slug, theme)
++        })
++    }
 +}
 +
-+test('seven research articles contain overflow at mobile and 200% text sizes', async ({ page }, testInfo) => {
-+    test.skip(testInfo.project.name !== 'desktop', 'One explicit viewport matrix covers all seven pages')
-+    for (const slug of researchSlugs) {
-+        for (const [width, enlarged] of [[320, false], [768, false], [1440, true]] as const) {
++async function keyboardScrollToLineEnd(block: Locator) {
++    const page = block.page()
++    await block.scrollIntoViewIfNeeded()
++    const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
++    expect(maximum, 'this check must exercise an actual overflowing code region').toBeGreaterThan(1)
++    // Enter through the document's Tab sequence, including image buttons.
++    for (let tabs = 0; tabs < 100 && !await block.evaluate(element => element === document.activeElement); tabs++) {
++        await page.keyboard.press('Tab')
++    }
++    await expect(block).toBeFocused()
++    await page.keyboard.press('Home')
++    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
++    await page.keyboard.press('ArrowRight')
++    expect(await block.evaluate(element => element.scrollLeft), 'real ArrowRight immediately scrolls the focused pre').toBeGreaterThan(0)
++    await page.keyboard.press('ArrowLeft')
++    expect(await block.evaluate(element => element.scrollLeft), 'real ArrowLeft immediately reverses the discrete step').toBe(0)
++    await page.keyboard.press('ArrowRight')
++    expect(await block.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
++    await page.keyboard.press('End')
++    expect(await block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft), 'End immediately reaches the whole long-line extent').toBeLessThanOrEqual(1)
++    const lineEnds = await block.locator('code').evaluate(code => {
++        const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
++        const nodes: Text[] = []
++        for (let node = walker.nextNode(); node; node = walker.nextNode()) nodes.push(node as Text)
++        const text = code.textContent!
++        const offsets = [...text.matchAll(/\S(?=\s*(?:\n|$))/g)].map(match => match.index)
++        const ends = offsets.map(offset => {
++            let remaining = offset
++            const node = nodes.find(node => {
++                if (remaining < node.length) return true
++                remaining -= node.length
++                return false
++            })!
++            const range = document.createRange()
++            range.setStart(node, remaining)
++            range.setEnd(node, remaining + 1)
++            const rect = range.getBoundingClientRect()
++            return { left: rect.left, right: rect.right }
++        })
++        const pre = code.closest('pre')!
++        const region = pre.getBoundingClientRect()
++        return { ends, viewportLeft: region.left + pre.clientLeft, viewportRight: region.left + pre.clientLeft + pre.clientWidth }
++    })
++    const rightmost = lineEnds.ends.reduce((a, b) => b.right > a.right ? b : a)
++    expect(rightmost.left, 'the terminal character of the longest rendered line is visible at End').toBeGreaterThanOrEqual(lineEnds.viewportLeft - 1)
++    expect(rightmost.right).toBeLessThanOrEqual(lineEnds.viewportRight + 1)
++    // Home exposes the beginning, not necessarily the end of the final line.
++    await page.keyboard.press('Home')
++    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
++    const sourceGlyph = (edge: 'first' | 'last') => block.locator('code').evaluate((code, edge) => {
++        const pre = code.closest('pre')!
++        const range = document.createRange()
++        const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
++        let target: Text | null = null
++        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
++            if (!node.textContent?.trim()) continue
++            target = node as Text
++            if (edge === 'first') break
++        }
++        const text = target!.textContent!
++        const offset = edge === 'first' ? text.length - text.trimStart().length : text.trimEnd().length - 1
++        range.setStart(target!, offset)
++        range.setEnd(target!, offset + 1)
++        const rect = range.getBoundingClientRect()
++        const region = pre.getBoundingClientRect()
++        return { left: rect.left, right: rect.right, viewportLeft: region.left + pre.clientLeft, viewportRight: region.left + pre.clientLeft + pre.clientWidth }
++    }, edge)
++    const beginning = await sourceGlyph('first')
++    expect(beginning.left, 'the beginning-of-code glyph is visible at Home').toBeGreaterThanOrEqual(beginning.viewportLeft - 1)
++    expect(beginning.right).toBeLessThanOrEqual(beginning.viewportRight + 1)
++
++    let finalGlyph = await sourceGlyph('last')
++    const visible = (glyph: typeof finalGlyph) => glyph.left >= glyph.viewportLeft - 1 && glyph.right <= glyph.viewportRight + 1
++    if (!visible(finalGlyph)) {
++        await page.keyboard.press('End')
++        expect(await block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft)).toBeLessThanOrEqual(1)
++        finalGlyph = await sourceGlyph('last')
++    }
++    // A shorter final line can fall left of the viewport at End. Reach it
++    // using real, bounded discrete arrow input, measuring after each command.
++    for (let arrows = 0; arrows < 100 && !visible(finalGlyph); arrows++) {
++        await page.keyboard.press(finalGlyph.left < finalGlyph.viewportLeft - 1 ? 'ArrowLeft' : 'ArrowRight')
++        finalGlyph = await sourceGlyph('last')
++    }
++    await expect(block).toBeFocused()
++    expect(finalGlyph.left, 'the final source character is reachable by keyboard').toBeGreaterThanOrEqual(finalGlyph.viewportLeft - 1)
++    expect(finalGlyph.right).toBeLessThanOrEqual(finalGlyph.viewportRight + 1)
++    // Return to the beginning so evidence captures do not retain a clipped line.
++    await page.keyboard.press('Home')
++    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
++}
++
++for (const slug of researchSlugs) {
++    for (const [width, enlarged] of [[320, false], [768, false], [320, true], [1440, true]] as const) {
++        // research.config runs these explicit viewports once, in desktop.
++        test(`${slug} contains code overflow at ${width}px and ${enlarged ? '200%' : '100%'} root-font text resize @viewport-matrix`, async ({ page }) => {
++            await page.routeWebSocket(/binance/, socket => socket.close())
 +            await page.setViewportSize({ width, height: 1000 })
 +            await page.goto(`/research/${slug}/`)
 +            if (enlarged) await page.addStyleTag({ content: 'html { font-size: 200%; }' })
++            await page.evaluate(() => document.fonts.ready)
 +            const body = page.getByRole('article').locator('[data-article-body]')
++            await primaryNavigation(page).focus()
++            let overflowing = 0
++            let intrinsicOverflowing = 0
 +            for (const block of await body.locator('pre').all()) {
 +                await expect(block).toHaveCSS('float', 'none')
-+                const scroll = await block.evaluate(element => {
-+                    element.scrollLeft = element.scrollWidth
-+                    return { end: element.scrollLeft, maximum: element.scrollWidth - element.clientWidth }
-+                })
-+                expect(scroll.end).toBeCloseTo(scroll.maximum, 0)
++                await expect(block.locator('code')).toHaveCSS('overflow-x', 'visible')
++                await expect(block.locator('code')).toHaveCSS('overflow-y', 'visible')
++                const maximum = await block.evaluate(element => element.scrollWidth - element.clientWidth)
++                // Labelled ASCII illustrations have a prose alternative and
++                // intentionally omit code tab stops; every code scroller must work.
++                const illustration = await block.evaluate(element => Boolean(element.closest('figure[role="img"]')))
++                if (maximum > 1 && !illustration) {
++                    await expect(block).toHaveAttribute('tabindex', '0')
++                    await keyboardScrollToLineEnd(block)
++                    overflowing++
++                    if (await block.getAttribute('data-code-layout') === 'intrinsic') intrinsicOverflowing++
++                }
 +            }
++            if (width === 320 && ['rotation-matrices', 'order-book'].includes(slug)) expect(overflowing, `${slug}: keyboard proof includes an overflowing region, enlarged=${enlarged}`).toBeGreaterThan(0)
++            if (width === 320 && slug === 'order-book') expect(intrinsicOverflowing, 'normally short code still scrolls when the viewport is narrow').toBeGreaterThan(0)
 +            expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${slug}, ${width}px, enlarged=${enlarged}`).toBeLessThanOrEqual(1)
-+        }
++        })
 +    }
-+})
++}
 +
 +test('short market payload takes intrinsic width and leaves usable copy beside it', async ({ page }, testInfo) => {
 +    test.skip(testInfo.project.name !== 'desktop', 'Desktop intrinsic width check')
@@ -2702,11 +3781,105 @@ diff --git a/test/browser/article-flow.spec.ts b/test/browser/article-flow.spec.
 +    expect(copy.y).toBeLessThan(box.y + box.height)
 +    expect(copy.x + copy.width).toBeLessThan(box.x)
 +})
+diff --git a/test/browser/editorial-layout.spec.ts b/test/browser/editorial-layout.spec.ts
+--- a/test/browser/editorial-layout.spec.ts
++++ b/test/browser/editorial-layout.spec.ts
+@@ -1,7 +1,9 @@
++import fs from 'node:fs'
+ import { expect, test } from '@playwright/test'
+ import tokens from '../../design-tokens/portfolio.tokens.json'
+ import { articles } from '../support/content'
+ import { buildItemPath } from '../../lib/routes'
++import { expectImagesReady } from '../support/browser'
+ 
+ test('article captions share the masthead treatment without controls', async ({ page }) => {
+     await page.goto('/projects/workbay/')
+@@ -24,7 +26,7 @@ test('article captions share the masthead treatment without controls', async ({
+ })
+ 
+ test('work and research images share continuous inset or wide figure layouts', async ({ page }) => {
+-    for (const { section, slug } of articles) {
++    for (const { section, slug, file } of articles) {
+         await page.goto(buildItemPath(section, slug))
+         await page.evaluate(() => document.fonts.ready)
+         const body = page.getByRole('article').locator('[data-article-body]')
+@@ -35,16 +37,69 @@ test('work and research images share continuous inset or wide figure layouts', a
+         for (const image of await body.locator('img').all()) {
+             expect(await image.evaluate(element => element.closest('figure')?.getAttribute('data-layout')), `${section}/${slug}: image uses shared figure`).toMatch(/^(inset|wide)$/)
+         }
+-        for (const [index, figure] of (await body.locator('figure[data-layout="inset"]').all()).entries()) {
++        // A pair owns its children's layout. Only standalone insets float.
++        const figures = await body.locator('figure[data-layout="inset"]').all()
++        let standaloneIndex = 0
++        for (const figure of figures) {
++            if (await figure.evaluate(element => Boolean(element.closest('[data-diagram-pair]')))) continue
+             if (contentFlow) {
+                 expect((await figure.boundingBox())!.width).toBeLessThanOrEqual(canvas.width)
+             } else {
+                 expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
+             }
+-            const side = contentFlow ? (await figure.getAttribute('data-side') === 'left' ? 'left' : 'right') : (index % 2 === 0 ? 'right' : 'left')
++            const side = contentFlow ? (await figure.getAttribute('data-side') === 'left' ? 'left' : 'right') : (standaloneIndex % 2 === 0 ? 'right' : 'left')
++            standaloneIndex++
+             await expect(figure).toHaveCSS('float', wraps ? side : 'none')
+             await expect(figure.locator('figcaption')).toContainText(/\S/)
+         }
++        const expectedPairs = [...fs.readFileSync(file, 'utf8').matchAll(/<DiagramPair>([\s\S]*?)<\/DiagramPair>/g)]
++            .map(match => [...match[1].matchAll(/\balt="([^"]*)"/g)].map(image => image[1]))
++        const pairs = body.locator('[data-diagram-pair]')
++        await expect(pairs).toHaveCount(expectedPairs.length)
++        for (const [index, pair] of (await pairs.all()).entries()) {
++            await expect(pair).toHaveCSS('display', 'flex')
++            await expect(pair).toHaveCSS('flex-wrap', 'wrap')
++            const children = pair.locator(':scope > figure')
++            expect(await children.locator('img').evaluateAll(images => images.map(image => image.getAttribute('alt'))), 'pair keeps authored source order').toEqual(expectedPairs[index])
++            for (const child of await children.all()) {
++                await expect(child).toHaveCSS('float', 'none')
++                await expect(child.locator('figcaption')).toContainText(/\S/)
++            }
++            await expectImagesReady(children.locator('img'))
++            // Sample after every lazy image is decoded, in one viewport frame.
++            // Scrolling a child between parent/child reads makes parentY stale.
++            const { pairBox, samples, columnGap, rowGap } = await pair.evaluate(element => ({
++                pairBox: element.getBoundingClientRect().toJSON(),
++                columnGap: Number.parseFloat(getComputedStyle(element).columnGap),
++                rowGap: Number.parseFloat(getComputedStyle(element).rowGap),
++                samples: [...element.querySelectorAll(':scope > figure')].map(child => {
++                    const image = child.querySelector('img')!
++                    return {
++                        box: child.getBoundingClientRect().toJSON(),
++                        imageBox: image.getBoundingClientRect().toJSON(),
++                        native: { width: image.naturalWidth, height: image.naturalHeight },
++                    }
++                }),
++            }))
++            for (const { box, imageBox, native } of samples) {
++                expect(imageBox.width, 'diagram labels retain their intrinsic reading size').toBeCloseTo(native.width, 0)
++                expect(imageBox.width / imageBox.height).toBeCloseTo(native.width / native.height, 2)
++                expect(box.width).toBeCloseTo(Math.min(native.width, pairBox.width), 0)
++                expect(box.x).toBeGreaterThanOrEqual(pairBox.x - 1)
++                expect(box.x + box.width).toBeLessThanOrEqual(pairBox.x + pairBox.width + 1)
++                expect(box.y).toBeGreaterThanOrEqual(pairBox.y - 1)
++                expect(box.y + box.height).toBeLessThanOrEqual(pairBox.y + pairBox.height + 1)
++            }
++            const boxes = samples.map(sample => sample.box)
++            const nativeWidths = samples.map(sample => sample.native.width)
++            expect(boxes).toHaveLength(2)
++            if (nativeWidths[0] + nativeWidths[1] + columnGap <= pairBox.width + 1) {
++                expect(boxes[1].y, 'figures share a row when their intrinsic sizes fit').toBeCloseTo(boxes[0].y, 0)
++                expect(boxes[1].x).toBeGreaterThanOrEqual(boxes[0].x + boxes[0].width + columnGap - 1)
++            } else {
++                expect(boxes[1].y, 'figures wrap in source order when their intrinsic sizes do not fit').toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height + rowGap - 1)
++            }
++        }
+         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${section}/${slug}: no page overflow`).toBeLessThanOrEqual(1)
+     }
+ })
 diff --git a/test/browser/research.config.ts b/test/browser/research.config.ts
 new file mode 100644
 --- /dev/null
 +++ b/test/browser/research.config.ts
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,24 @@
 +import { defineConfig } from '@playwright/test'
 +import path from 'node:path'
 +import base from '../../playwright.config'
@@ -2716,6 +3889,11 @@ new file mode 100644
 +export default defineConfig({
 +    ...base,
 +    testDir: __dirname,
++    // Each explicit viewport/text-size case is independent of profile width.
++    // Run the full matrix once without multiplying intentional skips.
++    projects: base.projects?.map(project => project.name === 'desktop'
++        ? project
++        : { ...project, grepInvert: /@viewport-matrix/ }),
 +    webServer: base.webServer && !Array.isArray(base.webServer)
 +        ? { ...base.webServer, cwd: path.resolve(__dirname, '../..') }
 +        : base.webServer,
@@ -2735,7 +3913,7 @@ diff --git a/test/components/projectImageCaptions.test.tsx b/test/components/pro
  import { render, within } from '@testing-library/react'
  import fs from 'node:fs'
  import os from 'node:os'
-@@ -75,3 +76,62 @@ describe('image metadata through the real MDX pipeline', () => {
+@@ -75,3 +76,101 @@ describe('image metadata through the real MDX pipeline', () => {
          expect(within(container).getByRole('link', { name: link.label })).toHaveAttribute('href', link.url)
      })
  })
@@ -2798,6 +3976,45 @@ diff --git a/test/components/projectImageCaptions.test.tsx b/test/components/pro
 +        }
 +    })
 +})
++
++it('projection evidence matches independent near and far physical-plane calculations', () => {
++    const svg = fs.readFileSync(path.join(process.cwd(), 'public/images/research/rotation-f-projection.svg'), 'utf8')
++    const plate = new DOMParser().parseFromString(svg, 'image/svg+xml')
++    // This is the plate's specified scene, evaluated without the generator or
++    // demo projection module: eye world z=d, screen z=0, depth=d-worldZ.
++    const d = 1.38
++    const toPlate = (height: number, lateral: number, depth: number) => [
++        70 + 142 * (0.88 * depth + 0.52 * lateral),
++        250 + 142 * (-0.92 * height - 0.38 * depth + 0.30 * lateral),
++    ]
++    for (const { worldZ, lateral, radius } of [
++        { worldZ: -0.92, lateral: 0.56, radius: '3.0' },
++        { worldZ: -2.05, lateral: -0.60, radius: '2.8' },
++    ]) {
++        const depth = d - worldZ
++        const physicalScale = d / depth
++        const top = toPlate(0.78 * physicalScale, lateral * physicalScale, d)
++        const bottom = toPlate(0, lateral * physicalScale, d)
++        const dots = Array.from(plate.querySelectorAll(`circle[r="${radius}"]`))
++        expect(dots).toHaveLength(2)
++        for (const [index, expected] of [top, bottom].entries()) {
++            expect(Math.abs(Number(dots[index].getAttribute('cx')) - expected[0])).toBeLessThanOrEqual(0.051)
++            expect(Math.abs(Number(dots[index].getAttribute('cy')) - expected[1])).toBeLessThanOrEqual(0.051)
++        }
++        expect(Math.abs(Number(dots[1].getAttribute('cy')) - Number(dots[0].getAttribute('cy')) - 142 * 0.92 * 0.78 * physicalScale)).toBeLessThanOrEqual(0.101)
++        expect((0.78 * physicalScale) / d).toBeCloseTo(0.78 / depth, 12)
++    }
++    const depthBrace = Array.from(plate.querySelectorAll('line[stroke="#464c5c"][stroke-width="1.8"]'))
++        .map(line => ({
++            dx: Number(line.getAttribute('x2')) - Number(line.getAttribute('x1')),
++            dy: Number(line.getAttribute('y2')) - Number(line.getAttribute('y1')),
++        })).sort((a, b) => Math.hypot(b.dx, b.dy) - Math.hypot(a.dx, a.dy))[0]
++    // The whole eye-to-near-object depth is 2.30, not the 0.92 gap.
++    expect(Math.abs(depthBrace.dx - 142 * 0.88 * 2.30)).toBeLessThanOrEqual(0.101)
++    expect(Math.abs(depthBrace.dy + 142 * 0.38 * 2.30)).toBeLessThanOrEqual(0.101)
++    expect(plate.documentElement.textContent?.replace(/\s+/g, ' ')).toContain('screen-plane scale = d / (d − z)')
++    expect(plate.documentElement.textContent).toContain('depth')
++})
 diff --git a/test/lib/llm-content.test.ts b/test/lib/llm-content.test.ts
 --- a/test/lib/llm-content.test.ts
 +++ b/test/lib/llm-content.test.ts
@@ -2850,6 +4067,143 @@ diff --git a/test/lib/llm-content.test.ts b/test/lib/llm-content.test.ts
 +        fs.rmSync(root, { recursive: true, force: true })
 +    }
 +})
+diff --git a/test/support/browser.ts b/test/support/browser.ts
+--- a/test/support/browser.ts
++++ b/test/support/browser.ts
+@@ -7,7 +7,20 @@ import type { AxeResults } from 'axe-core'
+ // Independent WCAG requirements are the oracle, not values read from the site's CSS.
+ export const wcag = { minimumTarget: 24, textContrast: 4.5 }
+ 
++export async function expectImagesReady(images: Locator) {
++    for (const image of await images.all()) {
++        // Off-screen loading="lazy" images need a viewport visit before decode.
++        // A broken image rejects decode rather than consuming the case budget.
++        await image.scrollIntoViewIfNeeded()
++        await image.evaluate(element => (element as HTMLImageElement).decode())
++        expect(await image.evaluate((element: HTMLImageElement) =>
++            element.complete && element.naturalWidth > 0 && element.naturalHeight > 0
++        ), 'image decoded with nonzero intrinsic dimensions').toBe(true)
++    }
++}
++
+ export async function auditBrowser(page: Page) {
++    await waitForTheme(page, await requestedAppearance(page))
+     await page.addScriptTag({ path: createRequire(path.join(process.cwd(), 'package.json')).resolve('axe-core/axe.min.js') })
+     const results: AxeResults = await page.evaluate(async () => {
+         const axe = (window as unknown as { axe: typeof import('axe-core') }).axe
+@@ -52,11 +65,112 @@ export function contrastRatio(foreground: string, background: string) {
+ export const primaryNavigation = (page: Page) => page.getByRole('navigation').filter({ has: page.getByRole('link', { name: NAV_ITEMS[0].label, exact: true }) })
+ export const themeButton = (page: Page) => primaryNavigation(page).getByRole('button')
+ 
++async function requestedAppearance(page: Page): Promise<'light' | 'dark'> {
++    return (await themeButton(page).getAttribute('aria-label')) === 'Switch to light mode' ? 'dark' : 'light'
++}
++
++async function waitForTheme(page: Page, appearance: 'light' | 'dark') {
++    await expect(page.locator('body')).toHaveAttribute('data-theme', appearance)
++    await expect(page.locator('.radix-themes[data-is-root-theme]')).toHaveClass(new RegExp(`\\b${appearance}\\b`))
++    await expect(page.locator(appearance === 'dark' ? '.theme--dark' : '.theme--default')).toHaveAttribute('data-theme', appearance)
++    await page.evaluate(async () => {
++        // Ignore unrelated motion, but do not sample a color transition as a
++        // settled palette. A cancelled transition has completed as well.
++        await Promise.all(document.getAnimations().filter(animation =>
++            animation instanceof CSSTransition && /color|background/.test(animation.transitionProperty)
++        ).map(animation => animation.finished.catch(() => {})))
++        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
++    })
++}
++
++type ThemeFrame = { body: string | null; custom: string; radix: string; pairs: Array<{ text: string; foreground: string; background: string; minimum: number }> }
++type ThemeAuditWindow = Window & { themeAudit?: { running: boolean; frames: ThemeFrame[] } }
++
+ export async function changeTheme(page: Page) {
+     // A previous click can leave the pointer over the intentionally animated
+     // swatch. Move away before asking Playwright to wait for a stable target.
+     await page.mouse.move(0, 0)
++    const previous = await requestedAppearance(page)
++    await waitForTheme(page, previous)
++    // Start before the click: auditing only after waiting would hide a real
++    // low-contrast frame during the switch.
++    await page.evaluate(() => {
++        const state = { running: true, frames: [] as ThemeFrame[] }
++        ;(window as ThemeAuditWindow).themeAudit = state
++        const sample = () => {
++            const pairs: ThemeFrame['pairs'] = []
++            const nav = document.querySelector('#primary-navigation')!
++            const walker = document.createTreeWalker(nav, NodeFilter.SHOW_TEXT)
++            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
++                const element = node.parentElement!
++                if (!node.textContent?.trim() || element.closest('[aria-hidden="true"]')) continue
++                const range = document.createRange()
++                range.selectNodeContents(node)
++                if (![...range.getClientRects()].some(rect => rect.width > 0 && rect.height > 0)) continue
++                let background = ''
++                for (let parent: Element | null = element; parent; parent = parent.parentElement) {
++                    const color = getComputedStyle(parent).backgroundColor
++                    if (color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)') { background = color; break }
++                }
++                pairs.push({ text: node.textContent.trim(), foreground: getComputedStyle(element).color, background, minimum: 4.5 })
++            }
++            const control = nav.querySelector('button')!
++            pairs.push({ text: 'theme control stroke', foreground: getComputedStyle(control).borderTopColor, background: getComputedStyle(nav).backgroundColor, minimum: 3 })
++            const radix = document.querySelector('.radix-themes[data-is-root-theme]')!
++            state.frames.push({
++                body: document.body.getAttribute('data-theme'),
++                custom: document.querySelector('.theme--dark') ? 'dark' : 'light',
++                radix: radix.classList.contains('dark') ? 'dark' : 'light',
++                pairs,
++            })
++            if (state.running) requestAnimationFrame(sample)
++        }
++        sample()
++    })
+     await themeButton(page).click()
++    const next = previous === 'light' ? 'dark' : 'light'
++    await waitForTheme(page, next)
++    const frames = await page.evaluate(() => {
++        const state = (window as ThemeAuditWindow).themeAudit!
++        state.running = false
++        return state.frames
++    })
++    expect(new Set(frames.map(frame => frame.custom))).toEqual(new Set([previous, next]))
++    for (const frame of frames) {
++        expect(frame.body, 'body and custom theme agree in each painted frame').toBe(frame.custom)
++        expect(frame.radix, 'Radix and custom theme agree in each painted frame').toBe(frame.custom)
++        expect(frame.pairs.length).toBeGreaterThan(0)
++        for (const pair of frame.pairs) {
++            expect(contrastRatio(pair.foreground, pair.background), JSON.stringify({ theme: frame.custom, ...pair })).toBeGreaterThanOrEqual(pair.minimum)
++        }
++    }
++}
++
++export async function expectCodeContrast(code: Locator) {
++    const pairs = await code.evaluateAll(elements => {
++        const found = new Map<string, { token: string; foreground: string; background: string; count: number }>()
++        for (const code of elements) {
++            const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
++            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
++                if (!node.textContent?.trim()) continue
++                const element = node.parentElement!
++                const foreground = getComputedStyle(element).color
++                let background = ''
++                for (let parent: Element | null = element; parent; parent = parent.parentElement) {
++                    const color = getComputedStyle(parent).backgroundColor
++                    if (color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)') { background = color; break }
++                }
++                const token = element.className || 'plain text'
++                const key = JSON.stringify([token, foreground, background])
++                const pair = found.get(key) ?? { token, foreground, background, count: 0 }
++                pair.count++
++                found.set(key, pair)
++            }
++        }
++        return [...found.values()]
++    })
++    if (await code.count()) expect(pairs.length).toBeGreaterThan(0)
++    for (const pair of pairs) expect(contrastRatio(pair.foreground, pair.background), JSON.stringify(pair)).toBeGreaterThanOrEqual(wcag.textContrast)
+ }
+ 
+ export async function expectMinimumHitTarget(locator: Locator) {
 diff --git a/test/support/verify-research-export.ts b/test/support/verify-research-export.ts
 new file mode 100644
 --- /dev/null
