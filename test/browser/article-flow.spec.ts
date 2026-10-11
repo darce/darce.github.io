@@ -317,24 +317,50 @@ async function keyboardScrollToLineEnd(block: Locator) {
     const rightmost = lineEnds.ends.reduce((a, b) => b.right > a.right ? b : a)
     expect(rightmost.left, 'the terminal character of the longest rendered line is visible at End').toBeGreaterThanOrEqual(lineEnds.viewportLeft - 1)
     expect(rightmost.right).toBeLessThanOrEqual(lineEnds.viewportRight + 1)
-    // Return to the beginning so evidence captures do not retain a clipped line.
+    // Home exposes the beginning, not necessarily the end of the final line.
     await page.keyboard.press('Home')
     await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
-    const finalLine = await block.locator('code').evaluate(code => {
+    const sourceGlyph = (edge: 'first' | 'last') => block.locator('code').evaluate((code, edge) => {
         const pre = code.closest('pre')!
         const range = document.createRange()
         const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
-        let last: Text | null = null
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) if (node.textContent?.trimEnd()) last = node as Text
-        const end = last!.textContent!.trimEnd().length
-        range.setStart(last!, end - 1)
-        range.setEnd(last!, end)
+        let target: Text | null = null
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (!node.textContent?.trim()) continue
+            target = node as Text
+            if (edge === 'first') break
+        }
+        const text = target!.textContent!
+        const offset = edge === 'first' ? text.length - text.trimStart().length : text.trimEnd().length - 1
+        range.setStart(target!, offset)
+        range.setEnd(target!, offset + 1)
         const rect = range.getBoundingClientRect()
         const region = pre.getBoundingClientRect()
         return { left: rect.left, right: rect.right, viewportLeft: region.left + pre.clientLeft, viewportRight: region.left + pre.clientLeft + pre.clientWidth }
-    })
-    expect(finalLine.left, 'the final source line remains reachable at Home').toBeGreaterThanOrEqual(finalLine.viewportLeft - 1)
-    expect(finalLine.right).toBeLessThanOrEqual(finalLine.viewportRight + 1)
+    }, edge)
+    const beginning = await sourceGlyph('first')
+    expect(beginning.left, 'the beginning-of-code glyph is visible at Home').toBeGreaterThanOrEqual(beginning.viewportLeft - 1)
+    expect(beginning.right).toBeLessThanOrEqual(beginning.viewportRight + 1)
+
+    let finalGlyph = await sourceGlyph('last')
+    const visible = (glyph: typeof finalGlyph) => glyph.left >= glyph.viewportLeft - 1 && glyph.right <= glyph.viewportRight + 1
+    if (!visible(finalGlyph)) {
+        await page.keyboard.press('End')
+        await expect.poll(() => block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft)).toBeLessThanOrEqual(1)
+        finalGlyph = await sourceGlyph('last')
+    }
+    // A shorter final line can fall left of the viewport at End. Reach it
+    // using real, bounded arrow input, allowing native scrolling to advance.
+    for (let arrows = 0; arrows < 100 && !visible(finalGlyph); arrows++) {
+        await page.keyboard.press(finalGlyph.left < finalGlyph.viewportLeft - 1 ? 'ArrowLeft' : 'ArrowRight', { delay: 100 })
+        finalGlyph = await sourceGlyph('last')
+    }
+    await expect(block).toBeFocused()
+    expect(finalGlyph.left, 'the final source character is reachable by keyboard').toBeGreaterThanOrEqual(finalGlyph.viewportLeft - 1)
+    expect(finalGlyph.right).toBeLessThanOrEqual(finalGlyph.viewportRight + 1)
+    // Return to the beginning so evidence captures do not retain a clipped line.
+    await page.keyboard.press('Home')
+    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
 }
 
 for (const slug of researchSlugs) {
