@@ -37,16 +37,11 @@ A text query is useful when you can describe what you want. A reference image is
 
 </section>
 
-<section>
+<section data-flow-layout="query">
 
 ## 2. Make a result the next query
 
-<Figure
-  src="work/sis-similarity-search.png"
-  alt="Find similar results with a flower photograph identified as the reference image."
-/>
-
-<SearchWorkflow kind="similar" label="Screen storyboard: open photograph B from text results. Find similar makes B the reference for new results E, F, and G. Back to text results returns to the original results.">Schematic: B is the new query.</SearchWorkflow>
+<div data-flow-row="query">
 
 <div data-flow-copy="short">
 
@@ -55,6 +50,16 @@ A selected photograph opens for inspection. **Find similar** makes that photogra
 The new view names the reference and offers **Back to text results**, keeping the change of query visible.
 
 </div>
+
+<SearchWorkflow kind="similar" label="Screen storyboard: open photograph B from text results. Find similar makes B the reference for new results E, F, and G. Back to text results returns to the original results.">Schematic: B is the new query.</SearchWorkflow>
+
+</div>
+
+<Figure
+  src="work/sis-similarity-search.png"
+  alt="Find similar results with a flower photograph identified as the reference image."
+  layout="wide"
+/>
 
 </section>
 

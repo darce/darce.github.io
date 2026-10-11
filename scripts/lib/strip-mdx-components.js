@@ -48,7 +48,7 @@ function stripMdxComponents(content) {
         .replace(/^import\s+.*$/gm, '')
         // Remove HTML tags like <h2>, <a>, etc. but keep text content
         .replace(/<([a-z][a-z0-9]*)\b[^>]*>([\s\S]*?)<\/\1>/g, '$2')
-        .replace(/<([a-z][a-z0-9]*)\b[^>]*\/?>/g, '')
+        .replace(/<\/?([a-z][a-z0-9]*)\b[^>]*\/?>/g, '')
         // Collapse multiple blank lines
         .replace(/\n{3,}/g, '\n\n')
         .trim()

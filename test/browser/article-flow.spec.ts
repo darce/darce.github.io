@@ -16,7 +16,6 @@ async function firstLine(paragraph: Locator) {
 test('screen reference fits evidence to its content and flows copy beside it', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'Checks desktop flow at several actual article widths')
     const diagramWidths: number[] = []
-    const imageWidths: number[] = []
     for (const width of [1280, 1440, 1920]) {
         await page.setViewportSize({ width, height: 1000 })
         await page.goto(route)
@@ -43,7 +42,7 @@ test('screen reference fits evidence to its content and flows copy beside it', a
         expect(diagramBox.x - proseBox.x - proseBox.width, 'evidence stays adjacent to the prose on wide canvases').toBeLessThanOrEqual(32)
 
         const figures = body.locator('figure[data-layout="inset"]')
-        await expect(figures).toHaveCount(3)
+        await expect(figures).toHaveCount(2)
         for (const figure of await figures.all()) {
             const image = figure.locator('img')
             await image.scrollIntoViewIfNeeded()
@@ -59,15 +58,10 @@ test('screen reference fits evidence to its content and flows copy beside it', a
             }
         }
         const imageBox = (await figures.first().locator('img').boundingBox())!
-        imageWidths.push(imageBox.width)
-        const imageCopy = await firstLine(article.locator('p').filter({ hasText: /^A selected photograph opens/ }))
+        const imageCopy = await firstLine(article.locator('p').filter({ hasText: /^The Similarity view/ }))
         expect(imageCopy.y).toBeGreaterThanOrEqual(imageBox.y)
         expect(imageCopy.y).toBeLessThan(imageBox.y + imageBox.height)
-        expect(imageCopy.x + imageCopy.width).toBeLessThan(imageBox.x)
-        if (width >= 1440) {
-            const queryDiagram = (await diagrams.nth(1).boundingBox())!
-            expect(imageCopy.y, 'short explanation flows beside both pieces of evidence').toBeLessThan(queryDiagram.y + queryDiagram.height)
-        }
+        expect(imageCopy.x).toBeGreaterThan(imageBox.x + imageBox.width)
         for (const heading of await body.locator('h2, h3, h4, h5, h6').all()) {
             await expect(heading).toHaveCSS('border-top-width', '0px')
         }
@@ -91,7 +85,33 @@ test('screen reference fits evidence to its content and flows copy beside it', a
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
     }
     expect(Math.max(...diagramWidths) - Math.min(...diagramWidths), 'graphic width follows its own reading size, not a canvas fraction').toBeLessThanOrEqual(1)
-    expect(Math.max(...imageWidths) - Math.min(...imageWidths), 'image width follows its own aspect and reading size').toBeLessThanOrEqual(1)
+})
+
+test('query explanation and storyboard share a row above a full-width screenshot', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'The explanation and diagram share a row at desktop widths')
+    for (const width of [1280, 1440, 1920]) {
+        await page.setViewportSize({ width, height: 1000 })
+        await page.goto(route)
+        await page.evaluate(() => document.fonts.ready)
+        const body = page.getByRole('article').locator('[data-article-body]')
+        const section = body.locator('section').filter({ has: page.getByRole('heading', { name: '2. Make a result the next query', exact: true }) })
+        const image = section.locator('figure img')
+        await image.scrollIntoViewIfNeeded()
+        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+        const diagram = (await section.locator('figure[data-workflow="similar"]').boundingBox())!
+        const copy = await firstLine(section.locator('p').first())
+        const lastParagraph = (await section.locator('p').last().boundingBox())!
+        expect(copy.y).toBeGreaterThanOrEqual(diagram.y)
+        expect(copy.y).toBeLessThan(diagram.y + diagram.height)
+        expect(copy.x + copy.width).toBeLessThan(diagram.x)
+        const screenshot = (await image.boundingBox())!
+        const canvas = (await body.boundingBox())!
+        expect(screenshot.y).toBeGreaterThanOrEqual(Math.max(diagram.y + diagram.height, lastParagraph.y + lastParagraph.height))
+        expect(screenshot.x).toBeCloseTo(canvas.x, 0)
+        expect(screenshot.width).toBeCloseTo(canvas.width, 0)
+        const ratio = await image.evaluate((element: HTMLImageElement) => element.naturalWidth / element.naturalHeight)
+        expect(screenshot.width / screenshot.height).toBeCloseTo(ratio, 2)
+    }
 })
 
 test('screen reference stacks at narrow widths and enlarged text while retaining readable diagrams', async ({ page }) => {

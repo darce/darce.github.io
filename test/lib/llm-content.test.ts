@@ -11,6 +11,15 @@ const full = fs.readFileSync(path.join(process.cwd(), 'public/llms-full.txt'), '
 const index = fs.readFileSync(path.join(process.cwd(), 'public/llms.txt'), 'utf8')
 
 describe('generated text exports reflect the current source inventory', () => {
+    it('unwraps nested layout containers and preserves literal HTML examples', () => {
+        const example = '```html\n<div>Example markup</div>\n```'
+        const source = '<section>\n<div data-flow-row="query">\n<div>Inspect the photograph.</div>\nFollow the diagram.\n</div>\n</section>\n\n' + example
+        const text = stripMdxComponents(source)
+        expect(text).toContain('Inspect the photograph.')
+        expect(text).toContain('Follow the diagram.')
+        expect(text).toContain(example)
+        expect(text.replace(example, '')).not.toMatch(/<\/?(?:section|div)\b/)
+    })
     it('preserves workflow meaning and captions for readers of the text export', () => {
         const source = '<SearchWorkflow kind="similar" label="Open a photograph, choose Find similar, and return with Back to text results.">Schematic: the chosen photograph remains the reference.</SearchWorkflow>'
         const text = stripMdxComponents(source)

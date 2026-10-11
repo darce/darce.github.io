@@ -35,12 +35,11 @@
 
 .toolbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: $s-small;
 
     h2 {
-        flex: 1 1 auto;
+        flex: 1 1 0;
         min-width: 0;
         margin: 0;
         font-size: $type-h3;
@@ -49,14 +48,22 @@
     }
 
     button {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
         min-width: tokens.$article-viewer-control-size;
         min-height: tokens.$article-viewer-control-size;
-        padding: $s-small $s-medium;
+        padding: $s-small;
         border: $s-line solid;
         border-radius: 0;
         background: transparent;
         font: inherit;
         cursor: pointer;
+
+        svg {
+            inline-size: 1.5em;
+            block-size: 1.5em;
+        }
 
         @include themeComponent($themes) {
             color: t('link');
@@ -79,10 +86,6 @@
         display: contents;
     }
 
-    &[data-zoomed='true'] .image {
-        width: calc(var(--fitted-width) * #{tokens.$article-viewer-zoom-factor});
-        height: calc(var(--fitted-height) * #{tokens.$article-viewer-zoom-factor});
-    }
 }
 
 .image {

@@ -38,7 +38,7 @@ I’m interested in senior front-end development and design-technology roles, wi
 
 [Email me](mailto:daniel.arce@gmail.com) about a role or a project.
 
-Portrait by Liam Maloney</a>.
+Portrait by Liam Maloney.
 
 ## Projects
 
@@ -583,17 +583,15 @@ A text query is useful when you can describe what you want. A reference image is
 
 ## 2. Make a result the next query
 
-![Find similar results with a flower photograph identified as the reference image.](/images/work/sis-similarity-search.png)
+A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search.
+
+The new view names the reference and offers **Back to text results**, keeping the change of query visible.
 
 Screen storyboard: open photograph B from text results. Find similar makes B the reference for new results E, F, and G. Back to text results returns to the original results.
 
 _Schematic: B is the new query._
 
-A selected photograph opens for inspection. **Find similar** makes that photograph the reference for another search.
-
-The new view names the reference and offers **Back to text results**, keeping the change of query visible.
-
-</div>
+![Find similar results with a flower photograph identified as the reference image.](/images/work/sis-similarity-search.png)
 
 ## 3. Explore a region on the Similarity map
 

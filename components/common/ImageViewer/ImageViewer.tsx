@@ -1,7 +1,6 @@
-import React, { useEffect, useId, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import ResponsiveImage from '../ResponsiveImage/ResponsiveImage'
-import tokens from '../../../design-tokens/portfolio.tokens.json'
 import styles from './ImageViewer.module.scss'
 
 interface ImageViewerProps {
@@ -15,9 +14,7 @@ interface ImageViewerProps {
 const ImageViewer: React.FC<ImageViewerProps> = ({ src, alt, width, height, onClose }) => {
     const dialogRef = useRef<HTMLDialogElement>(null)
     const closeRef = useRef<HTMLButtonElement>(null)
-    const viewportRef = useRef<HTMLDivElement>(null)
     const titleId = useId()
-    const [zoomed, setZoomed] = useState(false)
 
     useEffect(() => {
         const dialog = dialogRef.current!
@@ -26,21 +23,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ src, alt, width, height, onCl
         document.body.style.overflow = 'hidden'
         dialog.showModal()
         closeRef.current?.focus()
-        const viewport = viewportRef.current!
-        const image = viewport.querySelector('img')!
-        const updateFit = () => {
-            if (!image.naturalWidth || !image.naturalHeight) return
-            const scale = Math.min(viewport.clientWidth / image.naturalWidth, viewport.clientHeight / image.naturalHeight)
-            image.style.setProperty('--fitted-width', `${image.naturalWidth * scale}px`)
-            image.style.setProperty('--fitted-height', `${image.naturalHeight * scale}px`)
-        }
-        const observer = new ResizeObserver(updateFit)
-        observer.observe(viewport)
-        image.addEventListener('load', updateFit)
-        updateFit()
         return () => {
-            observer.disconnect()
-            image.removeEventListener('load', updateFit)
             dialog.close()
             document.body.style.overflow = overflow
             opener?.focus({ preventScroll: true })
@@ -82,14 +65,14 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ src, alt, width, height, onCl
             <div className={styles.frame}>
                 <div className={styles.toolbar}>
                     <h2 id={titleId}>{alt}</h2>
-                    <button type="button" onClick={() => {
-                        setZoomed(value => !value)
-                        viewportRef.current?.scrollTo(0, 0)
-                    }}>{zoomed ? 'Fit to window' : 'Zoom in'}</button>
-                    <button ref={closeRef} type="button" onClick={() => dialogRef.current?.close()}>Close</button>
+                    <button ref={closeRef} type="button" aria-label="Close" title="Close" onClick={() => dialogRef.current?.close()}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                    </button>
                 </div>
-                <div ref={viewportRef} className={styles.viewport} data-zoomed={zoomed} role="region" aria-label="Image" tabIndex={0}>
-                    <ResponsiveImage src={src} alt={alt} width={width} height={height} sizes={`${(zoomed ? tokens.article.viewer['zoom-factor'].$value : 1) * 100}vw`} priority className={styles.image} />
+                <div className={styles.viewport} role="region" aria-label="Image" tabIndex={0}>
+                    <ResponsiveImage src={src} alt={alt} width={width} height={height} sizes="100vw" priority className={styles.image} />
                 </div>
             </div>
         </dialog>,

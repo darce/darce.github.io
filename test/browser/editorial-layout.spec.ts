@@ -41,7 +41,8 @@ test('work and research images share continuous inset or wide figure layouts', a
             } else {
                 expect((await figure.boundingBox())!.width / canvas.width).toBeCloseTo(wraps ? tokens.article.inset['width-share'].$value : 1, 1)
             }
-            await expect(figure).toHaveCSS('float', wraps ? (index % 2 === 0 ? 'right' : 'left') : 'none')
+            const side = contentFlow ? (await figure.getAttribute('data-side') === 'left' ? 'left' : 'right') : (index % 2 === 0 ? 'right' : 'left')
+            await expect(figure).toHaveCSS('float', wraps ? side : 'none')
             await expect(figure.locator('figcaption')).toContainText(/\S/)
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${section}/${slug}: no page overflow`).toBeLessThanOrEqual(1)
@@ -129,7 +130,7 @@ test('shared case studies preserve the full canvas and limit standalone prose', 
     }
 })
 
-test('full-size evidence opens an enlarged modal with zoom and keyboard dismissal', async ({ page }) => {
+test('full-size evidence opens a fitted modal with an icon close control and keyboard dismissal', async ({ page }) => {
     await page.goto('/projects/photoshelter/')
     const originalURL = page.url()
     const originalPages = page.context().pages().length
@@ -147,6 +148,10 @@ test('full-size evidence opens an enlarged modal with zoom and keyboard dismissa
         await expect(dialog).toBeVisible()
         await expect(dialog).toHaveCSS('font-family', await page.getByRole('article').evaluate(element => getComputedStyle(element).fontFamily))
         await expect(dialog.getByRole('button', { name: 'Close', exact: true })).toBeFocused()
+        await expect(dialog.getByRole('button')).toHaveCount(1)
+        const close = dialog.getByRole('button', { name: 'Close', exact: true })
+        await expect(close.locator('svg[aria-hidden="true"]')).toHaveCount(1)
+        await expect(close).toHaveText('')
         expect(page.url()).toBe(originalURL)
         expect(page.context().pages()).toHaveLength(originalPages)
         expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden')
@@ -162,15 +167,10 @@ test('full-size evidence opens an enlarged modal with zoom and keyboard dismissa
         const paintedWidth = () => image.evaluate((element: HTMLImageElement) => Math.min(element.clientWidth, element.clientHeight * element.naturalWidth / element.naturalHeight))
         const fittedWidth = await paintedWidth()
         if (page.viewportSize()!.width > 1024) expect(fittedWidth).toBeGreaterThan(inlineWidth)
-        await dialog.getByRole('button', { name: 'Zoom in', exact: true }).click()
-        expect(await paintedWidth()).toBeGreaterThan(fittedWidth * 1.9)
-        expect(await paintedWidth()).toBeGreaterThan(inlineWidth)
         const viewport = dialog.getByRole('region', { name: 'Image', exact: true })
-        expect(await viewport.evaluate(element => element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight)).toBe(true)
-        await viewport.focus()
-        await page.keyboard.press('ArrowRight')
-        await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
-        // Panning an image must not trigger sibling-page swipe navigation.
+        expect(await viewport.evaluate(element => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+        expect(await viewport.evaluate(element => element.scrollHeight - element.clientHeight)).toBeLessThanOrEqual(1)
+        // Touching an inspected image must not trigger sibling-page navigation.
         await viewport.evaluate(element => {
             const touch = (x: number) => new Touch({ identifier: 1, target: element, clientX: x, clientY: 200 })
             element.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, touches: [touch(250)], changedTouches: [touch(250)] }))
@@ -178,7 +178,6 @@ test('full-size evidence opens an enlarged modal with zoom and keyboard dismissa
         })
         expect(page.url()).toBe(originalURL)
         await expect(dialog).toBeVisible()
-        await dialog.getByRole('button', { name: 'Fit to window', exact: true }).click()
         expect(await paintedWidth()).toBeCloseTo(fittedWidth, 0)
         await page.keyboard.press('Escape')
         await expect(dialog).toHaveCount(0)

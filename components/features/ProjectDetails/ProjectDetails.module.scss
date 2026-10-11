@@ -260,6 +260,30 @@
                 max-inline-size: $type-measure;
             }
 
+            > section[data-flow-layout='query'] {
+                inline-size: 100%;
+                max-inline-size: 100%;
+            }
+
+            > section > [data-flow-row='query'] {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                gap: $s-large;
+                align-items: start;
+                margin-block-end: $s-large;
+
+                > [data-flow-copy='short'] {
+                    min-inline-size: 0;
+                    max-inline-size: $type-measure;
+                }
+
+                > [data-workflow] {
+                    float: none;
+                    max-inline-size: 100%;
+                    margin: 0;
+                }
+            }
+
             // Size and spacing already identify sections. Repeated dark rules
             // add no hierarchy (Canon v0.25.6 LAY-06).
             h2 {
@@ -299,6 +323,10 @@
             }
 
             @container article-body (min-width: #{$type-inset-min}) {
+                .source > section > [data-flow-row='query'] {
+                    grid-template-columns: minmax(0, #{$type-measure}) max-content;
+                }
+
                 .insetFigure,
                 .source .asciiScreen,
                 .source [data-workflow],
