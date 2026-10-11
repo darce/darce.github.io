@@ -23,12 +23,19 @@ const ArticleCode = ({ children, onKeyDown, ...props }: React.ComponentPropsWith
         onKeyDown?.(event)
         const region = event.currentTarget
         if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || region.scrollWidth <= region.clientWidth) return
-        // Arrow keys retain native scrolling. Home/End expose both ends of
-        // a long line without moving the reader to another part of the page.
-        if (event.key === 'Home' || event.key === 'End') {
-            event.preventDefault()
-            region.scrollLeft = event.key === 'Home' ? 0 : region.scrollWidth
+        // Native horizontal arrow animation can outlive a subsequent Home/End.
+        // Keep these commands discrete so the last key determines the position;
+        // Tab and vertical keys retain their native behavior.
+        let left: number
+        switch (event.key) {
+            case 'ArrowLeft': left = region.scrollLeft - 40; break
+            case 'ArrowRight': left = region.scrollLeft + 40; break
+            case 'Home': left = 0; break
+            case 'End': left = region.scrollWidth; break
+            default: return
         }
+        event.preventDefault()
+        region.scrollTo({ left, behavior: 'instant' })
     }}>{children}</pre>
 }
 

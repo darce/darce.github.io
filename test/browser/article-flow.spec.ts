@@ -286,11 +286,15 @@ async function keyboardScrollToLineEnd(block: Locator) {
     }
     await expect(block).toBeFocused()
     await page.keyboard.press('Home')
-    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
+    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
     await page.keyboard.press('ArrowRight')
-    await expect.poll(() => block.evaluate(element => element.scrollLeft), 'real ArrowRight scrolls the focused pre').toBeGreaterThan(0)
+    expect(await block.evaluate(element => element.scrollLeft), 'real ArrowRight immediately scrolls the focused pre').toBeGreaterThan(0)
+    await page.keyboard.press('ArrowLeft')
+    expect(await block.evaluate(element => element.scrollLeft), 'real ArrowLeft immediately reverses the discrete step').toBe(0)
+    await page.keyboard.press('ArrowRight')
+    expect(await block.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
     await page.keyboard.press('End')
-    await expect.poll(() => block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft), 'End reaches the whole long-line extent').toBeLessThanOrEqual(1)
+    expect(await block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft), 'End immediately reaches the whole long-line extent').toBeLessThanOrEqual(1)
     const lineEnds = await block.locator('code').evaluate(code => {
         const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT)
         const nodes: Text[] = []
@@ -319,7 +323,7 @@ async function keyboardScrollToLineEnd(block: Locator) {
     expect(rightmost.right).toBeLessThanOrEqual(lineEnds.viewportRight + 1)
     // Home exposes the beginning, not necessarily the end of the final line.
     await page.keyboard.press('Home')
-    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
+    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
     const sourceGlyph = (edge: 'first' | 'last') => block.locator('code').evaluate((code, edge) => {
         const pre = code.closest('pre')!
         const range = document.createRange()
@@ -346,13 +350,13 @@ async function keyboardScrollToLineEnd(block: Locator) {
     const visible = (glyph: typeof finalGlyph) => glyph.left >= glyph.viewportLeft - 1 && glyph.right <= glyph.viewportRight + 1
     if (!visible(finalGlyph)) {
         await page.keyboard.press('End')
-        await expect.poll(() => block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft)).toBeLessThanOrEqual(1)
+        expect(await block.evaluate(element => element.scrollWidth - element.clientWidth - element.scrollLeft)).toBeLessThanOrEqual(1)
         finalGlyph = await sourceGlyph('last')
     }
     // A shorter final line can fall left of the viewport at End. Reach it
-    // using real, bounded arrow input, allowing native scrolling to advance.
+    // using real, bounded discrete arrow input, measuring after each command.
     for (let arrows = 0; arrows < 100 && !visible(finalGlyph); arrows++) {
-        await page.keyboard.press(finalGlyph.left < finalGlyph.viewportLeft - 1 ? 'ArrowLeft' : 'ArrowRight', { delay: 100 })
+        await page.keyboard.press(finalGlyph.left < finalGlyph.viewportLeft - 1 ? 'ArrowLeft' : 'ArrowRight')
         finalGlyph = await sourceGlyph('last')
     }
     await expect(block).toBeFocused()
@@ -360,7 +364,7 @@ async function keyboardScrollToLineEnd(block: Locator) {
     expect(finalGlyph.right).toBeLessThanOrEqual(finalGlyph.viewportRight + 1)
     // Return to the beginning so evidence captures do not retain a clipped line.
     await page.keyboard.press('Home')
-    await expect.poll(() => block.evaluate(element => element.scrollLeft)).toBe(0)
+    expect(await block.evaluate(element => element.scrollLeft)).toBe(0)
 }
 
 for (const slug of researchSlugs) {
